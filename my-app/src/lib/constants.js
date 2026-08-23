@@ -39,7 +39,6 @@ export const NAV_GROUPS = [
     { name: "comets", labelKey: "nav.comets" },
     { name: "exoplanets", labelKey: "nav.exoplanets" },
     { name: "mast", labelKey: "nav.mast" },
-    { name: "deep", labelKey: "nav.deep" },
     { name: "voyager", labelKey: "nav.voyager" },
     { name: "galaxies", labelKey: "nav.galaxies" },
     { name: "gallery", labelKey: "nav.gallery" },

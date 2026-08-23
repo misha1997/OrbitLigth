@@ -4,10 +4,11 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useLang } from "../context/LanguageContext";
 import { useApi } from "../hooks/useApi";
-import { getEvents } from "../lib/api";
+import { getEvents, getGrb } from "../lib/api";
 import { daysUntilTxt } from "../lib/format";
 import SectionHead from "../components/primitives/SectionHead";
 import EventList from "../components/primitives/EventList";
+import GwList from "../components/deep/GwList";
 
 function NextEclipse({ ne, t }) {
   if (!ne) {
@@ -26,6 +27,29 @@ function NextEclipse({ ne, t }) {
       <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.5 }}>
         {t("events.next.visibility")} {ne.visibility || "—"}
       </p>
+    </div>
+  );
+}
+
+function GrbList({ t }) {
+  const { data } = useApi(() => getGrb(12));
+  const items = (data && data.items) || [];
+  return (
+    <div className="event-list" id="grb-list" style={{ marginTop: 14 }}>
+      {!data ? (
+        <div style={{ color: "var(--text-dim)", fontSize: 13 }}>{t("deep.grb.loading")}</div>
+      ) : items.length === 0 ? (
+        <div style={{ color: "var(--text-dim)", fontSize: 13, padding: "6px 0" }}>{t("deep.grb.empty")}</div>
+      ) : items.map((g, i) => (
+        <div className="event" key={i}>
+          <div className="ic coral">💥</div>
+          <div>
+            <div className="top"><h4>{g.grb_name}</h4><span className="t">#{g.circular_id}</span></div>
+            <p>{g.title || ""}</p>
+            <a href={g.url} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--font-mono)", fontSize: 11.5, color: "var(--teal)" }}>{t("deep.grb.link")}</a>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -118,6 +142,43 @@ export default function Events() {
                 <div className="k">{t("events.supermoon")}</div>
                 <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}><b style={{ color: "var(--gold)" }}>{t("events.supermoonTitle")}</b>{t("events.supermoonBody")}</p>
                 <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}><b style={{ color: "var(--teal)" }}>{t("events.retroTitle")}</b>{t("events.retroBody")}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="section" id="grb" style={{ paddingTop: 8 }}>
+          <div className="wrap">
+            <SectionHead eyebrow={t("deep.s2.eyebrow")} title={t("deep.s2.title")}
+              linkHref="https://gcn.gsfc.nasa.gov/gcn3_archive.html" linkLabel={t("deep.s2.link")} />
+            <p className="section-sub">{t("deep.s2.sub")}</p>
+            <div className="grid cols-2 split">
+              <div className="card">
+                <div className="k">{t("deep.grb.fresh")} <span className="dot live" /></div>
+                <GrbList t={t} />
+              </div>
+              <div className="card">
+                <div className="k">{t("deep.grb.what")}</div>
+                <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.grb.whatBody1")}</p>
+                <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.grb.whatBody2")}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section" id="gw" style={{ paddingTop: 0 }}>
+          <div className="wrap">
+            <SectionHead eyebrow={t("deep.gw.eyebrow")} title={t("deep.gw.title")}
+              linkHref="https://gcn.nasa.gov/missions/lvk" linkLabel={t("deep.gw.link_out")} />
+            <p className="section-sub">{t("deep.gw.sub")}</p>
+            <div className="grid cols-2 split">
+              <div className="card">
+                <div className="k">{t("deep.gw.fresh")} <span className="dot live" /></div>
+                <GwList />
+              </div>
+              <div className="card">
+                <div className="k">{t("deep.gw.what")}</div>
+                <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.gw.whatBody1")}</p>
+                <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.gw.whatBody2")}</p>
               </div>
             </div>
           </div>

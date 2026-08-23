@@ -2,81 +2,8 @@
 // Voyager teaser grid. Port of app.js loadDebris / loadGRB.
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useApi } from "../hooks/useApi";
-import { getDebris, getGrb } from "../lib/api";
-import { fmtInt } from "../lib/format";
-import SectionHead from "../components/primitives/SectionHead";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import Eyebrow from "../components/primitives/Eyebrow";
-import GwList from "../components/deep/GwList";
-import SentryList from "../components/deep/SentryList";
-import ReentryList from "../components/deep/ReentryList";
-
-function DebrisCard({ label, value, unit }) {
-  return (
-    <div className="card">
-      <div className="k">{label}</div>
-      <div className="v" style={{ fontSize: 26 }}>{value}{unit && <span className="unit">{unit}</span>}</div>
-    </div>
-  );
-}
-
-function Debris({ t }) {
-  const { data } = useApi(getDebris);
-  const d = data || {};
-  const na = "—";
-  return (
-    <>
-      <div className="grid cols-4" id="debris-stats">
-        <DebrisCard label={t("deep.debris.tracked")} value={d.tracked != null ? fmtInt(d.tracked) : na} />
-        <DebrisCard label={t("deep.debris.cm1")} value={d.cm1 != null ? fmtInt(d.cm1) : na} />
-        <DebrisCard label={t("deep.debris.cm01")} value={d.cm01 != null ? fmtInt(d.cm01) : na} />
-        <DebrisCard label={t("deep.debris.mass")} value={d.total_mass_t != null ? fmtInt(d.total_mass_t) : na} unit={t("deep.debris.tons")} />
-      </div>
-      <div className="grid cols-3" style={{ marginTop: 18 }}>
-        <div className="card">
-          <div className="k">{t("deep.debris.breakups")}</div>
-          <div className="v accent" style={{ fontSize: 26, marginTop: 8 }}>
-            <span id="debris-breakups">{d.breakups != null ? d.breakups : "—"}</span>
-          </div>
-          <div className="foot">{t("deep.debris.breakupsFoot")}</div>
-        </div>
-        <div className="card">
-          <div className="k">{t("deep.debris.why")}</div>
-          <p style={{ color: "var(--text-dim)", fontSize: 13, marginTop: 10, lineHeight: 1.55 }}>{t("deep.debris.whyBody")}</p>
-        </div>
-        <div className="card">
-          <div className="k">{t("deep.debris.data")}</div>
-          <p style={{ color: "var(--text-dim)", fontSize: 13, marginTop: 10, lineHeight: 1.55 }}>{t("deep.debris.dataBody", { year: d.year_ref || "—" })}</p>
-          <a id="debris-source" href={d.source_url || "#"} target="_blank" rel="noopener" style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--teal)", display: "inline-block", marginTop: 10 }}>{t("deep.debris.source")}</a>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function GrbList({ t }) {
-  const { data } = useApi(() => getGrb(12));
-  const items = (data && data.items) || [];
-  return (
-    <div className="event-list" id="grb-list" style={{ marginTop: 14 }}>
-      {!data ? (
-        <div style={{ color: "var(--text-dim)", fontSize: 13 }}>{t("deep.grb.loading")}</div>
-      ) : items.length === 0 ? (
-        <div style={{ color: "var(--text-dim)", fontSize: 13, padding: "6px 0" }}>{t("deep.grb.empty")}</div>
-      ) : items.map((g, i) => (
-        <div className="event" key={i}>
-          <div className="ic coral">💥</div>
-          <div>
-            <div className="top"><h4>{g.grb_name}</h4><span className="t">#{g.circular_id}</span></div>
-            <p>{g.title || ""}</p>
-            <a href={g.url} target="_blank" rel="noopener" style={{ fontFamily: "var(--font-mono)", fontSize: 11.5, color: "var(--teal)" }}>{t("deep.grb.link")}</a>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 export default function Deep() {
   const { t } = useTranslation();
@@ -90,76 +17,7 @@ export default function Deep() {
             <div className="eyebrow">{t("deep.hero.eyebrow")}</div>
             <h1 className="hero-title" dangerouslySetInnerHTML={{ __html: t("deep.hero.title") }} />
             <p className="hero-sub">{t("deep.hero.sub")}</p>
-            <div className="hero-actions">
-              <a href="#debris" className="btn primary">{t("deep.hero.debris")}</a>
-              <a href="#grb" className="btn ghost">{t("deep.hero.grb")}</a>
-            </div>
           </div>
-        </div>
-      </section>
-
-      <section className="section" id="debris" style={{ paddingTop: 8 }}>
-        <div className="wrap">
-          <SectionHead eyebrow={t("deep.s1.eyebrow")} title={t("deep.s1.title")}
-            linkHref="https://www.esa.int/Space_Safety/Space_Debris" linkLabel={t("deep.s1.link")} />
-          <p className="section-sub">{t("deep.s1.sub")}</p>
-          <Debris t={t} />
-        </div>
-      </section>
-
-      <section className="section" id="grb" style={{ paddingTop: 0 }}>
-        <div className="wrap">
-          <SectionHead eyebrow={t("deep.s2.eyebrow")} title={t("deep.s2.title")}
-            linkHref="https://gcn.gsfc.nasa.gov/gcn3_archive.html" linkLabel={t("deep.s2.link")} />
-          <p className="section-sub">{t("deep.s2.sub")}</p>
-          <div className="grid cols-2 split">
-            <div className="card">
-              <div className="k">{t("deep.grb.fresh")} <span className="dot live" /></div>
-              <GrbList t={t} />
-            </div>
-            <div className="card">
-              <div className="k">{t("deep.grb.what")}</div>
-              <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.grb.whatBody1")}</p>
-              <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.grb.whatBody2")}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="gw" style={{ paddingTop: 0 }}>
-        <div className="wrap">
-          <SectionHead eyebrow={t("deep.gw.eyebrow")} title={t("deep.gw.title")}
-            linkHref="https://gcn.nasa.gov/missions/lvk" linkLabel={t("deep.gw.link_out")} />
-          <p className="section-sub">{t("deep.gw.sub")}</p>
-          <div className="grid cols-2 split">
-            <div className="card">
-              <div className="k">{t("deep.gw.fresh")} <span className="dot live" /></div>
-              <GwList />
-            </div>
-            <div className="card">
-              <div className="k">{t("deep.gw.what")}</div>
-              <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.gw.whatBody1")}</p>
-              <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.gw.whatBody2")}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="sentry" style={{ paddingTop: 0 }}>
-        <div className="wrap">
-          <SectionHead eyebrow={t("deep.sentry.eyebrow")} title={t("deep.sentry.title")}
-            linkHref="https://cneos.jpl.nasa.gov/sentry/" linkLabel={t("deep.sentry.link_out")} />
-          <p className="section-sub">{t("deep.sentry.sub")}</p>
-          <SentryList />
-        </div>
-      </section>
-
-      <section className="section" id="reentries" style={{ paddingTop: 0 }}>
-        <div className="wrap">
-          <SectionHead eyebrow={t("deep.reentries.eyebrow")} title={t("deep.reentries.title")}
-            linkHref="https://celestrak.org/satcat/" linkLabel={t("deep.reentries.link_out")} />
-          <p className="section-sub">{t("deep.reentries.sub")}</p>
-          <ReentryList />
         </div>
       </section>
 

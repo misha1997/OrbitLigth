@@ -10,9 +10,54 @@ import SatMapFullscreen from "../components/SatMapFullscreen";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import SectionHead from "../components/primitives/SectionHead";
 import { useApi } from "../hooks/useApi";
-import { getTleGroups } from "../lib/api";
+import { getTleGroups, getDebris } from "../lib/api";
+import { fmtInt } from "../lib/format";
+import ReentryList from "../components/deep/ReentryList";
 
 const DEFAULTS = ["starlink", "visual", "stations"];
+
+function DebrisCard({ label, value, unit }) {
+  return (
+    <div className="card">
+      <div className="k">{label}</div>
+      <div className="v" style={{ fontSize: 26 }}>{value}{unit && <span className="unit">{unit}</span>}</div>
+    </div>
+  );
+}
+
+function Debris({ t }) {
+  const { data } = useApi(getDebris);
+  const d = data || {};
+  const na = "—";
+  return (
+    <>
+      <div className="grid cols-4" id="debris-stats">
+        <DebrisCard label={t("deep.debris.tracked")} value={d.tracked != null ? fmtInt(d.tracked) : na} />
+        <DebrisCard label={t("deep.debris.cm1")} value={d.cm1 != null ? fmtInt(d.cm1) : na} />
+        <DebrisCard label={t("deep.debris.cm01")} value={d.cm01 != null ? fmtInt(d.cm01) : na} />
+        <DebrisCard label={t("deep.debris.mass")} value={d.total_mass_t != null ? fmtInt(d.total_mass_t) : na} unit={t("deep.debris.tons")} />
+      </div>
+      <div className="grid cols-3" style={{ marginTop: 18 }}>
+        <div className="card">
+          <div className="k">{t("deep.debris.breakups")}</div>
+          <div className="v accent" style={{ fontSize: 26, marginTop: 8 }}>
+            <span id="debris-breakups">{d.breakups != null ? d.breakups : "—"}</span>
+          </div>
+          <div className="foot">{t("deep.debris.breakupsFoot")}</div>
+        </div>
+        <div className="card">
+          <div className="k">{t("deep.debris.why")}</div>
+          <p style={{ color: "var(--text-dim)", fontSize: 13, marginTop: 10, lineHeight: 1.55 }}>{t("deep.debris.whyBody")}</p>
+        </div>
+        <div className="card">
+          <div className="k">{t("deep.debris.data")}</div>
+          <p style={{ color: "var(--text-dim)", fontSize: 13, marginTop: 10, lineHeight: 1.55 }}>{t("deep.debris.dataBody", { year: d.year_ref || "—" })}</p>
+          <a id="debris-source" href={d.source_url || "#"} target="_blank" rel="noopener" style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--teal)", display: "inline-block", marginTop: 10 }}>{t("deep.debris.source")}</a>
+        </div>
+      </div>
+    </>
+  );
+}
 
 export default function Satellites() {
   const { t } = useTranslation();
@@ -105,6 +150,24 @@ export default function Satellites() {
           onClose={() => setShowFs(false)} 
         />
       )}
+
+      <section className="section" id="debris" style={{ paddingTop: 8 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("deep.s1.eyebrow")} title={t("deep.s1.title")}
+            linkHref="https://www.esa.int/Space_Safety/Space_Debris" linkLabel={t("deep.s1.link")} />
+          <p className="section-sub">{t("deep.s1.sub")}</p>
+          <Debris t={t} />
+        </div>
+      </section>
+
+      <section className="section" id="reentries" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("deep.reentries.eyebrow")} title={t("deep.reentries.title")}
+            linkHref="https://celestrak.org/satcat/" linkLabel={t("deep.reentries.link_out")} />
+          <p className="section-sub">{t("deep.reentries.sub")}</p>
+          <ReentryList />
+        </div>
+      </section>
 
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">

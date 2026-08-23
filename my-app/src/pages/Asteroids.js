@@ -10,6 +10,7 @@ import SectionHead from "../components/primitives/SectionHead";
 import NeoOrbit from "../components/asteroids/NeoOrbit";
 import NeoOrbitMap from "../components/asteroids/NeoOrbitMap";
 import AsterCard from "../components/asteroids/AsterCard";
+import SentryList from "../components/deep/SentryList";
 
 export default function Asteroids() {
   const { t } = useTranslation();
@@ -76,6 +77,15 @@ export default function Asteroids() {
           <div className="aster-grid" id="neo-grid">
             {items.map((a, i) => <AsterCard key={i} a={a} />)}
           </div>
+        </div>
+      </section>
+
+      <section className="section" id="sentry" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("deep.sentry.eyebrow")} title={t("deep.sentry.title")}
+            linkHref="https://cneos.jpl.nasa.gov/sentry/" linkLabel={t("deep.sentry.link_out")} />
+          <p className="section-sub">{t("deep.sentry.sub")}</p>
+          <SentryList />
         </div>
       </section>
     </>

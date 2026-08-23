@@ -46,7 +46,6 @@ export default function Footer() {
           <div>
             <h5>{t("footer.colProject")}</h5>
             <a href={BOT_URL} target="_blank" rel="noopener noreferrer">{t("footer.colBot")}</a>
-            <LocalizedLink to="deep">{t("footer.colDeep")}</LocalizedLink>
             <LocalizedLink to="voyager">{t("footer.colVoyager")}</LocalizedLink>
             <LocalizedLink to="events">{t("footer.colEvents")}</LocalizedLink>
           </div>
