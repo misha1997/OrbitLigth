@@ -123,6 +123,19 @@ def init_db():
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
 
+        # Space history events
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS space_history (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                month INT NOT NULL,
+                day INT NOT NULL,
+                year INT,
+                text_en TEXT NOT NULL,
+                text_uk TEXT NOT NULL,
+                INDEX idx_month_day (month, day)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ''')
+
         # News article archive for the website (full articles + UK translation).
         # Body columns are nullable — filled lazily when an article page is opened.
         # `slug` (derived from the source URL) is the public article page key:

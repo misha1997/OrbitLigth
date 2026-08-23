@@ -97,6 +97,7 @@ export const getSky = (loc, lang) =>
 export const getPlanets = (loc, lang) =>
   fetchJSON(API + "/planets" + withLang(locParams(loc), lang));
 export const getMoon = (lang) => fetchJSON(API + "/moon" + withLang("", lang));
+export const getHistoryToday = (lang) => fetchJSON(API + "/history/today" + withLang("", lang));
 // Cloud forecast + Moon alt/illum + Kp for the dark-sky page's "conditions
 // tonight" card. Light pollution itself is read client-side (lib/lightPollution.js).
 export const getObservingConditions = (loc, lang) =>

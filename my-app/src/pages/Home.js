@@ -18,6 +18,8 @@ import LaunchCalendar from "../components/home/LaunchCalendar";
 import NewsCards from "../components/home/NewsCards";
 import SectionsGrid from "../components/home/SectionsGrid";
 
+import HistoryWidget from "../components/home/HistoryWidget";
+
 export default function Home() {
   const { t } = useTranslation();
   const { loc } = useLoc();
@@ -45,6 +47,12 @@ export default function Home() {
       </section>
 
       <ApodCard />
+
+      <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
+        <div className="wrap">
+          <HistoryWidget />
+        </div>
+      </section>
 
       <section className="section" id="tonight">
         <div className="wrap">

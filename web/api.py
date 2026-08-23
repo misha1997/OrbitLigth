@@ -141,6 +141,12 @@ async def observing_conditions(
     return await data.get_observing_conditions(la, lo, lang)
 
 
+@router.get("/history/today")
+async def history_today(lang: str = LANG_Q):
+    """Notable space history event for today."""
+    return await asyncio.to_thread(data.get_history_today, lang)
+
+
 @router.get("/meteors")
 async def meteors(lang: str = LANG_Q):
     """Upcoming meteor showers calendar (peak dates, ZHR, radiant, status)."""

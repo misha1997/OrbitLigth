@@ -11,7 +11,7 @@ import { useSearchParams } from "react-router-dom";
 import { useLang } from "../context/LanguageContext";
 import { useApi } from "../hooks/useApi";
 import { useSeo } from "../hooks/useSeo";
-import { getNews, getNewsKeywords } from "../lib/api";
+import { getNews, getNewsKeywords, getHistoryToday } from "../lib/api";
 import { pathFor } from "../lib/seo";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import "../styles/news.css";
@@ -35,6 +35,8 @@ export default function News() {
   const [rawQuery, setRawQuery] = useState("");
   const [query, setQuery] = useState(""); // debounced, drives the API call
   const [view, setView] = useState("cards");
+  const { data: historyEvent } = useApi(() => getHistoryToday(lang), { deps: [lang] });
+
 
   // Page number lives in the URL (?page=N, 0-indexed, omitted at 0) so it's
   // shareable/bookmarkable and survives a reload — same convention as the
@@ -137,9 +139,32 @@ export default function News() {
                 {t("news.readFull")}
               </a>
             )}
+            )}
           </div>
         ) : null}
       </section>
+
+      {historyEvent && (
+        <section className="section" style={{ paddingTop: 0, paddingBottom: 16 }}>
+          <div className="news-featured" style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", padding: 24, borderRadius: 12 }}>
+            <div className="cat-tag" style={{ color: "var(--text-bright)", marginBottom: 8 }}>
+              {lang === "uk" ? (historyEvent.isToday ? "Цього дня в історії" : "У цей місяць в історії") : (historyEvent.isToday ? "On This Day in History" : "This Month in History")}
+            </div>
+            <h3 style={{ margin: "0 0 8px 0", fontSize: "1.2rem", color: "var(--text-bright)" }}>
+              {historyEvent.d} {lang === "uk" ? [
+                "січня", "лютого", "березня", "квітня", "травня", "червня", 
+                "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"
+              ][historyEvent.m - 1] : [
+                "January", "February", "March", "April", "May", "June", 
+                "July", "August", "September", "October", "November", "December"
+              ][historyEvent.m - 1]} {historyEvent.year}
+            </h3>
+            <p style={{ margin: 0, color: "var(--text-dim)", lineHeight: 1.5 }}>
+              {historyEvent.text}
+            </p>
+          </div>
+        </section>
+      )}
 
       <section className="section" style={{ paddingTop: 8 }}>
         <div className="section-head">
