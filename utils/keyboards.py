@@ -91,6 +91,7 @@ def get_deep_menu(lang: str = DEFAULT_LANG) -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton(t('deep.grb', lang), callback_data='grb_recent'),
+            InlineKeyboardButton(t('deep.gw', lang), callback_data='gw_recent'),
         ],
         [
             InlineKeyboardButton(t('deep.back', lang), callback_data='sky_menu'),

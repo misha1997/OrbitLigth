@@ -73,6 +73,7 @@ TRANSLATIONS = {
         'deep.voyager': '🛰️ Voyager',
         'deep.debris': '🗑️ Космічний сміття',
         'deep.grb': '💥 Останні GRB',
+        'deep.gw': '🌊 Гравітаційні хвилі',
         'deep.back': '🔙 Небо',
         'deep.voyager.pick': '🛰️ Оберіть зонд:\n\nVoyager 1 — найдальший\nVoyager 2 — другий за віддаллю',
 
@@ -125,6 +126,7 @@ TRANSLATIONS = {
         'settings.meteors': 'Метеорні потоки (22:00)',
         'settings.flares': 'Сонячна активність',
         'settings.grb': 'Гама-спалахи (GRB)',
+        'settings.gw': 'Гравітаційні хвилі (LIGO/Virgo)',
         'settings.change_city': '📍 Змінити місто',
         'settings.sub_on': 'увімкнено ✅',
         'settings.sub_off': 'вимкнено ☑️',
@@ -152,6 +154,7 @@ TRANSLATIONS = {
         'sub.meteors': 'Метеори',
         'sub.flares': 'Сонячна активність',
         'sub.grb': 'GRB',
+        'sub.gw': 'GW',
 
         # --- Aurora caption ---
         'aurora.caption': '🌌 <b>Прогноз полярного сяйва</b>\n\n'
@@ -368,6 +371,27 @@ TRANSLATIONS = {
         'grb.title_line': '\n📝 {title}\n',
         'grb.link': "\n🔗 <a href='{url}'>GCN Circular #{id}</a>\n",
         'grb.source': '\n<i>📡 Дані: NASA GCN</i>',
+
+        # --- Gravitational-wave (LIGO/Virgo/KAGRA) alerts ---
+        'gw.title': '🌊 <b>ГРАВІТАЦІЙНО-ХВИЛЬОВА ПОДІЯ ({type})</b>\n\n',
+        'gw.superevent': '🆔 Подія: <b>{id}</b>\n',
+        'gw.class_line': '🎯 Ймовірний тип: <b>{cls}</b> (~{pct}%)\n',
+        'gw.time': '🕐 Час події (UTC): {time}\n',
+        'gw.instruments': '📡 Детектори: {instruments}\n',
+        'gw.far': '📉 Частота хибних тривог: ~1 раз на {years} р.\n',
+        'gw.link': "\n🔗 <a href='{url}'>Деталі на GraceDB</a>\n",
+        'gw.source': '\n<i>🌊 Дані: NASA GCN / LIGO-Virgo-KAGRA</i>',
+        'gw.retracted_title': '⚠️ <b>ПОДІЮ ВІДКЛИКАНО</b>\n\n',
+        'gw.retracted': 'Гравітаційно-хвильова подія <b>{id}</b> виявилась хибною тривогою й відкликана.\n',
+        'gw.type.EARLYWARNING': 'раннє попередження',
+        'gw.type.PRELIMINARY': 'попередня',
+        'gw.type.INITIAL': 'початкова',
+        'gw.type.UPDATE': 'оновлена',
+        'gw.type.RETRACTION': 'відкликана',
+        'gw.class.BBH': 'злиття чорних дір',
+        'gw.class.BNS': 'злиття нейтронних зір',
+        'gw.class.NSBH': 'нейтронна зоря + чорна діра',
+        'gw.class.Terrestrial': 'ймовірно земний шум',
 
         # --- SpaceflightNow parser ---
         'sfn.title': '🚀 <b>Найближчі запуски</b>\n',
@@ -621,6 +645,12 @@ TRANSLATIONS = {
         'grb.recent_entry': "• <b>{name}</b> — {title}\n  🔗 <a href='{url}'>#{id}</a>\n",
         'grb.recent_footer': '\n<i>📡 NASA GCN Circulars</i>',
 
+        # --- Recent gravitational-wave alerts (on demand) ---
+        'gw.recent_title': '🌊 <b>Останні гравітаційно-хвильові події</b>\n\n',
+        'gw.recent_empty': '🌊 Свіжих подій не знайдено. Це нормально — між сеансами спостережень LIGO/Virgo/KAGRA можуть бути місяці тиші.',
+        'gw.recent_entry': "• <b>{id}</b> ({type}) — {cls}\n  🔗 <a href='{url}'>GraceDB</a>\n",
+        'gw.recent_footer': '\n<i>🌊 NASA GCN / LIGO-Virgo-KAGRA</i>',
+
         # --- Website (web/data.py) strings ---
         'compass.short.N': 'Пн', 'compass.short.NE': 'ПнСх', 'compass.short.E': 'Сх',
         'compass.short.SE': 'ПдСх', 'compass.short.S': 'Пд', 'compass.short.SW': 'ПдЗ',
@@ -697,6 +727,7 @@ TRANSLATIONS = {
         'deep.voyager': '🛰️ Voyager',
         'deep.debris': '🗑️ Space debris',
         'deep.grb': '💥 Recent GRBs',
+        'deep.gw': '🌊 Gravitational waves',
         'deep.back': '🔙 Sky',
         'deep.voyager.pick': '🛰️ Pick a probe:\n\nVoyager 1 — the farthest\nVoyager 2 — second farthest',
 
@@ -749,6 +780,7 @@ TRANSLATIONS = {
         'settings.meteors': 'Meteor showers (22:00)',
         'settings.flares': 'Solar activity',
         'settings.grb': 'Gamma-ray bursts (GRB)',
+        'settings.gw': 'Gravitational waves (LIGO/Virgo)',
         'settings.change_city': '📍 Change city',
         'settings.sub_on': 'on ✅',
         'settings.sub_off': 'off ☑️',
@@ -775,6 +807,7 @@ TRANSLATIONS = {
         'sub.meteors': 'Meteors',
         'sub.flares': 'Solar',
         'sub.grb': 'GRB',
+        'sub.gw': 'GW',
 
         # --- Aurora caption ---
         'aurora.caption': '🌌 <b>Aurora forecast</b>\n\n'
@@ -991,6 +1024,27 @@ TRANSLATIONS = {
         'grb.title_line': '\n📝 {title}\n',
         'grb.link': "\n🔗 <a href='{url}'>GCN Circular #{id}</a>\n",
         'grb.source': '\n<i>📡 Data: NASA GCN</i>',
+
+        # --- Gravitational-wave (LIGO/Virgo/KAGRA) alerts ---
+        'gw.title': '🌊 <b>GRAVITATIONAL-WAVE ALERT ({type})</b>\n\n',
+        'gw.superevent': '🆔 Event: <b>{id}</b>\n',
+        'gw.class_line': '🎯 Likely type: <b>{cls}</b> (~{pct}%)\n',
+        'gw.time': '🕐 Event time (UTC): {time}\n',
+        'gw.instruments': '📡 Detectors: {instruments}\n',
+        'gw.far': '📉 False-alarm rate: ~1 per {years} yr\n',
+        'gw.link': "\n🔗 <a href='{url}'>Details on GraceDB</a>\n",
+        'gw.source': '\n<i>🌊 Data: NASA GCN / LIGO-Virgo-KAGRA</i>',
+        'gw.retracted_title': '⚠️ <b>ALERT RETRACTED</b>\n\n',
+        'gw.retracted': 'Gravitational-wave event <b>{id}</b> turned out to be a false alarm and has been retracted.\n',
+        'gw.type.EARLYWARNING': 'early warning',
+        'gw.type.PRELIMINARY': 'preliminary',
+        'gw.type.INITIAL': 'initial',
+        'gw.type.UPDATE': 'updated',
+        'gw.type.RETRACTION': 'retracted',
+        'gw.class.BBH': 'binary black hole merger',
+        'gw.class.BNS': 'binary neutron star merger',
+        'gw.class.NSBH': 'neutron star + black hole',
+        'gw.class.Terrestrial': 'likely terrestrial noise',
 
         # --- SpaceflightNow parser ---
         'sfn.title': '🚀 <b>Upcoming launches</b>\n',
@@ -1243,6 +1297,12 @@ TRANSLATIONS = {
         'grb.recent_empty': '💥 No recent GRB alerts found.',
         'grb.recent_entry': "• <b>{name}</b> — {title}\n  🔗 <a href='{url}'>#{id}</a>\n",
         'grb.recent_footer': '\n<i>📡 NASA GCN Circulars</i>',
+
+        # --- Recent gravitational-wave alerts (on demand) ---
+        'gw.recent_title': '🌊 <b>Recent gravitational-wave alerts</b>\n\n',
+        'gw.recent_empty': '🌊 No recent alerts found. That\'s normal — there can be months of quiet between LIGO/Virgo/KAGRA observing runs.',
+        'gw.recent_entry': "• <b>{id}</b> ({type}) — {cls}\n  🔗 <a href='{url}'>GraceDB</a>\n",
+        'gw.recent_footer': '\n<i>🌊 NASA GCN / LIGO-Virgo-KAGRA</i>',
 
         # --- Website (web/data.py) strings ---
         'compass.short.N': 'N', 'compass.short.NE': 'NE', 'compass.short.E': 'E',

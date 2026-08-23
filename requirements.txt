@@ -12,6 +12,11 @@ uvicorn[standard]
 lightkurve
 astroquery
 Pillow
+# Gravitational-wave alerts (services/gw_alerts.py) via NASA GCN Kafka.
+# Optional in the sense that without GCN_CLIENT_ID/SECRET the module no-ops,
+# but the package itself is a hard import there, so it's not gated like
+# playwright below.
+gcn-kafka
 # Optional: headless-Chrome prerendering for SEO bots (PRERENDER_ENABLED=1).
 # Only needed if you enable bot prerendering; also run `playwright install chromium`.
 playwright

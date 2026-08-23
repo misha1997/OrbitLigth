@@ -24,6 +24,12 @@ VAPID_PUBLIC_KEY = os.getenv('VAPID_PUBLIC_KEY', '')
 VAPID_PRIVATE_KEY = os.getenv('VAPID_PRIVATE_KEY', '')
 VAPID_CLAIM_EMAIL = os.getenv('VAPID_CLAIM_EMAIL', '')
 
+# NASA GCN Kafka (gravitational-wave alerts, services/gw_alerts.py). Free
+# client credentials from https://gcn.nasa.gov ("Client Credentials"
+# quickstart, needs a GCN account). Without these, GW alerts are disabled.
+GCN_CLIENT_ID = os.getenv('GCN_CLIENT_ID', '')
+GCN_CLIENT_SECRET = os.getenv('GCN_CLIENT_SECRET', '')
+
 # NASA API
 NASA_NEO_URL = "https://api.nasa.gov/neo/rest/v1/feed"
 NASA_APOD_URL = "https://api.nasa.gov/planetary/apod"

@@ -106,6 +106,12 @@ async def voyager():
     return await data.get_voyager()
 
 
+@router.get("/dsn")
+async def dsn_now():
+    """NASA Deep Space Network — live antenna/spacecraft contact status."""
+    return await data.get_dsn_now()
+
+
 @router.get("/planets")
 async def planets(
     lat: float | None = Query(None),
@@ -323,6 +329,33 @@ async def galaxy_detail(slug: str, lang: str = LANG_Q):
 async def grb(limit: int = Query(20, ge=1, le=50)):
     """Recent gamma-ray burst alerts from NASA GCN Circulars."""
     return await data.get_grb(limit)
+
+
+@router.get("/gw")
+async def gw(limit: int = Query(10, ge=1, le=30)):
+    """Recent LIGO/Virgo/KAGRA gravitational-wave alerts (GCN Kafka, via the
+    bot's notification cache — see web/data.py)."""
+    return await data.get_gw(limit)
+
+
+@router.get("/sentry")
+async def sentry(limit: int = Query(25, ge=1, le=100)):
+    """Asteroids with a non-zero modeled impact probability (NASA/JPL Sentry),
+    ranked by cumulative Palermo Scale — distinct from /api/neo."""
+    return await data.get_sentry(limit)
+
+
+@router.get("/reentries")
+async def reentries(days: int = Query(60, ge=1, le=365), limit: int = Query(30, ge=1, le=100)):
+    """Recently decayed/re-entered objects (CelesTrak SATCAT). Retrospective,
+    not predictive — see services/reentries.py."""
+    return await data.get_reentries(days, limit)
+
+
+@router.get("/flares")
+async def flares(limit: int = Query(20, ge=1, le=75)):
+    """Explicit solar-flare events (begin/max/end + class), last 7 days."""
+    return await data.get_flares(limit)
 
 
 @router.get("/comets")

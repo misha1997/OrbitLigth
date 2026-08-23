@@ -9,6 +9,11 @@ NOAA_KP_URL = "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.js
 NOAA_SOLAR_WIND_URL = "https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json"
 NOAA_MAG_URL = "https://services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json"
 NOAA_XRAY_URL = "https://services.swpc.noaa.gov/json/goes/primary/xrays-6-hour.json"
+# Discrete flare *events* (begin/max/end time + class), as opposed to the
+# continuous flux series above — used for the site's explicit flare list
+# (get_recent_flare_events), not for the bot's threshold-crossing detector
+# (check_significant_flare, which works off the raw flux series instead).
+NOAA_XRAY_FLARES_URL = "https://services.swpc.noaa.gov/json/goes/primary/xray-flares-7-day.json"
 NOAA_KP_FORECAST = "https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json"
 NOAA_AURORA_MAP = "https://services.swpc.noaa.gov/images/animations/ovation/north/latest.jpg"
 
@@ -283,6 +288,39 @@ class SpaceWeatherAPI:
         except Exception as e:
             logger.error(f"Solar flare check error: {e}")
             return None
+
+    @staticmethod
+    def get_recent_flare_events(limit: int = 20) -> list[dict]:
+        """Discrete solar-flare events from the last 7 days (begin/max/end
+        time + class), newest first — for the site's explicit flare list.
+
+        Distinct from check_significant_flare above: that one derives a
+        single "did we just cross a class threshold" signal from the raw
+        flux series for bot alerting; this one is NOAA's own per-event
+        product, richer (has begin/end, not just one instant) but not used
+        for alerting since it doesn't tell us anything is *new* on its own.
+        """
+        try:
+            response = requests.get(NOAA_XRAY_FLARES_URL, timeout=15)
+            response.raise_for_status()
+            events = response.json()
+        except Exception as e:
+            logger.error(f"Flare events fetch error: {e}")
+            return []
+
+        events = sorted(events, key=lambda e: e.get("max_time") or "", reverse=True)
+
+        out = []
+        for ev in events[:limit]:
+            out.append({
+                "begin_time": ev.get("begin_time"),
+                "begin_class": ev.get("begin_class"),
+                "max_time": ev.get("max_time"),
+                "max_class": ev.get("max_class"),
+                "end_time": ev.get("end_time"),
+                "end_class": ev.get("end_class"),
+            })
+        return out
 
     @staticmethod
     def get_flare_description(flare_class):

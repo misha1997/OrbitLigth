@@ -1,4 +1,5 @@
 """MySQL database for NEOwatch Bot"""
+import json
 import logging
 import requests
 from typing import Optional, Dict, List
@@ -75,6 +76,7 @@ def init_db():
                 subscribed_meteors BOOLEAN DEFAULT TRUE,
                 subscribed_flares BOOLEAN DEFAULT TRUE,
                 subscribed_grb BOOLEAN DEFAULT TRUE,
+                subscribed_gw BOOLEAN DEFAULT TRUE,
                 lang VARCHAR(5) NOT NULL DEFAULT 'uk',
                 quiet_hours_enabled BOOLEAN DEFAULT TRUE,
                 quiet_start TINYINT DEFAULT 0,
@@ -91,7 +93,8 @@ def init_db():
                 INDEX idx_subscribed_news (subscribed_news),
                 INDEX idx_subscribed_meteors (subscribed_meteors),
                 INDEX idx_subscribed_flares (subscribed_flares),
-                INDEX idx_subscribed_grb (subscribed_grb)
+                INDEX idx_subscribed_grb (subscribed_grb),
+                INDEX idx_subscribed_gw (subscribed_gw)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
 
@@ -340,6 +343,33 @@ def init_db():
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
 
+        # Gravitational-wave (LIGO/Virgo/KAGRA) alert notifications tracking.
+        # Doubles as the display cache for the site/bot "recent alerts" views
+        # (see database.get_recent_gw_alerts) — the Kafka topic itself can't
+        # be "peeked" without consuming from it, so we store enough fields
+        # here to redisplay without re-polling Kafka. Dedup key is
+        # (superevent_id, alert_type): the SAME superevent gets multiple
+        # alert_type messages over time (PRELIMINARY -> INITIAL -> UPDATE ->
+        # possibly RETRACTION) and each one is genuinely new information worth
+        # a fresh notification.
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS gw_notifications (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                superevent_id VARCHAR(30) NOT NULL,
+                alert_type VARCHAR(20) NOT NULL,
+                event_time VARCHAR(40),
+                far DOUBLE,
+                significant BOOLEAN,
+                instruments VARCHAR(100),
+                top_class VARCHAR(20),
+                classification TEXT,
+                gracedb_url VARCHAR(255),
+                notified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY idx_gw_notification (superevent_id, alert_type),
+                INDEX idx_notified_at (notified_at)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ''')
+
         # Launch notifications tracking
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS launch_notifications (
@@ -371,6 +401,7 @@ def init_db():
                 subscribed_neo BOOLEAN DEFAULT TRUE,
                 subscribed_flares BOOLEAN DEFAULT TRUE,
                 subscribed_grb BOOLEAN DEFAULT TRUE,
+                subscribed_gw BOOLEAN DEFAULT TRUE,
                 last_iss_pass INT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 last_seen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -379,7 +410,8 @@ def init_db():
                 INDEX idx_subscribed_launches (subscribed_launches),
                 INDEX idx_subscribed_neo (subscribed_neo),
                 INDEX idx_subscribed_flares (subscribed_flares),
-                INDEX idx_subscribed_grb (subscribed_grb)
+                INDEX idx_subscribed_grb (subscribed_grb),
+                INDEX idx_subscribed_gw (subscribed_gw)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
 
@@ -416,6 +448,42 @@ def init_db():
                 ''')
                 conn.commit()
                 logger.info("Added subscribed_grb column to users table")
+        except Error:
+            pass
+
+        # Add subscribed_gw column to existing users (migration)
+        try:
+            cursor.execute('''
+                SELECT COUNT(*) FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                AND TABLE_NAME = 'users'
+                AND COLUMN_NAME = 'subscribed_gw'
+            ''')
+            if cursor.fetchone()[0] == 0:
+                cursor.execute('''
+                    ALTER TABLE users
+                    ADD COLUMN subscribed_gw BOOLEAN DEFAULT TRUE
+                ''')
+                conn.commit()
+                logger.info("Added subscribed_gw column to users table")
+        except Error:
+            pass
+
+        # Add subscribed_gw column to existing push_subscriptions (migration)
+        try:
+            cursor.execute('''
+                SELECT COUNT(*) FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                AND TABLE_NAME = 'push_subscriptions'
+                AND COLUMN_NAME = 'subscribed_gw'
+            ''')
+            if cursor.fetchone()[0] == 0:
+                cursor.execute('''
+                    ALTER TABLE push_subscriptions
+                    ADD COLUMN subscribed_gw BOOLEAN DEFAULT TRUE
+                ''')
+                conn.commit()
+                logger.info("Added subscribed_gw column to push_subscriptions table")
         except Error:
             pass
 
@@ -727,7 +795,7 @@ def update_user_location(user_id: int, city: str, lat: float, lon: float):
 
 def toggle_subscription(user_id: int, subscription_type: str) -> bool:
     """Toggle subscription status. Returns new status"""
-    if subscription_type not in ('iss', 'apod', 'launches', 'neo', 'news', 'meteors', 'flares', 'grb'):
+    if subscription_type not in ('iss', 'apod', 'launches', 'neo', 'news', 'meteors', 'flares', 'grb', 'gw'):
         return False
 
     conn = get_db_connection()
@@ -991,6 +1059,23 @@ def get_grb_subscribers() -> List[Dict]:
         conn.close()
 
 
+def get_gw_subscribers() -> List[Dict]:
+    """Get all users subscribed to gravitational-wave notifications"""
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute('SELECT * FROM users WHERE subscribed_gw = TRUE')
+        return cursor.fetchall()
+
+    except Error as e:
+        logger.error(f"Error getting GW subscribers: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+
 def upsert_push_subscription(endpoint: str, p256dh: str, auth: str,
                               lat: Optional[float], lon: Optional[float], lang: str):
     """Create or refresh a browser push subscription.
@@ -1047,7 +1132,7 @@ def get_push_subscriptions(type_column: str) -> List[Dict]:
     """
     valid_columns = {
         'subscribed_iss', 'subscribed_launches', 'subscribed_neo',
-        'subscribed_flares', 'subscribed_grb',
+        'subscribed_flares', 'subscribed_grb', 'subscribed_gw',
     }
     if type_column not in valid_columns:
         raise ValueError(f"Invalid push subscription column: {type_column}")
@@ -2531,6 +2616,112 @@ def cleanup_old_grb_notifications(days: int = 30):
         logger.info(f"Cleaned up {cursor.rowcount} old GRB notifications")
     except Error as e:
         logger.error(f"Error cleaning up GRB notifications: {e}")
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def is_gw_notified(superevent_id: str, alert_type: str) -> bool:
+    """Check if this exact (superevent, alert_type) update was already sent"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            'SELECT 1 FROM gw_notifications WHERE superevent_id = %s AND alert_type = %s',
+            (superevent_id, alert_type)
+        )
+        return cursor.fetchone() is not None
+    except Error as e:
+        logger.error(f"Error checking GW notification: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def mark_gw_notified(alert: dict):
+    """Record a sent GW notification. Also serves as the display cache for
+    the site/bot "recent alerts" views (see get_recent_gw_alerts) — the Kafka
+    topic itself can't be re-read without consuming from it."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            '''INSERT INTO gw_notifications
+               (superevent_id, alert_type, event_time, far, significant,
+                instruments, top_class, classification, gracedb_url)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+            (
+                alert.get('superevent_id'),
+                alert.get('alert_type'),
+                alert.get('event_time'),
+                alert.get('far'),
+                alert.get('significant'),
+                ', '.join(alert.get('instruments') or []),
+                alert.get('top_class'),
+                json.dumps(alert.get('classification') or {}),
+                alert.get('gracedb_url'),
+            )
+        )
+        conn.commit()
+    except Error as e:
+        logger.error(f"Error marking GW notification: {e}")
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_recent_gw_alerts(limit: int = 10) -> List[Dict]:
+    """Recently notified GW alerts, newest first — backs /api/gw and the
+    bot's on-demand "recent alerts" command. Reads the notification-dedup
+    cache rather than polling Kafka again (see mark_gw_notified)."""
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            'SELECT * FROM gw_notifications ORDER BY notified_at DESC LIMIT %s',
+            (limit,)
+        )
+        rows = cursor.fetchall()
+        for row in rows:
+            try:
+                row['classification'] = json.loads(row['classification']) if row['classification'] else {}
+            except (TypeError, ValueError):
+                row['classification'] = {}
+        return rows
+    except Error as e:
+        logger.error(f"Error getting recent GW alerts: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def cleanup_old_gw_notifications(days: int = 180):
+    """Remove old GW notifications (older than N days).
+
+    Longer retention than GRB's 30 days on purpose: LVK observing runs have
+    multi-month gaps between them, and this table also serves as the
+    "recent alerts" display cache — a 30-day window could leave the site
+    feed empty for the whole length of an observing gap.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            'DELETE FROM gw_notifications WHERE notified_at < DATE_SUB(NOW(), INTERVAL %s DAY)',
+            (days,)
+        )
+        conn.commit()
+        logger.info(f"Cleaned up {cursor.rowcount} old GW notifications")
+    except Error as e:
+        logger.error(f"Error cleaning up GW notifications: {e}")
         conn.rollback()
     finally:
         cursor.close()

@@ -152,8 +152,19 @@ All GET unless noted, most cached via `web/cache.py`:
 - `/api/galaxies`, `/api/galaxies/{slug}` — curated galaxy catalog + detail
   (NED redshift/type, mirrored photos)
 - `/api/grb?limit=` — recent gamma-ray burst alerts (NASA GCN Circulars)
+- `/api/gw?limit=` — recent LIGO/Virgo/KAGRA gravitational-wave alerts, read
+  from the bot's notification cache, not Kafka directly (`services/gw_alerts.py`,
+  see "Alert feeds" below)
+- `/api/sentry?limit=` — asteroids with a non-zero modeled impact probability
+  (NASA/JPL Sentry), distinct from `/api/neo`'s plain close-approach list
+- `/api/reentries?days=&limit=` — recently decayed/re-entered objects
+  (CelesTrak SATCAT) — retrospective, not predictive
+- `/api/flares?limit=` — discrete solar-flare events (begin/max/end + class),
+  a richer sibling of `/api/weather/series`'s aggregated X-ray flux curve
 - `/api/debris` — curated space-debris stats (ESA Space Environment Report)
 - `/api/voyager` — Voyager 1/2 propagated distance/speed/light-time
+- `/api/dsn` — NASA Deep Space Network Now: live antenna/spacecraft contact
+  status (`services/dsn.py`, see "Live status" below)
 
 **Per-planet pages**
 - `/api/jupiter`, `/api/mercury`, `/api/saturn`, `/api/neptune`,
@@ -208,6 +219,93 @@ and die in a disposable child process; results are cacheable and requests that
 outlive the subprocess (past a proxy's own timeout) don't take the main
 process down with them.
 
+### Alert feeds (Deep + Weather pages)
+Four "alert feed" style additions, each sourced differently based on what
+survived a feasibility check — see each service module's docstring for the
+sources that were *rejected* and why, not just the one that was picked:
+
+- **Gravitational-wave alerts** (`services/gw_alerts.py`, `GWAlertAPI`) — the
+  only exception to "services/\* = one-shot HTTP request/response" in this
+  codebase. LIGO/Virgo/KAGRA public alerts are distributed over a **Kafka**
+  topic (`igwn.gwalert`) via NASA's GCN, not REST — GraceDB's own REST API
+  needs a SciToken and isn't meant for polling, and the classic GCN Circulars
+  archive already scraped for GRBs (`grb_alerts.py`) barely carries LVK
+  content. We do **not** run a persistent streaming consumer inside the
+  FastAPI process (that needs its own reconnect/health-check lifecycle this
+  codebase doesn't otherwise have) — instead
+  `services/scheduler.py: check_gw_alerts` does a short connect →
+  consume(timeout=8s) → commit → close cycle every 15 minutes, using a
+  **stable Kafka `group.id`** so the broker remembers our read position
+  between runs (`gcn_kafka`'s wrapper defaults to a random UUID per
+  connection otherwise — see `services/gw_alerts.py`'s module docstring).
+  Fully optional: without `GCN_CLIENT_ID`/`GCN_CLIENT_SECRET` (free, from
+  https://gcn.nasa.gov's "Client Credentials" quickstart) it silently no-ops
+  everywhere — bot notifications, `/api/gw`, and the deep-space page section
+  all just show nothing/a "not configured" hint. The bot side otherwise
+  mirrors `check_grb_alerts`/`grb_notifications` exactly (dedup table,
+  `subscribed_gw` column on `users`/`push_subscriptions`, settings toggle),
+  per the same reasoning as GRB alerts. One deliberate deviation: the
+  `gw_notifications` table doubles as the **display cache** for both
+  `/api/gw` and the bot's on-demand "recent alerts" command
+  (`get_recent_gw_alerts`) — re-polling Kafka for an on-demand read would
+  consume and commit the same offsets the scheduled notifier relies on,
+  silently stealing alerts from it. Retention is 180 days (not GRB's 30) —
+  LVK observing runs have multi-month gaps, and a shorter window could leave
+  the display empty for the whole length of one.
+- **Sentry** (`services/sentry.py`, `SentryAPI`) — NASA/JPL's public,
+  documented, no-key risk-table API (`ssd-api.jpl.nasa.gov/sentry.api`),
+  ranked by cumulative Palermo Scale. A normal one-shot fetch, no surprises.
+- **Reentries** (`services/reentries.py`, `ReentryAPI`) — deliberately
+  **retrospective** ("what came down"), not predictive ("what's about to").
+  The Aerospace Corporation's CORDS program (the usual source for predicted
+  reentries) has no public API/feed — their site is a static marketing page.
+  Instead this downloads CelesTrak's full SATCAT CSV
+  (`celestrak.org/pub/satcat.csv`, ~5.5 MB, all objects since Sputnik) and
+  filters client-side to `DECAY_DATE` within the last N days — CelesTrak's
+  `satcat/records.php` query-by-date-range syntax isn't documented well
+  enough to rely on (returned "Invalid query" for every form tried).
+- **Solar flares** (`services/space_weather.py: SpaceWeatherAPI.
+  get_recent_flare_events`) — NOAA's discrete per-event flare product
+  (`xray-flares-7-day.json`: begin/max/end time + class), as opposed to the
+  continuous flux series `/api/weather/series` already charts. Distinct from
+  `check_significant_flare` (used for bot alerting, works off the raw flux
+  series to detect a threshold crossing) — the events endpoint is richer but
+  doesn't itself signal "this is new," so it isn't used for dedup/alerting.
+
+### "Live status" widgets (Voyager + Weather pages)
+Three small features surfacing what's happening in space *right now*, each
+sourced differently based on what's actually publicly/reliably available:
+
+- **DSN Now** (`services/dsn.py` → `/api/dsn`, rendered by
+  `my-app/src/components/voyager/DsnNow.js` on the Voyager page) — parses
+  NASA's public DSN Now XML feed (`eyes.nasa.gov/dsn/data/dsn.xml`, no key)
+  to show which Deep Space Network antenna is currently in contact with
+  Voyager 1/2 (and a table of every other active spacecraft contact). The
+  feed's `<station>` and `<dish>` elements are **siblings** under `<dsn>`,
+  not nested — a dish belongs to whichever station most recently preceded it
+  in document order; `DSNService.get_status()` reconstructs the grouping
+  while walking the tree once. 30s cache TTL (`DSN_TTL` in `web/data.py`) —
+  short because this is genuinely live, unlike the hour-scale TTLs elsewhere.
+  Voyager 1/2 frequently show "no active contact" — DSN doesn't track them
+  continuously, only during scheduled passes — the frontend treats that as a
+  normal state, not an error.
+- **Sun disk now** (`my-app/src/components/weather/SunNow.js` on the Weather
+  page, **no backend involved**) — embeds NASA SDO's public "latest frame"
+  image URLs directly (`sdo.gsfc.nasa.gov/assets/img/latest/latest_512_*.jpg`,
+  refreshed server-side by NASA every ~15 min); the component just
+  cache-busts with a 15-minute time bucket so the browser re-fetches instead
+  of serving a stale copy. Deliberately has no `/api/*` endpoint — there's
+  nothing for our backend to add by proxying static images.
+- **Hubble/JWST "what they're observing"** — deliberately **not** built as a
+  live feed. The only tool that shows literal current targets
+  (spacetelescopelive.org, run by STScI) calls an undocumented, session
+  (ULID)-gated internal API not meant for third-party use — reverse-engineering
+  it was ruled out as fragile/inappropriate. The existing
+  `/api/mast/hubble-jwst` (see MAST subsection above) already covers this
+  space honestly: recent *publicly released* HST/JWST science images for a
+  fixed list of famous targets, shown on the MAST page's "Latest Space
+  Telescope Targets" section — framed as "recent", not "live now".
+
 ### Entry Point (`bot.py`)
 - Creates `Application` with `BOT_TOKEN`
 - Registers handlers from `handlers/` module
@@ -227,7 +325,8 @@ from the user's language via `utils/i18n.py`'s `t(key, lang)`. Menu is nested:
 `get_main_menu` (ISS/supутники, Launches, NEO, APOD, Weather, Sky events,
 Settings) → `get_iss_menu`, `get_weather_menu` (space weather, aurora, Mars),
 `get_sky_menu` (meteors, astronomy events, moon, planets, rovers, weekly
-digest, facts, deep-space submenu) → `get_deep_menu` (Voyager, debris, GRB).
+digest, facts, deep-space submenu) → `get_deep_menu` (Voyager, debris, GRB,
+gravitational-wave alerts).
 `callbacks.py` routes `callback_data` to handler methods; `get_language_picker`
 drives the `/language` UK↔EN switch.
 
@@ -245,9 +344,12 @@ by what they back:
   `neptune.py`, `uranus.py`, `venus.py`, `moon_mars.py` (Mars weather),
   `mars_rover.py` (Mars Vista API rover photos)
 - Deep space: `comets.py`, `exoplanets.py`, `voyager.py`, `debris.py`
-  (space-debris stats), `grb_alerts.py` (GCN circulars), `galaxies.py` +
-  `galaxy_commons.py` + `galaxy_images.py` (NED + image mirroring), `mast.py`
-  (MAST/lightkurve, subprocess-isolated — see above)
+  (space-debris stats), `grb_alerts.py` (GCN circulars), `gw_alerts.py`
+  (gravitational-wave alerts, GCN Kafka), `sentry.py` (JPL asteroid
+  impact-risk table), `reentries.py` (CelesTrak recent decays), `dsn.py`
+  (DSN Now live status), `galaxies.py` + `galaxy_commons.py` +
+  `galaxy_images.py` (NED + image mirroring), `mast.py` (MAST/lightkurve,
+  subprocess-isolated — see above)
 - Media/content: `apod_images.py` (APOD archive mirroring), `news_images.py`
   (news image mirroring), `facts.py`
 - `webpush.py` — Web Push (VAPID) fan-out to `push_subscriptions`
@@ -269,6 +371,10 @@ MySQL with connection pooling. Tables:
   `meteor_notifications` — per-notification-type dedup tracking
 - `flare_notifications`, `storm_notifications`, `grb_notifications` — dedup
   tracking for the newer alert types (solar flares, geomagnetic storms, GRBs)
+- `gw_notifications` — dedup tracking for gravitational-wave alerts, unique
+  on (superevent_id, alert_type); also doubles as the display cache for
+  `/api/gw` and the bot's on-demand "recent alerts" command — see "Alert
+  feeds" above
 - `news_articles`, `news_article_images`, `news_article_videos` — the news
   archive backing both the bot's daily digest and `/api/news*`
 - `apod_entries` — mirrored APOD gallery archive (`/api/apod/archive`)
@@ -298,6 +404,8 @@ drift can't skip an exact-minute trigger):
 - Every hour — hazardous asteroid check, solar flare check, geomagnetic storm
   check
 - Every 30 min — GRB alert check
+- Every 15 min — gravitational-wave alert check (no-ops without
+  `GCN_CLIENT_ID`/`GCN_CLIENT_SECRET`)
 - Every 2 hours (00:00, 02:00, …) — poll the news RSS feed into `news_articles`
   (placed before the 10:00 digest so the archive is fresh)
 - Weekly, Monday 03:00 — re-fetch NED galaxy redshift/type, retry failed photo
@@ -336,6 +444,8 @@ VAPID_PUBLIC_KEY=       # Web Push — generate via `python3 scripts/gen_vapid_k
 VAPID_PRIVATE_KEY=
 VAPID_CLAIM_EMAIL=
 PRERENDER_ENABLED=      # Optional. 1 to enable headless-Chrome SEO prerendering (needs Playwright)
+GCN_CLIENT_ID=          # Optional. Gravitational-wave alerts — free client at gcn.nasa.gov
+GCN_CLIENT_SECRET=      # Optional. Paired with GCN_CLIENT_ID above
 DEFAULT_LAT/LON/ALT     # Default location (Kyiv)
 DB_HOST/PORT/NAME/USER/PASSWORD  # MySQL credentials
 ```
@@ -377,6 +487,7 @@ DB_HOST/PORT/NAME/USER/PASSWORD  # MySQL credentials
 | Every 5 min | Launches | Real-time |
 | Every hour | Hazardous asteroids, solar flares, geomagnetic storms | Real-time |
 | Every 30 min | GRB alerts | Real-time |
+| Every 15 min | Gravitational-wave alerts (no-ops if `GCN_CLIENT_ID`/`SECRET` unset) | Real-time |
 | Every 2 hours | News RSS poll (ingest, not user-facing) | Background |
 | Weekly (Mon 03:00) | Galaxy catalog refresh (NED, background) | Background |
 
@@ -390,6 +501,7 @@ Key packages from `requirements.txt`:
 - `lightkurve` + `astroquery` - MAST light-curve/imagery lookups (subprocess-isolated, see above)
 - `Pillow` - Image processing for mirrored APOD/galaxy/news images
 - `pywebpush` - Web Push (VAPID) notifications
+- `gcn-kafka` - Gravitational-wave alerts (Kafka consumer, wraps `confluent-kafka`); no-ops without GCN credentials
 - `requests` - HTTP for external APIs
 - `fuzzywuzzy` + `python-Levenshtein` - String matching for city search
 - `playwright` (optional) - Headless-Chrome SEO prerendering, gated by `PRERENDER_ENABLED=1`

@@ -14,6 +14,7 @@ from services.grb_alerts import GRBAlertAPI
 from database import (get_user, update_user_location, toggle_subscription,
                       reverse_geocode, create_or_update_user, update_user_lang,
                       cycle_quiet_hours, cycle_iss_filter,
+                      get_recent_gw_alerts,
                       QUIET_HOURS_PRESETS, ISS_FILTER_PRESETS)
 from utils.keyboards import (get_main_menu, get_iss_menu, get_weather_menu, get_sky_menu,
                              get_deep_menu, get_language_picker)
@@ -35,8 +36,9 @@ SUB_KEYS = {
     'meteors': ('settings.meteors', 'sub.meteors'),
     'flares': ('settings.flares', 'sub.flares'),
     'grb': ('settings.grb', 'sub.grb'),
+    'gw': ('settings.gw', 'sub.gw'),
 }
-SUB_ORDER = ['iss', 'apod', 'launches', 'neo', 'news', 'meteors', 'flares', 'grb']
+SUB_ORDER = ['iss', 'apod', 'launches', 'neo', 'news', 'meteors', 'flares', 'grb', 'gw']
 
 
 def _quiet_hours_label(user: dict, lang: str) -> str:
@@ -134,6 +136,7 @@ class CallbackHandlers:
             'voyager': CallbackHandlers.voyager,
             'debris': CallbackHandlers.debris,
             'grb_recent': CallbackHandlers.grb_recent,
+            'gw_recent': CallbackHandlers.gw_recent,
             'settings': CallbackHandlers.settings,
             'set_location': CallbackHandlers.set_location,
             'language': CallbackHandlers.choose_language,
@@ -844,6 +847,38 @@ class CallbackHandlers:
         )
 
     @staticmethod
+    async def gw_recent(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Show the most recent gravitational-wave alerts on demand.
+
+        Reads the notification-dedup cache (gw_notifications table) rather
+        than polling Kafka again — a fresh Kafka poll here would consume and
+        commit the very offsets the scheduled check relies on to know what's
+        "new", silently stealing alerts from the notification path.
+        """
+        lang = _lang_from(context)
+        try:
+            alerts = get_recent_gw_alerts(limit=5)
+        except Exception as e:
+            logger.error(f"Recent GW fetch error: {e}")
+            alerts = []
+        if not alerts:
+            msg = t('gw.recent_empty', lang)
+        else:
+            msg = t('gw.recent_title', lang)
+            for a in alerts:
+                type_label = t(f"gw.type.{a.get('alert_type') or 'UPDATE'}", lang)
+                cls_label = t(f"gw.class.{a['top_class']}", lang) if a.get('top_class') else '—'
+                msg += t('gw.recent_entry', lang,
+                         id=escape_html(a.get('superevent_id') or '?'), type=type_label,
+                         cls=cls_label, url=escape_html(a.get('gracedb_url') or ''))
+            msg += t('gw.recent_footer', lang)
+        await CallbackHandlers._replace_message(update, context,
+            msg,
+            parse_mode='HTML',
+            reply_markup=get_deep_menu(lang)
+        )
+
+    @staticmethod
     async def settings(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle settings button"""
         user_id = update.effective_user.id
@@ -884,6 +919,7 @@ class CallbackHandlers:
             [
                 InlineKeyboardButton(f"{chk('flares')} {t(SUB_KEYS['flares'][1], lang)}", callback_data='sub_flares'),
                 InlineKeyboardButton(f"{chk('grb')} {t(SUB_KEYS['grb'][1], lang)}", callback_data='sub_grb'),
+                InlineKeyboardButton(f"{chk('gw')} {t(SUB_KEYS['gw'][1], lang)}", callback_data='sub_gw'),
             ],
             [
                 InlineKeyboardButton(t('settings.quiet_btn', lang, value=quiet_label), callback_data='quiet_cycle'),

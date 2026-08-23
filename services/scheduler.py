@@ -17,7 +17,7 @@ from services.grb_alerts import GRBAlertAPI
 from parsers import SpaceflightNowParser, NewsParser
 from utils.translator import Translator
 from database import (
-    get_apod_subscribers, get_launch_subscribers, get_iss_subscribers, get_neo_subscribers, get_news_subscribers, get_meteor_subscribers, get_flare_subscribers, get_grb_subscribers,
+    get_apod_subscribers, get_launch_subscribers, get_iss_subscribers, get_neo_subscribers, get_news_subscribers, get_meteor_subscribers, get_flare_subscribers, get_grb_subscribers, get_gw_subscribers,
     update_last_apod_date, update_last_iss_pass,
     is_launch_notified, mark_launch_notified, cleanup_old_launch_notifications,
     is_neo_notified, mark_neo_notified, cleanup_old_neo_notifications,
@@ -29,10 +29,12 @@ from database import (
     is_flare_notified, mark_flare_notified, cleanup_old_flare_notifications,
     is_storm_notified, mark_storm_notified, cleanup_old_storm_notifications,
     is_grb_notified, mark_grb_notified, cleanup_old_grb_notifications,
+    is_gw_notified, mark_gw_notified, cleanup_old_gw_notifications,
     get_push_subscriptions, delete_push_subscription, update_push_last_iss_pass
 )
 from services import NasaAPI, N2YOAPI
 from services.webpush import send_web_push
+from services.gw_alerts import GWAlertAPI
 from utils.i18n import t, pick, compass_dir, normalize_lang, escape_html
 from utils.constants import local_hour_for_coords
 from web.seo import SITE_URL, slug_for_name
@@ -854,6 +856,72 @@ class NotificationScheduler:
         except Exception as e:
             logger.error(f"GRB check error: {e}")
 
+    async def check_gw_alerts(self):
+        """Poll for new LIGO/Virgo/KAGRA gravitational-wave alerts and notify
+        subscribers. No-ops entirely if GCN_CLIENT_ID/SECRET aren't set.
+
+        Not quiet-hours gated — same one-shot global dedup reasoning as
+        check_hazardous_asteroids above. The Kafka poll itself blocks for up
+        to ~8s (services.gw_alerts.POLL_TIMEOUT_S); run_to_thread keeps that
+        off the event loop so it doesn't stall the rest of this tick's
+        scheduled checks.
+        """
+        if not GWAlertAPI.configured():
+            return
+
+        try:
+            logger.info("Checking gravitational-wave alerts...")
+
+            alerts = await asyncio.to_thread(GWAlertAPI.poll_new_alerts)
+            if not alerts:
+                return
+
+            subscribers = get_gw_subscribers()
+
+            for alert in alerts:
+                superevent_id = alert.get("superevent_id")
+                alert_type = alert.get("alert_type")
+                if not superevent_id or not alert_type:
+                    continue
+
+                # Kafka's own offset commit already prevents redelivery in
+                # the normal case; this DB check is the real safety net
+                # against at-least-once redelivery (see module docstring).
+                if is_gw_notified(superevent_id, alert_type):
+                    continue
+
+                if subscribers:
+                    for user in subscribers:
+                        try:
+                            lang = normalize_lang(user.get('lang'))
+                            text = GWAlertAPI.format_gw_alert(alert, lang)
+                            await self.bot.send_message(
+                                chat_id=user['chat_id'],
+                                text=text,
+                                parse_mode=ParseMode.HTML,
+                                disable_web_page_preview=False
+                            )
+                        except Exception as e:
+                            logger.error(f"Failed to notify {user['user_id']} about GW alert: {e}")
+
+                    def build_push_message(lang, superevent_id=superevent_id, alert_type=alert_type):
+                        if lang == 'en':
+                            return (f"🌊 Gravitational-wave alert ({alert_type})", superevent_id, SITE_URL + "/deep")
+                        return (f"🌊 Гравітаційно-хвильова подія ({alert_type})", superevent_id, SITE_URL + "/ua/deep")
+
+                    await self._notify_push_subscribers('subscribed_gw', build_push_message)
+
+                mark_gw_notified(alert)
+                logger.info(f"Sent GW notification: {superevent_id} ({alert_type})")
+
+            # Cleanup old notifications once per day (at 6 AM Kyiv)
+            now = datetime.now(KYIV_TZ)
+            if now.hour == 6 and now.minute < 5:
+                cleanup_old_gw_notifications(days=180)
+
+        except Exception as e:
+            logger.error(f"GW alert check error: {e}")
+
     async def check_astronomy_events(self):
         """Check for upcoming eclipses and notify subscribers"""
         try:
@@ -1350,6 +1418,11 @@ class NotificationScheduler:
                 # Check GRB alerts every 30 minutes
                 if now.minute % 30 == 0:
                     await self.check_grb_alerts()
+
+                # Check gravitational-wave alerts every 15 minutes (no-ops if
+                # GCN_CLIENT_ID/SECRET aren't configured)
+                if now.minute % 15 == 0:
+                    await self.check_gw_alerts()
 
                 # Poll the SpaceflightNow RSS feed for new articles every 2
                 # hours (runs at 00:00, 02:00, 04:00, …). Placed before the
