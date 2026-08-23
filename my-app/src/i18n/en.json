@@ -446,6 +446,22 @@
       "xray": "6-hour flux",
       "xraySub": "logarithmic scale · classes A/B/C/M/X"
     },
+    "flares": {
+      "title": "Flare events",
+      "sub": "Begin / peak / end · NOAA GOES",
+      "loading": "Loading…",
+      "empty": "No significant flares in the last 7 days.",
+      "entry": "{{begin}} → {{end}}"
+    },
+    "sun": {
+      "eyebrow": "Live · NASA SDO",
+      "title": "The Sun right now",
+      "sub": "Three Solar Dynamics Observatory (SDO) frames, each refreshed roughly every 15 minutes. Click an image to open a high-resolution version.",
+      "corona": "Corona (171 Å, extreme UV)",
+      "visible": "Visible light (sunspots)",
+      "chromosphere": "Chromosphere (304 Å, prominences)",
+      "source": "Source: NASA Solar Dynamics Observatory (sdo.gsfc.nasa.gov)"
+    },
     "s4": {
       "eyebrow": "Aurora",
       "title": "Aurora forecast",
@@ -1231,6 +1247,62 @@
       "whatBody2": "GCN (Gamma-ray Coordinates Network) relays the burst's coordinates to telescopes worldwide for rapid follow-up of the “afterglow”.",
       "link": "GCN Circular ↗"
     },
+    "gw": {
+      "eyebrow": "Ripples in spacetime",
+      "title": "Gravitational waves",
+      "link_out": "LIGO/Virgo/KAGRA mission ↗",
+      "sub": "Merging black holes and neutron stars shake the fabric of spacetime itself. LIGO, Virgo, and KAGRA catch these ripples and send public alerts within minutes via the NASA GCN network.",
+      "fresh": "Latest alerts",
+      "loading": "Loading…",
+      "empty": "No recent events found. That's normal — there can be months of quiet between observing runs.",
+      "notConfigured": "This feed isn't set up by the site owner yet (needs a free gcn.nasa.gov client).",
+      "what": "What is this?",
+      "whatBody1": "Unlike light, gravitational waves are barely absorbed by matter — they carry information straight from the merger site that no telescope can capture.",
+      "whatBody2": "Each alert flags the likely event type (black hole merger, neutron star merger, or a mixed pair) and how confident the pipeline is that it isn't a false alarm.",
+      "link": "GraceDB ↗",
+      "type": {
+        "EARLYWARNING": "early warning",
+        "PRELIMINARY": "preliminary",
+        "INITIAL": "initial",
+        "UPDATE": "updated",
+        "RETRACTION": "retracted"
+      },
+      "class": {
+        "BBH": "binary black hole merger",
+        "BNS": "binary neutron star merger",
+        "NSBH": "neutron star + black hole",
+        "Terrestrial": "likely terrestrial noise"
+      }
+    },
+    "sentry": {
+      "eyebrow": "Risk assessment",
+      "title": "Asteroids under watch (Sentry)",
+      "link_out": "NASA/JPL Sentry ↗",
+      "sub": "Unlike a plain list of close approaches, these are asteroids with a non-zero modeled impact probability, ranked by cumulative Palermo Scale (most notable first). Nearly every number here is an extremely small chance decades or centuries out.",
+      "loading": "Loading…",
+      "empty": "Data temporarily unavailable.",
+      "col": {
+        "object": "Object",
+        "diameter": "Diameter",
+        "ip": "Probability",
+        "ps": "Palermo Scale",
+        "range": "Risk years"
+      }
+    },
+    "reentries": {
+      "eyebrow": "What came down last",
+      "title": "Orbital re-entries",
+      "link_out": "CelesTrak SATCAT ↗",
+      "sub": "Objects that burned up (or landed) in the atmosphere over the last 60 days, per the CelesTrak catalog. This is a record of what already happened, not a prediction of what's next.",
+      "loading": "Loading…",
+      "empty": "No reentries recorded in the last 60 days.",
+      "type": {
+        "PAY": "satellite",
+        "R/B": "rocket body",
+        "DEB": "debris",
+        "UNK": "unknown"
+      }
+    },
     "s3": {
       "eyebrow": "Beyond the Solar System",
       "title": "Voyager 1 & 2",
@@ -1263,6 +1335,26 @@
     "s1": {
       "eyebrow": "Live · estimate for mid-2026",
       "title": "Where they are now"
+    },
+    "dsn": {
+      "eyebrow": "Live · NASA Deep Space Network",
+      "title": "Who's on the line right now",
+      "sub": "DSN's three ground complexes — Goldstone, Madrid, Canberra — take turns keeping in touch with Voyager 1 and 2 and dozens of other spacecraft. Data refreshes every 30 seconds.",
+      "cards": {
+        "title": "Voyager {{n}}",
+        "dish": "Dish {{dish}}",
+        "rate": "{{rate}} bit/s · {{band}}-band",
+        "noContact": "No active contact right now"
+      },
+      "table": {
+        "station": "Complex",
+        "dish": "Dish",
+        "spacecraft": "Spacecraft",
+        "rate": "Rate"
+      },
+      "updated": "Updated at {{time}}",
+      "source": "Source: NASA/JPL DSN Now",
+      "unavailable": "DSN data is temporarily unavailable — try refreshing in a minute."
     },
     "cards": {
       "v1": "Voyager 1",

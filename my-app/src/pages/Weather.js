@@ -14,6 +14,8 @@ import {
   CurrentSkeleton, ChartPairSkeleton, ChartSingleSkeleton,
   AuroraSkeleton,
 } from "../components/weather/WeatherSkeletons";
+import SunNow from "../components/weather/SunNow";
+import FlareList from "../components/weather/FlareList";
 import KpHistory from "../components/charts/KpHistory";
 import KpForecast from "../components/charts/KpForecast";
 import SolarWind from "../components/charts/SolarWind";
@@ -133,14 +135,19 @@ export default function Weather() {
             </div>
           </div>
           <p className="section-sub">{t("weather.s3.sub")}</p>
-          {sLoading && !s ? <ChartSingleSkeleton /> : (
-            <div className="chart-card">
-              <div className="ch-head"><h4>{t("weather.s3.xray")}</h4><span className="sub">{t("weather.s3.xraySub")}</span></div>
-              <div className="canvas-wrap" style={{ height: 260 }}><Xray rows={xray} /></div>
-            </div>
-          )}
+          <div className="grid cols-2 split">
+            {sLoading && !s ? <ChartSingleSkeleton /> : (
+              <div className="chart-card">
+                <div className="ch-head"><h4>{t("weather.s3.xray")}</h4><span className="sub">{t("weather.s3.xraySub")}</span></div>
+                <div className="canvas-wrap" style={{ height: 260 }}><Xray rows={xray} /></div>
+              </div>
+            )}
+            <FlareList />
+          </div>
         </div>
       </section>
+
+      <SunNow />
 
       <section className="section" id="aurora" style={{ paddingTop: 0 }}>
         <div className="wrap">

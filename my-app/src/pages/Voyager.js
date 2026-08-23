@@ -8,6 +8,7 @@ import { getVoyager } from "../lib/api";
 import SectionHead from "../components/primitives/SectionHead";
 import FeatureRow from "../components/primitives/FeatureRow";
 import OrbitMap from "../components/voyager/OrbitMap";
+import DsnNow from "../components/voyager/DsnNow";
 
 function VoyagerCards({ t }) {
   const { data } = useApi(getVoyager);
@@ -100,6 +101,8 @@ export default function Voyager() {
           <VoyagerCards t={t} />
         </div>
       </section>
+
+      <DsnNow />
 
       <section className="section" id="timeline">
         <div className="wrap">

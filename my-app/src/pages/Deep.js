@@ -8,6 +8,9 @@ import { fmtInt } from "../lib/format";
 import SectionHead from "../components/primitives/SectionHead";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import Eyebrow from "../components/primitives/Eyebrow";
+import GwList from "../components/deep/GwList";
+import SentryList from "../components/deep/SentryList";
+import ReentryList from "../components/deep/ReentryList";
 
 function DebrisCard({ label, value, unit }) {
   return (
@@ -120,6 +123,43 @@ export default function Deep() {
               <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.grb.whatBody2")}</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="section" id="gw" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("deep.gw.eyebrow")} title={t("deep.gw.title")}
+            linkHref="https://gcn.nasa.gov/missions/lvk" linkLabel={t("deep.gw.link_out")} />
+          <p className="section-sub">{t("deep.gw.sub")}</p>
+          <div className="grid cols-2 split">
+            <div className="card">
+              <div className="k">{t("deep.gw.fresh")} <span className="dot live" /></div>
+              <GwList />
+            </div>
+            <div className="card">
+              <div className="k">{t("deep.gw.what")}</div>
+              <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.gw.whatBody1")}</p>
+              <p style={{ color: "var(--text-dim)", fontSize: 13.5, marginTop: 12, lineHeight: 1.6 }}>{t("deep.gw.whatBody2")}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="sentry" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("deep.sentry.eyebrow")} title={t("deep.sentry.title")}
+            linkHref="https://cneos.jpl.nasa.gov/sentry/" linkLabel={t("deep.sentry.link_out")} />
+          <p className="section-sub">{t("deep.sentry.sub")}</p>
+          <SentryList />
+        </div>
+      </section>
+
+      <section className="section" id="reentries" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("deep.reentries.eyebrow")} title={t("deep.reentries.title")}
+            linkHref="https://celestrak.org/satcat/" linkLabel={t("deep.reentries.link_out")} />
+          <p className="section-sub">{t("deep.reentries.sub")}</p>
+          <ReentryList />
         </div>
       </section>
 

@@ -67,7 +67,21 @@ export const getGalaxies = (lang) => fetchJSON(API + "/galaxies" + withLang("", 
 export const getGalaxy = (slug, lang) =>
   fetchJSON(API + "/galaxies/" + encodeURIComponent(slug) + withLang("", lang));
 export const getGrb = (limit = 12) => fetchJSON(API + "/grb?limit=" + limit);
+// Gravitational-wave alerts (LIGO/Virgo/KAGRA via GCN Kafka, cached from the
+// bot's notification log). {items[], count, configured} — `configured`
+// tells the UI whether the site owner has set up GCN_CLIENT_ID/SECRET yet.
+export const getGw = (limit = 10) => fetchJSON(API + "/gw?limit=" + limit);
+// Asteroids with a non-zero modeled impact probability (NASA/JPL Sentry).
+export const getSentry = (limit = 25) => fetchJSON(API + "/sentry?limit=" + limit);
+// Recently decayed/re-entered objects (CelesTrak SATCAT) — retrospective.
+export const getReentries = (days = 60, limit = 30) =>
+  fetchJSON(API + "/reentries?days=" + days + "&limit=" + limit);
+// Explicit solar-flare events (begin/max/end + class), last 7 days.
+export const getFlares = (limit = 20) => fetchJSON(API + "/flares?limit=" + limit);
 export const getVoyager = () => fetchJSON(API + "/voyager");
+// NASA Deep Space Network — live antenna/spacecraft contact status.
+// {stations:[{name,friendly_name,dishes:[{name,activity,up_signals[],down_signals[],targets[]}]}], timestamp_ms}
+export const getDsnNow = () => fetchJSON(API + "/dsn");
 export const getGeocode = (q) => fetchJSON(API + "/geocode?q=" + encodeURIComponent(q));
 export const getReverseGeocode = (lat, lon) =>
   fetchJSON(API + "/geocode/reverse?lat=" + lat + "&lon=" + lon);
