@@ -2447,9 +2447,9 @@
   },
   "galaxies": {
     "hero": {
-      "eyebrow": "12 names across the cosmos",
+      "eyebrow": "{{count}} names across the cosmos",
       "title": "Famous galaxies",
-      "sub": "From our own Milky Way to the Cartwheel ring galaxy half a billion light-years away — twelve of the most famous galaxies in the universe with real distances, types and scales.",
+      "sub": "From our own Milky Way to the Cartwheel ring galaxy half a billion light-years away — some of the most famous galaxies and nebulae in the universe, with real distances, types and scales.",
       "cta": "Open NASA gallery"
     },
     "filters": {
@@ -2457,7 +2457,9 @@
       "spiral": "Spiral",
       "elliptical": "Elliptical",
       "irregular": "Irregular",
-      "peculiar": "Peculiar / interacting"
+      "peculiar": "Peculiar / interacting",
+      "nebula": "Nebulae",
+      "cluster": "Star clusters"
     },
     "card": {
       "distLabel": "Distance",

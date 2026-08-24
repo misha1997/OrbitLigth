@@ -1,9 +1,12 @@
 // Famous-galaxies hub (/galaxies). Ports templates/galaxies.html into the SPA.
-// 12 curated galaxies served by /api/galaxies (DB-first, live NED + NASA Image
-// Library fallback). Each card links to the detail page /galaxies/:slug which
-// carries the full NASA photo gallery. The distance chart is computed from the
-// numeric `dist_ly` field on a log scale (the nearest vs farthest span many
-// orders of magnitude, so a linear axis can't show them all at once).
+// Curated galaxies + a few famous nebulae/clusters served by /api/galaxies
+// (DB-first, live NED + NASA Image Library fallback). Each card links to the
+// detail page /galaxies/:slug which carries the full NASA photo gallery. The
+// distance chart is computed from the numeric `dist_ly` field on a log scale
+// (the nearest vs farthest galaxy span many orders of magnitude, so a linear
+// axis can't show them all at once) — restricted to galaxy categories only,
+// since nebulae/clusters sit at Milky-Way-internal distances that would all
+// pile up at the chart's origin next to galaxy-scale distances.
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLang } from "../context/LanguageContext";
@@ -15,7 +18,7 @@ import LocalizedLink from "../components/primitives/LocalizedLink";
 import "../styles/gallery.css"; // .photo-grid / .photo-card / .ph .cat / .cap
 import "../styles/planetarium.css"; // .mars-orbit-ring / .mars-moon-label
 
-const FILTERS = ["all", "spiral", "elliptical", "irregular", "peculiar"];
+const FILTERS = ["all", "spiral", "elliptical", "irregular", "peculiar", "nebula", "cluster"];
 
 // Per-galaxy gradient fallback (matches templates/galaxies.html) for when a
 // preview thumbnail isn't mirrored yet. Once backfill mirrors a real NASA
@@ -83,6 +86,18 @@ export default function Galaxies() {
     [items, filter]
   );
 
+  // Distance chart compares galaxies only — nebulae/star clusters sit inside
+  // our own galaxy (hundreds to thousands of ly) vs. millions+ ly for the
+  // other entries, so mixing them in would just pile them all up at x=X0.
+  const chartItems = useMemo(
+    () => items.filter((g) => g.category !== "nebula" && g.category !== "cluster"),
+    [items]
+  );
+  // Row-per-galaxy height grows with the catalog instead of clipping past a
+  // fixed row count (rows were silently cut off once the catalog grew past
+  // the ~13 rows the old fixed 280px viewBox could fit).
+  const chartH = Math.max(280, 24.2 + chartItems.length * 19.2 + 30);
+
   // Local Group diagram: place the four catalog members that belong to it at
   // fixed coords, labelled with their localized names from the API.
   const byKey = // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,7 +118,7 @@ export default function Galaxies() {
       <section className="hero">
         <div className="hero-grid">
           <div>
-            <span className="icon-badge">{t("galaxies.hero.eyebrow")}</span>
+            <span className="icon-badge">{t("galaxies.hero.eyebrow", { count: items.length || 12 })}</span>
             <h1 className="hero-title">{t("galaxies.hero.title")}</h1>
             <p className="hero-sub">{t("galaxies.hero.sub")}</p>
             <div className="filters" style={{ marginTop: 26 }}>
@@ -209,11 +224,11 @@ export default function Galaxies() {
         </div>
         <p className="section-sub">{t("galaxies.distances.sub")}</p>
         <div className="brightness-wrap">
-          <svg viewBox="0 0 1080 280" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox={`0 0 1080 ${chartH}`} xmlns="http://www.w3.org/2000/svg">
             {X_TICKS.map((tk) => (
-              <line key={tk.key} className="exo-gridline" x1={tk.x} y1="20" x2={tk.x} y2="250" />
+              <line key={tk.key} className="exo-gridline" x1={tk.x} y1="20" x2={tk.x} y2={chartH - 30} />
             ))}
-            {items.map((g, i) => {
+            {chartItems.map((g, i) => {
               const x = distX(g.dist_ly);
               const y = 24.2 + i * 19.2;
               const barFill =
@@ -230,7 +245,7 @@ export default function Galaxies() {
               );
             })}
             {X_TICKS.map((tk) => (
-              <text key={tk.key} className="exo-axis" x={tk.x} y="272" textAnchor="middle">
+              <text key={tk.key} className="exo-axis" x={tk.x} y={chartH - 8} textAnchor="middle">
                 {t(`galaxies.distances.${tk.key}`)}
               </text>
             ))}

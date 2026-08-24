@@ -651,7 +651,9 @@ COMMONS_CATEGORY = {
     "stephans-quintet": "Stephan's Quintet",
     "orion-nebula": "Orion Nebula",
     "crab-nebula": "Crab Nebula",
-    "pleiades": "Pleiades",
+    # "Pleiades" alone is a near-empty/disambiguation category on Commons (0
+    # files) — "Pleiades (star cluster)" is the real astronomy category.
+    "pleiades": "Pleiades (star cluster)",
     "ring-nebula": "Ring Nebula",
     "eagle-nebula": "Eagle Nebula",
 }
