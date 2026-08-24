@@ -534,6 +534,10 @@
       "noVideoSupport": "Your browser does not support video playback.",
       "openVideo": "Open video"
     },
+    "history": {
+      "today": "On This Day in History",
+      "thisMonth": "This Month in History"
+    },
     "weather": {
       "eyebrow": "Space weather",
       "title": "Aurora conditions right now",

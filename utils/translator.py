@@ -123,7 +123,7 @@ class Translator:
 
         translated = Translator.translate(explanation, "en", "uk")
         if translated != explanation:
-            return f"{translated}{t('apod.footer_translated', 'uk')}"
+            return translated
         return f"{explanation}{t('apod.footer_original', 'uk')}"
 
     @staticmethod

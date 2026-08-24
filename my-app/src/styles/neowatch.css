@@ -1200,6 +1200,40 @@ h2.section-title {
   transform: translateY(-2px)
 }
 
+/* "This day in history" widget (Home + News). */
+.history-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.history-icon-wrap {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(232, 185, 77, .08);
+  border: 1px solid var(--border);
+}
+
+.history-title {
+  margin: 6px 0 6px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.history-text {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
 /* APOD — Astronomy Picture of the Day block on the homepage. */
 .apod-card {
   display: grid;
