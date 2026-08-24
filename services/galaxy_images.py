@@ -12,6 +12,7 @@ failure returns ``(None, None)`` so ingest stores the row without paths and the
 next poll retries the download.
 """
 import logging
+import time
 from pathlib import Path
 
 import requests
@@ -22,6 +23,20 @@ DATA_GAL_DIR = Path("data/galaxies")
 _UA = "NEOwatchBot/1.0 (galaxies; +https://github.com/) NEOwatch-galaxy-mirror"
 _TIMEOUT = 25
 _THUMB_MAX = 480  # px on the long edge
+_MAX_429_RETRIES = 3
+_DEFAULT_RETRY_WAIT = 5.0  # seconds, used when the server sends no Retry-After
+_MAX_RETRY_WAIT = 30.0
+
+
+def _retry_after_seconds(resp) -> float:
+    """Parse a 429 response's ``Retry-After`` header (seconds, capped)."""
+    raw = resp.headers.get("Retry-After")
+    if raw:
+        try:
+            return min(float(raw), _MAX_RETRY_WAIT)
+        except ValueError:
+            pass
+    return _DEFAULT_RETRY_WAIT
 
 
 def _ext_from_url(url: str, fallback: str = "jpg") -> str:
@@ -84,15 +99,29 @@ def download_galaxy_photo(galaxy_key: str, nasa_id: str, orig_url: str):
 
         content = None
         for cand in _asset_candidates(src):
-            try:
-                resp = requests.get(cand, timeout=_TIMEOUT, headers={"User-Agent": _UA})
-            except Exception as e:
-                logger.warning("galaxy photo download error %s: %s", cand, e)
-                continue
-            if resp.status_code == 200 and resp.content:
-                content = resp.content
+            for attempt in range(_MAX_429_RETRIES):
+                try:
+                    resp = requests.get(cand, timeout=_TIMEOUT, headers={"User-Agent": _UA})
+                except Exception as e:
+                    logger.warning("galaxy photo download error %s: %s", cand, e)
+                    break
+                if resp.status_code == 200 and resp.content:
+                    content = resp.content
+                    break
+                if resp.status_code == 429 and attempt < _MAX_429_RETRIES - 1:
+                    # Wikimedia rate-limits bursts of requests from the same
+                    # client — a batch run over many galaxies' photos in a
+                    # tight loop reliably trips this partway through. Back off
+                    # (honoring Retry-After when given) and retry in place
+                    # rather than permanently giving up on this photo.
+                    wait = _retry_after_seconds(resp)
+                    logger.warning("galaxy photo download rate-limited %s -> 429, retrying in %.1fs", cand, wait)
+                    time.sleep(wait)
+                    continue
+                logger.warning("galaxy photo download failed %s -> %s", cand, resp.status_code)
                 break
-            logger.warning("galaxy photo download failed %s -> %s", cand, resp.status_code)
+            if content is not None:
+                break
         if content is None:
             return None, None
 

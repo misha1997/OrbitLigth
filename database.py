@@ -1,6 +1,7 @@
 """MySQL database for NEOwatch Bot"""
 import json
 import logging
+import time
 import requests
 from typing import Optional, Dict, List
 import mysql.connector
@@ -2260,6 +2261,12 @@ def ingest_galaxy_photos(galaxy_key: str, photos: list) -> int:
             except Exception as ex:  # never let image failure abort ingest
                 logger.error(f"galaxy photo download error {galaxy_key}/{nasa_id}: {ex}")
                 full_rel, thumb_rel = None, None
+            # Wikimedia/NASA rate-limit bursts of requests from one client — a
+            # full run over many galaxies' photos with zero delay reliably
+            # trips a 429 partway through (galaxy_images.download_galaxy_photo
+            # already retries a single 429 with backoff, but this spacing cuts
+            # down how often that limit gets hit at all across the whole run).
+            time.sleep(0.3)
 
             cursor.execute(
                 '''INSERT INTO galaxy_photos
