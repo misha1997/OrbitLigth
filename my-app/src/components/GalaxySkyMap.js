@@ -28,6 +28,19 @@ function galToEq(l, b) {
   return [ra, dec];
 }
 const MW = Array.from({ length: 49 }, (_, i) => galToEq(i * 7.5, 0));
+// The galactic plane crosses RA=0/360 once per loop; galToEq wraps ra into
+// [0,360), so the sample straddling that seam jumps e.g. 350°→6° between
+// consecutive points. Drawn as one polyline that jump becomes a spurious
+// chord slicing straight across the locator inset. Split into segments
+// wherever consecutive samples jump by more than half the sky.
+const MW_SEGMENTS = (() => {
+  const segs = [[MW[0]]];
+  for (let i = 1; i < MW.length; i++) {
+    if (Math.abs(MW[i][0] - MW[i - 1][0]) > 180) segs.push([]);
+    segs[segs.length - 1].push(MW[i]);
+  }
+  return segs.filter((s) => s.length > 1);
+})();
 const sxOf = (ra) => (ra / 360) * 360;
 const syOf = (dec) => ((90 - dec) / 180) * 180;
 
@@ -72,7 +85,10 @@ function ticks(min, max, step) {
 
 // viewBox geometry for the zoomed chart.
 const VB_W = 1000, VB_H = 560;
-const ML = 46, MR = 16, MT = 14, MB = 28;
+// ML must fit the widest Dec label ("-69°45′", right-aligned at x=IX0-8) —
+// at fontSize 13 that string runs well past 46 units and got clipped by the
+// SVG viewBox's left edge, silently dropping the sign + tens digit.
+const ML = 74, MR = 16, MT = 14, MB = 28;
 const IX0 = ML, IX1 = VB_W - MR, IY0 = MT, IY1 = VB_H - MB;
 const IW = IX1 - IX0, IH = IY1 - IY0;
 
@@ -261,6 +277,68 @@ export default function GalaxySkyMap({ ra, dec, name, abbr, constName }) {
     return () => svg.removeEventListener("wheel", onWheel);
   }, [zoomAt]);
 
+  // Touch support — the mouse handlers below (onDown/onMove/endDrag) and the
+  // wheel listener above never fire on a touchscreen, so this map had no way
+  // to pan or zoom on phones/tablets at all. One finger pans; two fingers
+  // pinch-zoom around their midpoint (reusing zoomAt, same as the wheel).
+  const touchRef = useRef({ mode: null });
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const dist = (t0, t1) => Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+    const mid = (t0, t1) => ({ x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 });
+    const onTouchStart = (e) => {
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        touchRef.current = { mode: "pan", view: { ...viewRef.current }, sx: t.clientX, sy: t.clientY };
+      } else if (e.touches.length >= 2) {
+        touchRef.current = { mode: "pinch", dist: dist(e.touches[0], e.touches[1]) };
+      }
+      e.preventDefault();
+    };
+    const onTouchMove = (e) => {
+      const cur = touchRef.current;
+      if (!cur.mode) return;
+      e.preventDefault();
+      if (cur.mode === "pan" && e.touches.length === 1) {
+        const t = e.touches[0];
+        const dx = t.clientX - cur.sx, dy = t.clientY - cur.sy;
+        const v = cur.view;
+        const dRA = -(dx / IW) * (v.rMax - v.rMin);
+        const dDec = +(dy / IH) * (v.dMax - v.dMin);
+        const cR = (v.rMin + v.rMax) / 2 + dRA;
+        const cD = (v.dMin + v.dMax) / 2 + dDec;
+        const sR = v.rMax - v.rMin, sD = v.dMax - v.dMin;
+        setView(clampDec({ rMin: cR - sR / 2, rMax: cR + sR / 2, dMin: cD - sD / 2, dMax: cD + sD / 2, C: cR }));
+      } else if (cur.mode === "pinch" && e.touches.length >= 2) {
+        const d = dist(e.touches[0], e.touches[1]);
+        if (cur.dist > 1 && d > 1) {
+          const m = mid(e.touches[0], e.touches[1]);
+          zoomAt(m.x, m.y, cur.dist / d);
+        }
+        cur.dist = d;
+      }
+    };
+    const onTouchEnd = (e) => {
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        touchRef.current = { mode: "pan", view: { ...viewRef.current }, sx: t.clientX, sy: t.clientY };
+      } else if (e.touches.length === 0) {
+        touchRef.current = { mode: null };
+      }
+    };
+    svg.addEventListener("touchstart", onTouchStart, { passive: false });
+    svg.addEventListener("touchmove", onTouchMove, { passive: false });
+    svg.addEventListener("touchend", onTouchEnd, { passive: false });
+    svg.addEventListener("touchcancel", onTouchEnd, { passive: false });
+    return () => {
+      svg.removeEventListener("touchstart", onTouchStart);
+      svg.removeEventListener("touchmove", onTouchMove);
+      svg.removeEventListener("touchend", onTouchEnd);
+      svg.removeEventListener("touchcancel", onTouchEnd);
+    };
+  }, [zoomAt]);
+
   function onDown(e) {
     dragRef.current = { active: true, sx: e.clientX, sy: e.clientY, view: { ...viewRef.current } };
   }
@@ -328,7 +406,7 @@ export default function GalaxySkyMap({ ra, dec, name, abbr, constName }) {
         onMouseMove={onMove}
         onMouseUp={endDrag}
         onMouseLeave={() => { endDrag(); setHover(null); }}
-        style={{ cursor: dragRef.current.active ? "grabbing" : "grab" }}
+        style={{ cursor: dragRef.current.active ? "grabbing" : "grab", touchAction: "none" }}
       >
         <defs>
           <clipPath id="skyClip">
@@ -438,8 +516,10 @@ export default function GalaxySkyMap({ ra, dec, name, abbr, constName }) {
             fill="rgba(6,7,15,.82)" stroke="rgba(237,238,245,.14)" />
           <svg x="0" y="0" width="160" height="92" viewBox="0 0 360 180" overflow="hidden">
             <rect x="0" y="0" width="360" height="180" fill="#080a14" />
-            <polyline points={MW.map(([r, d]) => `${sxOf(r)},${syOf(d)}`).join(" ")}
-              fill="none" stroke="rgba(150,170,220,.18)" strokeWidth="11" strokeLinecap="round" />
+            {MW_SEGMENTS.map((seg, i) => (
+              <polyline key={i} points={seg.map(([r, d]) => `${sxOf(r)},${syOf(d)}`).join(" ")}
+                fill="none" stroke="rgba(150,170,220,.18)" strokeWidth="11" strokeLinecap="round" />
+            ))}
             {locRects.map(([a, b], i) => (
               <rect key={i} x={sxOf(a)} y={syOf(Math.min(dMax, 90))} width={sxOf(b) - sxOf(a)}
                 height={syOf(Math.max(dMin, -90)) - syOf(Math.min(dMax, 90))}
