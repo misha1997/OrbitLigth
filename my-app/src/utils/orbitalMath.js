@@ -81,17 +81,22 @@ export function scaleDistance(distanceAu, isRealistic) {
 }
 
 export function scaleMoonDistance(distanceAu, isRealistic, parentRadiusVisual) {
-  if (isRealistic) return distanceAu * 100;
-  
+  if (isRealistic) {
+    // scaleRadius floors tiny planets to a minimum visible size, which can put a
+    // physically close-in moon (e.g. Phobos, Neptune's inner moons) inside that
+    // inflated sphere at true 1AU=100 scale. Keep moons just outside the planet.
+    return Math.max(distanceAu * 100, parentRadiusVisual * 1.5);
+  }
+
   if (distanceAu === 0) return 0;
   // Scale moon distance relative to the parent's visual radius
   const visualDist = (distanceAu * 1500) + (parentRadiusVisual * 1.5);
   return visualDist;
 }
 
-export function scaleRadius(radiusKm, isRealistic, isStar = false) {
+export function scaleRadius(radiusKm, isRealistic, isStar = false, minFloor = 0.05) {
   if (isRealistic) {
-    return Math.max((radiusKm / 149597870) * 100, 0.05); 
+    return Math.max((radiusKm / 149597870) * 100, minFloor);
   }
   
   const earthRadius = 6371.0;

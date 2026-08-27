@@ -12,7 +12,9 @@ export default function Moon({ data, isRealisticScale, showLabels, parentRadiusV
   const [hovered, setHovered] = useState(false);
   const { camera } = useThree();
   
-  const visualRadius = scaleRadius(data.radiusKm, isRealisticScale) * 0.7; // smaller moon size
+  // Moons are much smaller than planets; give them their own (much lower) minimum
+  // floor in Real Scale so even the biggest moons stay clearly smaller than a planet.
+  const visualRadius = scaleRadius(data.radiusKm, isRealisticScale, false, 0.001) * 0.7;
   
   useFrame(() => {
     if (!groupRef.current) return;
@@ -61,7 +63,7 @@ export default function Moon({ data, isRealisticScale, showLabels, parentRadiusV
       </group>
 
       {showLabels && (data.isMajor || hovered) && (
-        <Html distanceFactor={15} zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
+        <Html distanceFactor={isRealisticScale ? 0.6 : 15} zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
           <div style={{
             color: 'white',
             background: 'rgba(0,0,0,0.6)',

@@ -110,7 +110,43 @@
       "w": 336.05631665,
       "M0": 355.433275,
       "n": 0.524033
-    }
+    },
+    "moons": [
+      {
+        "id": "phobos",
+        "name": "Phobos",
+        "radiusKm": 11.1,
+        "color": "#8a7f6b",
+        "textureUrl": "/moons/generic_moon.jpg",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.00006267,
+          "e": 0.0151,
+          "i": 1.093,
+          "N": 0,
+          "w": 0,
+          "M0": 0,
+          "n": 1128.844
+        }
+      },
+      {
+        "id": "deimos",
+        "name": "Deimos",
+        "radiusKm": 6.2,
+        "color": "#9c8f7a",
+        "textureUrl": "/moons/generic_moon.jpg",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.00015685,
+          "e": 0.00033,
+          "i": 0.93,
+          "N": 0,
+          "w": 0,
+          "M0": 90,
+          "n": 285.03
+        }
+      }
+    ]
   },
   {
     "id": "jupiter",
@@ -207,7 +243,7 @@
         "name": "Amalthea",
         "radiusKm": 83.5,
         "color": "#777777",
-        "textureUrl": "/moons/generic_moon.jpg",
+        "textureUrl": "/moons/amalthea.png",
         "isMajor": false,
         "orbit": {
           "a": 0.00121,
@@ -217,6 +253,74 @@
           "w": 0,
           "M0": 0,
           "n": 722.6
+        }
+      },
+      {
+        "id": "metis",
+        "name": "Metis",
+        "radiusKm": 21.5,
+        "color": "#999999",
+        "textureUrl": "/moons/metis.jpg",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.0008536,
+          "e": 0.0002,
+          "i": 0.06,
+          "N": 0,
+          "w": 0,
+          "M0": 45,
+          "n": 1206.99
+        }
+      },
+      {
+        "id": "adrastea",
+        "name": "Adrastea",
+        "radiusKm": 8.2,
+        "color": "#9a9a9a",
+        "textureUrl": "/moons/adrastea.jpg",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.0008603,
+          "e": 0.0015,
+          "i": 0.03,
+          "N": 0,
+          "w": 0,
+          "M0": 135,
+          "n": 1192.83
+        }
+      },
+      {
+        "id": "thebe",
+        "name": "Thebe",
+        "radiusKm": 49.3,
+        "color": "#a67c5a",
+        "textureUrl": "/moons/thebe.jpg",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.0014833,
+          "e": 0.0176,
+          "i": 1.076,
+          "N": 0,
+          "w": 0,
+          "M0": 225,
+          "n": 533.73
+        }
+      },
+      {
+        "id": "himalia",
+        "name": "Himalia",
+        "radiusKm": 69.8,
+        "color": "#6b6b6b",
+        "textureUrl": "/moons/himalia.png",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.076612,
+          "e": 0.162,
+          "i": 27.5,
+          "N": 0,
+          "w": 0,
+          "M0": 300,
+          "n": 1.4387
         }
       }
     ]
@@ -241,6 +345,7 @@
         "name": "Titan",
         "radiusKm": 2574.7,
         "color": "#d6a95a",
+        "textureUrl": "/moons/titan.png",
         "isMajor": true,
         "orbit": {
           "a": 0.008168,
@@ -257,6 +362,7 @@
         "name": "Enceladus",
         "radiusKm": 252.1,
         "color": "#eeeeee",
+        "textureUrl": "/moons/enceladus.png",
         "isMajor": true,
         "orbit": {
           "a": 0.00159,
@@ -266,6 +372,108 @@
           "w": 0,
           "M0": 0,
           "n": 262.73
+        }
+      },
+      {
+        "id": "mimas",
+        "name": "Mimas",
+        "radiusKm": 198.2,
+        "color": "#cfcfcf",
+        "textureUrl": "/moons/mimas.png",
+        "isMajor": true,
+        "orbit": {
+          "a": 0.0012403,
+          "e": 0.0196,
+          "i": 1.574,
+          "N": 0,
+          "w": 0,
+          "M0": 60,
+          "n": 382.16
+        }
+      },
+      {
+        "id": "tethys",
+        "name": "Tethys",
+        "radiusKm": 531.1,
+        "color": "#dcdcdc",
+        "textureUrl": "/moons/tethys.png",
+        "isMajor": true,
+        "orbit": {
+          "a": 0.0019694,
+          "e": 0.0001,
+          "i": 1.091,
+          "N": 0,
+          "w": 0,
+          "M0": 120,
+          "n": 190.68
+        }
+      },
+      {
+        "id": "dione",
+        "name": "Dione",
+        "radiusKm": 561.4,
+        "color": "#d8d8d8",
+        "textureUrl": "/moons/dione.png",
+        "isMajor": true,
+        "orbit": {
+          "a": 0.0025228,
+          "e": 0.0022,
+          "i": 0.028,
+          "N": 0,
+          "w": 0,
+          "M0": 180,
+          "n": 131.53
+        }
+      },
+      {
+        "id": "rhea",
+        "name": "Rhea",
+        "radiusKm": 763.8,
+        "color": "#c9c9c9",
+        "textureUrl": "/moons/rhea.png",
+        "isMajor": true,
+        "orbit": {
+          "a": 0.0035236,
+          "e": 0.001,
+          "i": 0.333,
+          "N": 0,
+          "w": 0,
+          "M0": 240,
+          "n": 79.68
+        }
+      },
+      {
+        "id": "hyperion",
+        "name": "Hyperion",
+        "radiusKm": 135,
+        "color": "#a89f8a",
+        "textureUrl": "/moons/hyperion.png",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.0099,
+          "e": 0.0274,
+          "i": 0.43,
+          "N": 0,
+          "w": 0,
+          "M0": 300,
+          "n": 16.917
+        }
+      },
+      {
+        "id": "iapetus",
+        "name": "Iapetus",
+        "radiusKm": 734.5,
+        "color": "#8f8070",
+        "textureUrl": "/moons/iapetus.png",
+        "isMajor": true,
+        "orbit": {
+          "a": 0.023802,
+          "e": 0.0286,
+          "i": 15.47,
+          "N": 0,
+          "w": 0,
+          "M0": 0,
+          "n": 4.538
         }
       }
     ],
@@ -299,7 +507,7 @@
         "name": "Titania",
         "radiusKm": 788.9,
         "color": "#aaaaaa",
-        "textureUrl": "/moons/generic_moon.jpg",
+        "textureUrl": "/moons/titania.png",
         "isMajor": true,
         "orbit": {
           "a": 0.0029,
@@ -316,7 +524,7 @@
         "name": "Oberon",
         "radiusKm": 761.4,
         "color": "#aaaaaa",
-        "textureUrl": "/moons/generic_moon.jpg",
+        "textureUrl": "/moons/oberon.png",
         "isMajor": true,
         "orbit": {
           "a": 0.0039,
@@ -333,7 +541,7 @@
         "name": "Umbriel",
         "radiusKm": 584.7,
         "color": "#888888",
-        "textureUrl": "/moons/generic_moon.jpg",
+        "textureUrl": "/moons/umbriel.png",
         "isMajor": true,
         "orbit": {
           "a": 0.0017,
@@ -350,7 +558,7 @@
         "name": "Ariel",
         "radiusKm": 578.9,
         "color": "#dddddd",
-        "textureUrl": "/moons/generic_moon.jpg",
+        "textureUrl": "/moons/ariel.png",
         "isMajor": true,
         "orbit": {
           "a": 0.0012,
@@ -367,7 +575,7 @@
         "name": "Miranda",
         "radiusKm": 235.8,
         "color": "#cccccc",
-        "textureUrl": "/moons/generic_moon.jpg",
+        "textureUrl": "/moons/miranda.png",
         "isMajor": false,
         "orbit": {
           "a": 0.0008,
@@ -413,7 +621,7 @@
         "name": "Triton",
         "radiusKm": 1353.4,
         "color": "#a8a8a8",
-        "textureUrl": "/moons/generic_moon.jpg",
+        "textureUrl": "/moons/triton.png",
         "isMajor": true,
         "orbit": {
           "a": 0.0023,
@@ -430,7 +638,7 @@
         "name": "Proteus",
         "radiusKm": 210,
         "color": "#777777",
-        "textureUrl": "/moons/generic_moon.jpg",
+        "textureUrl": "/moons/proteus.png",
         "isMajor": false,
         "orbit": {
           "a": 0.0007,
@@ -447,7 +655,7 @@
         "name": "Nereid",
         "radiusKm": 170,
         "color": "#aaaaaa",
-        "textureUrl": "/moons/generic_moon.jpg",
+        "textureUrl": "/moons/nereid.png",
         "isMajor": false,
         "orbit": {
           "a": 0.0368,
@@ -457,6 +665,91 @@
           "w": 44.9,
           "M0": 0,
           "n": 0.99
+        }
+      },
+      {
+        "id": "naiad",
+        "name": "Naiad",
+        "radiusKm": 33,
+        "color": "#7f8a9c",
+        "textureUrl": "/moons/naiad.png",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.0003224,
+          "e": 0.0004,
+          "i": 4.75,
+          "N": 131.7,
+          "w": 44.9,
+          "M0": 30,
+          "n": 1224.66
+        }
+      },
+      {
+        "id": "thalassa",
+        "name": "Thalassa",
+        "radiusKm": 41,
+        "color": "#6f6f6f",
+        "textureUrl": "/moons/thalassa.png",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.0003347,
+          "e": 0.0002,
+          "i": 0.21,
+          "N": 131.7,
+          "w": 44.9,
+          "M0": 90,
+          "n": 1155.90
+        }
+      },
+      {
+        "id": "despina",
+        "name": "Despina",
+        "radiusKm": 75,
+        "color": "#6a6a6a",
+        "textureUrl": "/moons/despina.png",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.0003512,
+          "e": 0.0002,
+          "i": 0.07,
+          "N": 131.7,
+          "w": 44.9,
+          "M0": 150,
+          "n": 1075.66
+        }
+      },
+      {
+        "id": "galatea",
+        "name": "Galatea",
+        "radiusKm": 87,
+        "color": "#6a6a6a",
+        "textureUrl": "/moons/galatea.png",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.0004141,
+          "e": 0.0001,
+          "i": 0.05,
+          "N": 131.7,
+          "w": 44.9,
+          "M0": 210,
+          "n": 839.77
+        }
+      },
+      {
+        "id": "larissa",
+        "name": "Larissa",
+        "radiusKm": 97,
+        "color": "#6f7a8a",
+        "textureUrl": "/moons/larissa.png",
+        "isMajor": false,
+        "orbit": {
+          "a": 0.0004916,
+          "e": 0.0014,
+          "i": 0.20,
+          "N": 131.7,
+          "w": 44.9,
+          "M0": 270,
+          "n": 648.71
         }
       }
     ]

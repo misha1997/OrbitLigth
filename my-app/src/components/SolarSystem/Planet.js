@@ -67,7 +67,7 @@ export default function Planet({ data, isRealisticScale, showLabels, showOrbits,
           onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
           onPointerOut={(e) => { e.stopPropagation(); setHovered(false); document.body.style.cursor = 'auto'; }}
         >
-          <JWSTModel visualRadius={visualRadius} />
+          <JWSTModel isRealisticScale={isRealisticScale} />
         </group>
       ) : (
         <mesh 
@@ -155,7 +155,7 @@ export default function Planet({ data, isRealisticScale, showLabels, showOrbits,
       )}
 
       {showLabels && (
-        <Html distanceFactor={15} zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
+        <Html distanceFactor={isRealisticScale ? 0.6 : 15} zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
           <div style={{
             color: 'white',
             background: 'rgba(0,0,0,0.6)',
@@ -230,9 +230,9 @@ function EarthClouds({ visualRadius, cloudsMapUrl }) {
   );
 }
 
-function JWSTModel({ visualRadius }) {
+function JWSTModel({ isRealisticScale }) {
   const groupRef = useRef();
-  
+
   useFrame(() => {
     if (groupRef.current) {
       // Point the Z-axis towards the Sun (0,0,0)
@@ -240,8 +240,11 @@ function JWSTModel({ visualRadius }) {
     }
   });
 
-  // Fixed visual scale for the spacecraft so it doesn't look absurdly huge or small in compact mode
-  const scale = 0.04;
+  // Fixed visual scale for the spacecraft so it doesn't look absurdly huge or small in
+  // compact mode. In Real Scale, JWST is a tiny spacecraft (not a celestial body) sitting
+  // right next to an Earth rendered at its own artificial minimum size, so it needs a much
+  // smaller scale to avoid dwarfing Earth.
+  const scale = isRealisticScale ? 0.003 : 0.04;
   
   return (
     <group ref={groupRef} scale={[scale, scale, scale]}>

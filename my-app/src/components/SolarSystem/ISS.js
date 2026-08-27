@@ -56,7 +56,9 @@ export default function ISS({ parentRadiusVisual, showLabels, onClick }) {
 
   if (!issData) return null;
 
-  const size = isRealisticScale ? scaleRadius(0.2, true) : 0.04;
+  // The ISS is a tiny spacecraft, not a celestial body — give it a much smaller
+  // Real Scale floor than planets/moons so it doesn't render planet-sized.
+  const size = isRealisticScale ? scaleRadius(0.2, true, false, 0.0003) : 0.04;
 
   return (
     <group 
@@ -117,7 +119,7 @@ export default function ISS({ parentRadiusVisual, showLabels, onClick }) {
       </group>
       
       {showLabels && (
-        <Html distanceFactor={15} zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
+        <Html distanceFactor={isRealisticScale ? 0.6 : 15} zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
           <div style={{
             color: '#fff',
             background: 'rgba(0,0,0,0.7)',
