@@ -2,10 +2,11 @@
 // line + speed/altitude cards fed from the in-browser TLE propagation, the
 // orbit-numbers grid (incl. crew from /api/iss/crew), the visible-passes table
 // (/api/iss/passes), and observing tips. Port of the iss.html inline script.
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLang } from "../context/LanguageContext";
 import "../styles/gallery.css"; // For .photo-modal
+import "../styles/iss3d.css"; // For .iss3d-preview-* (3D viewer CTA card)
 import SatMap from "../components/SatMap";
 import SectionHead from "../components/primitives/SectionHead";
 import FeatureRow from "../components/primitives/FeatureRow";
@@ -13,9 +14,14 @@ import { useApi } from "../hooks/useApi";
 import { useLoc, locCity } from "../context/LocationContext";
 import { getIssPasses, getIssCrew, getIssNow } from "../lib/api";
 import { fmtInt } from "../lib/format";
-import { BOT_URL } from "../lib/constants";
 
 const MONTH_KEYS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+// three.js/@react-three/fiber/drei are heavy and otherwise only loaded by
+// /solarsystem3d — lazy-import so visiting /mks doesn't pull them in unless
+// the 3D viewer is actually opened.
+const IssStationFullscreen = lazy(() => import("./IssStationFullscreen"));
+const IssStationHeroPreview = lazy(() => import("./IssStationHeroPreview"));
 
 // Real orbital elements read straight off the TLE-derived satrec (satellite.js
 // v5, sgp4init) — no propagation needed, these are the fixed elements for the
@@ -72,7 +78,7 @@ function CrewSection({ crewD, t }) {
   // No data yet — the request is still in flight or failed.
   if (!crewD) {
     return (
-      <section className="section" style={{ paddingTop: 0 }}>
+      <section className="section" id="crew" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <SectionHead eyebrow={t("iss.crew.eyebrow")} title={t("iss.crew.title")} />
           <p className="section-sub">{t("iss.crew.loading")}</p>
@@ -82,7 +88,7 @@ function CrewSection({ crewD, t }) {
   }
   if (!crew || !crew.length) {
     return (
-      <section className="section" style={{ paddingTop: 0 }}>
+      <section className="section" id="crew" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <SectionHead eyebrow={t("iss.crew.eyebrow")} title={t("iss.crew.title")} />
           <p className="section-sub">{t("iss.crew.unavailable")}</p>
@@ -98,7 +104,7 @@ function CrewSection({ crewD, t }) {
   const groupEntries = Object.entries(groups || { "": crew });
 
   return (
-    <section className="section" style={{ paddingTop: 0 }}>
+    <section className="section" id="crew" style={{ paddingTop: 0 }}>
       <div className="wrap">
         <SectionHead eyebrow={t("iss.crew.eyebrow")} title={t("iss.crew.title")} />
         <p className="section-sub">{t("iss.crew.sub")}</p>
@@ -152,6 +158,10 @@ function CrewSection({ crewD, t }) {
   );
 }
 
+// Official NASA module-configuration diagram — also used as the "simplified
+// visualization" preview card for the 3D viewer CTA (iss.structure section).
+const ISS_DIAGRAM_URL = "https://upload.wikimedia.org/wikipedia/commons/1/1c/ISS_configuration_2021-07_en.svg";
+
 const GALLERY = [
   {
     // Mirrored locally (same NASA photo as Wikimedia's
@@ -162,7 +172,7 @@ const GALLERY = [
     title: "ISS",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/1/1c/ISS_configuration_2021-07_en.svg",
+    src: ISS_DIAGRAM_URL,
     captionKey: "iss.gallery.img2_caption",
     title: "ISS Diagram",
     contain: true,
@@ -175,12 +185,10 @@ const GALLERY = [
   }
 ];
 
-// Module/fact card bodies share one style each — defined once instead of
-// repeating the same inline object literal on every card.
-const STRUCT_BODY_STYLE = { fontSize: "1rem", lineHeight: 1.4, color: "var(--text)", marginTop: 8, fontWeight: 400 };
+// Fact card bodies share one style each — defined once instead of repeating
+// the same inline object literal on every card.
 const FACT_TITLE_STYLE = { fontSize: "1.2rem", marginBottom: 8, color: "var(--accent)" };
 const FACT_BODY_STYLE = { fontSize: "1rem", lineHeight: 1.4, color: "var(--text)", fontWeight: 400, textTransform: "none" };
-const STRUCTURE_MODULES = ["m1", "m2", "m3", "m4", "m5", "m6"];
 const FACTS = ["f1", "f2", "f3"];
 
 export default function Iss() {
@@ -195,6 +203,7 @@ export default function Iss() {
   const [elements, setElements] = useState(null); // orbital elements from the live TLE
   const elementsSetRef = useRef(false);
   const [modalIdx, setModalIdx] = useState(null);
+  const [show3D, setShow3D] = useState(false);
 
   // Lightbox keyboard nav + scroll lock (same pattern as Galaxy.js / RoverPhotos.js).
   useEffect(() => {
@@ -246,20 +255,23 @@ export default function Iss() {
   return (
     <>
       <section className="hero">
-        <div className="wrap">
+        <div className="wrap hero-grid">
           <div style={{ maxWidth: 680 }}>
             <div className="eyebrow"><span className="dot live" /> {t("iss.hero.eyebrow")}</div>
             <h1 className="hero-title" dangerouslySetInnerHTML={{ __html: t("iss.hero.title") }} />
             <p className="hero-sub">{t("iss.hero.sub")}</p>
             <div className="hero-actions">
-              <a href="#passes" className="btn primary">{t("iss.hero.passes", { city })}</a>
-              <a href={BOT_URL} className="btn ghost" target="_blank" rel="noreferrer">{t("iss.hero.telegram")}</a>
+              <a href="#live-map" className="btn primary">{t("iss.hero.whereNow")}</a>
+              <a href="#crew" className="btn ghost">{t("iss.hero.crewCta")}</a>
             </div>
           </div>
+          <Suspense fallback={<div className="iss3d-hero-placeholder"><span className="iss3d-spinner" /></div>}>
+            <IssStationHeroPreview onOpenFullscreen={() => setShow3D(true)} />
+          </Suspense>
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 8 }}>
+      <section className="section" id="live-map" style={{ paddingTop: 8 }}>
         <div className="wrap">
           <div className="map-card">
             <div className="map-head">
@@ -363,21 +375,6 @@ export default function Iss() {
 
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
-          <SectionHead eyebrow={t("iss.structure.eyebrow")} title={t("iss.structure.title")} />
-          <p className="section-sub">{t("iss.structure.sub")}</p>
-          <div className="grid cols-3">
-            {STRUCTURE_MODULES.map((m) => (
-              <div className="card" key={m}>
-                <div className="k">{t(`iss.structure.${m}_title`)}</div>
-                <div className="v" style={STRUCT_BODY_STYLE}>{t(`iss.structure.${m}_body`)}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="wrap">
           <SectionHead eyebrow={t("iss.gallery.eyebrow")} title={t("iss.gallery.title")} />
           <p className="section-sub">{t("iss.gallery.sub")}</p>
           <div className="grid cols-3">
@@ -442,6 +439,12 @@ export default function Iss() {
           <FeatureRow tag={t("iss.tips.t3_tag")} title={t("iss.tips.t3_title")} num={t("iss.tips.t3_num")}>{t("iss.tips.t3_body")}</FeatureRow>
         </div>
       </section>
+
+      {show3D && (
+        <Suspense fallback={null}>
+          <IssStationFullscreen onClose={() => setShow3D(false)} />
+        </Suspense>
+      )}
 
       {modalIdx !== null && (
         <div className="photo-modal open" onClick={() => setModalIdx(null)}>

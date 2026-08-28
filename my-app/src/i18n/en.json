@@ -639,10 +639,12 @@
     "expedition": "Expedition {{n}}",
     "hero": {
       "eyebrow": "Live",
-      "title": "ISS & <span class=\"accent\">satellites</span>",
+      "title": "International <span class=\"accent\">Space Station</span>",
       "sub": "Track the International Space Station in real time and plan observations of its passes over your city.",
-      "passes": "Passes over {{city}} →",
-      "telegram": "Remind in Telegram ↗"
+      "whereNow": "Where the ISS is now →",
+      "crewCta": "Crew →",
+      "open3d": "3D model",
+      "open3dLabel": "Open the fullscreen 3D model with module labels"
     },
     "map": {
       "live": "Where the ISS is now",
@@ -729,21 +731,23 @@
       "unknownCraft": "Astronauts"
     },
     "structure": {
-      "eyebrow": "Structure & Modules",
-      "title": "How the ISS is built",
-      "sub": "The station consists of many interconnected modules, each playing a specific role.",
-      "m1_title": "Zarya",
       "m1_body": "The first ISS module, launched in 1998. It provides electrical power and storage.",
-      "m2_title": "Unity (Node 1)",
       "m2_body": "The first U.S. module, a connecting node that joins the working and living modules.",
-      "m3_title": "Destiny",
       "m3_body": "The primary U.S. research laboratory for microgravity experiments.",
-      "m4_title": "Columbus",
       "m4_body": "The European research module for experiments in biology, fluid physics, and more.",
-      "m5_title": "Kibo",
       "m5_body": "The Japanese Experiment Module, the largest on the station, featuring its own robotic arm.",
-      "m6_title": "Cupola",
       "m6_body": "An observatory module with seven windows for Earth observation and robotics."
+    },
+    "station3d": {
+      "title": "3D Model of the ISS",
+      "eyebrow": "{{count}} labeled modules · official NASA model",
+      "close": "Close",
+      "loading": "Loading 3D model…",
+      "hint": "Click any part of the station to see the module's name",
+      "resetView": "Reset view",
+      "showLabels": "Show all labels",
+      "hideLabels": "Hide labels",
+      "genericNote": "Part of the International Space Station's structure."
     },
     "facts": {
       "eyebrow": "Interesting Facts",

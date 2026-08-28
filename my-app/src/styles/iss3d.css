@@ -1,0 +1,217 @@
+/* Fullscreen 3D ISS station viewer (IssStationFullscreen.js). Visual recipe
+   mirrors the planet moon-system fullscreen viewers (.jms-* in
+   planetarium.css) — same chrome language, own namespace since this isn't a
+   moon system. */
+
+/* Always-on hero preview (IssStationHeroPreview.js) — sits in the right
+   column of the hero's .hero-grid, right of the title. No zoom/pan (there's
+   no OrbitControls at all, just an auto-orbiting camera) and no labels; the
+   fullscreen button (visible icon+text, not a hover-only tooltip like planet
+   pages' .jup-sys-cta) opens the full interactive viewer. */
+.iss3d-hero-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 420px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 42%, rgba(232,185,77,.07), transparent 70%);
+}
+.iss3d-hero-wrap canvas { display: block; width: 100%; height: 100%; }
+.iss3d-hero-placeholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 420px;
+  border-radius: 20px;
+  background: radial-gradient(circle at 50% 42%, rgba(232,185,77,.07), transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Shown until the model has actually decoded (the placeholder above only
+   covers the JS-chunk fetch; the ~2.4 MB model itself still needs a spinner
+   once the canvas is already up). */
+.iss3d-hero-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.iss3d-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid rgba(232,185,77,.25);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: iss3d-spin .8s linear infinite;
+}
+@keyframes iss3d-spin { to { transform: rotate(360deg); } }
+.iss3d-hero-cta {
+  position: absolute; top: 14px; right: 14px; z-index: 2;
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 14px 8px 12px; border-radius: 999px;
+  border: 1px solid var(--border); background: rgba(9,10,20,.72);
+  color: var(--text); font-family: var(--font-mono); font-size: 12px;
+  cursor: pointer; backdrop-filter: blur(6px);
+  transition: background .15s, border-color .15s, transform .08s;
+}
+.iss3d-hero-cta:hover { border-color: var(--gold); background: rgba(9,10,20,.9); transform: translateY(-1px); }
+.iss3d-hero-cta:active { transform: translateY(0); }
+.iss3d-hero-cta-ico { color: var(--gold); font-size: 15px; line-height: 1; }
+@media (max-width: 760px) {
+  .iss3d-hero-wrap, .iss3d-hero-placeholder { max-height: 300px; margin-top: 22px; }
+}
+
+.iss3d-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #05060d;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--text);
+}
+
+.iss3d-canvas-wrap {
+  position: absolute;
+  inset: 0;
+}
+.iss3d-canvas-wrap canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+
+.iss3d-top-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(5,6,13,.75), transparent);
+  z-index: 2;
+}
+.iss3d-top-bar > * { pointer-events: auto; }
+.iss3d-title { font-family: var(--font-display); font-weight: 700; font-size: 18px; line-height: 1.25; }
+.iss3d-sub { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+.iss3d-controls {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  z-index: 2;
+}
+.iss3d-btn {
+  height: 36px;
+  padding: 0 14px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(9,10,20,.55);
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
+}
+.iss3d-btn:hover { border-color: var(--gold); background: rgba(9,10,20,.85); }
+.iss3d-btn.on { border-color: var(--teal); color: var(--teal); }
+.iss3d-btn-close {
+  width: 34px; height: 34px; padding: 0;
+  border-radius: 50%;
+  font-size: 15px;
+}
+
+.iss3d-hint {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  max-width: 240px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-dim);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.iss3d-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+/* Module label pinned to a mesh's world position (drei <Html>) */
+.iss3d-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: rgba(5,6,13,.72);
+  color: var(--text-dim);
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -140%);
+  user-select: none;
+}
+.iss3d-label.selected { border-color: var(--gold); color: var(--gold); }
+
+/* Selected-module info card (mirrors .jms-card) */
+.iss3d-card {
+  position: absolute;
+  top: 88px;
+  right: 22px;
+  width: 280px;
+  max-width: calc(100vw - 44px);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(9,10,20,.85);
+  backdrop-filter: blur(6px);
+  z-index: 2;
+}
+.iss3d-card-num {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin-bottom: 8px;
+}
+.iss3d-card h3 { font-size: 15px; margin: 0 0 8px; line-height: 1.3; }
+.iss3d-card p { font-size: 12.5px; line-height: 1.5; color: var(--text-dim); margin: 0; }
+.iss3d-card-close {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(9,10,20,.6);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .iss3d-title { font-size: 16px; }
+  .iss3d-hint { display: none; }
+  .iss3d-card { top: auto; bottom: 88px; right: 12px; left: 12px; width: auto; }
+}
