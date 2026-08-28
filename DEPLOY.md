@@ -133,7 +133,12 @@ chown -R neowatch:neowatch /opt/neowatch/data
 ### 7b. Мультимовне SEO: білд React-фронтенду
 
 Сайт — React SPA (`my-app/`), обслуговується FastAPI з мовними префіксами
-`/ua/...` та `/en/...` (slug'и перекладено). Перед кожним деплоєм фронтенду:
+`/ua/...` та `/en/...` (slug'и перекладено). Перед кожним деплоєм фронтенду
+переконайся, що `my-app/.env` існує з `REACT_APP_CARTO_KEY` (див.
+`my-app/.env.example`) — без нього карти (МКС/супутники/темне небо) на
+CARTO-тайлах покажуть водяний знак "API KEY REQUIRED" замість базової карти;
+CRA вшиває `REACT_APP_*` у білд лише на етапі збірки, тож ключ має бути
+виставлений до `npm run build`:
 
 ```bash
 cd /opt/neowatch/my-app

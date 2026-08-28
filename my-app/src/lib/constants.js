@@ -55,10 +55,11 @@ export const BOT_URL = "https://t.me/neo_watch_bot";
 
 // CARTO's free raster basemap tiles (basemaps.cartocdn.com, used by
 // SatMap/DarkSkyMap/EarthTerminatorMap) now watermark unauthenticated
-// requests with "API KEY REQUIRED" — this key is meant to ship client-side
-// (CARTO rate-limits it by referrer, not a secret). Get one at
+// requests with "API KEY REQUIRED" — this key ships client-side by design
+// (CARTO rate-limits it by referrer, not a secret), baked in at CRA build
+// time from my-app/.env's REACT_APP_CARTO_KEY. Get one at
 // https://carto.com/basemaps/apikey/
-export const CARTO_KEY = "cb1_2h96_1_a3d8787217ef94bb539f13c2";
+export const CARTO_KEY = process.env.REACT_APP_CARTO_KEY || "";
 
 // Launch Library 2 status id → (label, pillClass). Mirrors web/data.py _LAUNCH_STATUS.
 export const LAUNCH_STATUS_BY_CLASS = {
