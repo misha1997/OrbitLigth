@@ -6,8 +6,9 @@
 import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import L from "leaflet";
 import { getSubsolarPoint, getNightPolygon } from "../lib/terminator";
+import { CARTO_KEY } from "../lib/constants";
 
-const BASE_TILE_URL = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+const BASE_TILE_URL = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${CARTO_KEY}`;
 const BASE_TILE_ATTR = "© OpenStreetMap © CARTO";
 const KYIV = [50.45, 30.52];
 const TICK_MS = 60000; // subsolar point moves ~0.25°/min — a minute is plenty

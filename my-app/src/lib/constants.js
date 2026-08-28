@@ -53,6 +53,13 @@ export const NAV_GROUPS = [
 
 export const BOT_URL = "https://t.me/neo_watch_bot";
 
+// CARTO's free raster basemap tiles (basemaps.cartocdn.com, used by
+// SatMap/DarkSkyMap/EarthTerminatorMap) now watermark unauthenticated
+// requests with "API KEY REQUIRED" — this key is meant to ship client-side
+// (CARTO rate-limits it by referrer, not a secret). Get one at
+// https://carto.com/basemaps/apikey/
+export const CARTO_KEY = "cb1_2h96_1_a3d8787217ef94bb539f13c2";
+
 // Launch Library 2 status id → (label, pillClass). Mirrors web/data.py _LAUNCH_STATUS.
 export const LAUNCH_STATUS_BY_CLASS = {
   gold: "Go", teal: "Success", coral: "Failure",

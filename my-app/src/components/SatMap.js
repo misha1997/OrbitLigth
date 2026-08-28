@@ -13,8 +13,9 @@ import L from "leaflet";
 import * as satellite from "satellite.js";
 import i18next from "../i18n";
 import { getTle, getTleGroups } from "../lib/api";
+import { CARTO_KEY } from "../lib/constants";
 
-const TILE_URL = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+const TILE_URL = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${CARTO_KEY}`;
 const TILE_ATTR = "© OpenStreetMap © CARTO · TLE: Celestrak";
 
 function propagate(satrec, date) {

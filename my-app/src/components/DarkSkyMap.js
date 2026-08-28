@@ -10,8 +10,9 @@ import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import L from "leaflet";
 import i18next from "../i18n";
 import { getZoneAtPoint, getTrendAtPoint, TIER_COLORS, LP_YEARS } from "../lib/lightPollution";
+import { CARTO_KEY } from "../lib/constants";
 
-const BASE_TILE_URL = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+const BASE_TILE_URL = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${CARTO_KEY}`;
 const BASE_TILE_ATTR = "© OpenStreetMap © CARTO";
 
 // Same tile grid as lib/lightPollution.js (native zoom 6 — the atlas's own
