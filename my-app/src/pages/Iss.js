@@ -5,6 +5,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLang } from "../context/LanguageContext";
+import "../styles/gallery.css"; // For .photo-modal
 import SatMap from "../components/SatMap";
 import SectionHead from "../components/primitives/SectionHead";
 import FeatureRow from "../components/primitives/FeatureRow";
@@ -15,6 +16,26 @@ import { fmtInt } from "../lib/format";
 import { BOT_URL } from "../lib/constants";
 
 const MONTH_KEYS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+// Real orbital elements read straight off the TLE-derived satrec (satellite.js
+// v5, sgp4init) — no propagation needed, these are the fixed elements for the
+// current TLE epoch. WGS72 Earth radius (6378.135 km) matches the constant
+// satellite.js itself uses internally, so satrec.a/alta/altp convert cleanly.
+const EARTH_RADIUS_KM = 6378.135;
+function issOrbitalElements(satrec) {
+  if (!satrec) return null;
+  return {
+    incDeg: satrec.inclo * (180 / Math.PI),
+    ecc: satrec.ecco,
+    periodMin: (2 * Math.PI) / satrec.no,
+    revPerDay: 1440 / ((2 * Math.PI) / satrec.no),
+    semiMajorKm: satrec.a * EARTH_RADIUS_KM,
+    apogeeKm: satrec.alta * EARTH_RADIUS_KM,
+    perigeeKm: satrec.altp * EARTH_RADIUS_KM,
+    raanDeg: satrec.nodeo * (180 / Math.PI),
+    argpDeg: satrec.argpo * (180 / Math.PI),
+  };
+}
 
 function PassRow({ p, t }) {
   const parts = (p.start || "").split("· ");
@@ -131,6 +152,37 @@ function CrewSection({ crewD, t }) {
   );
 }
 
+const GALLERY = [
+  {
+    // Mirrored locally (same NASA photo as Wikimedia's
+    // International_Space_Station_after_undocking_of_STS-132.jpg) — no
+    // external hotlink for this one.
+    src: "/iss/iss-photo.jpg",
+    captionKey: "iss.gallery.img1_caption",
+    title: "ISS",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/1/1c/ISS_configuration_2021-07_en.svg",
+    captionKey: "iss.gallery.img2_caption",
+    title: "ISS Diagram",
+    contain: true,
+    bg: "#fff"
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/9/95/Tracy_Caldwell_Dyson_in_Cupola_ISS.jpg",
+    captionKey: "iss.gallery.img3_caption",
+    title: "Cupola",
+  }
+];
+
+// Module/fact card bodies share one style each — defined once instead of
+// repeating the same inline object literal on every card.
+const STRUCT_BODY_STYLE = { fontSize: "1rem", lineHeight: 1.4, color: "var(--text)", marginTop: 8, fontWeight: 400 };
+const FACT_TITLE_STYLE = { fontSize: "1.2rem", marginBottom: 8, color: "var(--accent)" };
+const FACT_BODY_STYLE = { fontSize: "1rem", lineHeight: 1.4, color: "var(--text)", fontWeight: 400, textTransform: "none" };
+const STRUCTURE_MODULES = ["m1", "m2", "m3", "m4", "m5", "m6"];
+const FACTS = ["f1", "f2", "f3"];
+
 export default function Iss() {
   const { t } = useTranslation();
   useEffect(() => { document.title = t("title.iss"); }, [t]);
@@ -140,6 +192,25 @@ export default function Iss() {
   const city = locCity(loc) || t("common.kyiv");
   const [note, setNote] = useState(t("iss.loadingPos"));
   const [pos, setPos] = useState(null); // {lat,lon,alt,vel} from onTick
+  const [elements, setElements] = useState(null); // orbital elements from the live TLE
+  const elementsSetRef = useRef(false);
+  const [modalIdx, setModalIdx] = useState(null);
+
+  // Lightbox keyboard nav + scroll lock (same pattern as Galaxy.js / RoverPhotos.js).
+  useEffect(() => {
+    if (modalIdx === null) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setModalIdx(null);
+      else if (e.key === "ArrowLeft") setModalIdx((i) => (i === null ? null : (i - 1 + GALLERY.length) % GALLERY.length));
+      else if (e.key === "ArrowRight") setModalIdx((i) => (i === null ? null : (i + 1) % GALLERY.length));
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [modalIdx]);
 
   const { data: crewD } = useApi(() => getIssCrew(lang), { deps: [lang] });
   const { data: passD } = useApi(() => getIssPasses(loc, lang), { deps: [loc && loc.lat, loc && loc.lon, lang] });
@@ -198,7 +269,13 @@ export default function Iss() {
             <div className="map-body map-live">
               <SatMap ref={mapRef} groups={["iss"]} limit={5} follow track lang={lang}
                 onReady={() => setNote(t("iss.map.note"))}
-                onTick={(p) => setPos(p)} />
+                onTick={(p, sats) => {
+                  setPos(p);
+                  if (!elementsSetRef.current && sats && sats[0] && sats[0].satrec) {
+                    elementsSetRef.current = true;
+                    setElements(issOrbitalElements(sats[0].satrec));
+                  }
+                }} />
               <div className="note">{note}</div>
             </div>
           </div>
@@ -221,8 +298,8 @@ export default function Iss() {
             </div>
             <div className="card">
               <div className="k">{t("iss.card.orbit")}</div>
-              <div className="v">92<span className="unit">{t("common.units.min")}</span></div>
-              <div className="foot">{t("iss.card.orbitFoot")}</div>
+              <div className="v">{elements ? elements.periodMin.toFixed(1) : "92"}<span className="unit">{t("common.units.min")}</span></div>
+              <div className="foot">{elements ? t("iss.card.orbitFootLive", { n: elements.revPerDay.toFixed(2) }) : t("iss.card.orbitFoot")}</div>
             </div>
             <div className="card">
               <div className="k">{t("iss.card.crew")}</div>
@@ -233,7 +310,105 @@ export default function Iss() {
         </div>
       </section>
 
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("iss.elements.eyebrow")} title={t("iss.elements.title")} />
+          <p className="section-sub">{t("iss.elements.sub")}</p>
+          <div className="grid cols-4">
+            <div className="card">
+              <div className="k">{t("iss.elements.inclination")}</div>
+              <div className="v">{elements ? elements.incDeg.toFixed(2) : "51.64"}<span className="unit">°</span></div>
+              <div className="foot">{t("iss.elements.inclinationFoot")}</div>
+            </div>
+            <div className="card">
+              <div className="k">{t("iss.elements.eccentricity")}</div>
+              <div className="v">{elements ? elements.ecc.toFixed(4) : "0.0004"}</div>
+              <div className="foot">{t("iss.elements.eccentricityFoot")}</div>
+            </div>
+            <div className="card">
+              <div className="k">{t("iss.elements.apogee")}</div>
+              <div className="v">{elements ? fmtInt(Math.round(elements.apogeeKm)) : "421"}<span className="unit">{t("common.units.km")}</span></div>
+              <div className="foot">{t("iss.elements.apogeeFoot")}</div>
+            </div>
+            <div className="card">
+              <div className="k">{t("iss.elements.perigee")}</div>
+              <div className="v">{elements ? fmtInt(Math.round(elements.perigeeKm)) : "413"}<span className="unit">{t("common.units.km")}</span></div>
+              <div className="foot">{t("iss.elements.perigeeFoot")}</div>
+            </div>
+            <div className="card">
+              <div className="k">{t("iss.elements.semiMajor")}</div>
+              <div className="v">{elements ? fmtInt(Math.round(elements.semiMajorKm)) : "6 796"}<span className="unit">{t("common.units.km")}</span></div>
+              <div className="foot">{t("iss.elements.semiMajorFoot")}</div>
+            </div>
+            <div className="card">
+              <div className="k">{t("iss.elements.raan")}</div>
+              <div className="v">{elements ? elements.raanDeg.toFixed(1) : "—"}<span className="unit">°</span></div>
+              <div className="foot">{t("iss.elements.raanFoot")}</div>
+            </div>
+            <div className="card">
+              <div className="k">{t("iss.elements.argp")}</div>
+              <div className="v">{elements ? elements.argpDeg.toFixed(1) : "—"}<span className="unit">°</span></div>
+              <div className="foot">{t("iss.elements.argpFoot")}</div>
+            </div>
+            <div className="card">
+              <div className="k">{t("iss.elements.revPerDay")}</div>
+              <div className="v">{elements ? elements.revPerDay.toFixed(2) : "15.50"}</div>
+              <div className="foot">{t("iss.elements.revPerDayFoot")}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <CrewSection crewD={crewD} t={t} />
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("iss.structure.eyebrow")} title={t("iss.structure.title")} />
+          <p className="section-sub">{t("iss.structure.sub")}</p>
+          <div className="grid cols-3">
+            {STRUCTURE_MODULES.map((m) => (
+              <div className="card" key={m}>
+                <div className="k">{t(`iss.structure.${m}_title`)}</div>
+                <div className="v" style={STRUCT_BODY_STYLE}>{t(`iss.structure.${m}_body`)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("iss.gallery.eyebrow")} title={t("iss.gallery.title")} />
+          <p className="section-sub">{t("iss.gallery.sub")}</p>
+          <div className="grid cols-3">
+            {GALLERY.map((g, i) => (
+              <div key={i} className="card" onClick={() => setModalIdx(i)} role="button" tabIndex={0}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setModalIdx(i); } }}
+                style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column", cursor: "zoom-in", background: g.bg || "var(--bg-card)" }}>
+                <img src={g.src} alt={g.title} style={{ width: "100%", height: "200px", objectFit: g.contain ? "contain" : "cover", display: "block", background: g.bg || "transparent" }} loading="lazy" />
+                <div style={{ padding: "16px", fontSize: "0.9rem", color: g.bg ? "#666" : "var(--text-dim)", background: g.bg || "transparent" }}>
+                  {t(g.captionKey)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("iss.facts.eyebrow")} title={t("iss.facts.title")} />
+          <p className="section-sub">{t("iss.facts.sub")}</p>
+          <div className="grid cols-3">
+            {FACTS.map((f) => (
+              <div className="card" key={f}>
+                <div className="v" style={FACT_TITLE_STYLE}>{t(`iss.facts.${f}_title`)}</div>
+                <div style={FACT_BODY_STYLE}>{t(`iss.facts.${f}_body`)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="section" id="passes" style={{ paddingTop: 0 }}>
         <div className="wrap">
@@ -267,6 +442,33 @@ export default function Iss() {
           <FeatureRow tag={t("iss.tips.t3_tag")} title={t("iss.tips.t3_title")} num={t("iss.tips.t3_num")}>{t("iss.tips.t3_body")}</FeatureRow>
         </div>
       </section>
+
+      {modalIdx !== null && (
+        <div className="photo-modal open" onClick={() => setModalIdx(null)}>
+          <div className="photo-modal-inner" onClick={(e) => e.stopPropagation()}>
+            <div className="photo-modal-img"
+              style={{
+                backgroundImage: `url("${GALLERY[modalIdx].src}")`,
+                backgroundSize: GALLERY[modalIdx].contain ? "contain" : "cover",
+                backgroundColor: GALLERY[modalIdx].bg || "transparent"
+              }}>
+              <button className="photo-modal-close" onClick={() => setModalIdx(null)} aria-label={t("iss.gallery.close")}>✕</button>
+              <button className="photo-modal-nav prev" aria-label={t("iss.gallery.prev")}
+                onClick={() => setModalIdx((i) => (i - 1 + GALLERY.length) % GALLERY.length)}>‹</button>
+              <button className="photo-modal-nav next" aria-label={t("iss.gallery.next")}
+                onClick={() => setModalIdx((i) => (i + 1) % GALLERY.length)}>›</button>
+            </div>
+            <div className="photo-modal-info">
+              <h3>{GALLERY[modalIdx].title}</h3>
+              <p>{t(GALLERY[modalIdx].captionKey)}</p>
+              <a className="section-link" style={{ marginTop: "auto", paddingTop: 18 }}
+                href={GALLERY[modalIdx].src} target="_blank" rel="noopener noreferrer">
+                {t("iss.gallery.openFull")} ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

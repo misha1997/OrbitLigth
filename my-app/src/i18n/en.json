@@ -660,7 +660,29 @@
       "crew": "Crew on board",
       "leo": "Low Earth orbit",
       "orbitFoot": "~15.5 orbits per day",
+      "orbitFootLive": "~{{n}} orbits/day · from live TLE",
       "crewUnit": "people"
+    },
+    "elements": {
+      "eyebrow": "From live TLE",
+      "title": "Orbital elements",
+      "sub": "Computed right in your browser from the latest TLE set (Celestrak) — the same data driving the station on the map above.",
+      "inclination": "Inclination",
+      "inclinationFoot": "Angle between the orbit and Earth's equator",
+      "eccentricity": "Eccentricity",
+      "eccentricityFoot": "0 = circle, closer to 1 = stretched ellipse",
+      "apogee": "Apogee",
+      "apogeeFoot": "Farthest point of the orbit from Earth",
+      "perigee": "Perigee",
+      "perigeeFoot": "Closest point of the orbit to Earth",
+      "semiMajor": "Semi-major axis",
+      "semiMajorFoot": "Half the orbit's longest axis, from Earth's center",
+      "raan": "Right ascension of node",
+      "raanFoot": "Orientation of the orbital plane around Earth",
+      "argp": "Argument of perigee",
+      "argpFoot": "Orientation of the ellipse within the orbit plane",
+      "revPerDay": "Orbits per day",
+      "revPerDayFoot": "Full loops the ISS makes around Earth every 24h"
     },
     "s2": {
       "eyebrow": "Passes over {{city}}",
@@ -705,6 +727,46 @@
       "loading": "Loading crew…",
       "unavailable": "Crew roster is unavailable right now. Try refreshing the page.",
       "unknownCraft": "Astronauts"
+    },
+    "structure": {
+      "eyebrow": "Structure & Modules",
+      "title": "How the ISS is built",
+      "sub": "The station consists of many interconnected modules, each playing a specific role.",
+      "m1_title": "Zarya",
+      "m1_body": "The first ISS module, launched in 1998. It provides electrical power and storage.",
+      "m2_title": "Unity (Node 1)",
+      "m2_body": "The first U.S. module, a connecting node that joins the working and living modules.",
+      "m3_title": "Destiny",
+      "m3_body": "The primary U.S. research laboratory for microgravity experiments.",
+      "m4_title": "Columbus",
+      "m4_body": "The European research module for experiments in biology, fluid physics, and more.",
+      "m5_title": "Kibo",
+      "m5_body": "The Japanese Experiment Module, the largest on the station, featuring its own robotic arm.",
+      "m6_title": "Cupola",
+      "m6_body": "An observatory module with seven windows for Earth observation and robotics."
+    },
+    "facts": {
+      "eyebrow": "Interesting Facts",
+      "title": "Facts about the ISS",
+      "sub": "Incredible things to know about the most expensive scientific object in history.",
+      "f1_title": "Size of a football field",
+      "f1_body": "Together with its solar arrays, the ISS is about 109 meters long — roughly the length of an American football field.",
+      "f2_title": "16 sunrises a day",
+      "f2_body": "Because the ISS orbits the Earth every 90 minutes, the crew sees a sunrise or a sunset 16 times every day.",
+      "f3_title": "Microgravity sensation",
+      "f3_body": "Gravity at the ISS altitude is about 90% of that on Earth's surface, but a state of weightlessness occurs because the station is in continuous free fall in orbit."
+    },
+    "gallery": {
+      "eyebrow": "Gallery",
+      "title": "Real Photos & Diagrams",
+      "sub": "A glimpse into the life and structure of the International Space Station.",
+      "img1_caption": "The ISS after undocking",
+      "img2_caption": "Module configuration of the ISS",
+      "img3_caption": "Astronaut inside the Cupola module",
+      "close": "Close",
+      "prev": "Previous photo",
+      "next": "Next photo",
+      "openFull": "Open original"
     }
   },
   "launches": {
