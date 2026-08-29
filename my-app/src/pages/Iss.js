@@ -6,7 +6,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLang } from "../context/LanguageContext";
 import "../styles/gallery.css"; // For .photo-modal
-import "../styles/iss3d.css"; // For .iss3d-preview-* (3D viewer CTA card)
+import "../styles/iss3d.css"; // For .iss3d-hero-* (hero 3D preview + loading placeholder)
 import SatMap from "../components/SatMap";
 import SectionHead from "../components/primitives/SectionHead";
 import FeatureRow from "../components/primitives/FeatureRow";

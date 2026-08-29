@@ -17,6 +17,7 @@ import IssPassCards from "../components/home/IssPassCards";
 import LaunchCalendar from "../components/home/LaunchCalendar";
 import NewsCards from "../components/home/NewsCards";
 import SectionsGrid from "../components/home/SectionsGrid";
+import RomanLaunchWidget from "../components/home/RomanLaunchWidget";
 
 import HistoryWidget from "../components/home/HistoryWidget";
 
@@ -43,6 +44,12 @@ export default function Home() {
             </div>
             <SkyDome />
           </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <RomanLaunchWidget />
         </div>
       </section>
 

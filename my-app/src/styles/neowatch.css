@@ -1603,6 +1603,40 @@ h2.section-title {
   box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
 }
 
+/* Reusable 16:9 embed frame for a third-party <iframe>/<video> (e.g. Roman.js's
+   launch livestream). Ratio box via aspect-ratio, child fills it absolutely. */
+.video-embed-16x9 {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: #000;
+}
+.video-embed-16x9 iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Equipment/mission status row (e.g. Hubble.js's instrument list) — name +
+   install date + right-aligned active/retired state. */
+.mission-row { display: flex; align-items: center; gap: 14px; padding: 13px 4px; border-bottom: 1px solid var(--border) }
+.mission-row:last-child { border-bottom: none }
+.mission-row .nm { font-weight: 600; font-size: 13.5px; flex: 1 }
+.mission-row .ag { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); width: 90px }
+.mission-row .yr { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); width: 56px }
+.mission-row .st { font-family: var(--font-mono); font-size: 11px; width: 110px; text-align: right }
+.mission-row .st.active { color: var(--teal) }
+.mission-row .st.retired { color: var(--text-dim) }
+@media (max-width: 700px) {
+  .mission-row .ag { display: none }
+}
+
 .feat-row:hover::before {
   opacity: .8
 }
@@ -3533,6 +3567,22 @@ h1.page-title {
   display: block
 }
 
+/* Compact variant for an inline countdown next to a section heading (e.g.
+   Roman.js's "Запуск Roman" launch-section head) instead of the full-size
+   hero clock. */
+.clock-compact .seg {
+  padding: 8px 10px;
+  min-width: 46px;
+  border-radius: 8px;
+}
+.clock-compact .seg .n {
+  font-size: 19px;
+}
+.clock-compact .seg .u {
+  font-size: 8px;
+  margin-top: 3px;
+}
+
 /* Keep the countdown on a single line on small screens: shrink the segments
    and let them share the available width instead of wrapping to a 2nd row. */
 @media (max-width: 600px) {
@@ -5194,4 +5244,68 @@ table.exo-table tr.exo-row:focus-visible td {
   table.data th { padding: 7px 8px }
   table.data td { padding: 9px 8px; font-size: 12.5px }
   .table-wrap table.data { min-width: 500px }
+}/* ---------- hubble image cards ---------- */
+.iconic-img-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(237,238,245,.02);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+.iconic-img-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(232,185,77,.4);
+  box-shadow: 0 12px 30px rgba(0,0,0,.4);
+}
+.iconic-img-card .photo {
+  aspect-ratio: 1/1;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+.iconic-img-card .photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(9,10,20,0.95) 0%, rgba(9,10,20,0.4) 30%, transparent 60%);
+}
+.iconic-img-card .tag {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gold);
+  background: rgba(9,10,20,.8);
+  border: 1px solid rgba(232,185,77,.4);
+  padding: 5px 12px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  letter-spacing: .06em;
+}
+.iconic-img-card .body {
+  padding: 22px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(237,238,245,.05);
+}
+.iconic-img-card h4 {
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.35;
+}
+.iconic-img-card p {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.65;
+  margin: 0;
 }

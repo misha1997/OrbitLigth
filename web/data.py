@@ -2570,6 +2570,40 @@ def _mast_hubble_jwst_raw() -> list | None:
     # again rather than being stuck empty for the full 12h TTL).
     return _run_mast_subprocess(["hubble-jwst"], timeout=90)
 
+
+# Last-good hubble-jwst payload, kept beyond the TTL — same "stash" pattern as
+# _TLE_STASH: a slow/empty MAST poll shouldn't blank the Hubble/JWST galleries
+# for every visitor until the next lucky poll succeeds. Persisted to disk so a
+# server restart doesn't lose it either.
+_MAST_HJ_STASH: list | None = None
+_MAST_HJ_STASH_PATH = os.path.join("data", "mast_hj_stash.json")
+
+
+def _mast_hj_stash_load() -> list | None:
+    global _MAST_HJ_STASH
+    if _MAST_HJ_STASH is not None:
+        return _MAST_HJ_STASH
+    try:
+        if os.path.exists(_MAST_HJ_STASH_PATH):
+            with open(_MAST_HJ_STASH_PATH, encoding="utf-8") as f:
+                _MAST_HJ_STASH = json.load(f)
+                return _MAST_HJ_STASH
+    except Exception as e:
+        logger.warning("MAST hubble-jwst stash load: %s", e)
+    return None
+
+
+def _mast_hj_stash_save(payload: list) -> None:
+    global _MAST_HJ_STASH
+    _MAST_HJ_STASH = payload
+    try:
+        os.makedirs("data", exist_ok=True)
+        with open(_MAST_HJ_STASH_PATH, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False)
+    except Exception as e:
+        logger.warning("MAST hubble-jwst stash save: %s", e)
+
+
 async def get_mast_hubble_jwst() -> list:
     # `v is not None` isn't enough here: a subprocess that ran fine but hit
     # its internal 45s per-batch deadline on every target (see
@@ -2580,11 +2614,22 @@ async def get_mast_hubble_jwst() -> list:
     # famous targets having zero recent HST/JWST imagery is implausible
     # enough to treat an empty list the same as a failure: don't cache it,
     # let the next request try again.
+    #
+    # But "retry next request" still means *this* request has nothing to
+    # show — so on an empty/failed poll, fall back to the last known-good
+    # list (_MAST_HJ_STASH) instead of returning []. The live poll keeps
+    # retrying on every request either way, so a fresh success overwrites the
+    # stash the moment MAST cooperates again; the Hubble/JWST pages already
+    # show each photo's observation date, so a slightly older stashed photo
+    # is still honestly labeled, not passed off as brand new.
     val = await asyncio.to_thread(
         get_or_fetch, "mast_hj", 43200, _mast_hubble_jwst_raw,
         lambda v: bool(v),
     )
-    return val or []
+    if val:
+        _mast_hj_stash_save(val)
+        return val
+    return _mast_hj_stash_load() or []
 
 def get_history_today(lang: str) -> dict:
     from database import get_db_connection

@@ -1,0 +1,155 @@
+/* Shared 3D viewer chrome for the Hubble and JWST pages — same visual
+   recipe as iss3d.css (hero auto-rotating preview + fullscreen modal), under
+   its own "tele3d-" namespace since neither telescope model carries the
+   named-node structure that drives ISS's per-module click labels (Hubble's
+   nodes are named by texture, "foil_gold"/"AO_1"/etc.; JWST is a single
+   merged mesh with 36 material-tagged primitives, no node hierarchy at all).
+   Both fullscreen viewers here are free-orbit explorers with a static facts
+   panel rather than click-to-select. */
+
+/* ---- Hero preview (always-on, auto-rotating, no zoom/labels) ---- */
+.tele3d-hero-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 420px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 42%, rgba(232,185,77,.07), transparent 70%);
+}
+.tele3d-hero-wrap canvas { display: block; width: 100%; height: 100%; }
+.tele3d-hero-placeholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 420px;
+  border-radius: 20px;
+  background: radial-gradient(circle at 50% 42%, rgba(232,185,77,.07), transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tele3d-hero-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.tele3d-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid rgba(232,185,77,.25);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: tele3d-spin .8s linear infinite;
+}
+@keyframes tele3d-spin { to { transform: rotate(360deg); } }
+.tele3d-hero-cta {
+  position: absolute; top: 14px; right: 14px; z-index: 2;
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 14px 8px 12px; border-radius: 999px;
+  border: 1px solid var(--border); background: rgba(9,10,20,.72);
+  color: var(--text); font-family: var(--font-mono); font-size: 12px;
+  cursor: pointer; backdrop-filter: blur(6px);
+  transition: background .15s, border-color .15s, transform .08s;
+}
+.tele3d-hero-cta:hover { border-color: var(--gold); background: rgba(9,10,20,.9); transform: translateY(-1px); }
+.tele3d-hero-cta:active { transform: translateY(0); }
+.tele3d-hero-cta-ico { color: var(--gold); font-size: 15px; line-height: 1; }
+@media (max-width: 760px) {
+  .tele3d-hero-wrap, .tele3d-hero-placeholder { max-height: 300px; margin-top: 22px; }
+}
+
+/* ---- Fullscreen free-orbit viewer ---- */
+.tele3d-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #05060d;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--text);
+}
+.tele3d-canvas-wrap {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+}
+.tele3d-canvas-wrap:active { cursor: grabbing; }
+.tele3d-canvas-wrap canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.tele3d-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.tele3d-top-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(5,6,13,.75), transparent);
+  z-index: 2;
+}
+.tele3d-top-bar > * { pointer-events: auto; }
+.tele3d-title { font-family: var(--font-display); font-weight: 700; font-size: 18px; line-height: 1.25; }
+.tele3d-sub { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+.tele3d-btn {
+  width: 34px; height: 34px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border); background: rgba(9,10,20,.55);
+  color: var(--text); font-size: 15px; line-height: 1; cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.tele3d-btn:hover { border-color: var(--gold); background: rgba(9,10,20,.85); }
+
+/* Static facts panel — a fixed list rather than a per-click card, since
+   neither model can be reliably split into clickable named parts. */
+.tele3d-facts {
+  position: absolute;
+  top: 88px;
+  right: 22px;
+  width: 280px;
+  max-width: calc(100vw - 44px);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(9,10,20,.82);
+  backdrop-filter: blur(6px);
+  z-index: 2;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+.tele3d-facts h3 { font-size: 14px; margin: 0 0 10px; color: var(--gold); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .06em; }
+.tele3d-facts .row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid var(--border); font-size: 12.5px; }
+.tele3d-facts .row:first-of-type { border-top: none; }
+.tele3d-facts .row span:first-child { color: var(--text-dim); }
+.tele3d-facts .row span:last-child { text-align: right; font-family: var(--font-mono); }
+
+.tele3d-hint {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  max-width: 240px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-dim);
+  z-index: 2;
+  pointer-events: none;
+}
+@media (max-width: 640px) {
+  .tele3d-title { font-size: 16px; }
+  .tele3d-hint { display: none; }
+  .tele3d-facts { top: auto; bottom: 22px; right: 12px; left: 12px; width: auto; max-height: 40vh; }
+}
