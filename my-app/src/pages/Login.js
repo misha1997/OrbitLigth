@@ -12,7 +12,7 @@ import { useGoogleButton, useTelegramWidget } from "../hooks/useOAuthWidgets";
 import { getAuthConfig, loginAccount, loginWithGoogle, loginWithTelegram } from "../lib/authApi";
 import { pathFor } from "../lib/seo";
 import LocalizedLink from "../components/primitives/LocalizedLink";
-import { GoogleIcon, TelegramShareIcon } from "../lib/icons";
+import { GoogleIcon } from "../lib/icons";
 import "../styles/account.css";
 
 export default function Login() {
@@ -99,15 +99,7 @@ export default function Login() {
         {(config?.telegram_bot_username || config?.google_client_id) && (
           <div className="auth-divider">{t("auth.orDivider")}</div>
         )}
-        {config?.telegram_bot_username && (
-          <div className="oauth-custom-wrap">
-            <div className="oauth-custom-btn" aria-hidden="true">
-              <span className="oauth-custom-icon telegram"><TelegramShareIcon size={14} /></span>
-              <span>{t("auth.telegramButton")}</span>
-            </div>
-            <div ref={telegramRef} className="oauth-real-overlay" />
-          </div>
-        )}
+        {config?.telegram_bot_username && <div ref={telegramRef} id="nw-telegram-login-widget" />}
         {config?.google_client_id && (
           <div className="oauth-custom-wrap">
             {!googleFallback ? (

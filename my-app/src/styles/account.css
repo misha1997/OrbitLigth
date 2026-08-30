@@ -314,9 +314,12 @@
   background: var(--border);
 }
 
-/* Custom-styled Google/Telegram buttons (Login.js, Register.js) — see the
-   header comment in hooks/useOAuthWidgets.js for why neither vendor's own
-   button chrome is used here. */
+/* Custom-styled Google sign-in button (Login.js, Register.js) — see the
+   header comment in hooks/useOAuthWidgets.js. Telegram's own widget is
+   rendered as-is (below, #nw-telegram-login-widget): stacking it invisibly
+   under a decorative button was tried and reverted — Chrome silently blocks
+   popups opened from an opacity:0 cross-origin iframe as an anti-clickjacking
+   measure, so the button looked clickable but silently did nothing. */
 .oauth-custom-wrap {
   position: relative;
   width: 100%;
@@ -364,24 +367,6 @@
 
 .oauth-custom-icon.google {
   background: #fff;
-}
-
-.oauth-custom-icon.telegram {
-  background: rgba(79, 209, 197, .15);
-  color: var(--teal);
-}
-
-/* Telegram has no prompt()-style trigger like Google's — its real (but
-   invisible) widget sits stacked exactly over the decorative button above,
-   so a genuine click lands on Telegram's own iframe and opens its popup. */
-.oauth-real-overlay {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
 }
 
 /* Google's own rendered button, shown only if signIn()'s prompt() call

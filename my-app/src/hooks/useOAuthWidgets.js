@@ -96,7 +96,12 @@ export function useGoogleButton(fallbackRef, clientId, onCredential, lang) {
   const signIn = () => {
     if (!window.google?.accounts?.id) return;
     window.google.accounts.id.prompt((notification) => {
-      if (notification.isNotDisplayed?.() || notification.isSkippedMoment?.()) {
+      // isNotDisplayed() = a real failure (browser/FedCM couldn't render the
+      // prompt at all) — that's when the fallback button is warranted.
+      // isSkippedMoment() just means the user dismissed/declined it (Esc,
+      // clicked outside, "Cancel") — a normal outcome, not a failure; falling
+      // back to Google's own button on every decline was the bug here.
+      if (notification.isNotDisplayed?.()) {
         setFallback(true);
       }
     });
