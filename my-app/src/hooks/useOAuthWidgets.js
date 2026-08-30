@@ -23,7 +23,7 @@ export function useTelegramWidget(containerRef, botUsername, onAuth) {
   }, [botUsername]);
 }
 
-export function useGoogleButton(containerRef, clientId, onCredential) {
+export function useGoogleButton(containerRef, clientId, onCredential, lang) {
   useEffect(() => {
     if (!clientId || !containerRef.current) return;
     let cancelled = false;
@@ -36,20 +36,26 @@ export function useGoogleButton(containerRef, clientId, onCredential) {
       // filled_black had near-zero contrast against this site's near-black
       // --bg (#090A14) — outline is Google's own high-contrast default and
       // reads as a real button rather than a barely-visible box.
+      // "signin" (icon + short label) instead of "continue_with" — this
+      // button sits next to Telegram's in a two-column grid (oauth-grid in
+      // account.css), and the long label overflowed that half-width column.
       window.google.accounts.id.renderButton(containerRef.current, {
         theme: "outline",
-        size: "large",
+        size: "medium",
         shape: "rectangular",
-        text: "continue_with",
+        text: "signin",
         logo_alignment: "left",
-        width: Math.min((containerRef.current.clientWidth || 180) - 2, 400),
+        width: Math.min((containerRef.current.clientWidth || 160) - 2, 400),
       });
     };
     if (window.google?.accounts?.id) {
       init();
     } else {
       const script = document.createElement("script");
-      script.src = "https://accounts.google.com/gsi/client";
+      // hl pins the button's own label to the site's UK/EN language instead
+      // of following the browser locale (was rendering Russian on a site
+      // that is deliberately UK/EN-only — see CLAUDE.md).
+      script.src = `https://accounts.google.com/gsi/client?hl=${lang === "uk" ? "uk" : "en"}`;
       script.async = true;
       script.defer = true;
       script.onload = init;
@@ -57,5 +63,5 @@ export function useGoogleButton(containerRef, clientId, onCredential) {
     }
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clientId]);
+  }, [clientId, lang]);
 }

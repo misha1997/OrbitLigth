@@ -70,7 +70,7 @@ export default function Register() {
     }
   };
 
-  useGoogleButton(googleRef, config?.google_client_id, onGoogleCredential);
+  useGoogleButton(googleRef, config?.google_client_id, onGoogleCredential, lang);
   useTelegramWidget(telegramRef, config?.telegram_bot_username, onTelegramAuth);
 
   return (
