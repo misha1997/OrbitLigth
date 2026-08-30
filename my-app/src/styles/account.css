@@ -314,13 +314,82 @@
   background: var(--border);
 }
 
-.auth-oauth-btn {
+/* Custom-styled Google/Telegram buttons (Login.js, Register.js) — see the
+   header comment in hooks/useOAuthWidgets.js for why neither vendor's own
+   button chrome is used here. */
+.oauth-custom-wrap {
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.oauth-custom-btn {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 10px;
+  padding: 12px 20px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: rgba(237, 238, 245, .03);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.oauth-custom-btn:hover {
+  background: rgba(237, 238, 245, .07);
+  border-color: rgba(237, 238, 245, .2);
+}
+
+.oauth-custom-wrap:focus-within .oauth-custom-btn {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.oauth-custom-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.oauth-custom-icon.google {
+  background: #fff;
+}
+
+.oauth-custom-icon.telegram {
+  background: rgba(79, 209, 197, .15);
+  color: var(--teal);
+}
+
+/* Telegram has no prompt()-style trigger like Google's — its real (but
+   invisible) widget sits stacked exactly over the decorative button above,
+   so a genuine click lands on Telegram's own iframe and opens its popup. */
+.oauth-real-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Google's own rendered button, shown only if signIn()'s prompt() call
+   reports it couldn't display (see useGoogleButton's `fallback` state). */
+.oauth-fallback {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
 }
 
 .auth-switch {

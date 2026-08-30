@@ -12,6 +12,7 @@ import { useGoogleButton, useTelegramWidget } from "../hooks/useOAuthWidgets";
 import { getAuthConfig, registerAccount, loginWithGoogle, loginWithTelegram } from "../lib/authApi";
 import { pathFor } from "../lib/seo";
 import LocalizedLink from "../components/primitives/LocalizedLink";
+import { GoogleIcon, TelegramShareIcon } from "../lib/icons";
 import "../styles/account.css";
 
 export default function Register() {
@@ -26,7 +27,7 @@ export default function Register() {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [config, setConfig] = useState(null);
-  const googleRef = useRef(null);
+  const googleFallbackRef = useRef(null);
   const telegramRef = useRef(null);
 
   useEffect(() => { getAuthConfig().then(setConfig).catch(() => setConfig({})); }, []);
@@ -70,7 +71,8 @@ export default function Register() {
     }
   };
 
-  useGoogleButton(googleRef, config?.google_client_id, onGoogleCredential, lang);
+  const { signIn: googleSignIn, fallback: googleFallback } =
+    useGoogleButton(googleFallbackRef, config?.google_client_id, onGoogleCredential, lang);
   useTelegramWidget(telegramRef, config?.telegram_bot_username, onTelegramAuth, lang);
 
   return (
@@ -102,8 +104,27 @@ export default function Register() {
         {(config?.telegram_bot_username || config?.google_client_id) && (
           <div className="auth-divider">{t("auth.orDivider")}</div>
         )}
-        {config?.telegram_bot_username && <div ref={telegramRef} id="nw-telegram-login-widget" />}
-        {config?.google_client_id && <div ref={googleRef} className="auth-oauth-btn" />}
+        {config?.telegram_bot_username && (
+          <div className="oauth-custom-wrap">
+            <div className="oauth-custom-btn" aria-hidden="true">
+              <span className="oauth-custom-icon telegram"><TelegramShareIcon size={14} /></span>
+              <span>{t("auth.telegramButton")}</span>
+            </div>
+            <div ref={telegramRef} className="oauth-real-overlay" />
+          </div>
+        )}
+        {config?.google_client_id && (
+          <div className="oauth-custom-wrap">
+            {!googleFallback ? (
+              <button type="button" className="oauth-custom-btn" onClick={googleSignIn}>
+                <span className="oauth-custom-icon google"><GoogleIcon size={14} /></span>
+                <span>{t("auth.googleButton")}</span>
+              </button>
+            ) : (
+              <div ref={googleFallbackRef} className="oauth-fallback" />
+            )}
+          </div>
+        )}
 
         <div className="auth-switch">
           {t("auth.haveAccount")}{" "}

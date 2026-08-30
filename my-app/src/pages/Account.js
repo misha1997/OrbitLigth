@@ -11,7 +11,7 @@ import { useLang } from "../context/LanguageContext";
 import { useAuth } from "../context/AuthContext";
 import { useLoc } from "../context/LocationContext";
 import { usePicker } from "../components/LocationPickerModal";
-import { useGoogleButton, useTelegramWidget } from "../hooks/useOAuthWidgets";
+import { useTelegramWidget } from "../hooks/useOAuthWidgets";
 import {
   getAuthConfig, updateProfile, updateNotifications, loginWithTelegram,
   unlinkTelegram, deleteAccount, uploadAvatar,
