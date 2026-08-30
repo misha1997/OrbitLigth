@@ -95,7 +95,25 @@ export function useGoogleButton(fallbackRef, clientId, onCredential, lang) {
 
   const signIn = () => {
     if (!window.google?.accounts?.id) return;
+    // A FedCM-disabled browser (Chrome's own cooldown after repeated
+    // dismissals, or a user turning off third-party sign-in) makes the
+    // underlying navigator.credentials.get() reject — and Google's library
+    // just logs that rejection to the console and never calls this callback
+    // at all, so isNotDisplayed() below never runs either. A button that
+    // silently does nothing is worse than an unnecessary fallback, so a
+    // timer backstops the callback: no response within ~1.8s (a real prompt
+    // renders near-instantly) is treated the same as isNotDisplayed().
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        setFallback(true);
+      }
+    }, 1800);
     window.google.accounts.id.prompt((notification) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
       // isNotDisplayed() = a real failure (browser/FedCM couldn't render the
       // prompt at all) — that's when the fallback button is warranted.
       // isSkippedMoment() just means the user dismissed/declined it (Esc,
