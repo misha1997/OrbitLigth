@@ -29,36 +29,43 @@ export function useGoogleButton(containerRef, clientId, onCredential, lang) {
     if (!clientId || !containerRef.current) return;
     let cancelled = false;
     const init = () => {
-      if (cancelled || !window.google?.accounts?.id) return;
+      if (cancelled || !window.google?.accounts?.id || !containerRef.current) return;
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: (resp) => onCredential(resp.credential),
       });
+      containerRef.current.innerHTML = "";
       // filled_black had near-zero contrast against this site's near-black
       // --bg (#090A14) — outline is Google's own high-contrast default and
-      // reads as a real button rather than a barely-visible box.
+      // reads as a real button rather than a barely-visible box. No `width`
+      // override: an iframe wider than Google's own button left a visible
+      // white canvas around a smaller centered button — .auth-oauth-btn's
+      // flex centering handles placement instead.
       window.google.accounts.id.renderButton(containerRef.current, {
         theme: "outline",
         size: "large",
         shape: "rectangular",
         text: "continue_with",
         logo_alignment: "left",
-        width: Math.min((containerRef.current.clientWidth || 360) - 2, 400),
       });
     };
-    if (window.google?.accounts?.id) {
-      init();
-    } else {
-      const script = document.createElement("script");
-      // hl pins the button's own label to the site's UK/EN language instead
-      // of following the browser locale (was rendering Russian on a site
-      // that is deliberately UK/EN-only — see CLAUDE.md).
-      script.src = `https://accounts.google.com/gsi/client?hl=${lang === "uk" ? "uk" : "en"}`;
-      script.async = true;
-      script.defer = true;
-      script.onload = init;
-      document.head.appendChild(script);
-    }
+    // hl pins the button's own label to the site's UK/EN language instead of
+    // following the browser locale (was rendering Russian on a site that is
+    // deliberately UK/EN-only — see CLAUDE.md). It only takes effect on the
+    // script's *first* load per page, so always reload it here — reusing an
+    // already-loaded window.google from a previous mount (e.g. Login <->
+    // Register nav, or a language switch) would silently keep whatever
+    // locale that first load happened to use.
+    const scriptId = "nw-google-gsi-script";
+    document.getElementById(scriptId)?.remove();
+    delete window.google;
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.src = `https://accounts.google.com/gsi/client?hl=${lang === "uk" ? "uk" : "en"}`;
+    script.async = true;
+    script.defer = true;
+    script.onload = init;
+    document.head.appendChild(script);
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId, lang]);
