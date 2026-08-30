@@ -35,14 +35,16 @@ export function useGoogleButton(containerRef, clientId, onCredential, lang) {
         callback: (resp) => onCredential(resp.credential),
       });
       containerRef.current.innerHTML = "";
-      // filled_black had near-zero contrast against this site's near-black
-      // --bg (#090A14) — outline is Google's own high-contrast default and
-      // reads as a real button rather than a barely-visible box. No `width`
+      // "outline" is Google's white-card default — a stark white rectangle
+      // on this site's near-black --bg (#090A14). "filled_black" goes the
+      // other way and nearly disappears against that same background.
+      // filled_blue is the one official theme with real color of its own,
+      // so it reads as a normal button in either direction. No `width`
       // override: an iframe wider than Google's own button left a visible
-      // white canvas around a smaller centered button — .auth-oauth-btn's
-      // flex centering handles placement instead.
+      // canvas around a smaller centered button — .auth-oauth-btn's flex
+      // centering handles placement instead.
       window.google.accounts.id.renderButton(containerRef.current, {
-        theme: "outline",
+        theme: "filled_blue",
         size: "large",
         shape: "rectangular",
         text: "continue_with",
