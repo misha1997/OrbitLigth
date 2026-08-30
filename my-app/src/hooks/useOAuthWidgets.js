@@ -33,8 +33,16 @@ export function useGoogleButton(containerRef, clientId, onCredential) {
         client_id: clientId,
         callback: (resp) => onCredential(resp.credential),
       });
+      // filled_black had near-zero contrast against this site's near-black
+      // --bg (#090A14) — outline is Google's own high-contrast default and
+      // reads as a real button rather than a barely-visible box.
       window.google.accounts.id.renderButton(containerRef.current, {
-        theme: "outline", size: "large", width: 360,
+        theme: "outline",
+        size: "large",
+        shape: "rectangular",
+        text: "continue_with",
+        logo_alignment: "left",
+        width: Math.min((containerRef.current.clientWidth || 180) - 2, 400),
       });
     };
     if (window.google?.accounts?.id) {

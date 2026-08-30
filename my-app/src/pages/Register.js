@@ -80,8 +80,12 @@ export default function Register() {
           {t("auth.registerTitle")}
         </h1>
 
-        {config?.telegram_bot_username && <div ref={telegramRef} id="nw-telegram-login-widget" />}
-        {config?.google_client_id && <div ref={googleRef} className="auth-oauth-btn" />}
+        {(config?.telegram_bot_username || config?.google_client_id) && (
+          <div className={`oauth-grid${config?.telegram_bot_username && config?.google_client_id ? "" : " oauth-grid-single"}`}>
+            {config?.telegram_bot_username && <div ref={telegramRef} id="nw-telegram-login-widget" />}
+            {config?.google_client_id && <div ref={googleRef} className="auth-oauth-btn" />}
+          </div>
+        )}
         {(config?.telegram_bot_username || config?.google_client_id) && (
           <div className="auth-divider">{t("auth.orDivider")}</div>
         )}

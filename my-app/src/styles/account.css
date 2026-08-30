@@ -314,13 +314,34 @@
   background: var(--border);
 }
 
+/* Login/Register: Google + Telegram side by side. Each vendor draws its own
+   button chrome (Google's outline box, Telegram's blue pill) — this grid
+   only handles placement/sizing, it doesn't add a second border around
+   either widget, since stacking our own frame on top of Google's own
+   button box read as a broken double-border. */
+.oauth-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.oauth-grid.oauth-grid-single {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 380px) {
+  .oauth-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .auth-oauth-btn {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  min-height: 44px;
 }
 
 .auth-switch {
@@ -337,8 +358,8 @@
 #nw-telegram-login-widget {
   display: flex;
   justify-content: center;
-  margin-bottom: 10px;
-  min-height: 40px;
+  align-items: center;
+  min-height: 44px;
 }
 
 /* Account page's "not linked" card: the widget sits left-aligned under the
