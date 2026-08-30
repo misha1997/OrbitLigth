@@ -314,40 +314,13 @@
   background: var(--border);
 }
 
-/* Login/Register: Google + Telegram side by side. Each vendor draws its own
-   button chrome (Google's outline box, Telegram's blue pill) — this grid
-   only handles placement/sizing, it doesn't add a second border around
-   either widget, since stacking our own frame on top of Google's own
-   button box read as a broken double-border. */
-.oauth-grid {
-  display: grid;
-  /* minmax(0, 1fr), not the 1fr shorthand (== minmax(auto, 1fr)) — with
-     "auto" a track won't shrink below its content's natural width, so a
-     too-wide vendor iframe (esp. Google's, whose own width param isn't a
-     hard cap) blew the whole grid out past the card's right edge instead
-     of just being constrained to its half. */
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.oauth-grid.oauth-grid-single {
-  grid-template-columns: 1fr;
-}
-
-@media (max-width: 380px) {
-  .oauth-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .auth-oauth-btn {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  overflow: hidden;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .auth-switch {
@@ -364,9 +337,8 @@
 #nw-telegram-login-widget {
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 44px;
-  overflow: hidden;
+  margin-bottom: 10px;
+  min-height: 40px;
 }
 
 /* Account page's "not linked" card: the widget sits left-aligned under the

@@ -71,7 +71,7 @@ export default function Register() {
   };
 
   useGoogleButton(googleRef, config?.google_client_id, onGoogleCredential, lang);
-  useTelegramWidget(telegramRef, config?.telegram_bot_username, onTelegramAuth);
+  useTelegramWidget(telegramRef, config?.telegram_bot_username, onTelegramAuth, lang);
 
   return (
     <div className="auth-wrap">
@@ -79,16 +79,6 @@ export default function Register() {
         <h1 className="page-title" style={{ fontSize: "24px", marginBottom: "22px" }}>
           {t("auth.registerTitle")}
         </h1>
-
-        {(config?.telegram_bot_username || config?.google_client_id) && (
-          <div className={`oauth-grid${config?.telegram_bot_username && config?.google_client_id ? "" : " oauth-grid-single"}`}>
-            {config?.telegram_bot_username && <div ref={telegramRef} id="nw-telegram-login-widget" />}
-            {config?.google_client_id && <div ref={googleRef} className="auth-oauth-btn" />}
-          </div>
-        )}
-        {(config?.telegram_bot_username || config?.google_client_id) && (
-          <div className="auth-divider">{t("auth.orDivider")}</div>
-        )}
 
         <form onSubmit={onSubmit}>
           <div className="form-row">
@@ -104,10 +94,17 @@ export default function Register() {
             <input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           {error && <div className="form-error">{error}</div>}
-          <button type="submit" className="btn primary" style={{ width: "100%" }} disabled={submitting}>
+          <button type="submit" className="btn primary" style={{ width: "100%", justifyContent: "center" }} disabled={submitting}>
             {t("auth.registerButton")}
           </button>
         </form>
+
+        {(config?.telegram_bot_username || config?.google_client_id) && (
+          <div className="auth-divider">{t("auth.orDivider")}</div>
+        )}
+        {config?.telegram_bot_username && <div ref={telegramRef} id="nw-telegram-login-widget" />}
+        {config?.google_client_id && <div ref={googleRef} className="auth-oauth-btn" />}
+
         <div className="auth-switch">
           {t("auth.haveAccount")}{" "}
           <LocalizedLink to="login">{t("auth.toLogin")}</LocalizedLink>

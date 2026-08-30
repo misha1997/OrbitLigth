@@ -4,7 +4,7 @@
 // is verified server-side.
 import { useEffect } from "react";
 
-export function useTelegramWidget(containerRef, botUsername, onAuth) {
+export function useTelegramWidget(containerRef, botUsername, onAuth, lang) {
   useEffect(() => {
     if (!botUsername || !containerRef.current) return;
     window.nwTelegramAuth = onAuth;
@@ -15,12 +15,13 @@ export function useTelegramWidget(containerRef, botUsername, onAuth) {
     script.setAttribute("data-size", "large");
     script.setAttribute("data-radius", "9");
     script.setAttribute("data-request-access", "write");
+    script.setAttribute("data-lang", lang === "uk" ? "uk" : "en");
     script.setAttribute("data-onauth", "nwTelegramAuth(user)");
     containerRef.current.innerHTML = "";
     containerRef.current.appendChild(script);
     return () => { delete window.nwTelegramAuth; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [botUsername]);
+  }, [botUsername, lang]);
 }
 
 export function useGoogleButton(containerRef, clientId, onCredential, lang) {
@@ -36,16 +37,13 @@ export function useGoogleButton(containerRef, clientId, onCredential, lang) {
       // filled_black had near-zero contrast against this site's near-black
       // --bg (#090A14) — outline is Google's own high-contrast default and
       // reads as a real button rather than a barely-visible box.
-      // "signin" (icon + short label) instead of "continue_with" — this
-      // button sits next to Telegram's in a two-column grid (oauth-grid in
-      // account.css), and the long label overflowed that half-width column.
       window.google.accounts.id.renderButton(containerRef.current, {
         theme: "outline",
-        size: "medium",
+        size: "large",
         shape: "rectangular",
-        text: "signin",
+        text: "continue_with",
         logo_alignment: "left",
-        width: Math.min((containerRef.current.clientWidth || 160) - 2, 400),
+        width: Math.min((containerRef.current.clientWidth || 360) - 2, 400),
       });
     };
     if (window.google?.accounts?.id) {

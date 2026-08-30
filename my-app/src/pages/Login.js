@@ -70,7 +70,7 @@ export default function Login() {
   };
 
   useGoogleButton(googleRef, config?.google_client_id, onGoogleCredential, lang);
-  useTelegramWidget(telegramRef, config?.telegram_bot_username, onTelegramAuth);
+  useTelegramWidget(telegramRef, config?.telegram_bot_username, onTelegramAuth, lang);
 
   return (
     <div className="auth-wrap">
@@ -78,16 +78,6 @@ export default function Login() {
         <h1 className="page-title" style={{ fontSize: "24px", marginBottom: "22px" }}>
           {t("auth.loginTitle")}
         </h1>
-
-        {(config?.telegram_bot_username || config?.google_client_id) && (
-          <div className={`oauth-grid${config?.telegram_bot_username && config?.google_client_id ? "" : " oauth-grid-single"}`}>
-            {config?.telegram_bot_username && <div ref={telegramRef} id="nw-telegram-login-widget" />}
-            {config?.google_client_id && <div ref={googleRef} className="auth-oauth-btn" />}
-          </div>
-        )}
-        {(config?.telegram_bot_username || config?.google_client_id) && (
-          <div className="auth-divider">{t("auth.orDivider")}</div>
-        )}
 
         <form onSubmit={onSubmit}>
           <div className="form-row">
@@ -99,10 +89,17 @@ export default function Login() {
             <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           {error && <div className="form-error">{error}</div>}
-          <button type="submit" className="btn primary" style={{ width: "100%" }} disabled={submitting}>
+          <button type="submit" className="btn primary" style={{ width: "100%", justifyContent: "center" }} disabled={submitting}>
             {t("auth.loginButton")}
           </button>
         </form>
+
+        {(config?.telegram_bot_username || config?.google_client_id) && (
+          <div className="auth-divider">{t("auth.orDivider")}</div>
+        )}
+        {config?.telegram_bot_username && <div ref={telegramRef} id="nw-telegram-login-widget" />}
+        {config?.google_client_id && <div ref={googleRef} className="auth-oauth-btn" />}
+
         <p className="form-hint">{t("auth.noResetNotice")}</p>
         <div className="auth-switch">
           {t("auth.noAccount")}{" "}
