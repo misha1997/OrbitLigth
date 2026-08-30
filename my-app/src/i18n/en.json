@@ -127,6 +127,9 @@
     "tagline": "LIGHT FROM ORBIT",
     "openBot": "Open bot ↗",
     "menu": "Menu",
+    "login": "Log in",
+    "register": "Sign up",
+    "myAccount": "My account",
     "lang": {
       "uk": "UK",
       "en": "EN"
@@ -216,7 +219,10 @@
     "neptune": "Neptune — OrbitLight",
     "uranus": "Uranus — OrbitLight",
     "saturn": "Saturn — OrbitLight",
-    "news": "Space news — NEOwatch"
+    "news": "Space news — NEOwatch",
+    "login": "Log in — OrbitLight",
+    "register": "Sign up — OrbitLight",
+    "account": "My account — OrbitLight"
   },
   "seo": {
     "desc": {
@@ -253,7 +259,10 @@
       "neptune": "Neptune up close: the strongest winds in the system, dark spots, five faint rings, the retrograde moon Triton with cryovolcanoes, and a history discovered 'on paper'.",
       "uranus": "Uranus up close: 98° axial tilt, coldest atmosphere, thirteen vertical rings, twenty-eight moons, and the single Voyager 2 flyby.",
       "saturn": "Saturn up close: the Solar System's most spectacular rings, a hexagonal storm at the north pole, over 140 moons, the Cassini-Huygens and Dragonfly missions and the next opposition.",
-      "news": "The top spaceflight stories in Ukrainian — translated and summarized coverage from SpaceflightNow, NASA, ESA and other sources, updated daily."
+      "news": "The top spaceflight stories in Ukrainian — translated and summarized coverage from SpaceflightNow, NASA, ESA and other sources, updated daily.",
+      "login": "Log in to your OrbitLight account with email, Google or Telegram.",
+      "register": "Create an OrbitLight account to manage site and bot notifications in one place.",
+      "account": "Your OrbitLight profile: personal details, Telegram connection and notification settings."
     }
   },
   "lang": {
@@ -4288,6 +4297,74 @@
       "t3_tag": "03 · CLOUDS",
       "t3_title": "Watch the clouds",
       "t3_body": "The cloud forecast above is the single biggest factor — even a perfectly dark site is useless under an overcast sky."
+    }
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "registerTitle": "Create account",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "usernameLabel": "Username",
+    "loginButton": "Log in",
+    "registerButton": "Create account",
+    "orDivider": "or",
+    "googleButton": "Continue with Google",
+    "telegramButton": "Continue with Telegram",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "toRegister": "Register",
+    "toLogin": "Log in",
+    "noResetNotice": "Password reset isn't supported yet — if you forgot your password, sign in with Google or Telegram instead.",
+    "errors": {
+      "invalid_credentials": "Invalid email or password.",
+      "email_taken": "This email is already registered.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "account": {
+    "profileEyebrow": "Profile",
+    "profileTitle": "Personal details",
+    "usernameLabel": "Username",
+    "emailLabel": "Email",
+    "cityLabel": "City (for calculations)",
+    "saveButton": "Save changes",
+    "savedHint": "Saved",
+    "telegramEyebrow": "One account",
+    "telegramTitle": "Telegram connection",
+    "telegramConnected": "Connected · sync active",
+    "telegramConnectButton": "Connect Telegram",
+    "telegramDisconnectButton": "Disconnect",
+    "telegramNotConnectedTitle": "Telegram not connected",
+    "telegramNotConnectedDesc": "Connect it to get bot notifications and manage them here",
+    "telegramNotConfigured": "Telegram sign-in isn't available on the site right now.",
+    "telegramOnlyMethodError": "This is your only way to sign in — set a password first.",
+    "notificationsEyebrow": "Synced with the bot",
+    "notificationsTitle": "Notifications",
+    "notificationsHint": "Changes here apply instantly in the Telegram bot too — one set of subscriptions for the site and the bot.",
+    "notificationsLockedHint": "Connect Telegram to manage bot notifications.",
+    "rows": {
+      "iss": { "title": "ISS", "desc": "Reminder 10 min before a visible pass over your city" },
+      "launches": { "title": "Launches", "desc": "24h, 2h and 30 min before liftoff" },
+      "neo": { "title": "NEO (asteroids)", "desc": "Alert on a potentially hazardous asteroid" },
+      "apod": { "title": "APOD", "desc": "Astronomy Picture of the Day at 09:00" },
+      "news": { "title": "News", "desc": "Daily space news digest at 10:00" },
+      "meteors": { "title": "Meteors", "desc": "Reminder before a meteor shower peak" },
+      "flares": { "title": "Solar flares", "desc": "Alert on a major solar flare" },
+      "grb": { "title": "Gamma-ray bursts (GRB)", "desc": "Alert on a detected gamma-ray burst" },
+      "gw": { "title": "Gravitational waves", "desc": "Alert on a confirmed LIGO/Virgo/KAGRA event" }
+    },
+    "dangerEyebrow": "Careful",
+    "dangerTitle": "Danger zone",
+    "deleteTitle": "Delete account",
+    "deleteDesc": "Permanently deletes your site profile and unsubscribes you from bot notifications",
+    "deleteButton": "Delete account",
+    "logoutButton": "Log out",
+    "changeAvatar": "Change profile photo",
+    "avatarErrors": {
+      "invalid_file_type": "Pick an image file (JPG, PNG, WEBP).",
+      "file_too_large": "File is too large — 5 MB max.",
+      "invalid_image": "Couldn't process that image.",
+      "generic": "Couldn't upload the photo. Please try again."
     }
   }
 }

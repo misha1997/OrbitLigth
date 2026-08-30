@@ -43,6 +43,9 @@ const Galaxy = lazy(() => import("../pages/Galaxy"));
 const News = lazy(() => import("../pages/News"));
 const NewsArticle = lazy(() => import("../pages/NewsArticle"));
 const SolarSystem3D = lazy(() => import("../pages/SolarSystem3D"));
+const Login = lazy(() => import("../pages/Login"));
+const Register = lazy(() => import("../pages/Register"));
+const Account = lazy(() => import("../pages/Account"));
 
 const PAGES = {
   home: Home,
@@ -75,6 +78,9 @@ const PAGES = {
   galaxies: Galaxies,
   news: News,
   solarsystem3d: SolarSystem3D,
+  login: Login,
+  register: Register,
+  account: Account,
 };
 
 function Loading() {

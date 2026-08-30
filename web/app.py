@@ -28,6 +28,7 @@ from fastapi.staticfiles import StaticFiles
 
 from database import init_db
 from web.api import router as api_router
+from web.auth_api import router as auth_router
 from web.seo import (
     DEFAULT_LANG,
     SITE_URL,
@@ -188,6 +189,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="NEOwatch", lifespan=lifespan)
 app.include_router(api_router)
+app.include_router(auth_router)
+
+if not os.getenv("SESSION_SECRET"):
+    logger.warning(
+        "SESSION_SECRET not set — website account sessions are signed with an "
+        "insecure dev-only default. Set SESSION_SECRET in .env before deploying "
+        "(python3 -c \"import secrets; print(secrets.token_hex(32))\")."
+    )
 
 
 @app.middleware("http")
@@ -257,6 +266,14 @@ app.mount("/galaxy-img", StaticFiles(directory=_GAL_IMG_DIR), name="galaxy-img")
 _NEWS_IMG_DIR = Path(__file__).resolve().parent.parent / "data" / "news"
 _NEWS_IMG_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/news-img", StaticFiles(directory=_NEWS_IMG_DIR), name="news-img")
+
+# User-uploaded account avatars (data/avatars/<web_user_id>.jpg), written by
+# web/auth_api.py's POST /api/auth/avatar (center-cropped + resized via
+# Pillow). Fixed filename per user, overwritten on re-upload — the DB's
+# avatar_url carries a `?v=<timestamp>` cache-buster so the browser refetches.
+_AVATAR_IMG_DIR = Path(__file__).resolve().parent.parent / "data" / "avatars"
+_AVATAR_IMG_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/avatar-img", StaticFiles(directory=_AVATAR_IMG_DIR), name="avatar-img")
 
 
 def _spa_html(name: str, lang: str, status_code: int = 200,

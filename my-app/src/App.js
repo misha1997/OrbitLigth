@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { LocationProvider } from "./context/LocationContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import { AuthProvider } from "./context/AuthContext";
 import { PickerProvider } from "./components/LocationPickerModal";
 import Layout from "./components/layout/Layout";
 import LangRouter from "./components/LangRouter";
@@ -34,16 +35,18 @@ export default function App() {
     <BrowserRouter>
       <RouteTracker />
       <LanguageProvider>
-        <LocationProvider>
-          <PickerProvider>
-            <Routes>
-              <Route element={<Layout />}>
-                <Route path="/:lang/*" element={<LangRouter />} />
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </PickerProvider>
-        </LocationProvider>
+        <AuthProvider>
+          <LocationProvider>
+            <PickerProvider>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route path="/:lang/*" element={<LangRouter />} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </Routes>
+            </PickerProvider>
+          </LocationProvider>
+        </AuthProvider>
       </LanguageProvider>
     </BrowserRouter>
   );

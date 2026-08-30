@@ -1,0 +1,350 @@
+/* Account/auth pages (Login.js, Register.js, Account.js). Classes not already
+   in styles/neowatch.css — ported from templates/account.html's <style>
+   (.card, .btn, .section, .wrap, .pill etc. are reused from neowatch.css). */
+
+.acc-head {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.acc-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* Click-to-upload avatar wrapper on the account page (Avatar.js renders the
+   actual image/fallback inside). Header.js uses Avatar.js directly, without
+   this wrapper, since it isn't clickable-to-upload there. */
+.avatar-upload {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.avatar-upload-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(9, 10, 20, .55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  opacity: 0;
+  transition: .2s;
+}
+
+.avatar-upload:hover .avatar-upload-overlay,
+.avatar-upload.uploading .avatar-upload-overlay {
+  opacity: 1;
+}
+
+.avatar-upload.uploading {
+  cursor: wait;
+}
+
+.acc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
+
+@media (max-width: 900px) {
+  .acc-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+/* Cards whose padding/max-width were previously inline (inline styles beat
+   neowatch.css's own @media(max-width:900px) .card{padding:16px} rule, so
+   they need their own mobile override here instead). */
+.acc-card-profile {
+  padding: 26px;
+  max-width: 640px;
+}
+
+.acc-card-notifications {
+  padding: 6px 24px;
+  max-width: 680px;
+}
+
+.acc-danger-zone {
+  max-width: 680px;
+}
+
+@media (max-width: 600px) {
+  .acc-card-profile {
+    padding: 18px;
+  }
+  .acc-card-notifications {
+    padding: 4px 16px;
+  }
+}
+
+.badge-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 7px 13px;
+  font-size: 12.5px;
+  background: rgba(237, 238, 245, .02);
+}
+
+.badge-chip .ic {
+  font-size: 15px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
+}
+
+@media (max-width: 700px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.form-row label {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-dim);
+  letter-spacing: .04em;
+}
+
+.form-row input,
+.form-row select {
+  background: rgba(237, 238, 245, .04);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.form-row input:focus,
+.form-row select:focus {
+  outline: none;
+  border-color: rgba(232, 185, 77, .4);
+}
+
+.form-hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 12px;
+}
+
+.form-error {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--coral, #FF6B4A);
+  margin-top: 10px;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row .si {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.settings-row .ic {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.settings-row h4 {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.settings-row p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: rgba(237, 238, 245, .12);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: .2s;
+  border: 1px solid var(--border);
+}
+
+.toggle.disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
+
+.toggle .knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #cfd2dc;
+  transition: .2s;
+}
+
+.toggle.on {
+  background: rgba(232, 185, 77, .25);
+  border-color: rgba(232, 185, 77, .5);
+}
+
+.toggle.on .knob {
+  left: 22px;
+  background: var(--gold);
+}
+
+.telegram-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 22px;
+  border: 1px solid rgba(79, 209, 197, .3);
+  border-radius: 14px;
+  background: rgba(79, 209, 197, .06);
+  flex-wrap: wrap;
+}
+
+.telegram-card.not-linked {
+  border-color: var(--border);
+  background: rgba(237, 238, 245, .02);
+}
+
+.telegram-card .ic {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(79, 209, 197, .15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.danger-zone {
+  border: 1px solid rgba(255, 107, 74, .3);
+  border-radius: 14px;
+  padding: 20px 22px;
+  background: rgba(255, 107, 74, .04);
+}
+
+.btn-danger {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  padding: 10px 16px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 107, 74, .4);
+  background: rgba(255, 107, 74, .1);
+  color: #FF6B4A;
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  background: rgba(255, 107, 74, .18);
+}
+
+/* ---------- login/register forms ---------- */
+.auth-wrap {
+  max-width: 420px;
+  margin: 64px auto;
+  padding: 0 20px;
+}
+
+.auth-card {
+  padding: 30px;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.auth-oauth-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+
+.auth-switch a {
+  color: var(--teal);
+}
+
+#nw-telegram-login-widget {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  min-height: 40px;
+}
+
+/* Account page's "not linked" card: the widget sits left-aligned under the
+   explanatory text instead of centered alone in a card (Login/Register). */
+#nw-telegram-login-widget.telegram-widget-inline {
+  justify-content: flex-start;
+  margin-top: 10px;
+  margin-bottom: 0;
+}

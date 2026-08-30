@@ -51,6 +51,11 @@ export const SLUGS = {
   uranus:         { uk: "planetariy/uran",     en: "planetarium/uranus" },
   saturn:         { uk: "planetariy/saturn",   en: "planetarium/saturn" },
   solarsystem3d:  { uk: "sonyachna-systema-3d", en: "solar-system-3d" },
+  // Account/auth pages: routable, but excluded from the sitemap and marked
+  // noindex server-side (web/seo.py _NOINDEX_NAMES) — utility pages, not content.
+  login:          { uk: "uviyty",             en: "login" },
+  register:       { uk: "reyestraciya",       en: "register" },
+  account:        { uk: "akaunt",             en: "account" },
 };
 
 // Reverse map: lang -> { slug -> name }.

@@ -4,8 +4,10 @@
 import { useState, useEffect } from "react";
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { NAV_GROUPS, BOT_URL } from "../../lib/constants";
+import { NAV_GROUPS } from "../../lib/constants";
 import { useLang } from "../../context/LanguageContext";
+import { useAuth } from "../../context/AuthContext";
+import Avatar from "../Avatar";
 import { pathFor, switchLangPath } from "../../lib/seo";
 
 export default function Header() {
@@ -15,6 +17,7 @@ export default function Header() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { lang } = useLang();
+  const { user } = useAuth();
 
   // Path for a nav entry by i18n name, in the active language.
   const to = (name) => pathFor(name, lang);
@@ -115,7 +118,21 @@ export default function Header() {
             <LangBtn code="uk" />
             <LangBtn code="en" />
           </span>
-          <a href={BOT_URL} className="cta-btn" target="_blank" rel="noreferrer">{t("header.openBot")}</a>
+          {user ? (
+            <NavLink to={to("account")} className={({ isActive }) => "header-avatar-link"}
+              title={user.username || t("header.myAccount")} aria-label={t("header.myAccount")}>
+              <Avatar user={user} size={32} />
+            </NavLink>
+          ) : (
+            <>
+              <NavLink to={to("login")} className={({ isActive }) => isActive ? "active" : ""}>
+                {t("header.login")}
+              </NavLink>
+              <NavLink to={to("register")} className="cta-btn">
+                {t("header.register")}
+              </NavLink>
+            </>
+          )}
         </nav>
         <button className={"burger" + (open ? " open" : "")} aria-label={t("header.menu")} aria-expanded={open}
           onClick={(e) => { e.stopPropagation(); setOpen((o) => !o); setOpenGroup(null); }}>

@@ -429,6 +429,57 @@ def init_db():
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
 
+        # Website account system (web/auth.py) — the site's own login
+        # identity, decoupled from the bot's `users` table the same way
+        # push_subscriptions is above. telegram_user_id optionally links to
+        # an existing users.user_id once verified via the Telegram Login
+        # Widget; notification prefs then live on that users row (single
+        # source of truth for bot + site), not duplicated here.
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS web_users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                email VARCHAR(255),
+                password_hash VARCHAR(255),
+                username VARCHAR(255),
+                google_id VARCHAR(255),
+                telegram_user_id BIGINT,
+                telegram_username VARCHAR(255),
+                telegram_first_name VARCHAR(255),
+                telegram_photo_url VARCHAR(500),
+                avatar_url VARCHAR(500),
+                city VARCHAR(255),
+                lat DECIMAL(10, 8),
+                lon DECIMAL(11, 8),
+                lang VARCHAR(5) NOT NULL DEFAULT 'uk',
+                token_version INT NOT NULL DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                UNIQUE KEY idx_email (email),
+                UNIQUE KEY idx_google_id (google_id),
+                UNIQUE KEY idx_telegram_user_id (telegram_user_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ''')
+
+        # Add avatar_url column to existing web_users (migration — added after
+        # the table itself shipped, for installs that already ran init_db()
+        # once before this column existed)
+        try:
+            cursor.execute('''
+                SELECT COUNT(*) FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                AND TABLE_NAME = 'web_users'
+                AND COLUMN_NAME = 'avatar_url'
+            ''')
+            if cursor.fetchone()[0] == 0:
+                cursor.execute('''
+                    ALTER TABLE web_users
+                    ADD COLUMN avatar_url VARCHAR(500) AFTER telegram_photo_url
+                ''')
+                conn.commit()
+                logger.info("Added avatar_url column to web_users table")
+        except Error:
+            pass
+
         # Add subscribed_flares column to existing users (migration)
         try:
             cursor.execute('''
@@ -2717,6 +2768,291 @@ def get_recent_gw_alerts(limit: int = 10) -> List[Dict]:
     except Error as e:
         logger.error(f"Error getting recent GW alerts: {e}")
         return []
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def set_subscription(user_id: int, subscription_type: str, value: bool) -> bool:
+    """Set a bot subscription flag to an explicit value (vs. toggle_subscription's
+    flip). Used by the website account page's notification toggles, which send
+    absolute on/off state rather than "flip whatever it currently is"."""
+    if subscription_type not in ('iss', 'apod', 'launches', 'neo', 'news', 'meteors', 'flares', 'grb', 'gw'):
+        return False
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        column = f'subscribed_{subscription_type}'
+        cursor.execute(
+            f'UPDATE users SET {column} = %s, updated_at = CURRENT_TIMESTAMP WHERE user_id = %s',
+            (bool(value), user_id)
+        )
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error setting subscription: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Website account system (web/auth.py, web/auth_api.py)
+#
+# `web_users` is the site's own login identity, independent of the bot's
+# `users` table (same reasoning as push_subscriptions above: a browser/site
+# visitor isn't necessarily a Telegram user). `telegram_user_id` optionally
+# links a web account to an existing bot `users` row once verified through
+# the Telegram Login Widget — see web/auth_api.py for how notification
+# toggles then read/write that linked row directly instead of a second copy.
+# ---------------------------------------------------------------------------
+
+def create_web_user(email: str = None, password_hash: str = None, username: str = None,
+                     google_id: str = None, telegram_user_id: int = None,
+                     telegram_username: str = None, telegram_first_name: str = None,
+                     telegram_photo_url: str = None, lang: str = 'uk') -> Optional[Dict]:
+    """Create a new web account. Exactly one of email/google_id/telegram_user_id
+    is expected to be set by the caller (registration form, or a Google/Telegram
+    find-or-create), but this doesn't enforce that — callers already know which
+    flow they're in."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('''
+            INSERT INTO web_users (
+                email, password_hash, username, google_id, telegram_user_id,
+                telegram_username, telegram_first_name, telegram_photo_url, lang
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (email, password_hash, username, google_id, telegram_user_id,
+              telegram_username, telegram_first_name, telegram_photo_url, lang))
+        conn.commit()
+        return get_web_user_by_id(cursor.lastrowid)
+    except Error as e:
+        logger.error(f"Error creating web user: {e}")
+        conn.rollback()
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_web_user_by_id(web_user_id: int) -> Optional[Dict]:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute('SELECT * FROM web_users WHERE id = %s', (web_user_id,))
+        return cursor.fetchone()
+    except Error as e:
+        logger.error(f"Error getting web user by id: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_web_user_by_email(email: str) -> Optional[Dict]:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute('SELECT * FROM web_users WHERE email = %s', (email.lower(),))
+        return cursor.fetchone()
+    except Error as e:
+        logger.error(f"Error getting web user by email: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_web_user_by_google_id(google_id: str) -> Optional[Dict]:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute('SELECT * FROM web_users WHERE google_id = %s', (google_id,))
+        return cursor.fetchone()
+    except Error as e:
+        logger.error(f"Error getting web user by google id: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_web_user_by_telegram_id(telegram_user_id: int) -> Optional[Dict]:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute('SELECT * FROM web_users WHERE telegram_user_id = %s', (telegram_user_id,))
+        return cursor.fetchone()
+    except Error as e:
+        logger.error(f"Error getting web user by telegram id: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def update_web_user_profile(web_user_id: int, username: str = None, city: str = None,
+                             lat: float = None, lon: float = None) -> bool:
+    """Update the editable profile fields. Only fields explicitly passed
+    (non-None) are written — callers send the full form, so this is mostly a
+    straight overwrite, but None stays "leave unchanged" for partial callers."""
+    fields, params = [], []
+    for col, val in (('username', username), ('city', city), ('lat', lat), ('lon', lon)):
+        if val is not None:
+            fields.append(f'{col} = %s')
+            params.append(val)
+    if not fields:
+        return True
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        params.append(web_user_id)
+        cursor.execute(
+            f'UPDATE web_users SET {", ".join(fields)}, updated_at = CURRENT_TIMESTAMP WHERE id = %s',
+            tuple(params)
+        )
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error updating web user profile: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def set_web_user_password(web_user_id: int, password_hash: str) -> bool:
+    """Set a new password hash and bump token_version in one go, so every
+    previously-issued session cookie (including on other devices) is
+    invalidated the moment the password changes."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            '''UPDATE web_users
+               SET password_hash = %s, token_version = token_version + 1, updated_at = CURRENT_TIMESTAMP
+               WHERE id = %s''',
+            (password_hash, web_user_id)
+        )
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error setting web user password: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def set_web_user_avatar(web_user_id: int, avatar_url: str) -> bool:
+    """Set the custom-uploaded avatar URL (web/auth_api.py's /avatar endpoint
+    already wrote the resized file to data/avatars/ before calling this)."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            'UPDATE web_users SET avatar_url = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s',
+            (avatar_url, web_user_id)
+        )
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error setting web user avatar: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def link_web_user_telegram(web_user_id: int, telegram_user_id: int, telegram_username: str = None,
+                            telegram_first_name: str = None, telegram_photo_url: str = None) -> bool:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            UPDATE web_users
+            SET telegram_user_id = %s, telegram_username = %s, telegram_first_name = %s,
+                telegram_photo_url = %s, updated_at = CURRENT_TIMESTAMP
+            WHERE id = %s
+        ''', (telegram_user_id, telegram_username, telegram_first_name, telegram_photo_url, web_user_id))
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error linking telegram to web user: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def unlink_web_user_telegram(web_user_id: int) -> bool:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            UPDATE web_users
+            SET telegram_user_id = NULL, telegram_username = NULL, telegram_first_name = NULL,
+                telegram_photo_url = NULL, updated_at = CURRENT_TIMESTAMP
+            WHERE id = %s
+        ''', (web_user_id,))
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error unlinking telegram from web user: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def bump_web_user_token_version(web_user_id: int) -> bool:
+    """Invalidate every previously-issued session cookie for this account
+    (used by 'change password' and could back a future 'log out everywhere')."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            'UPDATE web_users SET token_version = token_version + 1 WHERE id = %s',
+            (web_user_id,)
+        )
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error bumping web user token version: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_web_user(web_user_id: int) -> bool:
+    """Delete the web account only. Deliberately never touches the bot's
+    `users` row even if telegram_user_id was linked — that row is the
+    Telegram identity, which keeps working with the bot independently of the
+    website account being deleted."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('DELETE FROM web_users WHERE id = %s', (web_user_id,))
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error deleting web user: {e}")
+        conn.rollback()
+        return False
     finally:
         cursor.close()
         conn.close()

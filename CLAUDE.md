@@ -87,6 +87,58 @@ serving the public dashboard (weather/sky/launches don't need the DB).
   retention.
 - `web/feedback.py` — footer feedback form → forwards the message to Telegram
   via the bot (`FEEDBACK_CHAT_ID`). No SMTP path; returns 503 if unconfigured.
+- `web/auth.py` / `web/auth_api.py` — website account system (registration,
+  login, Google/Telegram sign-in, account page). See "Website accounts"
+  below.
+
+### Website accounts (`web/auth.py`, `web/auth_api.py`)
+Email/password + Google + Telegram registration and login, an account page
+(profile, Telegram connect/verify, notification toggles, danger zone), and
+a `web_users` table (see Database below) — **decoupled from the bot's
+`users` table**, the same way `push_subscriptions` is: a site visitor isn't
+necessarily a Telegram user. `web_users.telegram_user_id` optionally links a
+web account to an existing bot `users` row once verified through the
+Telegram Login Widget; once linked, the account page's notification toggles
+read/write that bot row's `subscribed_*` columns directly
+(`database.set_subscription`) rather than keeping a second copy — one set of
+subscriptions for the site and the bot, matching the account page's own
+copy. Before that link exists, the notification section is shown disabled
+with a "connect Telegram" prompt, since delivery is exclusively via the bot.
+
+- **Sessions**: a JWT (`pyjwt`) in an httpOnly, `SameSite=Lax` cookie
+  (`nw_session`) — no server-side session table. `SameSite=Lax` already
+  keeps the cookie off cross-site POST/fetch, so the JSON API doesn't need a
+  separate CSRF token. `web_users.token_version`, bumped on password change,
+  invalidates every previously-issued token for that account without a
+  revocation list.
+- **No email verification, no password reset.** The project has no SMTP —
+  only the Telegram bot and translation APIs send anything externally.
+  Accounts are trusted at signup; a forgotten password with no linked
+  Google/Telegram is currently unrecoverable. Documented gap, not an
+  oversight.
+- **Google Sign-In** is verified by calling Google's own
+  `https://oauth2.googleapis.com/tokeninfo` REST endpoint and checking
+  `aud` against `GOOGLE_CLIENT_ID`, rather than pulling in the `google-auth`
+  package — consistent with this codebase's preference for thin
+  `requests`-based wrappers over heavy SDKs (see MAST subprocess isolation
+  below, or the GW-alerts Kafka rationale).
+- **Telegram Login Widget** verification is local HMAC-SHA256 over the
+  widget's payload (stdlib `hashlib`/`hmac`, no HTTP call), per Telegram's
+  own spec, plus an `auth_date` freshness check to block replay. The
+  frontend loads Telegram's and Google's own `<script>` widgets on demand
+  (`my-app/src/hooks/useOAuthWidgets.js`, used by `Login.js`/`Register.js`/
+  `Account.js`) — neither is an npm dependency. The **same** `/api/auth/telegram`
+  endpoint both logs in/registers a fresh visitor and links Telegram to an
+  already-signed-in email/Google account, depending on whether a session
+  cookie is already present when it's called.
+- Requires a one-time `/setdomain` on @BotFather (site's real domain) before
+  Telegram will render the login widget on it at all, and a Google Cloud
+  OAuth Web-application client ID with the site's origin as an authorized
+  JavaScript origin. See `DEPLOY.md` §5 for both.
+- Account/auth routes (`login`/`register`/`account`) are real SPA routes
+  (in `web/seo.py` `SLUGS`, mirrored in `my-app/src/lib/seo.js`) but marked
+  noindex and excluded from the sitemap (`web/seo.py` `_NOINDEX_NAMES`) —
+  utility pages, not content.
 
 ### Website frontend (`my-app/`, React SPA)
 Create React App (react-scripts 5, React 19) — **replaced the old static
@@ -111,12 +163,15 @@ output from FastAPI (see `web/app.py` above).
   exoplanets, gallery (APOD archive), galaxies + galaxy detail, planetarium
   hub + one page per planet (Mercury, Venus, Earth, Mars, Jupiter, Saturn,
   Uranus, Neptune — Jupiter/Saturn/Uranus/Neptune each also have a fullscreen
-  PixiJS moon-system viewer), solarsystem3d (three.js). `RtlSdr.js` and
+  PixiJS moon-system viewer), solarsystem3d (three.js), login/register/account
+  (website account system — see "Website accounts" above). `RtlSdr.js` and
   `Community.js` exist as page components but are intentionally unlinked (no
   nav entry, excluded from the sitemap in `web/seo.py`) — treat as
   work-in-progress/hidden, not dead code to delete without checking first.
 - **Web Push**: browser push notifications (VAPID), decoupled from Telegram
   `users` — see `services/webpush.py` and the `push_subscriptions` table.
+  Independent of the website account system above (`web_users`) — a browser
+  can be push-subscribed with no account at all.
 
 `templates/radio.html` is a standalone, hand-built HTML prototype ("Космічне
 радіо наживо") for a live space-radio-streams concept page — **not currently
@@ -202,6 +257,17 @@ All GET unless noted, most cached via `web/cache.py`:
 **Web Push**
 - `/api/push/vapid-public-key`, `POST /api/push/subscribe`,
   `POST /api/push/unsubscribe`
+
+**Website accounts** (`web/auth_api.py`, prefix `/api/auth`, see "Website
+accounts" above)
+- `GET /api/auth/config` — public `{google_client_id, telegram_bot_username}`
+  for rendering the sign-in buttons
+- `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`
+- `POST /api/auth/google`, `POST /api/auth/telegram` — find-or-create/login;
+  `/telegram` also links to the current session if one exists
+- `POST /api/auth/telegram/unlink`, `POST /api/auth/change-password`
+- `GET /api/auth/me`, `PATCH /api/auth/me`, `DELETE /api/auth/me`
+- `PATCH /api/auth/notifications` — 409 if Telegram isn't linked yet
 
 Interactive satellite maps (Leaflet + `satellite.js`, client-side SGP4): the
 browser propagates each satellite's TLE itself every second so markers move in
@@ -383,6 +449,10 @@ MySQL with connection pooling. Tables:
   7-day retention)
 - `push_subscriptions` — Web Push subscriptions (lat/lon/lang, not tied to a
   Telegram user)
+- `web_users` — website account identities (email/password, Google, and/or
+  linked Telegram), decoupled from `users` the same way `push_subscriptions`
+  is; `telegram_user_id` optionally FKs to `users.user_id` once verified —
+  see "Website accounts" above
 
 Connection pool initialized lazily in `get_db_connection()`. All functions
 handle connection cleanup in `finally` blocks.
@@ -446,6 +516,10 @@ VAPID_CLAIM_EMAIL=
 PRERENDER_ENABLED=      # Optional. 1 to enable headless-Chrome SEO prerendering (needs Playwright)
 GCN_CLIENT_ID=          # Optional. Gravitational-wave alerts — free client at gcn.nasa.gov
 GCN_CLIENT_SECRET=      # Optional. Paired with GCN_CLIENT_ID above
+SESSION_SECRET=         # Website account sessions — generate with `python3 -c "import secrets; print(secrets.token_hex(32))"`, never rotate casually
+GOOGLE_CLIENT_ID=       # Optional. Google Sign-In — OAuth Web-application client at console.cloud.google.com/apis/credentials
+GOOGLE_CLIENT_SECRET=   # Optional. Paired with GOOGLE_CLIENT_ID above (not actually used server-side, kept for parity)
+TELEGRAM_BOT_USERNAME=  # Optional. Telegram Login Widget — needs @BotFather /setdomain on the site's domain too
 DEFAULT_LAT/LON/ALT     # Default location (Kyiv)
 DB_HOST/PORT/NAME/USER/PASSWORD  # MySQL credentials
 ```

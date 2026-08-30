@@ -83,6 +83,25 @@ DB_PORT=3306
 DB_NAME=neowatch
 DB_USER=neowatch
 DB_PASSWORD=your_secure_password
+
+# Website account system (web/auth.py, реєстрація/вхід на сайті)
+# Підпис сесійних cookie — згенеруй один раз і ніколи більше не міняй
+# (зміна розлогінить усіх користувачів сайту):
+#   python3 -c "import secrets; print(secrets.token_hex(32))"
+SESSION_SECRET=
+
+# Google Sign-In: OAuth client ID з
+# https://console.cloud.google.com/apis/credentials (тип "Web application",
+# authorized JavaScript origin = домен сайту). Без нього кнопка Google на
+# сторінках входу/реєстрації просто не рендериться.
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Telegram Login Widget (вхід/реєстрація через Telegram + підключення
+# Telegram зі сторінки акаунту). Потрібен @username бота і ОДНОРАЗОВЕ
+# /setdomain у @BotFather з доменом сайту — інакше Telegram відмовляється
+# рендерити віджет входу на цьому домені.
+TELEGRAM_BOT_USERNAME=
 ```
 
 ## 6. Міграція даних (якщо є SQLite)
@@ -142,8 +161,25 @@ CRA вшиває `REACT_APP_*` у білд лише на етапі збірки
 
 ```bash
 cd /opt/neowatch/my-app
-npm ci
+npm ci --legacy-peer-deps
 npm run build
+```
+
+`--legacy-peer-deps` обходить справжній, але нешкідливий конфлікт: `i18next`
+оголошує `typescript` необов'язковим (`peerOptional`) пір-залежністю версій
+`^5 || ^6`, а `react-scripts@5.0.1` — версій `^3.2.1 || ^4`; проєкт не
+використовує TypeScript узагалі (немає жодного `.ts`/`.tsx` файлу), тож
+конфлікт стосується пакета, який реально не встановлюється й не впливає на
+білд — без цього флага сучасний npm (7+) відмовляється ставити з
+`ERESOLVE could not resolve`. Якщо на сервері вже трапився `ERESOLVE` без
+цього флага і після цього `package-lock.json` міг залишитись локально
+змінений (наприклад, від попереднього `npm install`), скинь його до
+закомміченої версії перед повторною спробою:
+
+```bash
+git checkout -- package-lock.json
+rm -rf node_modules
+npm ci --legacy-peer-deps
 ```
 
 Білд кладеться у `my-app/build/` — FastAPI читає `index.html` щого запиту й
@@ -168,9 +204,25 @@ sudo systemctl restart neowatch
 
 Кеш рендерів — у `data/prerender/<lang>/<slug>.html` (TTL 24 год, див.
 `PRERENDER_TTL`). За відсутності Chromium або таймауту — автоматичний фолбек
-на meta-інʼєкційний shell. Альтернатива без локального Chromium:
-`PRERENDER_PROVIDER=prerenderio` + `PRERENDER_IO_TOKEN` (проксі через
-Prerender.io; не реалізовано повністю — допиши у `web/prerender.py` за потреби).
+на meta-інʼєкційний shell (сайт для звичайних відвідувачів не ламається,
+просто боти без JS не бачать тіла сторінки). Альтернатива без локального
+Chromium: `PRERENDER_PROVIDER=prerenderio` + `PRERENDER_IO_TOKEN` (проксі
+через Prerender.io; не реалізовано повністю — допиши у `web/prerender.py`
+за потреби).
+
+Якщо в логах з'являється `error while loading shared libraries: libnspr4.so:
+cannot open shared object file` (або подібне для `libnss3.so`/`libatk-1.0.so`
+тощо) — `playwright install chromium` завантажив сам браузер, але Ubuntu/Debian
+бракує системних `.so`-залежностей для headless-запуску. Постав їх окремо:
+
+```bash
+sudo playwright install-deps chromium
+# або вручну, якщо install-deps недоступний на цій ОС:
+sudo apt install -y libnspr4 libnss3 libatk1.0-0 libatk-bridge2.0-0 \
+  libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 \
+  libxrandr2 libgbm1 libasound2
+sudo systemctl restart neowatch
+```
 
 ### 7d. Стиснення (Brotli/gzip) + кеш статики через nginx
 
@@ -263,12 +315,28 @@ tail -f /var/log/mysql/error.log
 
 ## Оновлення
 
+Якщо оновлення торкається `my-app/` (нові сторінки, зображення, 3D-моделі
+тощо), **обов'язково перезбери React-білд** (§7b) — інакше сайт продовжує
+віддавати старий `my-app/build/`, і нові сторінки/фото не з'являться, навіть
+після `git pull`. `npm run build` (webpack) сам по собі важкий по памʼяті —
+на невеликих VPS одночасний запуск білду поряд із живим `neowatch.service`
+може вибити ядерний OOM-killer і вбити сам сервіс (`systemctl status`
+покаже `Failed with result 'oom-kill'`). Тому зупиняй сервіс ДО білду, а не
+збирай фронтенд, поки сайт уже перезапущено:
+
 ```bash
 cd /opt/neowatch
 sudo systemctl stop neowatch
 git pull  # або scp нові файли
 source venv/bin/activate
 pip install -r requirements.txt
+
+# Тільки якщо змінювався my-app/ — див. §7b
+cd my-app
+npm ci --legacy-peer-deps
+npm run build
+cd ..
+
 sudo systemctl start neowatch
 ```
 

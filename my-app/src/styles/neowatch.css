@@ -279,6 +279,38 @@ nav.links a.active {
   background: #f3d788 !important;
 }
 
+/* Shared circular avatar (Avatar.js) — image when the account has one
+   (upload or linked Telegram photo), gradient initial-letter fallback
+   otherwise. Used at small size in the header CTA slot and large on the
+   account page. */
+.nw-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.nw-avatar-fallback {
+  background: linear-gradient(135deg, var(--gold), var(--teal));
+  color: var(--bg);
+}
+
+.header-avatar-link {
+  display: inline-flex;
+  margin-left: 8px;
+  border-radius: 50%;
+  transition: .2s;
+}
+
+.header-avatar-link:hover,
+.header-avatar-link.active {
+  opacity: .85;
+}
+
 .burger {
   display: none;
   width: 40px;

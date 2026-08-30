@@ -30,6 +30,31 @@ VAPID_CLAIM_EMAIL = os.getenv('VAPID_CLAIM_EMAIL', '')
 GCN_CLIENT_ID = os.getenv('GCN_CLIENT_ID', '')
 GCN_CLIENT_SECRET = os.getenv('GCN_CLIENT_SECRET', '')
 
+# Website account system (web/auth.py). SESSION_SECRET signs the httpOnly
+# session cookie's JWT — generate once with
+# `python3 -c "import secrets; print(secrets.token_hex(32))"` and never
+# rotate it casually (rotating logs every signed-in user out). Falls back to
+# an insecure dev-only default so `uvicorn web.app:app` still boots locally;
+# web/auth.py refuses to issue/accept sessions signed with it in production
+# (see its module docstring).
+SESSION_SECRET = os.getenv('SESSION_SECRET', '')
+
+# Google Sign-In (accounts.google.com Identity Services). Create a Web
+# application OAuth client at https://console.cloud.google.com/apis/credentials
+# with the site's origin as an authorized JavaScript origin. Only the client
+# ID is used server-side (web/auth.py verifies ID tokens via Google's
+# tokeninfo endpoint, checking `aud`); the secret isn't needed for this flow
+# but is kept for parity/future use.
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '')
+
+# Telegram Login Widget (site registration/login + account-page "connect
+# Telegram"). Needs the bot's @username (for the widget's
+# data-telegram-login attribute) and a one-time `/setdomain` on @BotFather
+# pointing at the site's real domain, or Telegram refuses to render the
+# widget.
+TELEGRAM_BOT_USERNAME = os.getenv('TELEGRAM_BOT_USERNAME', '')
+
 # NASA API
 NASA_NEO_URL = "https://api.nasa.gov/neo/rest/v1/feed"
 NASA_APOD_URL = "https://api.nasa.gov/planetary/apod"

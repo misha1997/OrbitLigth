@@ -20,3 +20,12 @@ gcn-kafka
 # Optional: headless-Chrome prerendering for SEO bots (PRERENDER_ENABLED=1).
 # Only needed if you enable bot prerendering; also run `playwright install chromium`.
 playwright
+# Website account system (web/auth.py): password hashing + signed session
+# cookies. Google/Telegram sign-in verification uses stdlib + `requests`
+# only (see web/auth.py's module docstring), no extra deps needed for those.
+bcrypt
+pyjwt
+# Avatar upload (web/auth_api.py POST /api/auth/avatar) — FastAPI needs this
+# to parse multipart/form-data file uploads at all (UploadFile silently
+# 422s without it). Pillow (already a dependency, see below) does the resize.
+python-multipart

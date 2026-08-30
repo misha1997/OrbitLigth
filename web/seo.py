@@ -129,7 +129,18 @@ SLUGS: dict[str, dict[str, str]] = {
     "uranus":       {"uk": "planetariy/uran",   "en": "planetarium/uranus"},
     "saturn":       {"uk": "planetariy/saturn", "en": "planetarium/saturn"},
     "solarsystem3d":{"uk": "sonyachna-systema-3d","en": "solar-system-3d"},
+    # Account/auth pages: routable and linked from the header, but utility
+    # pages rather than content — excluded from the sitemap and marked
+    # noindex below (see _NOINDEX_NAMES).
+    "login":        {"uk": "uviyty",             "en": "login"},
+    "register":     {"uk": "reyestraciya",       "en": "register"},
+    "account":      {"uk": "akaunt",             "en": "account"},
 }
+
+# Utility pages that should stay out of search results (account/auth flows,
+# not content) — render_head marks them noindex, build_sitemap_pages_xml
+# skips them entirely.
+_NOINDEX_NAMES = {"login", "register", "account"}
 
 # Reverse map: lang -> {slug -> name}. Built once at import.
 _SLUG_TO_NAME: dict[str, dict[str, str]] = {
@@ -137,9 +148,10 @@ _SLUG_TO_NAME: dict[str, dict[str, str]] = {
     for lang in LANGS
 }
 
-# Pages excluded from the sitemap (none currently; rtl-sdr/community are
-# unlinked and have no entry in SLUGS at all, so they're already absent).
-_SITEMAP_NAMES = [n for n in SLUGS.keys()]
+# Pages excluded from the sitemap: rtl-sdr/community are unlinked and have no
+# entry in SLUGS at all (already absent); login/register/account are utility
+# pages, excluded via _NOINDEX_NAMES.
+_SITEMAP_NAMES = [n for n in SLUGS.keys() if n not in _NOINDEX_NAMES]
 
 
 def slug_for_name(name: str, lang: str) -> str:
@@ -309,9 +321,14 @@ def render_head(name: str, lang: str, extra_jsonld: str = "",
     en_alt = ov.get("en_alt") or (_loc(name, "en") if name != "404" else f"{SITE_URL}/en/404")
     e = lambda s: html.escape(s, quote=True)  # noqa: E731
     jsonld = _render_webpage_jsonld(name, lang) if name != "404" else ""
+    robots = (
+        '    <meta name="robots" content="noindex,nofollow" />\n'
+        if name in _NOINDEX_NAMES else ""
+    )
     head = (
         f'<title>{e(title)}</title>\n'
         f'    <meta name="description" content="{e(desc)}" />\n'
+        f'{robots}'
         f'    <link rel="canonical" href="{e(canonical)}" />\n'
         f'    <link rel="alternate" hreflang="uk" href="{e(uk_alt)}" />\n'
         f'    <link rel="alternate" hreflang="en" href="{e(en_alt)}" />\n'
