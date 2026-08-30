@@ -103,10 +103,18 @@ export function useGoogleButton(fallbackRef, clientId, onCredential, lang) {
     // silently does nothing is worse than an unnecessary fallback, so a
     // timer backstops the callback: no response within ~1.8s (a real prompt
     // renders near-instantly) is treated the same as isNotDisplayed().
+    //
+    // But FedCM can also just be *slow* rather than failed — if the timer
+    // fires and shows the fallback button, then the real prompt resolves a
+    // moment later anyway, Chrome's own native account-picker UI shows up
+    // late on top of our fallback (a real, jarring, two-buttons-at-once bug
+    // seen in testing). cancel() aborts that in-flight prompt the moment we
+    // give up on it, so a late response can never appear after the fact.
     let settled = false;
     const timer = setTimeout(() => {
       if (!settled) {
         settled = true;
+        window.google.accounts.id.cancel();
         setFallback(true);
       }
     }, 1800);
