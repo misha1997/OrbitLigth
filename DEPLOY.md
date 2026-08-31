@@ -281,7 +281,42 @@ sudo systemctl start neowatch
 
 Сайт буде доступний на `http://<server>:8000/`, API — на `/api/*`.
 Щоб пускати лише бота без сайту (як раніше), можна окремо запускати
-`python bot.py` — але тоді веб-дашборд працювати не буде.
+`python bot.py` — але тоді веб-дашборд працювати не буде (і webhook-режим
+нижче стосується лише `web.app`, `bot.py` завжди лишається на polling).
+
+### 8b. Webhook-режим бота (замість polling)
+
+Якщо сайт уже доступний на реальному домені з HTTPS (nginx термінує TLS і
+проксує на `127.0.0.1:8000`), увімкни webhook — Telegram сам штовхає апдейти
+на `/webhook/telegram` замість того, щоб бот постійно опитував Telegram API.
+Без `WEBHOOK_URL` бот, як і раніше, працює на polling — локальна розробка без
+домену нічого не змінює.
+
+```env
+# у .env / systemd Environment=
+WEBHOOK_URL=https://your-domain.example    # без / в кінці
+WEBHOOK_SECRET=                             # python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+nginx має пропускати `POST /webhook/telegram` до застосунку так само, як і
+решту шляхів (якщо конфіг вже проксює `/` цілком на uvicorn — окремий
+`location` не потрібен). Перезапусти:
+
+```bash
+sudo systemctl restart neowatch
+sudo journalctl -u neowatch -f   # шукай "Telegram bot webhook set to https://…"
+```
+
+Перевірити, що Telegram бачить webhook (замінити `<BOT_TOKEN>`):
+
+```bash
+curl "https://api.telegram.org/bot<BOT_TOKEN>/getWebhookInfo"
+```
+
+`url` має збігатися з `WEBHOOK_URL/webhook/telegram`, `last_error_message`
+має бути порожнім. Щоб повернутись на polling — просто прибери `WEBHOOK_URL`
+з `.env`/systemd і перезапусти: `Updater.start_polling()` сам викликає
+`deleteWebhook` перед стартом, нічого вручну знімати не треба.
 
 ## 9. Перевірка
 

@@ -890,6 +890,16 @@ class NotificationScheduler:
                 if is_gw_notified(superevent_id, alert_type):
                     continue
 
+                # Non-significant candidates are LVK's lower-confidence
+                # "public awareness" alerts — far more numerous than real
+                # detections and frequently retracted within hours. Still
+                # record them (mark_gw_notified below) so /api/gw and the
+                # bot's on-demand "recent alerts" stay complete, just skip
+                # the push/Telegram send that was making this feel noisy.
+                if not alert.get("significant"):
+                    mark_gw_notified(alert)
+                    continue
+
                 if subscribers:
                     for user in subscribers:
                         try:

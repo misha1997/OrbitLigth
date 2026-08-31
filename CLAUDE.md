@@ -48,9 +48,11 @@ FastAPI `lifespan`). If the DB or bot token is unavailable, the site keeps
 serving the public dashboard (weather/sky/launches don't need the DB).
 
 - `web/app.py` — FastAPI app. `lifespan` boots MySQL (`init_db()`); if that
-  succeeds it builds the PTB `Application`, starts polling, and starts
-  `NotificationScheduler` as a background task — DB failure just skips the bot,
-  the site still serves. Mounts the **built** React SPA from `my-app/build/`
+  succeeds it builds the PTB `Application` and starts it — via `set_webhook`
+  (Telegram POSTs to `/webhook/telegram`, validated by `WEBHOOK_SECRET`) when
+  `WEBHOOK_URL` is set, else via polling — and starts `NotificationScheduler`
+  as a background task; DB failure just skips the bot, the site still serves.
+  Mounts the **built** React SPA from `my-app/build/`
   (`REACT_BUILD_DIR`); raises at import time if that build doesn't exist, so
   `npm run build` is a hard prerequisite, including in dev. `/static` serves
   CRA's hashed JS/CSS (immutable cache); `/apod-img`, `/galaxy-img`, `/news-img`
@@ -506,6 +508,8 @@ Environment variables in `.env`:
 NASA_API_KEY=          # From api.nasa.gov
 N2YO_API_KEY=          # From n2yo.com
 BOT_TOKEN=              # From @BotFather
+WEBHOOK_URL=            # Optional. Public HTTPS base (e.g. https://neowatch.example.com) — set to run the bot via webhook instead of polling; unset = polling (see web/app.py)
+WEBHOOK_SECRET=         # Set alongside WEBHOOK_URL — Telegram's secret_token, validated on every POST /webhook/telegram. Generate with `python3 -c "import secrets; print(secrets.token_urlsafe(32))"`
 MARS_VISTA_API_KEY=     # Optional. Free key from marsvista.dev/signin (Mars rover photos)
 GEOAPIFY_KEY=           # Optional. Geoapify key for maps/geocoding
 DEEPL_API_KEY=          # Optional. DeepL translation, alongside MyMemory

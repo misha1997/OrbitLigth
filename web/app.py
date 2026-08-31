@@ -4,9 +4,22 @@ bot in the same process.
 Why one process: the bot's ``services/*`` modules and MySQL pool are shared
 with the site, and a single event loop lets FastAPI and ``python-telegram-bot``
 coexist without a second runtime. Uvicorn owns the loop; the bot is started
-manually via PTB's async lifecycle (``initialize`` → ``start`` →
-``updater.start_polling``) inside the FastAPI lifespan, and torn down in
-reverse on shutdown.
+manually via PTB's async lifecycle (``initialize`` → ``start`` → either
+``updater.start_polling`` or, when ``WEBHOOK_URL`` is set, ``bot.set_webhook``)
+inside the FastAPI lifespan, and torn down in reverse on shutdown.
+
+Webhook vs polling: with a real domain + TLS in front (nginx), webhook is the
+more correct production setup — no long-poll traffic to Telegram, lower
+latency. We don't use PTB's ``Application.run_webhook``/``Updater.start_webhook``
+(that spins up its own aiohttp server, a second listener we don't want).
+Instead, when ``WEBHOOK_URL`` is set, Telegram is told to POST updates to this
+same FastAPI app's ``/webhook/telegram`` route (below), which pushes each
+update onto ``application.update_queue`` — the exact queue PTB's own
+``start_polling`` feeds, so ``Application.start()``'s update-processing task
+handles both paths identically. Set ``WEBHOOK_SECRET`` too (Telegram's
+``secret_token`` mechanism) so the endpoint isn't a bare unauthenticated
+update-injection point. Without ``WEBHOOK_URL`` (local dev with no public
+HTTPS URL), the bot falls back to polling.
 
 Run with::
 
@@ -121,6 +134,7 @@ async def lifespan(app: FastAPI):
         logger.error("Database init failed, running site without bot: %s", exc)
 
     ptb = None
+    webhook_mode = False
     if db_ok:
         ptb = _build_bot_application()
         if ptb is not None:
@@ -129,8 +143,26 @@ async def lifespan(app: FastAPI):
             try:
                 await ptb.initialize()
                 await ptb.start()
-                await ptb.updater.start_polling(allowed_updates=Update.ALL_TYPES)
-                logger.info("Telegram bot polling started")
+                webhook_url = os.getenv("WEBHOOK_URL", "").rstrip("/")
+                if webhook_url:
+                    webhook_secret = os.getenv("WEBHOOK_SECRET", "")
+                    if not webhook_secret:
+                        logger.warning(
+                            "WEBHOOK_URL set without WEBHOOK_SECRET — the webhook "
+                            "endpoint will accept unauthenticated updates from "
+                            "anyone who finds the URL. Set WEBHOOK_SECRET (e.g. "
+                            "`python3 -c \"import secrets; print(secrets.token_urlsafe(32))\"`)."
+                        )
+                    await ptb.bot.set_webhook(
+                        url=f"{webhook_url}{_WEBHOOK_PATH}",
+                        allowed_updates=Update.ALL_TYPES,
+                        secret_token=webhook_secret or None,
+                    )
+                    webhook_mode = True
+                    logger.info("Telegram bot webhook set to %s%s", webhook_url, _WEBHOOK_PATH)
+                else:
+                    await ptb.updater.start_polling(allowed_updates=Update.ALL_TYPES)
+                    logger.info("Telegram bot polling started")
                 # Start the notification scheduler as a background task on the
                 # same loop. This used to live in `post_init`, but PTB only
                 # invokes `post_init` from `run_polling`/`run_webhook` — and we
@@ -174,7 +206,8 @@ async def lifespan(app: FastAPI):
             except BaseException:  # noqa: BLE001 — CancelledError/any loop error
                 pass
         if ptb is not None:
-            await ptb.updater.stop()
+            if not webhook_mode:
+                await ptb.updater.stop()
             await ptb.stop()
             await ptb.shutdown()
             logger.info("Telegram bot stopped")
@@ -197,6 +230,26 @@ if not os.getenv("SESSION_SECRET"):
         "insecure dev-only default. Set SESSION_SECRET in .env before deploying "
         "(python3 -c \"import secrets; print(secrets.token_hex(32))\")."
     )
+
+# Telegram webhook (see lifespan above for the WEBHOOK_URL/WEBHOOK_SECRET
+# branch that decides polling vs webhook). The route is always mounted; it
+# 503s if the bot isn't running and 401s on a missing/wrong secret token, so
+# it's inert unless both BOT_TOKEN and WEBHOOK_URL are configured.
+_WEBHOOK_PATH = "/webhook/telegram"
+
+
+@app.post(_WEBHOOK_PATH, include_in_schema=False)
+async def _telegram_webhook(request: Request):
+    ptb = getattr(app.state, "bot", None)
+    if ptb is None:
+        return Response(status_code=503)
+    secret = os.getenv("WEBHOOK_SECRET", "")
+    if secret and request.headers.get("x-telegram-bot-api-secret-token") != secret:
+        return Response(status_code=401)
+    from telegram import Update  # lazy: site can boot without telegram deps
+    data = await request.json()
+    await ptb.update_queue.put(Update.de_json(data, ptb.bot))
+    return Response(status_code=200)
 
 
 @app.middleware("http")
