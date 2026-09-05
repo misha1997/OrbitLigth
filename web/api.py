@@ -141,6 +141,19 @@ async def observing_conditions(
     return await data.get_observing_conditions(la, lo, lang)
 
 
+@router.get("/observing-conditions/forecast")
+async def observing_conditions_forecast(
+    lat: float | None = Query(None),
+    lon: float | None = Query(None),
+    nights: int = Query(7, ge=1, le=7),
+    lang: str = LANG_Q,
+):
+    """Per-night cloud + Moon illumination for the next `nights` nights — Dark
+    Sky page's "best nights ahead" section (defaults to Kyiv)."""
+    la, lo = _loc(lat, lon)
+    return await data.get_observing_forecast(la, lo, lang, nights)
+
+
 @router.get("/history/today")
 async def history_today(lang: str = LANG_Q):
     """Notable space history event for today."""
@@ -375,6 +388,16 @@ async def exoplanets():
     """Exoplanet digest from the NASA Exoplanet Archive (TAP): confirmed +
     TOI candidate counts, featured planet, radius/period scatter, catalog."""
     return await data.get_exoplanets()
+
+
+@router.get("/elevation")
+async def elevation(
+    lat: float = Query(..., description="Latitude"),
+    lon: float = Query(..., description="Longitude"),
+):
+    """Elevation in meters at a point (Open Topo Data SRTM90m) — Dark Sky map
+    point-click popup."""
+    return await data.get_elevation(lat, lon)
 
 
 @router.get("/geocode")

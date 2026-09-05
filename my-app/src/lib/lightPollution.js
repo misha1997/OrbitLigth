@@ -76,6 +76,28 @@ export const TIER_COLORS = {
   poor: "#F5C232",
 };
 
+// Sky-brightening estimate, in magnitudes, vs. a natural (light-pollution-free)
+// sky — a direct, physically grounded transform of the LPI the atlas already
+// publishes (artificial ÷ natural sky brightness ratio): total flux scales as
+// (1 + LPI), and magnitude is a -2.5*log10 of flux, so the brightening is
+// exactly 2.5*log10(1 + LPI). No invented constants, no NELM claim.
+export function deltaMagAtLpi(lpi) {
+  return 2.5 * Math.log10(1 + Math.max(lpi, 0));
+}
+
+// Typical naked-eye limiting magnitude *range* per tier — a broad reference
+// band for that category of sky, not a value computed from one exact pixel.
+// The atlas's own docs explicitly warn against treating a zone as an exact
+// Bortle-equivalent reading (see module comment above), so this deliberately
+// stays a qualitative per-tier range rather than a per-point number.
+export const TIER_NELM_RANGE = {
+  excellent: "~6.5–7.5+",
+  good: "~6.0–6.5",
+  moderate: "~5.5–6.0",
+  bright: "~4.5–5.5",
+  poor: "~3–4.5",
+};
+
 function nearestZone(rgb) {
   let best = null;
   let bestDist = Infinity;
@@ -174,6 +196,51 @@ export async function getTrendAtPoint(lat, lon) {
     const r = reads[i];
     return r ? { year, ...r } : { year, zone: null, tier: null, rgb: null, lpi: null };
   });
+}
+
+// ---- nearest-dark-sky finder -----------------------------------------------
+
+const TIER_RANK = { excellent: 0, good: 1, moderate: 2, bright: 3, poor: 4 };
+const SEARCH_RINGS_KM = [5, 10, 20, 35, 55, 80, 110, 150];
+const SEARCH_ANGLES = Array.from({ length: 16 }, (_, i) => (360 / 16) * i);
+
+function destinationPoint(lat, lon, bearingDeg, distKm) {
+  const R = 6371;
+  const brng = (bearingDeg * Math.PI) / 180;
+  const lat1 = (lat * Math.PI) / 180;
+  const lon1 = (lon * Math.PI) / 180;
+  const dR = distKm / R;
+  const lat2 = Math.asin(Math.sin(lat1) * Math.cos(dR) + Math.cos(lat1) * Math.sin(dR) * Math.cos(brng));
+  const lon2 = lon1 + Math.atan2(
+    Math.sin(brng) * Math.sin(dR) * Math.cos(lat1),
+    Math.cos(dR) - Math.sin(lat1) * Math.sin(lat2)
+  );
+  return { lat: (lat2 * 180) / Math.PI, lon: (((lon2 * 180) / Math.PI + 540) % 360) - 180 };
+}
+
+// Expanding-ring search for the nearest point at or better than `targetTier`
+// (default "good") — client-side, no backend: reads the same cached atlas
+// tiles getZoneAtPoint() already uses, so repeated samples within one tile are
+// effectively free after its first fetch (a 1024px tile at zoom 6 covers a
+// huge area, so 128 candidate points worst case realistically touch only a
+// handful of distinct tiles). Checks 16 directions at each of a fixed set of
+// radii out to 150 km, ring by ring; returns the first hit, i.e. the nearest
+// *among the 16 sampled directions* at the smallest radius that has any hit —
+// not a true exhaustive global nearest, but good enough for "point me
+// somewhere darker nearby" rather than an optimizer.
+export async function findNearestGoodSky(lat, lon, targetTier = "good") {
+  const targetRank = TIER_RANK[targetTier] ?? TIER_RANK.good;
+  for (const radiusKm of SEARCH_RINGS_KM) {
+    const points = SEARCH_ANGLES.map((bearing) => destinationPoint(lat, lon, bearing, radiusKm));
+    const reads = await Promise.all(points.map((p) => getZoneAtPoint(p.lat, p.lon)));
+    for (let i = 0; i < reads.length; i++) {
+      const r = reads[i];
+      if (r && TIER_RANK[r.tier] <= targetRank) {
+        return { lat: points[i].lat, lon: points[i].lon, ...r, distanceKm: radiusKm };
+      }
+    }
+  }
+  return null;
 }
 
 export { TILE_URL, TILE_ZOOM, TILE_SIZE, LATEST_YEAR };

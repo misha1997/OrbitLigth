@@ -43,6 +43,13 @@ export const changePassword = (currentPassword, newPassword) =>
   });
 export const deleteAccount = () => authFetch("/me", { method: "DELETE" });
 
+// Saved locations (Dark Sky map "My places" panel).
+export const getSavedLocations = () => authFetch("/locations");
+export const addSavedLocation = (label, lat, lon) =>
+  authFetch("/locations", { method: "POST", body: JSON.stringify({ label, lat, lon }) });
+export const deleteSavedLocation = (id) =>
+  authFetch("/locations/" + id, { method: "DELETE" });
+
 // Multipart upload — deliberately bypasses authFetch, which always sets
 // Content-Type: application/json; the browser needs to set its own
 // multipart boundary here instead.

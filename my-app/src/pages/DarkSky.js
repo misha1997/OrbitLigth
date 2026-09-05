@@ -13,8 +13,46 @@ import FeatureRow from "../components/primitives/FeatureRow";
 import { useApi } from "../hooks/useApi";
 import { useLang } from "../context/LanguageContext";
 import { useLoc, DEFAULT_LOC } from "../context/LocationContext";
-import { getObservingConditions } from "../lib/api";
+import { getObservingConditions, getObservingForecast } from "../lib/api";
 import { getZoneAtPoint, TIER_COLORS } from "../lib/lightPollution";
+
+function EmbedSection({ t }) {
+  const [copied, setCopied] = useState(false);
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const snippet = `<iframe src="${origin}/embed/dark-sky" width="600" height="450" style="border:0" loading="lazy" title="OrbitLight Dark Sky Map"></iframe>`;
+
+  const copy = () => {
+    if (!navigator.clipboard || !navigator.clipboard.writeText) return;
+    navigator.clipboard.writeText(snippet).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    }).catch(() => {});
+  };
+
+  return (
+    <section className="section" style={{ paddingTop: 0 }}>
+      <div className="wrap">
+        <SectionHead eyebrow={t("darksky.embed.eyebrow")} title={t("darksky.embed.title")} />
+        <p className="section-sub">{t("darksky.embed.hint")}</p>
+        <div className="card" style={{ marginTop: 12 }}>
+          <textarea
+            readOnly
+            value={snippet}
+            onClick={(e) => e.target.select()}
+            style={{
+              width: "100%", minHeight: 64, fontFamily: "var(--font-mono)", fontSize: 12,
+              background: "var(--bg)", color: "var(--text)", border: "1px solid var(--border)",
+              borderRadius: 8, padding: 10, resize: "vertical", boxSizing: "border-box",
+            }}
+          />
+          <button type="button" className="btn" style={{ marginTop: 10 }} onClick={copy}>
+            {copied ? "✓ " + t("darksky.embed.copied") : t("darksky.embed.copy")}
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 // Legend swatches, in severity order — colors come from lib/lightPollution's
 // TIER_COLORS (a single-hue ordinal ramp validated for this dark surface),
@@ -45,6 +83,55 @@ function computeVerdict(cloudPct, zoneTier) {
   return Math.max(...ranks);
 }
 
+// "Best nights ahead" — scores each of the next 7 nights with the exact same
+// computeVerdict() the "tonight" card uses, combining that night's forecast
+// cloud cover with the *current* point's light-pollution tier (LP doesn't
+// change night to night, so one client-side zone read covers all 7).
+function BestNightsSection({ t, lat, lon, zoneTier, lang }) {
+  const { data: forecast } = useApi(() => getObservingForecast({ lat, lon }, 7), {
+    deps: [lat, lon],
+  });
+  const nights = (forecast && forecast.nights) || [];
+  if (!nights.length) return null;
+
+  const scored = nights.map((n) => ({ ...n, rank: computeVerdict(n.cloud_cover_pct, zoneTier) }));
+  const validRanks = scored.map((n) => n.rank).filter((r) => r != null);
+  const bestRank = validRanks.length ? Math.min(...validRanks) : null;
+  const bestIdx = bestRank != null ? scored.findIndex((n) => n.rank === bestRank) : -1;
+
+  return (
+    <section className="section" style={{ paddingTop: 0 }}>
+      <div className="wrap">
+        <SectionHead eyebrow={t("darksky.forecast.eyebrow")} title={t("darksky.forecast.title")} />
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {scored.map((n, i) => {
+            const key = n.rank != null ? VERDICT_KEYS[n.rank] : null;
+            const dayLabel = new Date(n.date + "T00:00:00")
+              .toLocaleDateString(lang === "en" ? "en-US" : "uk-UA", { weekday: "short", day: "numeric" });
+            const isBest = i === bestIdx;
+            return (
+              <div
+                key={n.date}
+                className="card"
+                style={{
+                  flex: "1 1 100px", textAlign: "center", padding: 10,
+                  borderColor: isBest ? "var(--gold)" : undefined,
+                }}
+              >
+                <div className="k" style={{ fontSize: 11 }}>{dayLabel}</div>
+                <div className={"v" + (key === "excellent" || key === "good" ? " accent" : "")} style={{ fontSize: 14 }}>
+                  {key ? t("darksky.verdict." + key) : "—"}
+                </div>
+                {isBest && <div className="foot" style={{ color: "var(--gold)" }}>{t("darksky.forecast.best")}</div>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function DarkSky() {
   const { t } = useTranslation();
   useEffect(() => { document.title = t("title.darksky"); }, [t]);
@@ -52,14 +139,21 @@ export default function DarkSky() {
   const { loc } = useLoc();
   const [showFs, setShowFs] = useState(false);
 
-  const { data: cond } = useApi(() => getObservingConditions(loc), {
-    deps: [loc && loc.lat, loc && loc.lon],
+  // Set by DarkSkyMap's "use for tonight's verdict" action, a search-result
+  // pick, "locate me", or a saved-location jump — null means "just use my
+  // site-wide location", the previous (and still default) behavior. A bare
+  // map click deliberately does NOT set this (see DarkSkyMap.js).
+  const [selectedPoint, setSelectedPoint] = useState(null);
+
+  const lat = selectedPoint ? selectedPoint.lat : (loc ? loc.lat : DEFAULT_LOC.lat);
+  const lon = selectedPoint ? selectedPoint.lon : (loc ? loc.lon : DEFAULT_LOC.lon);
+
+  const { data: cond } = useApi(() => getObservingConditions({ lat, lon }), {
+    deps: [lat, lon],
   });
 
   // undefined = still checking, null = couldn't read the tile, object = result.
   const [zone, setZone] = useState(undefined);
-  const lat = loc ? loc.lat : DEFAULT_LOC.lat;
-  const lon = loc ? loc.lon : DEFAULT_LOC.lon;
 
   useEffect(() => {
     let alive = true;
@@ -107,7 +201,7 @@ export default function DarkSky() {
                   {t("darksky.fullscreenHint")}
                 </span>
               </button>
-              <DarkSkyMap loc={loc} />
+              <DarkSkyMap loc={loc} onSelectPoint={setSelectedPoint} />
             </div>
             <div className="sat-controls">
               <span className="count" style={{ marginLeft: 0, marginRight: 4 }}>{t("darksky.legend.title")}:</span>
@@ -126,11 +220,28 @@ export default function DarkSky() {
         </div>
       </section>
 
-      {showFs && <DarkSkyMapFullscreen loc={loc} lang={lang} onClose={() => setShowFs(false)} />}
+      {showFs && (
+        <DarkSkyMapFullscreen loc={loc} lang={lang} onClose={() => setShowFs(false)} onSelectPoint={setSelectedPoint} />
+      )}
 
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <SectionHead eyebrow={t("darksky.verdict.eyebrow")} title={t("darksky.verdict.title")} />
+          {selectedPoint && (
+            <p className="section-sub" style={{ marginTop: -8, marginBottom: 14 }}>
+              {t("darksky.verdict.forPoint", {
+                label: selectedPoint.label || (selectedPoint.lat.toFixed(2) + ", " + selectedPoint.lon.toFixed(2)),
+              })}{" "}
+              <button
+                type="button"
+                className="section-link"
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 0, font: "inherit" }}
+                onClick={() => setSelectedPoint(null)}
+              >
+                {t("darksky.verdict.resetPoint")}
+              </button>
+            </p>
+          )}
           <div className="card" style={{ marginBottom: 16 }}>
             <div className="k">{t("darksky.verdict.title")}</div>
             <div className={"v" + (verdictKey === "excellent" || verdictKey === "good" ? " accent" : "")} style={{ fontSize: 26 }}>
@@ -178,6 +289,8 @@ export default function DarkSky() {
         </div>
       </section>
 
+      <BestNightsSection t={t} lat={lat} lon={lon} zoneTier={zone && zone.tier} lang={lang} />
+
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <SectionHead eyebrow={t("darksky.s1.eyebrow")} title={t("darksky.s1.title")} />
@@ -187,6 +300,22 @@ export default function DarkSky() {
           <FeatureRow tag={t("darksky.tips.t3_tag")} title={t("darksky.tips.t3_title")}>{t("darksky.tips.t3_body")}</FeatureRow>
         </div>
       </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("darksky.faqSection.eyebrow")} title={t("darksky.faqSection.title")} />
+          <div className="faq-list">
+            {(t("darksky.faq", { returnObjects: true }) || []).map((item, i) => (
+              <details key={i} className="faq-item">
+                <summary>{item.q}</summary>
+                <p>{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <EmbedSection t={t} />
     </>
   );
 }

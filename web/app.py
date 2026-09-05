@@ -56,7 +56,7 @@ from web.seo import (
     render_head,
     slug_for_name,
 )
-from web.seo import _render_news_jsonld
+from web.seo import _render_news_jsonld, _render_faq_jsonld, render_embed_html
 
 logger = logging.getLogger(__name__)
 
@@ -547,6 +547,8 @@ async def _spa_lang(lang: str, rest: str, request: Request):
         name = name_for_slug(lang, rest)
         if name == "404":
             status = 404
+        elif name == "darksky":
+            extra_jsonld = _render_faq_jsonld(lang)
 
     # Prerendering hook (Phase C): render full HTML for bots when enabled.
     if _PRERENDER_ENABLED and _is_bot(request.headers.get("user-agent", "")) \
@@ -590,6 +592,20 @@ async def _spa_en_root():
 @app.api_route("/en/{rest:path}", methods=["GET", "HEAD"], include_in_schema=False)
 async def _spa_en(rest: str, request: Request):
     return await _spa_lang("en", rest, request)
+
+
+@app.api_route("/embed/dark-sky", methods=["GET", "HEAD"], include_in_schema=False)
+async def _embed_dark_sky(request: Request):
+    """Bare (no header/nav/footer) embeddable Dark Sky map — see
+    my-app/src/pages/EmbedDarkSky.js + EmbedLayout.js, a top-level React route
+    outside the normal /:lang/* tree. Registered before the generic unprefixed
+    catch-all below so /embed/dark-sky isn't mistaken for a legacy slug and
+    redirected/404'd. Language-neutral URL by design (one stable `src` for
+    embedders); optional ?lang=uk only affects the SSR'd <head> language/meta,
+    the client-side i18n context reads its own default the same as any page."""
+    lang = "uk" if request.query_params.get("lang") == "uk" else "en"
+    body = render_embed_html(_SPA_INDEX.read_text(encoding="utf-8"), lang)
+    return HTMLResponse(content=body, headers={"Cache-Control": "public, max-age=300"})
 
 
 @app.api_route("/{full_path:path}", methods=["GET", "HEAD"], include_in_schema=False)

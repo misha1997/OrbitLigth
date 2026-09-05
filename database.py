@@ -460,6 +460,22 @@ def init_db():
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
 
+        # Named lat/lon bookmarks for a website account (Dark Sky map "My
+        # places" panel) — decoupled from the bot the same way web_users is;
+        # a web account isn't necessarily linked to a Telegram user.
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS saved_locations (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                web_user_id INT NOT NULL,
+                label VARCHAR(120) NOT NULL,
+                lat DECIMAL(10, 8) NOT NULL,
+                lon DECIMAL(11, 8) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (web_user_id) REFERENCES web_users(id) ON DELETE CASCADE,
+                INDEX idx_web_user_id (web_user_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ''')
+
         # Add avatar_url column to existing web_users (migration — added after
         # the table itself shipped, for installs that already ran init_db()
         # once before this column existed)
@@ -3051,6 +3067,64 @@ def delete_web_user(web_user_id: int) -> bool:
         return cursor.rowcount > 0
     except Error as e:
         logger.error(f"Error deleting web user: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def create_saved_location(web_user_id: int, label: str, lat: float, lon: float) -> Optional[Dict]:
+    """Bookmark a lat/lon for a web account (Dark Sky map 'My places')."""
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute('''
+            INSERT INTO saved_locations (web_user_id, label, lat, lon)
+            VALUES (%s, %s, %s, %s)
+        ''', (web_user_id, label, lat, lon))
+        conn.commit()
+        cursor.execute('SELECT * FROM saved_locations WHERE id = %s', (cursor.lastrowid,))
+        return cursor.fetchone()
+    except Error as e:
+        logger.error(f"Error creating saved location: {e}")
+        conn.rollback()
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_saved_locations(web_user_id: int) -> List[Dict]:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute(
+            'SELECT * FROM saved_locations WHERE web_user_id = %s ORDER BY created_at ASC',
+            (web_user_id,)
+        )
+        return cursor.fetchall()
+    except Error as e:
+        logger.error(f"Error getting saved locations: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_saved_location(web_user_id: int, location_id: int) -> bool:
+    """Ownership-checked delete — a user can only delete their own bookmarks."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            'DELETE FROM saved_locations WHERE id = %s AND web_user_id = %s',
+            (location_id, web_user_id)
+        )
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error deleting saved location: {e}")
         conn.rollback()
         return False
     finally:

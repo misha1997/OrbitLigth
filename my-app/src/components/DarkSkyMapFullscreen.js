@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import DarkSkyMap from "./DarkSkyMap";
 import "../styles/constellations.css";
 
-export default function DarkSkyMapFullscreen({ loc, lang, onClose }) {
+export default function DarkSkyMapFullscreen({ loc, lang, onClose, onSelectPoint }) {
   const mapRef = useRef(null);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function DarkSkyMapFullscreen({ loc, lang, onClose }) {
       </div>
 
       <div className="sat-map-fs-body" style={{ flex: 1, position: "relative" }}>
-        <DarkSkyMap ref={mapRef} loc={loc} />
+        <DarkSkyMap ref={mapRef} loc={loc} onSelectPoint={onSelectPoint} />
       </div>
     </div>
   );

@@ -86,6 +86,8 @@ export const getGeocode = (q) => fetchJSON(API + "/geocode?q=" + encodeURICompon
 export const getReverseGeocode = (lat, lon) =>
   fetchJSON(API + "/geocode/reverse?lat=" + lat + "&lon=" + lon);
 export const getIpGeo = () => fetchJSON(API + "/geo/ip");
+export const getElevation = (lat, lon) =>
+  fetchJSON(API + "/elevation?lat=" + lat + "&lon=" + lon);
 export const getOnline = () => fetchJSON(API + "/online");
 
 // Localized endpoints — the backend returns text in `lang` (uk by default).
@@ -102,6 +104,13 @@ export const getHistoryToday = (lang) => fetchJSON(API + "/history/today" + with
 // tonight" card. Light pollution itself is read client-side (lib/lightPollution.js).
 export const getObservingConditions = (loc, lang) =>
   fetchJSON(API + "/observing-conditions" + withLang(locParams(loc), lang));
+// Per-night cloud + Moon illumination for the next `nights` nights — Dark Sky
+// page's "best nights ahead" section.
+export const getObservingForecast = (loc, nights = 7, lang) => {
+  const base = locParams(loc);
+  const withNights = base ? base + "&nights=" + nights : "?nights=" + nights;
+  return fetchJSON(API + "/observing-conditions/forecast" + withLang(withNights, lang));
+};
 export const getNeo = (lang) => fetchJSON(API + "/neo" + withLang("", lang));
 export const getMeteors = (lang) => fetchJSON(API + "/meteors" + withLang("", lang));
 export const getEvents = (lang) => fetchJSON(API + "/events" + withLang("", lang));

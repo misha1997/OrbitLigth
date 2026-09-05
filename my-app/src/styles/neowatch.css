@@ -2234,6 +2234,334 @@ table.data tr:hover td {
   color: var(--text-dim)
 }
 
+/* ---------- dark-sky map controls (search/locate/layers/year/POI) ---------- */
+.dsm-panel-control {
+  border: none !important;
+}
+
+.dsm-toggle-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dsm-toggle-btn:hover {
+  color: var(--gold) !important;
+}
+
+.dsm-panel {
+  flex-direction: column;
+  gap: 10px;
+  width: 240px;
+  margin-top: 6px;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .5);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  /* The panel has grown past the map's own height as features were added
+     (search, locate, layers, year/opacity, POI, nearest-finder, My Places).
+     `.leaflet-container` clips anything painted outside its own box
+     (`overflow: hidden`, required for tile clipping) regardless of this
+     element's own overflow setting, so the cap has to fit inside the
+     *embedded* card's height (420px, see `.map-body.map-live`) minus the
+     toggle button + margin above the panel — not just be "tall but scrolls".
+     The fullscreen modal's map is much taller, so this is comfortably safe
+     there too. */
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.dsm-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dsm-field-row {
+  justify-content: space-between;
+}
+
+.dsm-field-row span {
+  color: var(--text-dim);
+}
+
+.dsm-search-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.dsm-search-input,
+.dsm-year-select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.dsm-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.dsm-search-result {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dsm-search-result:hover {
+  background: rgba(232, 185, 77, .1);
+}
+
+.dsm-sr-name {
+  color: var(--text);
+  font-size: 12px;
+}
+
+.dsm-sr-sub {
+  color: var(--text-dim);
+  font-size: 10.5px;
+}
+
+.dsm-locate-btn,
+.dsm-share-btn {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.dsm-locate-btn:hover,
+.dsm-share-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.dsm-status {
+  font-size: 11px;
+}
+
+.dsm-baselayer-row {
+  gap: 6px;
+}
+
+.dsm-base-btn {
+  flex: 1;
+  background: var(--bg);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 0;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.dsm-base-btn.on {
+  color: var(--text);
+  border-color: var(--gold);
+  background: rgba(232, 185, 77, .08);
+}
+
+.dsm-opacity-range {
+  flex: 1;
+  accent-color: var(--gold);
+}
+
+.dsm-poi-row {
+  justify-content: flex-start;
+}
+
+.dsm-poi-row span {
+  color: var(--text);
+}
+
+.dsm-poi-caption {
+  color: var(--text-dim);
+  font-size: 10.5px;
+  margin-top: -6px;
+}
+
+/* Specificity note: the panel wrapper carries Leaflet's own `.leaflet-bar`
+   class (for its box/border chrome), whose built-in `.leaflet-bar a` rule
+   (white background, black text, block display) otherwise wins over a
+   single-class selector here — `.dsm-panel a.dsm-login-link` outranks it. */
+.dsm-panel a.dsm-login-link {
+  display: inline;
+  background: none;
+  color: var(--gold);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.dsm-panel a.dsm-login-link:hover {
+  color: var(--text);
+}
+
+.dsm-poi-marker span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: #4FD1C5;
+  font-size: 13px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, .9);
+}
+
+.dsm-play-btn {
+  width: 30px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.dsm-play-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.dsm-myplaces {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dsm-myplaces-add {
+  gap: 6px;
+}
+
+.dsm-myplaces-input {
+  flex: 1;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  min-width: 0;
+}
+
+.dsm-myplaces-add-btn {
+  width: 26px;
+  background: var(--panel);
+  color: var(--gold);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dsm-myplaces-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.dsm-myplaces-name {
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dsm-myplaces-name:hover {
+  color: var(--gold);
+}
+
+.dsm-myplaces-del {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.dsm-myplaces-del:hover {
+  color: #e07a5f;
+}
+
+/* ---------- FAQ (Dark Sky page) ---------- */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 14px 18px;
+}
+
+.faq-item summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::before {
+  content: "+";
+  display: inline-block;
+  width: 18px;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.faq-item[open] summary::before {
+  content: "–";
+}
+
+.faq-item p {
+  margin: 10px 0 0 18px;
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 /* ---------- space weather ---------- */
 /* Storm alert card (Kp ≥ 5): its own featured section right under the hero
    (same "highlight card" language as .next-launch), not squeezed into the

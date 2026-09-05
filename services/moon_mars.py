@@ -11,10 +11,13 @@ class MoonMarsAPI:
     """Moon phases and Mars weather API"""
 
     @staticmethod
-    def get_moon_phase(lang=DEFAULT_LANG):
-        """Calculate current moon phase"""
+    def get_moon_phase(lang=DEFAULT_LANG, at: datetime = None):
+        """Calculate the moon phase for `at` (defaults to now) — the `at` param
+        lets callers score a future date (e.g. the Dark Sky page's multi-night
+        forecast) with the exact same simplified formula "now" already uses,
+        rather than a second, inconsistent calculation."""
         try:
-            now = datetime.now()
+            now = at or datetime.now()
 
             # Moon phase calculation (simplified algorithm)
             # New moon reference: 2000-01-06 18:14 UTC

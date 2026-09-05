@@ -13,8 +13,10 @@ import { LanguageProvider } from "./context/LanguageContext";
 import { AuthProvider } from "./context/AuthContext";
 import { PickerProvider } from "./components/LocationPickerModal";
 import Layout from "./components/layout/Layout";
+import EmbedLayout from "./components/layout/EmbedLayout";
 import LangRouter from "./components/LangRouter";
 import NotFound from "./pages/NotFound";
+import EmbedDarkSky from "./pages/EmbedDarkSky";
 
 // GA4 pageview on every SPA route change. The gtag() snippet in
 // public/index.html fires the initial pageview; this sends the rest so
@@ -39,6 +41,9 @@ export default function App() {
           <LocationProvider>
             <PickerProvider>
               <Routes>
+                <Route element={<EmbedLayout />}>
+                  <Route path="/embed/dark-sky" element={<EmbedDarkSky />} />
+                </Route>
                 <Route element={<Layout />}>
                   <Route path="/:lang/*" element={<LangRouter />} />
                   <Route path="*" element={<NotFound />} />

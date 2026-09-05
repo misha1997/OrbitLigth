@@ -26,8 +26,11 @@ from pydantic import BaseModel, Field
 
 from database import (
     bump_web_user_token_version,
+    create_saved_location,
     create_web_user,
+    delete_saved_location,
     delete_web_user,
+    get_saved_locations,
     get_user,
     get_web_user_by_email,
     get_web_user_by_google_id,
@@ -162,6 +165,22 @@ class NotificationsPayload(BaseModel):
 class ChangePasswordPayload(BaseModel):
     current_password: str | None = None
     new_password: str = Field(..., min_length=8, max_length=255)
+
+
+class SavedLocationPayload(BaseModel):
+    label: str = Field(..., min_length=1, max_length=120)
+    lat: float = Field(..., ge=-90, le=90)
+    lon: float = Field(..., ge=-180, le=180)
+
+
+def _public_location(row: dict) -> dict:
+    return {
+        "id": row["id"],
+        "label": row["label"],
+        "lat": float(row["lat"]),
+        "lon": float(row["lon"]),
+        "created_at": str(row["created_at"]) if row.get("created_at") else None,
+    }
 
 
 def _login_response(web_user: dict, request: Request) -> JSONResponse:
@@ -383,3 +402,37 @@ async def delete_account(request: Request):
     resp = JSONResponse({"ok": True})
     clear_session_cookie(resp)
     return resp
+
+
+@router.get("/locations")
+async def list_saved_locations(request: Request):
+    """Named lat/lon bookmarks (Dark Sky map 'My places' panel)."""
+    web_user = get_current_web_user(request)
+    if not web_user:
+        return JSONResponse({"ok": False, "error": "not_authenticated"}, status_code=401)
+    rows = await asyncio.to_thread(get_saved_locations, web_user["id"])
+    return {"ok": True, "locations": [_public_location(r) for r in rows]}
+
+
+@router.post("/locations")
+async def add_saved_location(payload: SavedLocationPayload, request: Request):
+    web_user = get_current_web_user(request)
+    if not web_user:
+        return JSONResponse({"ok": False, "error": "not_authenticated"}, status_code=401)
+    row = await asyncio.to_thread(
+        create_saved_location, web_user["id"], payload.label, payload.lat, payload.lon
+    )
+    if not row:
+        return JSONResponse({"ok": False, "error": "create_failed"}, status_code=500)
+    return {"ok": True, "location": _public_location(row)}
+
+
+@router.delete("/locations/{location_id}")
+async def remove_saved_location(location_id: int, request: Request):
+    web_user = get_current_web_user(request)
+    if not web_user:
+        return JSONResponse({"ok": False, "error": "not_authenticated"}, status_code=401)
+    deleted = await asyncio.to_thread(delete_saved_location, web_user["id"], location_id)
+    if not deleted:
+        return JSONResponse({"ok": False, "error": "not_found"}, status_code=404)
+    return {"ok": True}

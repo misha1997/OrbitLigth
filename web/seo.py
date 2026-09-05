@@ -21,6 +21,7 @@ There is no unprefixed content — no duplicate-content URLs.
 Public API:
     - ``render_html(index_html, name, lang) -> str``
     - ``render_head(name, lang) -> str``
+    - ``render_embed_html(index_html, lang) -> str`` (the /embed/dark-sky widget)
     - ``build_sitemap_index_xml()`` / ``build_sitemap_pages_xml()``
       / ``build_sitemap_news_xml()``
     - ``build_robots_txt() -> str``
@@ -292,6 +293,52 @@ def _render_news_jsonld(article: dict, lang: str) -> str:
     return json.dumps(obj, ensure_ascii=False)
 
 
+def _t_list(lang: str, *keys: str) -> list:
+    """Like ``_t`` but for an array leaf (e.g. ``darksky.faq``) instead of a
+    string one. Falls back to ``uk`` if the requested language is missing the
+    key, same as ``_desc`` does."""
+    node: object = _DICTS.get(lang) or _DICTS.get("uk")
+    for k in keys:
+        if isinstance(node, dict):
+            node = node.get(k)
+        else:
+            return []
+    if isinstance(node, list):
+        return node
+    if lang != "uk":
+        return _t_list("uk", *keys)
+    return []
+
+
+def _render_faq_jsonld(lang: str) -> str:
+    """FAQPage JSON-LD for the Dark Sky page, built from the same
+    ``darksky.faq`` array the React page renders (``my-app/src/i18n/{lang}.json``)
+    — one source of truth, no copy duplicated between client and server.
+    Returns "" if the i18n dict has no (or an empty) FAQ block."""
+    items = _t_list(lang, "darksky", "faq")
+    if not items:
+        return ""
+    entities = []
+    for item in items:
+        q = (item or {}).get("q")
+        a = (item or {}).get("a")
+        if not q or not a:
+            continue
+        entities.append({
+            "@type": "Question",
+            "name": q,
+            "acceptedAnswer": {"@type": "Answer", "text": a},
+        })
+    if not entities:
+        return ""
+    obj = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": entities,
+    }
+    return json.dumps(obj, ensure_ascii=False)
+
+
 def _og_locale(lang: str) -> str:
     return "uk_UA" if lang == "uk" else "en_US"
 
@@ -387,6 +434,41 @@ def render_html(index_html: str, name: str, lang: str, extra_jsonld: str = "",
     if n == 0:
         # Markers missing (e.g. an older build) — inject before </head> as a
         # graceful fallback so crawlers still get per-route meta.
+        out = index_html.replace("</head>", head + "\n  </head>", 1)
+    out = _HTML_LANG_RE.sub(f'<html lang="{lang}">', out, count=1)
+    return out
+
+
+_EMBED_TITLE = {"uk": "Карта світлового забруднення — OrbitLight (вбудований віджет)",
+                "en": "Light Pollution Map — OrbitLight (embed)"}
+_EMBED_DESC = {"uk": "Вбудований віджет карти світлового забруднення OrbitLight.",
+               "en": "Embeddable light-pollution map widget from OrbitLight."}
+
+
+def render_embed_html(index_html: str, lang: str = "en") -> str:
+    """Splice a small, fixed head into the built index.html for /embed/dark-sky.
+
+    Deliberately standalone rather than built on ``render_head``/``render_html``:
+    those force any route name outside ``SLUGS`` to ``"404"`` (see the
+    ``if name not in SLUGS and name != "404"`` guard above), which would fight
+    the fixed title/canonical an embed page needs. This reuses the same
+    ``_HEAD_BLOCK_RE`` marker splice, just with a hand-built head: noindex,nofollow
+    (a utility surface, not content — same treatment as /login, /account) and a
+    canonical pointing at the real page so the embed never competes with it for
+    search ranking.
+    """
+    e = lambda s: html.escape(s, quote=True)  # noqa: E731
+    canonical = _loc("darksky", lang)
+    title = _EMBED_TITLE.get(lang, _EMBED_TITLE["en"])
+    desc = _EMBED_DESC.get(lang, _EMBED_DESC["en"])
+    head = (
+        f'<title>{e(title)}</title>\n'
+        f'    <meta name="description" content="{e(desc)}" />\n'
+        f'    <meta name="robots" content="noindex,nofollow" />\n'
+        f'    <link rel="canonical" href="{e(canonical)}" />\n'
+    )
+    out, n = _HEAD_BLOCK_RE.subn(head, index_html, count=1)
+    if n == 0:
         out = index_html.replace("</head>", head + "\n  </head>", 1)
     out = _HTML_LANG_RE.sub(f'<html lang="{lang}">', out, count=1)
     return out

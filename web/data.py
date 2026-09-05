@@ -57,6 +57,7 @@ from services.dsn import DSNService
 from services.gw_alerts import GWAlertAPI
 from services.sentry import SentryAPI
 from services.reentries import ReentryAPI
+from services.elevation import ElevationAPI
 from utils.i18n import DEFAULT_LANG, t, compass_dir, pick
 from utils.translator import Translator
 from config import (
@@ -99,6 +100,7 @@ REENTRY_TTL = 21600       # 6h — SATCAT CSV is ~5.5 MB, don't refetch too ofte
 FLARES_TTL = 900          # 15 min — discrete flare events list
 COMETS_TTL = 3600         # curated comet digest; days-to-perihelion updates daily
 EXO_TTL = 3600            # exoplanet archive (TAP); new finds trickle in daily
+ELEVATION_TTL = 2592000   # 30d — a point's elevation never changes; public API is rate-limited
 
 # Ukrainian short compass abbreviations (8-point) for the dashboard, matching
 # the template style ("ПнЗ → ПдС"). Collapsed from N2YO's 16-point codes.
@@ -441,6 +443,17 @@ async def get_iss_passes(lat: float, lon: float, lang: str = DEFAULT_LANG) -> di
     return await asyncio.to_thread(
         get_or_fetch, key, ISS_PASSES_TTL, lambda: _iss_passes_raw(lat, lon, lang)
     )
+
+
+async def get_elevation(lat: float, lon: float) -> dict:
+    """Elevation in meters at (lat, lon) — Dark Sky map point-click popup."""
+    key = f"elevation:{round(lat,3)}:{round(lon,3)}"
+    elevation = await asyncio.to_thread(
+        get_or_fetch, key, ELEVATION_TTL,
+        lambda: ElevationAPI.get_elevation(lat, lon),
+        cacheable=lambda v: v is not None,
+    )
+    return {"lat": lat, "lon": lon, "elevation_m": elevation}
 
 
 # ---------------------------------------------------------------------------
@@ -1013,6 +1026,84 @@ async def get_observing_conditions(lat: float, lon: float, lang: str = DEFAULT_L
     )
 
 
+def _night_cloud_forecast(lat: float, lon: float, nights: int) -> dict:
+    """Per-night average cloud cover (%), keyed by ISO date string, for the
+    next `nights` calendar dates — averages each night's local 21:00-03:00
+    window (spans midnight) from Open-Meteo's hourly series. `forecast_days`
+    is `nights + 1` so the last night's post-midnight hours are covered."""
+    resp = requests.get(
+        OPEN_METEO_URL,
+        params={
+            "latitude": lat, "longitude": lon,
+            "hourly": "cloud_cover",
+            "forecast_days": min(nights + 1, 8),
+            "timezone": "auto",
+        },
+        timeout=10,
+    )
+    resp.raise_for_status()
+    hourly = (resp.json() or {}).get("hourly") or {}
+    times = hourly.get("time") or []
+    covers = hourly.get("cloud_cover") or []
+
+    buckets: dict[str, list] = {}
+    for ts, c in zip(times, covers):
+        if c is None:
+            continue
+        try:
+            dt = datetime.fromisoformat(ts)
+        except Exception:
+            continue
+        # 21:00-23:59 belongs to that date's night; 00:00-03:00 belongs to the
+        # *previous* date's night (still that evening's observing window).
+        if dt.hour >= 21:
+            night_date = dt.date()
+        elif dt.hour <= 3:
+            night_date = dt.date() - timedelta(days=1)
+        else:
+            continue
+        buckets.setdefault(night_date.isoformat(), []).append(int(c))
+
+    return {d: (round(sum(vals) / len(vals)) if vals else None) for d, vals in buckets.items()}
+
+
+def _observing_forecast_raw(lat: float, lon: float, lang: str, nights: int) -> dict:
+    try:
+        night_clouds = _night_cloud_forecast(lat, lon, nights)
+    except Exception as e:
+        logger.error("observing forecast cloud: %s", e)
+        night_clouds = {}
+
+    today = date.today()
+    out_nights = []
+    for i in range(nights):
+        d = today + timedelta(days=i)
+        moon_illum = None
+        try:
+            mp = MoonMarsAPI.get_moon_phase(lang, at=datetime.combine(d, datetime.min.time()))
+            moon_illum = round((mp or {}).get("illumination") or 0)
+        except Exception as e:
+            logger.error("observing forecast moon: %s", e)
+        out_nights.append({
+            "date": d.isoformat(),
+            "cloud_cover_pct": night_clouds.get(d.isoformat()),
+            "moon_illumination_pct": moon_illum,
+        })
+    return {"lat": lat, "lon": lon, "nights": out_nights}
+
+
+async def get_observing_forecast(lat: float, lon: float, lang: str = DEFAULT_LANG, nights: int = 7) -> dict:
+    """Per-night cloud + Moon illumination for the next `nights` nights — Dark
+    Sky page's "best nights ahead" section. Light pollution isn't included
+    here since the frontend already reads it client-side and it doesn't vary
+    night to night."""
+    nights = max(1, min(nights, 7))
+    key = f"obsfc:{round(lat,2)}:{round(lon,2)}:{lang}:{nights}"
+    return await asyncio.to_thread(
+        get_or_fetch, key, OBSERVING_TTL, lambda: _observing_forecast_raw(lat, lon, lang, nights)
+    )
+
+
 # ---------------------------------------------------------------------------
 # Geocoding (Nominatim proxy) for the location picker
 # ---------------------------------------------------------------------------
@@ -1165,11 +1256,16 @@ def _parse_3le(text: str) -> list:
     return out
 
 
-def _tle_raw(group_key: str, limit: int) -> dict:
+def _tle_raw(group_key: str) -> dict:
+    """Fetch the full TLE set for a group. Unlimited/untruncated — callers
+    (``get_tle``) cache this once per group and slice to each request's
+    ``limit`` themselves, so pages asking for the same group with different
+    limits (ISS page: 5, satellites: 400, fullscreen map: 1000) share a single
+    upstream Celestrak call instead of each fetching independently."""
     spec = TLE_GROUPS.get(group_key)
     if not spec:
         return {"group": group_key, "label": group_key, "color": "#E8B94D",
-                "icon": "🛰️", "items": [], "total": 0, "shown": 0}
+                "icon": "🛰️", "items": [], "total": 0}
     params = {"FORMAT": "3le"}
     if "catnr" in spec:
         params["CATNR"] = spec["catnr"]
@@ -1187,17 +1283,13 @@ def _tle_raw(group_key: str, limit: int) -> dict:
         raise _NotModified()
     resp.raise_for_status()
     items = _parse_3le(resp.text)
-    total = len(items)
-    if limit and total > limit:
-        items = items[:limit]
     return {
         "group": group_key,
         "label": spec["label"],
         "color": spec["color"],
         "icon": spec["icon"],
         "items": items,
-        "total": total,
-        "shown": len(items),
+        "total": len(items),
     }
 
 
@@ -1229,6 +1321,13 @@ def _stash_load(key: str) -> dict | None:
 async def get_tle(group: str, limit: int = 300, lang: str = DEFAULT_LANG) -> dict:
     """Cached TLE set for a satellite group (Celestrak).
 
+    Cached and fetched per ``group`` only — ``limit`` is applied by slicing
+    the cached full set on every call, not baked into the cache key. Pages
+    request the same group at different limits (ISS page: 5, satellites: 400,
+    fullscreen map: 1000); keying the cache on ``(group, limit)`` used to make
+    each of those an independent upstream Celestrak call, tripling both the
+    load on Celestrak and the blast radius of any single connectivity blip.
+
     On Celestrak's 403 "not modified" or a fetch error, falls back to the last
     good payload (kept in ``_TLE_STASH``) so the map never goes empty between
     Celestrak data updates. The TLE data itself is language-independent, so the
@@ -1236,32 +1335,40 @@ async def get_tle(group: str, limit: int = 300, lang: str = DEFAULT_LANG) -> dic
     return time.
     """
     import time
-    key = f"tle:{group}:{limit}"
+    key = f"tle:{group}"
     now = time.monotonic()
     spec = TLE_GROUPS.get(group, {})
     label = pick(spec, "label", lang) if spec else group
 
-    def _with_label(p: dict) -> dict:
-        p = dict(p)
-        p["label"] = label
-        return p
+    def _view(p: dict) -> dict:
+        items = p.get("items", [])
+        shown = items[:limit] if limit else items
+        return {
+            "group": p.get("group", group),
+            "label": label,
+            "color": p.get("color", spec.get("color", "#E8B94D")),
+            "icon": p.get("icon", spec.get("icon", "🛰️")),
+            "items": shown,
+            "total": p.get("total", len(items)),
+            "shown": len(shown),
+        }
 
     entry = _TLE_CACHE.get(key)
     if entry and entry[0] > now:
-        return _with_label(entry[1])
+        return _view(entry[1])
 
     empty = {"group": group, "label": label,
              "color": spec.get("color", "#E8B94D"), "icon": spec.get("icon", "🛰️"),
              "items": [], "total": 0, "shown": 0}
 
     try:
-        payload = await asyncio.to_thread(_tle_raw, group, limit)
+        payload = await asyncio.to_thread(_tle_raw, group)
     except _NotModified:
         stash = _TLE_STASH.get(key) or _stash_load(key)
         if stash:
             _TLE_STASH[key] = stash
             _TLE_CACHE[key] = (now + TLE_TTL, stash)
-            return _with_label(stash)
+            return _view(stash)
         return empty
     except Exception as e:
         logger.error("TLE fetch %s: %s", group, e)
@@ -1269,7 +1376,7 @@ async def get_tle(group: str, limit: int = 300, lang: str = DEFAULT_LANG) -> dic
         if stash:
             _TLE_STASH[key] = stash
             _TLE_CACHE[key] = (now + 300, stash)  # short retry window
-            return _with_label(stash)
+            return _view(stash)
         return empty
 
     if payload.get("items"):
@@ -1285,7 +1392,7 @@ async def get_tle(group: str, limit: int = 300, lang: str = DEFAULT_LANG) -> dic
             _TLE_CACHE[key] = (now + TLE_TTL, stash)
         else:
             _TLE_CACHE[key] = (now + 300, payload)
-    return _with_label(payload)
+    return _view(payload)
 
 
 def tle_groups(lang: str = DEFAULT_LANG) -> list:

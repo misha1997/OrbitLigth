@@ -93,7 +93,7 @@
     "roman": "Nancy Grace Roman",
     "meteors": "Meteors",
     "events": "Events",
-    "darksky": "Dark sky",
+    "darksky": "Light pollution map",
     "orbit_group": "Orbit",
     "iss": "ISS",
     "satellites": "Satellites",
@@ -528,14 +528,6 @@
       "sub": "ISS, asteroids, meteors, space weather and rocket launches — the whole sky live in one place.",
       "skyNow": "Sky now →",
       "telegram": "Open in Telegram ↗"
-    },
-    "romanLaunch": {
-      "badge": "Live · telescope launch",
-      "liveBadge": "Live",
-      "title": "Nancy Grace Roman Space Telescope launch",
-      "sub": "Falcon Heavy (SpaceX) · LC-39A, Kennedy Space Center",
-      "watch": "Watch the launch stream",
-      "watchReplay": "Watch the launch replay"
     },
     "tonight": {
       "eyebrow": "Tonight",
@@ -4230,7 +4222,7 @@
   "darksky": {
     "hero": {
       "eyebrow": "Observing conditions",
-      "title": "Dark <span class=\"accent\">sky</span>",
+      "title": "Light pollution map <span class=\"accent\">&amp; dark sky</span>",
       "sub": "A light-pollution map and a plain verdict — is tonight worth taking the telescope out, for your saved location.",
       "map": "To the map →"
     },
@@ -4242,7 +4234,51 @@
       "loading": "Reading the map…",
       "trend": "Light pollution, {{from}}–{{to}}",
       "lpi": "LPI ≈ {{n}}",
-      "noData": "No data for this point"
+      "noData": "No data for this point",
+      "asOfYear": "{{year}} data",
+      "deltaMag": "Sky brightened by ~{{n}} mag vs. a natural sky",
+      "nelmRange": "Typical naked-eye limit for this zone: {{range}}",
+      "elevation": "Elevation: ~{{n}} m",
+      "elevationUnknown": "Elevation: unknown",
+      "cloud": "Cloud cover now: {{n}}%",
+      "cloudUnknown": "Cloud cover now: unknown",
+      "moon": "Moon illumination: {{n}}%",
+      "moonUnknown": "Moon illumination: unknown"
+    },
+    "map": {
+      "settingsTitle": "Map layers & tools",
+      "searchPlaceholder": "Search a place…",
+      "locate": "Locate me",
+      "locateFail": "Couldn't get your location",
+      "layerDark": "Dark",
+      "layerSatellite": "Satellite",
+      "yearLabel": "Overlay year",
+      "opacityLabel": "Overlay opacity",
+      "poiLabel": "Dark Sky Places",
+      "poiCaption": "A curated selection of certified International Dark Sky Places — not the full DarkSky International registry.",
+      "copyLink": "Copy link to this view",
+      "linkCopied": "Copied",
+      "distanceFromYou": "~{{km}} km from you",
+      "poiType": {
+        "park": "Dark Sky Park",
+        "reserve": "Dark Sky Reserve",
+        "sanctuary": "Dark Sky Sanctuary",
+        "community": "Dark Sky Community"
+      },
+      "findNearest": "Find nearest dark sky",
+      "searching": "Searching…",
+      "nearestNotFound": "No darker sky found within 150 km",
+      "nearestDistance": "~{{km}} km from here",
+      "playYears": "Play/pause years",
+      "myPlacesLoginHint": "Log in to save locations.",
+      "myPlacesLogin": "Log in",
+      "myPlacesLoading": "Loading…",
+      "myPlacesLabelPlaceholder": "Label (optional)",
+      "myPlacesDelete": "Remove",
+      "usePoint": "Use for tonight's verdict",
+      "usePointDone": "Set",
+      "getDirections": "Get directions",
+      "nearestDarkerNearby": "A darker spot ({{tier}}) is ~{{km}} km further"
     },
     "tier": {
       "excellent": "Very dark sky",
@@ -4261,6 +4297,8 @@
       "moderate": "Moderate",
       "poor": "Poor",
       "unknown": "Unknown",
+      "forPoint": "Showing conditions for {{label}}.",
+      "resetPoint": "Reset to my location",
       "note": {
         "excellent": "Clear dark sky — a good night for faint deep-sky targets.",
         "good": "Decent conditions for observing.",
@@ -4297,6 +4335,44 @@
       "t3_tag": "03 · CLOUDS",
       "t3_title": "Watch the clouds",
       "t3_body": "The cloud forecast above is the single biggest factor — even a perfectly dark site is useless under an overcast sky."
+    },
+    "forecast": {
+      "eyebrow": "Plan ahead",
+      "title": "Best nights ahead",
+      "best": "Best night"
+    },
+    "faqSection": {
+      "eyebrow": "Questions",
+      "title": "Light pollution map FAQ"
+    },
+    "faq": [
+      {
+        "q": "What is a light pollution map?",
+        "a": "A light pollution map shows how much artificial night-sky glow (skyglow) there is at a given location, usually built from satellite night-light imagery. This page uses the David Lorenz Light Pollution Atlas, based on VIIRS satellite data."
+      },
+      {
+        "q": "Is a light pollution map the same as the Bortle scale?",
+        "a": "No. The Bortle scale is a subjective 1–9 visual rating an observer makes by eye at night. This map's \"zones\" are a satellite-derived measurement of artificial sky brightness — a useful proxy, but the atlas's own author explicitly warns against treating a zone number as an exact Bortle-scale equivalent."
+      },
+      {
+        "q": "What do the colors on the dark sky map mean?",
+        "a": "Darker blues, greens and greys mean less artificial light and better stargazing conditions; yellows, oranges and reds mean more light pollution from nearby cities and towns. The legend below the map explains each tier."
+      },
+      {
+        "q": "How often is the light pollution data updated?",
+        "a": "The atlas publishes a new global dataset roughly once a year (this map lets you switch between 2016, 2020, 2022, 2023, 2024 and 2025). It's not real-time — light pollution changes slowly, so a yearly snapshot is normal for this kind of map."
+      },
+      {
+        "q": "How do I find a dark sky near me?",
+        "a": "Use the \"Find nearest dark sky\" button in the map's tools panel — it searches outward from wherever you're currently looking on the map and points you to the closest spot with meaningfully less light pollution."
+      }
+    ],
+    "embed": {
+      "eyebrow": "For your site",
+      "title": "Embed this map",
+      "hint": "Copy this snippet to embed a live version of this light-pollution map on your own site or blog.",
+      "copy": "Copy embed code",
+      "copied": "Copied"
     }
   },
   "auth": {
