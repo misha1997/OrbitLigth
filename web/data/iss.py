@@ -144,7 +144,7 @@ def _crew_raw(lang: str = DEFAULT_LANG) -> dict:
             })
         # Group crew by spacecraft so the frontend can render the same
         # "🚀 Soyuz / 🚀 Crew Dragon" blocks the bot produces.
-        by_craft = {}
+        by_craft: dict[str, list] = {}
         for person in crew:
             craft = person.get("spacecraft") or ""
             by_craft.setdefault(craft, []).append(person)
