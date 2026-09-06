@@ -2,7 +2,7 @@
 
 Sibling to the Telegram-send calls in services/scheduler.py: same trigger
 points, same dedup logic, just a second delivery channel for people who use
-the site but never started the bot. See push_subscriptions in database.py.
+the site but never started the bot. See push_subscriptions in database/users.py.
 """
 import json
 import logging

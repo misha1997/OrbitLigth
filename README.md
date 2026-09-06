@@ -181,7 +181,7 @@ python3 bot.py
 NEOwatchBot/
 ├── bot.py                 # Легасі bot-only entrypoint
 ├── config.py               # Ключі API, константи
-├── database.py              # MySQL: users, notifications, новини, галактики, APOD-архів…
+├── database/                # MySQL, по модулю на область: users, notifications, новини, галактики, APOD-архів…
 ├── handlers/                # Telegram-хендлери (commands / callbacks / messages)
 ├── services/                 # Обгортки над зовнішніми API (планети, метеори, MAST…)
 ├── parsers/                   # RSS/HTML-парсери новин

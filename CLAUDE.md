@@ -448,8 +448,12 @@ by what they back:
   `news_articles` archive (ESA, Universe Today, SpaceNews, etc.), polled by
   the scheduler every 2 hours
 
-### Database (`database.py`)
-MySQL with connection pooling. Tables:
+### Database (`database/`)
+MySQL with connection pooling. Split into one module per concern
+(`pool.py`, `schema.py`, `users.py`, `geocoding.py`, `notifications.py`,
+`news.py`, `apod.py`, `galaxies.py`, `web_accounts.py`) — `database/__init__.py`
+re-exports every name, so `from database import get_user` etc. is unaffected.
+Tables:
 
 - `users` — profiles, locations, subscription flags, quiet hours, ISS
   brightness filter
