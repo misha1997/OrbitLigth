@@ -9,6 +9,7 @@ DSN-grade precision.
 """
 from datetime import datetime, timezone
 import logging
+from typing import TypedDict
 from utils.i18n import t, DEFAULT_LANG
 
 logger = logging.getLogger(__name__)
@@ -16,11 +17,19 @@ logger = logging.getLogger(__name__)
 C_KM_S = 299_792.458
 AU_KM = 149_597_870.7
 
+
+class _ProbeInfo(TypedDict):
+    epoch: datetime
+    dist_km: int
+    velocity_km_s: float
+    interstellar_date: str
+
+
 # Reference epoch + heliocentric distance at that epoch + recession velocity.
 # Distances are heliocentric (Sun-centered); Earth's distance varies by ±1 AU
 # as it orbits, which we note rather than compute (no Voyager direction angle).
 # Figures rounded from NASA/JPL status pages, epoch 2025-01-01 UTC.
-_PROBES = {
+_PROBES: dict[int, _ProbeInfo] = {
     1: {
         "epoch": datetime(2025, 1, 1, tzinfo=timezone.utc),
         "dist_km": 24_800_000_000,
