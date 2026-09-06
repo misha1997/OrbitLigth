@@ -1,6 +1,6 @@
 """"On this day in space history" lookup for the homepage."""
 
-def get_history_today(lang: str) -> dict:
+def get_history_today(lang: str) -> dict | None:
     from database import get_db_connection
     import datetime
     import random
