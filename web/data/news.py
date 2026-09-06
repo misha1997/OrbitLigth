@@ -32,7 +32,7 @@ NEWS_PAGE_SIZE_MAX = 24
 NEWS_CATEGORIES = {"launches", "missions", "discoveries", "tech"}
 
 
-def _news_localize(items, lang):
+def _news_localize(items: list[dict], lang: str) -> list[dict]:
     """Pick the title/excerpt in the requested language (fall back to EN)."""
     out = []
     for it in items:
@@ -52,7 +52,7 @@ def _news_localize(items, lang):
     return out
 
 
-def _news_live(lang):
+def _news_live(lang: str) -> list[dict]:
     """Live SpaceflightNow fetch used when the DB archive is empty/unavailable.
     Best-effort stores into the archive, then reads back; if the DB is off,
     returns the freshly-parsed list with id=null (cards link out to source)."""
@@ -73,7 +73,8 @@ def _news_live(lang):
     } for a in arts]
 
 
-def _news_raw(lang, page=0, page_size=NEWS_PAGE_SIZE_DEFAULT, q="", category=""):
+def _news_raw(lang: str, page: int = 0, page_size: int = NEWS_PAGE_SIZE_DEFAULT,
+              q: str = "", category: str = "") -> dict:
     """One page of the news archive, optionally filtered by `category` and/or
     a `q` search term (title/excerpt substring, either language) — both
     applied at the DB level. Falls back to a live unpaginated fetch only for
@@ -185,7 +186,7 @@ async def get_news_keywords(lang: str = DEFAULT_LANG) -> dict:
     return {"keywords": keywords}
 
 
-def _news_article_raw(slug, lang):
+def _news_article_raw(slug: str, lang: str) -> dict:
     """Article page data keyed by slug. The body (English) is stored at ingest
     time (from the RSS ``content:encoded``), so this only translates it to UK
     on first view (lazily, persisted — never retranslated). For legacy rows with
@@ -194,7 +195,7 @@ def _news_article_raw(slug, lang):
     it = get_news_article_by_slug(slug)
     if not it:
         return {"available": False}
-    article_id = it.get("id")
+    article_id: int = it["id"]
     # Legacy row without a stored body → lazy HTML fetch (RSS gap / pre-RSS
     # ingest). New rows already carry the body from the feed — no HTTP fetch.
     # Known residual risk: the 3 set_news_article_* calls below each open

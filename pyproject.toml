@@ -44,3 +44,9 @@ module = "web.data.iss"
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 warn_return_any = true
+
+[[tool.mypy.overrides]]
+module = "web.data.news"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+warn_return_any = true
