@@ -1,6 +1,10 @@
 """Venus data: live geocentric distance + next greatest brightness/elongation events."""
 from datetime import datetime, timezone
 
+from services.planet_distance import earth_distance_km, light_time_minutes
+
+VENUS_NAIF_ID = 299
+
 _EVENTS = [
     ("2026-09-18T18:00:00Z", "brightness_evening", "найбільша вечірня яскравість", "greatest evening brightness",
      "Венера зараз — \"вечірня зоря\", видима після заходу Сонця на заході",
@@ -32,27 +36,11 @@ def _upcoming_events(now: datetime, limit: int = 4) -> list[dict]:
     return out
 
 
-def _earth_venus_distance_km() -> float | None:
-    """Live geocentric distance to Venus, via skyfield."""
-    try:
-        from services.planets import _get_skyfield
-        eph, ts, _wgs84, _cm, _latin = _get_skyfield()
-        t = ts.now()
-        earth, venus = eph[399], eph[299]
-        d = earth.at(t).observe(venus).distance()
-        return d.km
-    except Exception:
-        return None
-
-
-_C_KM_S = 299792.458
-
-
 def get_venus() -> dict:
     """Return live Venus distance, light time, next event + upcoming list."""
     now = datetime.now(timezone.utc)
-    dist_km = _earth_venus_distance_km()
-    light_time_min = (dist_km / _C_KM_S / 60.0) if dist_km is not None else None
+    dist_km = earth_distance_km(VENUS_NAIF_ID)
+    light_time_min = light_time_minutes(dist_km)
     upcoming = _upcoming_events(now)
     return {
         "now_ms": int(now.timestamp() * 1000),

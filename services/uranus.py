@@ -1,6 +1,10 @@
 """Uranus data: live geocentric distance + next opposition event + moons catalog."""
 from datetime import datetime, timezone
 
+from services.planet_distance import earth_distance_km, light_time_minutes
+
+URANUS_NAIF_ID = 7
+
 _OPPOSITION_DATES = [
     "2026-11-18", "2027-11-21", "2028-11-24", "2029-11-28", "2030-12-01",
 ]
@@ -60,27 +64,11 @@ def _next_opposition(now: datetime) -> str:
     return _OPPOSITION_DATES[-1]
 
 
-def _earth_uranus_distance_km() -> float | None:
-    """Live geocentric distance to Uranus, via skyfield."""
-    try:
-        from services.planets import _get_skyfield
-        eph, ts, _wgs84, _cm, _latin = _get_skyfield()
-        t = ts.now()
-        earth, uranus = eph[399], eph[7]
-        d = earth.at(t).observe(uranus).distance()
-        return d.km
-    except Exception:
-        return None
-
-
-_C_KM_S = 299792.458
-
-
 def get_uranus() -> dict:
     """Return live Uranus distance, light time, next opposition, and moons catalog."""
     now = datetime.now(timezone.utc)
-    dist_km = _earth_uranus_distance_km()
-    light_time_min = (dist_km / _C_KM_S / 60.0) if dist_km is not None else None
+    dist_km = earth_distance_km(URANUS_NAIF_ID)
+    light_time_min = light_time_minutes(dist_km)
     return {
         "now_ms": int(now.timestamp() * 1000),
         "distance_km": float(dist_km) if dist_km is not None else None,

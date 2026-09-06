@@ -24,6 +24,10 @@ from __future__ import annotations
 import math
 from datetime import datetime, timezone
 
+from services.planet_distance import earth_distance_km, light_time_minutes
+
+JUPITER_NAIF_ID = 5
+
 SOURCE_URL = "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
 EPOCH_ISO = "2000-01-01.5"  # TDB; mean-element epoch for all moons here.
 
@@ -248,31 +252,11 @@ def _next_opposition(now: datetime) -> str:
     return _OPPOSITION_DATES[-1]
 
 
-def _earth_jupiter_distance_km() -> float | None:
-    """Live geocentric light-time distance to Jupiter, via skyfield.
-
-    Returns None if the ephemeris cannot be loaded (the site keeps serving
-    even without skyfield, mirroring the planets module's resilience).
-    """
-    try:
-        from services.planets import _get_skyfield  # noqa: WPS433 (lazy import)
-        eph, ts, _wgs84, _cm, _latin = _get_skyfield()
-        t = ts.now()
-        earth, jup = eph[399], eph[5]
-        d = earth.at(t).observe(jup).distance()
-        return d.km
-    except Exception:  # noqa: BLE001 — never break the page over a distance value
-        return None
-
-
-_C_KM_S = 299792.458
-
-
 def get_jupiter() -> dict:
     """Return the Jupiter moon catalog + live distance + next opposition."""
     now = datetime.now(timezone.utc)
-    dist_km = _earth_jupiter_distance_km()
-    light_time_min = (dist_km / _C_KM_S / 60.0) if dist_km is not None else None
+    dist_km = earth_distance_km(JUPITER_NAIF_ID)
+    light_time_min = light_time_minutes(dist_km)
     return {
         "now_ms": int(now.timestamp() * 1000),
         "epoch_iso": EPOCH_ISO,

@@ -1,6 +1,10 @@
 """Mercury data: live geocentric distance + next greatest elongation."""
 from datetime import datetime, timezone
 
+from services.planet_distance import earth_distance_km, light_time_minutes
+
+MERCURY_NAIF_ID = 199
+
 # Greatest elongation dates for Mercury in 2026 and 2027
 # (ISO dates, approximation times set to 18:00 UTC for Evening/Eastern and 06:00 UTC for Morning/Western)
 _ELONGATIONS = [
@@ -38,27 +42,11 @@ def _upcoming_elongations(now: datetime, limit: int = 4) -> list[dict]:
     return out
 
 
-def _earth_mercury_distance_km() -> float | None:
-    """Live geocentric distance to Mercury, via skyfield."""
-    try:
-        from services.planets import _get_skyfield
-        eph, ts, _wgs84, _cm, _latin = _get_skyfield()
-        t = ts.now()
-        earth, mercury = eph[399], eph[199]
-        d = earth.at(t).observe(mercury).distance()
-        return d.km
-    except Exception:
-        return None
-
-
-_C_KM_S = 299792.458
-
-
 def get_mercury() -> dict:
     """Return live Mercury distance, light time, next elongation + upcoming list."""
     now = datetime.now(timezone.utc)
-    dist_km = _earth_mercury_distance_km()
-    light_time_min = (dist_km / _C_KM_S / 60.0) if dist_km is not None else None
+    dist_km = earth_distance_km(MERCURY_NAIF_ID)
+    light_time_min = light_time_minutes(dist_km)
     upcoming = _upcoming_elongations(now)
     return {
         "now_ms": int(now.timestamp() * 1000),

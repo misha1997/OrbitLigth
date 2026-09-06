@@ -1,6 +1,10 @@
 """Neptune data: live geocentric distance + next opposition event + moons catalog."""
 from datetime import datetime, timezone
 
+from services.planet_distance import earth_distance_km, light_time_minutes
+
+NEPTUNE_NAIF_ID = 8
+
 _OPPOSITION_DATES = [
     "2026-09-26", "2027-09-28", "2028-09-30", "2029-10-02", "2030-10-05",
 ]
@@ -48,27 +52,11 @@ def _next_opposition(now: datetime) -> str:
     return _OPPOSITION_DATES[-1]
 
 
-def _earth_neptune_distance_km() -> float | None:
-    """Live geocentric distance to Neptune, via skyfield."""
-    try:
-        from services.planets import _get_skyfield
-        eph, ts, _wgs84, _cm, _latin = _get_skyfield()
-        t = ts.now()
-        earth, nep = eph[399], eph[8]
-        d = earth.at(t).observe(nep).distance()
-        return d.km
-    except Exception:
-        return None
-
-
-_C_KM_S = 299792.458
-
-
 def get_neptune() -> dict:
     """Return live Neptune distance, light time, next opposition, and moons catalog."""
     now = datetime.now(timezone.utc)
-    dist_km = _earth_neptune_distance_km()
-    light_time_min = (dist_km / _C_KM_S / 60.0) if dist_km is not None else None
+    dist_km = earth_distance_km(NEPTUNE_NAIF_ID)
+    light_time_min = light_time_minutes(dist_km)
     return {
         "now_ms": int(now.timestamp() * 1000),
         "distance_km": float(dist_km) if dist_km is not None else None,
