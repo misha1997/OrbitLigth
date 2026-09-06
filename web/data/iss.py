@@ -2,6 +2,7 @@
 import logging
 import asyncio
 from datetime import datetime, timezone
+from typing import Any
 
 from config import N2YO_BASE_URL, N2YO_API_KEY, ISS_NORAD_ID
 from services.elevation import ElevationAPI
@@ -128,7 +129,7 @@ def _crew_raw(lang: str = DEFAULT_LANG) -> dict:
         data = ISSCrewAPI.get_iss_crew()
         if not data:
             return {}
-        crew = []
+        crew: list[dict[str, Any]] = []
         for c in (data.get("crew") or []):
             flag_code = c.get("flag_code") or ""
             crew.append({
@@ -144,7 +145,7 @@ def _crew_raw(lang: str = DEFAULT_LANG) -> dict:
             })
         # Group crew by spacecraft so the frontend can render the same
         # "🚀 Soyuz / 🚀 Crew Dragon" blocks the bot produces.
-        by_craft: dict[str, list] = {}
+        by_craft: dict[str, list[dict[str, Any]]] = {}
         for person in crew:
             craft = person.get("spacecraft") or ""
             by_craft.setdefault(craft, []).append(person)
