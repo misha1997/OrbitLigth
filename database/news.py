@@ -67,7 +67,8 @@ def is_duplicate_title(title: str, cursor) -> bool:
         
     # 2. Fuzzy similarity match against articles from the last 7 days
     try:
-        from fuzzywuzzy import fuzz
+        from rapidfuzz import fuzz
+        from rapidfuzz.utils import default_process
         import re
         
         def get_numbers(s: str) -> set:
@@ -92,8 +93,12 @@ def is_duplicate_title(title: str, cursor) -> bool:
             if get_numbers(r_title_lower) != title_nums:
                 continue
                 
-            # Use token_sort_ratio for comparison because word order can vary across sites
-            if fuzz.token_sort_ratio(title_clean, r_title_lower) >= 82:
+            # Use token_sort_ratio for comparison because word order can vary across sites.
+            # `processor=default_process` + round() replicate fuzzywuzzy's own default
+            # preprocessing and int-rounding exactly — without them rapidfuzz's raw float
+            # score can diverge by several points and flip this threshold (verified).
+            score = fuzz.token_sort_ratio(title_clean, r_title_lower, processor=default_process)
+            if round(score) >= 82:
                 return True
     except Exception as e:
         logger.warning(f"Error checking fuzzy title similarity: {e}")

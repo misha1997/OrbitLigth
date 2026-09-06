@@ -1,8 +1,7 @@
 # NEOwatch dependencies
 python-telegram-bot[job-queue]==21.10
 requests
-fuzzywuzzy
-python-Levenshtein
+rapidfuzz
 python-dotenv
 mysql-connector-python
 pywebpush
