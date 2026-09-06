@@ -383,6 +383,16 @@ def refresh_news_article_from_source(article_id: int) -> dict:
     create_news_article_manual) can't be refreshed this way. Never raises;
     returns {"ok": False, "error": "not_found"|"no_source_url"|"fetch_failed"|"empty_body"}
     or {"ok": True, "image_count", "video_count"}.
+
+    Known residual risk: this deletes the old image/video rows on its own
+    connection, then calls set_news_article_body / set_news_article_images /
+    set_news_article_videos, each of which opens its *own* connection/
+    transaction — so this is 3-4 separate commits, not one atomic refresh. A
+    crash between them can leave the article's body referencing [IMG:n]/
+    [VIDEO:n] placeholders with no matching rows (or vice versa). Fixing this
+    for real means giving those three functions a shared-cursor parameter;
+    deliberately left as a follow-up rather than folded into the
+    autocommit=False fix (see database/pool.py's module docstring).
     """
     import shutil
     from pathlib import Path

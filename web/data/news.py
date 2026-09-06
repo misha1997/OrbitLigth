@@ -197,6 +197,12 @@ def _news_article_raw(slug, lang):
     article_id = it.get("id")
     # Legacy row without a stored body → lazy HTML fetch (RSS gap / pre-RSS
     # ingest). New rows already carry the body from the feed — no HTTP fetch.
+    # Known residual risk: the 3 set_news_article_* calls below each open
+    # their own DB connection/transaction (same issue as
+    # database.news.refresh_news_article_from_source — see that function's
+    # docstring and database/pool.py's module docstring) — a crash between
+    # them can leave the body referencing image/video placeholders with no
+    # matching rows yet. Deliberately left as a follow-up.
     if not it.get("body"):
         try:
             content = NewsParser.get_article_content(it["url"])
