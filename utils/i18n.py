@@ -9,7 +9,7 @@ Usage:
     text = t('menu.iss', user_lang)
     label = pick(entry, 'best_time', user_lang)   # entry['best_time_en'] for en
 """
-from typing import Optional
+from typing import Optional, Mapping, Any
 
 SUPPORTED_LANGS = ('uk', 'en')
 DEFAULT_LANG = 'uk'
@@ -1359,7 +1359,7 @@ def t(key: str, lang: str = DEFAULT_LANG, **kwargs) -> str:
     return text
 
 
-def pick(data: dict, field_base: str, lang: str = DEFAULT_LANG) -> str:
+def pick(data: Mapping[str, Any], field_base: str, lang: str = DEFAULT_LANG) -> str:
     """Pick a bilingual data-table field.
 
     For lang='en' returns data[field_base + '_en'] (with fallback to the

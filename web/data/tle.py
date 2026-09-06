@@ -3,6 +3,7 @@ import logging
 import asyncio
 import json
 import os
+from typing import TypedDict
 
 from utils.i18n import DEFAULT_LANG, pick
 import requests
@@ -30,8 +31,20 @@ class _NotModified(Exception):
 # Friendly group key → Celestrak query + display metadata. `catnr` fetches a
 # single object by NORAD id; `group` fetches a Celestrak group; `file` fetches
 # a supplemental set via sup-gp.php (used for Starlink, whose main GROUP feed
-# is heavily throttled — the supplemental endpoint is not).
-TLE_GROUPS = {
+# is heavily throttled — the supplemental endpoint is not). Exactly one of
+# catnr/group/file is present per entry; all marked optional here since
+# TypedDict can't express "exactly one of".
+class _TLEGroupSpec(TypedDict, total=False):
+    label: str
+    label_en: str
+    color: str
+    icon: str
+    catnr: int
+    group: str
+    file: str
+
+
+TLE_GROUPS: dict[str, _TLEGroupSpec] = {
     # Each group gets a distinct color so its markers are distinguishable on
     # the map and in the chip bar. Hues are spread around the wheel (≈30–80°
     # apart) at similar lightness so close pairs don't blur together on the
@@ -94,7 +107,7 @@ def _tle_raw(group_key: str) -> dict:
     if not spec:
         return {"group": group_key, "label": group_key, "color": "#E8B94D",
                 "icon": "🛰️", "items": [], "total": 0}
-    params = {"FORMAT": "3le"}
+    params: dict[str, str | int] = {"FORMAT": "3le"}
     if "catnr" in spec:
         params["CATNR"] = spec["catnr"]
         url = CELESTAK_URL
@@ -140,7 +153,8 @@ def _stash_load(key: str) -> dict | None:
         p = _stash_path(key)
         if os.path.exists(p):
             with open(p, encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+                return data if isinstance(data, dict) else None
     except Exception as e:
         logger.warning("TLE stash load %s: %s", key, e)
     return None
