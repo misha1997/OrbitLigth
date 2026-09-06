@@ -32,3 +32,6 @@ python-multipart
 # database.get_db_connection() already points at; skips itself if none is
 # reachable (see tests/conftest.py).
 pytest
+# Type checking (pyproject.toml [tool.mypy]). Permissive baseline, tightened
+# module-by-module via [[tool.mypy.overrides]] — see that file's comments.
+mypy

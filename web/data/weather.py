@@ -93,7 +93,7 @@ def _weather_series_raw() -> dict:
     arrays (the bot's helpers only surface the latest reading). Arrays are
     ``[epoch_ms, value]`` pairs, oldest-first, sized for charting.
     """
-    def _get(url):
+    def _get(url: str) -> dict | list | None:
         try:
             r = requests.get(url, timeout=10)
             return r.json() if r.ok else None
@@ -101,7 +101,7 @@ def _weather_series_raw() -> dict:
             logger.warning("weather series %s: %s", url, e)
             return None
 
-    def kp_history():
+    def kp_history() -> list:
         d = _get(NOAA_KP_URL) or []
         out = []
         for rec in d:
@@ -112,7 +112,7 @@ def _weather_series_raw() -> dict:
             out.append([ms, float(kp)])
         return out
 
-    def kp_forecast():
+    def kp_forecast() -> list:
         d = _get(NOAA_KP_FORECAST) or []
         out = []
         for rec in d:
@@ -123,7 +123,7 @@ def _weather_series_raw() -> dict:
             out.append([ms, float(kp), bool(rec.get("observed"))])
         return out
 
-    def solar_wind():
+    def solar_wind() -> list:
         # rtsw_wind_1m is newest-first; take the last ~4h and flip oldest-first.
         d = _get(NOAA_SOLAR_WIND_URL) or []
         out = []
@@ -135,7 +135,7 @@ def _weather_series_raw() -> dict:
             out.append([ms, float(sp)])
         return out
 
-    def bz():
+    def bz() -> list:
         d = _get(NOAA_MAG_URL) or []
         out = []
         for rec in reversed(d[:240]):
@@ -146,7 +146,7 @@ def _weather_series_raw() -> dict:
             out.append([ms, float(bz)])
         return out
 
-    def xray():
+    def xray() -> list:
         d = _get(NOAA_XRAY_URL) or []
         out = []
         for rec in d:
