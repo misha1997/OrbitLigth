@@ -105,6 +105,7 @@ SLUGS: dict[str, dict[str, str]] = {
     "weather":      {"uk": "kosmichna-pogoda",   "en": "weather"},
     "constellations": {"uk": "suzirya",         "en": "constellations"},
     "mast":         {"uk": "mast",              "en": "mast"},
+    "missions":     {"uk": "misiyi",            "en": "missions"},
     "hubble":       {"uk": "hubble",            "en": "hubble"},
     "jwst":         {"uk": "jwst",              "en": "jwst"},
     "roman":        {"uk": "roman",             "en": "roman"},
@@ -474,6 +475,23 @@ def render_embed_html(index_html: str, lang: str = "en") -> str:
     return out
 
 
+def render_admin_html(index_html: str) -> str:
+    """Splice a fixed, noindex head for /admin/* — same standalone
+    treatment as render_embed_html above (this route tree has no entry in
+    SLUGS and no public content counterpart to canonicalize toward). Access
+    itself is gated server-side by web.auth.get_current_admin, not by hiding
+    the URL; noindex just keeps crawlers from linking a login-walled page."""
+    head = (
+        '<title>OrbitLight — Admin</title>\n'
+        '    <meta name="robots" content="noindex,nofollow" />\n'
+    )
+    out, n = _HEAD_BLOCK_RE.subn(head, index_html, count=1)
+    if n == 0:
+        out = index_html.replace("</head>", head + "\n  </head>", 1)
+    out = _HTML_LANG_RE.sub('<html lang="en">', out, count=1)
+    return out
+
+
 def build_sitemap_index_xml() -> str:
     """sitemap-index pointing at the pages + news + images sitemaps."""
     subs = [
@@ -625,6 +643,7 @@ def build_robots_txt() -> str:
         "Allow: /apod-img/\n"
         "Allow: /galaxy-img/\n"
         "Disallow: /api/\n"
+        "Disallow: /admin\n"
         "Disallow: /admin/\n"
         "Disallow: /*?lang=\n"
         f"\nSitemap: {SITE_URL}/sitemap.xml\n"

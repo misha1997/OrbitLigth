@@ -25,6 +25,7 @@ const Comets = lazy(() => import("../pages/Comets"));
 const Exoplanets = lazy(() => import("../pages/Exoplanets"));
 const Constellations = lazy(() => import("../pages/Constellations"));
 const Mast = lazy(() => import("../pages/Mast"));
+const Missions = lazy(() => import("../pages/Missions"));
 const Hubble = lazy(() => import("../pages/Hubble"));
 const Jwst = lazy(() => import("../pages/Jwst"));
 const Roman = lazy(() => import("../pages/Roman"));
@@ -62,6 +63,7 @@ const PAGES = {
   exoplanets: Exoplanets,
   constellations: Constellations,
   mast: Mast,
+  missions: Missions,
   hubble: Hubble,
   jwst: Jwst,
   roman: Roman,

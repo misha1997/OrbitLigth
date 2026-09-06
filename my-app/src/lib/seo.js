@@ -26,6 +26,7 @@ export const SLUGS = {
   weather:        { uk: "kosmichna-pogoda",    en: "weather" },
   constellations: { uk: "suzirya",           en: "constellations" },
   mast:           { uk: "mast",              en: "mast" },
+  missions:       { uk: "misiyi",            en: "missions" },
   hubble:         { uk: "hubble",            en: "hubble" },
   jwst:           { uk: "jwst",              en: "jwst" },
   roman:          { uk: "roman",             en: "roman" },

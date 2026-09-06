@@ -43,23 +43,23 @@ Usage:
   python3 backfill_news_bad_page_scrape.py --dry-run      # report counts only
   python3 backfill_news_bad_page_scrape.py --limit 50     # cap rows fetched this run
   python3 backfill_news_bad_page_scrape.py --slug some-article-slug
+
+For a single known-bad article, the admin dashboard's news editor
+(/admin/news/<id>) has a "Refresh from source" button that does the same
+per-row refresh interactively — see database.refresh_news_article_from_source,
+which this script's apply loop calls too. This script remains for the bulk
+heuristic scan (`_find_candidates` below) across the whole archive.
 """
 import argparse
 import logging
-import shutil
 import time
-from pathlib import Path
 
 import config  # noqa: F401 — side effect: load_dotenv()
-from database import (
-    get_db_connection, set_news_article_body, set_news_article_images, set_news_article_videos,
-)
-from parsers.news import NewsParser
+from database import get_db_connection, refresh_news_article_from_source
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("backfill_news_bad_page_scrape")
 
-DATA_NEWS_DIR = Path("data/news")
 IMAGE_CAP = 8  # matches parsers.news._MAX_BODY_IMAGES
 FETCH_DELAY = 1.0  # seconds between live HTTP fetches — polite to source sites
 
@@ -128,52 +128,14 @@ def main():
 
     fixed = failed = 0
     for row in rows:
-        try:
-            content = NewsParser.get_article_content(row["url"])
-        except Exception as e:
-            logger.warning(f"fetch failed for id={row['id']} url={row['url']}: {e}")
+        result = refresh_news_article_from_source(row["id"])
+        if not result.get("ok"):
+            logger.warning(f"id={row['id']} slug={row['slug']}: refresh failed ({result.get('error')})")
             failed += 1
-            time.sleep(FETCH_DELAY)
-            continue
-
-        new_body = (content.get("body") or "").strip()
-        new_image = (content.get("image") or "").strip() or None
-        if not new_body:
-            logger.warning(f"id={row['id']} slug={row['slug']}: re-fetch returned no body, skipping")
-            failed += 1
-            time.sleep(FETCH_DELAY)
-            continue
-
-        # Wipe the old (possibly bloated/wrong) mirrored images before
-        # re-mirroring under the same position numbers, so a stale on-disk
-        # file can't get served under a position that now means something
-        # else.
-        slug_dir = DATA_NEWS_DIR / (row["slug"] or "")
-        if row["slug"] and slug_dir.is_dir():
-            shutil.rmtree(slug_dir, ignore_errors=True)
-
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        try:
-            cursor.execute("DELETE FROM news_article_images WHERE article_id = %s", (row["id"],))
-            cursor.execute("DELETE FROM news_article_videos WHERE article_id = %s", (row["id"],))
-            conn.commit()
-        finally:
-            cursor.close()
-            conn.close()
-
-        # body_uk left NULL on purpose: the site's lazy translate path
-        # (web/data.py) regenerates it on the next page view.
-        set_news_article_body(row["id"], new_body, None, new_image)
-        if content.get("body_images"):
-            set_news_article_images(row["id"], row["slug"], content["body_images"])
-        if content.get("body_videos"):
-            set_news_article_videos(row["id"], content["body_videos"])
-        fixed += 1
-        logger.info(f"id={row['id']} slug={row['slug']}: refreshed "
-                    f"(image={'yes' if new_image else 'no'}, "
-                    f"{len(content.get('body_images') or [])} photo(s), "
-                    f"{len(content.get('body_videos') or [])} video(s))")
+        else:
+            fixed += 1
+            logger.info(f"id={row['id']} slug={row['slug']}: refreshed "
+                        f"({result['image_count']} photo(s), {result['video_count']} video(s))")
         time.sleep(FETCH_DELAY)
 
     logger.info(f"done: {fixed} row(s) refreshed, {failed} fetch failure(s)")

@@ -40,6 +40,7 @@ from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, Resp
 from fastapi.staticfiles import StaticFiles
 
 from database import init_db
+from web.admin_api import router as admin_router
 from web.api import router as api_router
 from web.auth_api import router as auth_router
 from web.seo import (
@@ -56,7 +57,7 @@ from web.seo import (
     render_head,
     slug_for_name,
 )
-from web.seo import _render_news_jsonld, _render_faq_jsonld, render_embed_html
+from web.seo import _render_news_jsonld, _render_faq_jsonld, render_admin_html, render_embed_html
 
 logger = logging.getLogger(__name__)
 
@@ -223,6 +224,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="NEOwatch", lifespan=lifespan)
 app.include_router(api_router)
 app.include_router(auth_router)
+app.include_router(admin_router)
 
 if not os.getenv("SESSION_SECRET"):
     logger.warning(
@@ -327,6 +329,19 @@ app.mount("/news-img", StaticFiles(directory=_NEWS_IMG_DIR), name="news-img")
 _AVATAR_IMG_DIR = Path(__file__).resolve().parent.parent / "data" / "avatars"
 _AVATAR_IMG_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/avatar-img", StaticFiles(directory=_AVATAR_IMG_DIR), name="avatar-img")
+
+# Admin-uploaded news cover images (data/news_covers/<article_id>.jpg),
+# written by web/admin_api.py's POST /api/admin/news/{id}/cover. Deliberately
+# a separate directory from /news-img (data/news/<slug>/, the inline
+# body-image mirror) rather than data/news/<slug>/cover.jpg — the "Refresh
+# from source" button (database.refresh_news_article_from_source) rmtree's
+# that whole slug directory on every re-scrape, which would silently delete
+# a manually-uploaded cover along with the stale inline images. Fixed
+# filename per article, overwritten on re-upload — the DB's `image` column
+# carries a `?v=<timestamp>` cache-buster so the browser refetches.
+_NEWS_COVER_DIR = Path(__file__).resolve().parent.parent / "data" / "news_covers"
+_NEWS_COVER_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/news-cover-img", StaticFiles(directory=_NEWS_COVER_DIR), name="news-cover-img")
 
 
 def _spa_html(name: str, lang: str, status_code: int = 200,
@@ -592,6 +607,22 @@ async def _spa_en_root():
 @app.api_route("/en/{rest:path}", methods=["GET", "HEAD"], include_in_schema=False)
 async def _spa_en(rest: str, request: Request):
     return await _spa_lang("en", rest, request)
+
+
+@app.api_route("/admin", methods=["GET", "HEAD"], include_in_schema=False)
+@app.api_route("/admin/{rest:path}", methods=["GET", "HEAD"], include_in_schema=False)
+async def _admin_dashboard(request: Request, rest: str = ""):
+    """Admin dashboard shell — my-app/src/pages/admin/*, a top-level React
+    route tree (/admin, /admin/news, /admin/users, /admin/photos,
+    /admin/galaxies) outside the /:lang/* tree (an internal tool, not
+    bilingual content). One shell for every sub-route since it's all one SPA;
+    registered before the generic unprefixed catch-all below so it isn't
+    mistaken for a legacy slug and 404'd. The actual admin check happens
+    client-side against /api/auth/me and again server-side on every
+    /api/admin/* call (web.auth.get_current_admin) — this route just serves
+    the SPA shell, it doesn't gate anything itself."""
+    body = render_admin_html(_SPA_INDEX.read_text(encoding="utf-8"))
+    return HTMLResponse(content=body, headers={"Cache-Control": "no-store"})
 
 
 @app.api_route("/embed/dark-sky", methods=["GET", "HEAD"], include_in_schema=False)

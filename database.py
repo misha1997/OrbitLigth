@@ -727,6 +727,46 @@ def init_db():
         except Error as e:
             logger.warning(f"galaxy_photos source_url migration: {e}")
 
+        # web_users.role: DB-backed admin dashboard access (replaces the old
+        # ADMIN_EMAILS-only check in web/auth.py). Only 'admin' is meaningful
+        # today; the column is a free string so future roles are just new
+        # values, not a schema change.
+        try:
+            cursor.execute('''
+                SELECT COUNT(*) FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                AND TABLE_NAME = 'web_users'
+                AND COLUMN_NAME = 'role'
+            ''')
+            if cursor.fetchone()[0] == 0:
+                cursor.execute('''
+                    ALTER TABLE web_users
+                    ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user' AFTER lang
+                ''')
+                conn.commit()
+                logger.info("Added role column to web_users table")
+        except Error as e:
+            logger.warning(f"web_users role column migration: {e}")
+
+        # One-time-safe bootstrap: promote any ADMIN_EMAILS address that
+        # isn't already role='admin'. Runs on every startup but only ever
+        # touches rows that need it, so ops can grant admin via env var +
+        # restart without DB access; from there on, roles are managed from
+        # the admin dashboard's Users page.
+        try:
+            from config import ADMIN_EMAILS
+            if ADMIN_EMAILS:
+                cursor.execute(
+                    f'''UPDATE web_users SET role = 'admin'
+                        WHERE role <> 'admin' AND LOWER(email) IN ({",".join(["%s"] * len(ADMIN_EMAILS))})''',
+                    tuple(ADMIN_EMAILS)
+                )
+                if cursor.rowcount:
+                    conn.commit()
+                    logger.info(f"Promoted {cursor.rowcount} ADMIN_EMAILS account(s) to role=admin")
+        except Error as e:
+            logger.warning(f"ADMIN_EMAILS role bootstrap: {e}")
+
         conn.commit()
         logger.info("Database initialized (MySQL)")
 
@@ -1871,6 +1911,184 @@ def set_news_article_videos(article_id: int, video_urls: list) -> None:
         conn.close()
 
 
+# Columns the /admin/news dashboard (web/admin_api.py) is allowed to touch.
+# Deliberately excludes url/fetched_at (identity/provenance, not editorial
+# content) — slug is included since it's the public /news/<slug> key an
+# editor may legitimately want to clean up.
+NEWS_ARTICLE_EDITABLE_FIELDS = (
+    "title", "title_uk", "excerpt", "excerpt_uk", "body", "body_uk",
+    "image", "category", "source", "published_date", "slug",
+)
+
+
+def update_news_article(article_id: int, fields: dict) -> bool:
+    """Admin dashboard edit: patch a subset of NEWS_ARTICLE_EDITABLE_FIELDS.
+
+    `slug`, if present, is checked for uniqueness against other rows first
+    (the column has a UNIQUE index) — returns False without writing anything
+    if the requested slug is already taken by a different article."""
+    cols = [c for c in fields if c in NEWS_ARTICLE_EDITABLE_FIELDS]
+    if not cols:
+        return False
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        if "slug" in cols:
+            slug = (fields["slug"] or "").strip()
+            if not slug:
+                return False
+            cursor.execute(
+                "SELECT 1 FROM news_articles WHERE slug = %s AND id != %s", (slug, article_id)
+            )
+            if cursor.fetchone():
+                return False
+        set_clause = ", ".join(f"{c} = %s" for c in cols)
+        params = [fields[c] for c in cols] + [article_id]
+        cursor.execute(f"UPDATE news_articles SET {set_clause} WHERE id = %s", params)
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error updating news article {article_id}: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_news_article(article_id: int) -> bool:
+    """Admin dashboard delete. Cascades to news_article_images/videos via FK."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("DELETE FROM news_articles WHERE id = %s", (article_id,))
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error deleting news article {article_id}: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def create_news_article_manual(fields: dict) -> Optional[dict]:
+    """Admin dashboard "new article" (as opposed to the RSS ingest pipeline in
+    ingest_news_articles). `fields['title']` is required; everything else in
+    NEWS_ARTICLE_EDITABLE_FIELDS is optional. The slug is derived from the
+    title (deduped the same way ingest dedupes on the source URL); `url` gets
+    a synthetic `manual:<slug>` value since the column is NOT NULL UNIQUE but
+    a hand-written article has no source URL of its own."""
+    import re as _re
+    title = (fields.get("title") or "").strip()
+    if not title:
+        return None
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        base = _re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")[:190] or "article"
+        slug, n = base, 1
+        while True:
+            cursor.execute("SELECT 1 FROM news_articles WHERE slug = %s", (slug,))
+            if not cursor.fetchone():
+                break
+            n += 1
+            slug = f"{base}-{n}"
+        cols = ["title", "slug", "url", "source"]
+        values = [title, slug, f"manual:{slug}", fields.get("source") or "OrbitLight"]
+        for c in NEWS_ARTICLE_EDITABLE_FIELDS:
+            if c in ("title", "slug") or fields.get(c) is None:
+                continue
+            cols.append(c)
+            values.append(fields[c])
+        placeholders = ", ".join(["%s"] * len(values))
+        cursor.execute(
+            f"INSERT INTO news_articles ({', '.join(cols)}) VALUES ({placeholders})", values
+        )
+        conn.commit()
+        cursor.execute("SELECT * FROM news_articles WHERE id = %s", (cursor.lastrowid,))
+        return cursor.fetchone()
+    except Error as e:
+        logger.error(f"Error creating manual news article: {e}")
+        conn.rollback()
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def refresh_news_article_from_source(article_id: int) -> dict:
+    """Admin dashboard "Refresh from source" button (AdminNewsEditor.js) —
+    re-fetches the article's live page and overwrites body/image/inline
+    media with the current scrape. Also used by
+    backfill_news_bad_page_scrape.py for its bulk heuristic pass, so both
+    entry points share one implementation instead of drifting apart.
+
+    Old mirrored images are wiped from disk before re-mirroring under the
+    same position numbers (so a stale file can't get served under a
+    position that now means something else) — see that script's module
+    docstring for the junk-image bugs this guards against. `body_uk` is
+    reset to NULL on purpose: web/data.py's lazy translate path regenerates
+    it on the next page view, and keeping the old translation against new
+    English text would silently mismatch.
+
+    Manually-created articles (no real source URL, see
+    create_news_article_manual) can't be refreshed this way. Never raises;
+    returns {"ok": False, "error": "not_found"|"no_source_url"|"fetch_failed"|"empty_body"}
+    or {"ok": True, "image_count", "video_count"}.
+    """
+    import shutil
+    from pathlib import Path
+
+    from parsers.news import NewsParser
+
+    article = get_news_article(article_id)
+    if not article:
+        return {"ok": False, "error": "not_found"}
+    url = article.get("url") or ""
+    if url.startswith("manual:"):
+        return {"ok": False, "error": "no_source_url"}
+
+    try:
+        content = NewsParser.get_article_content(url)
+    except Exception as e:
+        logger.warning(f"refresh_news_article_from_source: fetch failed for id={article_id} url={url}: {e}")
+        return {"ok": False, "error": "fetch_failed"}
+
+    new_body = (content.get("body") or "").strip()
+    new_image = (content.get("image") or "").strip() or None
+    if not new_body:
+        return {"ok": False, "error": "empty_body"}
+
+    slug = article.get("slug") or ""
+    if slug:
+        shutil.rmtree(Path("data/news") / slug, ignore_errors=True)
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("DELETE FROM news_article_images WHERE article_id = %s", (article_id,))
+        cursor.execute("DELETE FROM news_article_videos WHERE article_id = %s", (article_id,))
+        conn.commit()
+    except Error as e:
+        logger.error(f"refresh_news_article_from_source: clearing old media failed for id={article_id}: {e}")
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+    set_news_article_body(article_id, new_body, None, new_image)
+    body_images = content.get("body_images") or []
+    body_videos = content.get("body_videos") or []
+    if body_images:
+        set_news_article_images(article_id, slug, body_images)
+    if body_videos:
+        set_news_article_videos(article_id, body_videos)
+
+    return {"ok": True, "image_count": len(body_images), "video_count": len(body_videos)}
+
+
 def get_news_article_videos(article_id: int) -> list:
     """Ordered list of an article's inline embedded videos:
     ``[{"position", "video_url"}, ...]``."""
@@ -2200,6 +2418,108 @@ def get_apod_entries(start: str, end: str) -> Optional[list]:
         conn.close()
 
 
+APOD_ENTRY_EDITABLE_FIELDS = ("title", "explanation", "explanation_uk", "credit", "video_url")
+
+
+def _apod_filter_clause(search: Optional[str]):
+    if not search:
+        return "", []
+    like = f"%{search}%"
+    return "WHERE title LIKE %s OR credit LIKE %s", [like, like]
+
+
+def get_apod_entries_admin(limit: int = 30, offset: int = 0, search: Optional[str] = None) -> list:
+    """Admin dashboard photo-archive listing, newest first."""
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        clause, params = _apod_filter_clause(search)
+        cursor.execute(
+            f'''SELECT date, title, media_type, thumb_path, full_path,
+                      video_url, credit, fetched_at
+               FROM apod_entries {clause}
+               ORDER BY date DESC LIMIT %s OFFSET %s''',
+            params + [limit, offset]
+        )
+        return list(cursor.fetchall())
+    except Error as e:
+        logger.error(f"Error listing APOD entries: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def count_apod_entries(search: Optional[str] = None) -> int:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        clause, params = _apod_filter_clause(search)
+        cursor.execute(f'SELECT COUNT(*) FROM apod_entries {clause}', params)
+        row = cursor.fetchone()
+        return int(row[0]) if row else 0
+    except Error as e:
+        logger.error(f"Error counting APOD entries: {e}")
+        return 0
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_apod_entry(date: str) -> Optional[dict]:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute('SELECT * FROM apod_entries WHERE date = %s', (date,))
+        return cursor.fetchone()
+    except Error as e:
+        logger.error(f"Error getting APOD entry {date}: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def update_apod_entry(date: str, fields: dict) -> bool:
+    """Admin dashboard edit: patch a subset of APOD_ENTRY_EDITABLE_FIELDS.
+    Safe against the daily mirror job clobbering it — ingest_apod_entries
+    skips any row that already has both thumb_path and full_path set."""
+    cols = [c for c in fields if c in APOD_ENTRY_EDITABLE_FIELDS]
+    if not cols:
+        return False
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        set_clause = ", ".join(f"{c} = %s" for c in cols)
+        params = [fields[c] for c in cols] + [date]
+        cursor.execute(f"UPDATE apod_entries SET {set_clause} WHERE date = %s", params)
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error updating APOD entry {date}: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_apod_entry(date: str) -> bool:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("DELETE FROM apod_entries WHERE date = %s", (date,))
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error deleting APOD entry {date}: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
 def backfill_apod_archive(days: int = 90) -> int:
     """One-shot backfill of the last ``days`` of APOD into the archive.
 
@@ -2432,6 +2752,23 @@ def get_galaxy_photos(galaxy_key: str) -> Optional[list]:
         conn.close()
 
 
+def get_galaxy_photo_counts() -> dict:
+    """``{galaxy_key: photo_count}`` for every galaxy with at least one
+    mirrored photo — one grouped query, for the admin dashboard's galaxies
+    overview table (avoids an N+1 over get_galaxy_photos per row)."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('SELECT galaxy_key, COUNT(*) FROM galaxy_photos GROUP BY galaxy_key')
+        return {row[0]: row[1] for row in cursor.fetchall()}
+    except Error as e:
+        logger.error(f"Error counting galaxy photos: {e}")
+        return {}
+    finally:
+        cursor.close()
+        conn.close()
+
+
 def get_galaxy_by_slug(slug: str) -> Optional[dict]:
     """One galaxy (by slug) + its photos, for the detail page. Returns ``None``
     on DB error or unknown slug."""
@@ -2448,6 +2785,100 @@ def get_galaxy_by_slug(slug: str) -> Optional[dict]:
     except Error as e:
         logger.error(f"Error reading galaxy by slug {slug}: {e}")
         return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def galaxy_key_exists(galaxy_key: str) -> bool:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('SELECT 1 FROM galaxies WHERE `key` = %s', (galaxy_key,))
+        return cursor.fetchone() is not None
+    except Error as e:
+        logger.error(f"Error checking galaxy key {galaxy_key}: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def add_galaxy_photo(galaxy_key: str, url: str, credit: Optional[str] = None) -> Optional[dict]:
+    """Admin dashboard "add photo" (AdminGalaxyPhotos.js) — mirrors one
+    admin-supplied image URL into ``data/galaxies/<key>/`` and appends it to
+    the gallery. Unlike ``ingest_galaxy_photos`` (built for a whole batch
+    with position implied by list order), this assigns a synthetic
+    ``nasa_id`` (the source isn't necessarily NASA's Image Library) and an
+    explicit ``sort_order`` past the current end of the gallery, so it can't
+    collide with an existing photo's position. Returns the new photo dict
+    (same shape as ``get_galaxy_photos``) or ``None`` on failure."""
+    from services.galaxy_images import download_galaxy_photo
+
+    url = (url or "").strip()
+    if not galaxy_key or not url:
+        return None
+    nasa_id = f"manual-{int(time.time() * 1000)}"
+
+    try:
+        full_rel, thumb_rel = download_galaxy_photo(galaxy_key, nasa_id, url)
+    except Exception as e:
+        logger.error(f"Error downloading manual galaxy photo {galaxy_key}: {e}")
+        full_rel, thumb_rel = None, None
+    if not full_rel:
+        return None
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            'SELECT COALESCE(MAX(sort_order), -1) + 1 FROM galaxy_photos WHERE galaxy_key = %s',
+            (galaxy_key,)
+        )
+        next_order = cursor.fetchone()[0]
+        cursor.execute(
+            '''INSERT INTO galaxy_photos
+               (galaxy_key, nasa_id, thumb_path, full_path, credit, source_url, sort_order)
+               VALUES (%s, %s, %s, %s, %s, %s, %s)''',
+            (galaxy_key, nasa_id, thumb_rel, full_rel, credit or None, url, next_order)
+        )
+        conn.commit()
+    except Error as e:
+        logger.error(f"Error inserting manual galaxy photo {galaxy_key}: {e}")
+        conn.rollback()
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+    return {
+        "nasa_id": nasa_id, "title": None, "description": None,
+        "thumb_path": thumb_rel, "full_path": full_rel,
+        "credit": credit or None, "date_created": None,
+        "source_url": url, "sort_order": next_order,
+    }
+
+
+def delete_galaxy_photo(galaxy_key: str, nasa_id: str) -> bool:
+    """Admin dashboard "remove photo". DB row only (matches
+    delete_news_article/delete_apod_entry — mirrored files on disk are left
+    behind, same as those). Doesn't touch galaxies.preview_thumb even if it
+    happened to point at this photo: that's a plain copied string, not a
+    foreign key, so it keeps resolving to the (still-present) file on disk
+    regardless of whether this row exists."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            'DELETE FROM galaxy_photos WHERE galaxy_key = %s AND nasa_id = %s',
+            (galaxy_key, nasa_id)
+        )
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error deleting galaxy photo {galaxy_key}/{nasa_id}: {e}")
+        conn.rollback()
+        return False
     finally:
         cursor.close()
         conn.close()
@@ -3069,6 +3500,72 @@ def delete_web_user(web_user_id: int) -> bool:
         logger.error(f"Error deleting web user: {e}")
         conn.rollback()
         return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def set_web_user_role(web_user_id: int, role: str) -> bool:
+    """Admin dashboard Users page: change a web account's role."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            'UPDATE web_users SET role = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s',
+            (role, web_user_id)
+        )
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
+        logger.error(f"Error setting role for web user {web_user_id}: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def _web_users_filter_clause(search: Optional[str]):
+    if not search:
+        return "", []
+    like = f"%{search}%"
+    return "WHERE email LIKE %s OR username LIKE %s", [like, like]
+
+
+def list_web_users(limit: int = 30, offset: int = 0, search: Optional[str] = None) -> list:
+    """Admin dashboard Users page listing, newest first. Never includes
+    password_hash by column selection (not just by omission at the API layer)."""
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        clause, params = _web_users_filter_clause(search)
+        cursor.execute(
+            f'''SELECT id, email, username, role, avatar_url, telegram_user_id,
+                      telegram_username, google_id, created_at
+               FROM web_users {clause}
+               ORDER BY created_at DESC LIMIT %s OFFSET %s''',
+            params + [limit, offset]
+        )
+        return list(cursor.fetchall())
+    except Error as e:
+        logger.error(f"Error listing web users: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def count_web_users(search: Optional[str] = None) -> int:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        clause, params = _web_users_filter_clause(search)
+        cursor.execute(f'SELECT COUNT(*) FROM web_users {clause}', params)
+        row = cursor.fetchone()
+        return int(row[0]) if row else 0
+    except Error as e:
+        logger.error(f"Error counting web users: {e}")
+        return 0
     finally:
         cursor.close()
         conn.close()

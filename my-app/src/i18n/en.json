@@ -88,6 +88,7 @@
     "sky": "For observer",
     "constellations": "Constellations",
     "mast": "MAST",
+    "missionsHub": "All missions",
     "hubble": "Hubble",
     "jwst": "James Webb",
     "roman": "Nancy Grace Roman",
@@ -194,6 +195,7 @@
     "sky": "Sky for observer — OrbitLight",
     "constellations": "Constellations & Star Map — OrbitLight",
     "mast": "MAST: light curves — OrbitLight",
+    "missions": "Space Missions — Probes & Telescopes — OrbitLight",
     "hubble": "Hubble Space Telescope — OrbitLight",
     "jwst": "James Webb Space Telescope — OrbitLight",
     "roman": "Roman Space Telescope — launch live — OrbitLight",
@@ -234,6 +236,7 @@
       "sky": "Sky for observers: visible planets and their altitude, Moon phase, meteor showers, next ISS passes and viewing conditions for your location.",
       "constellations": "Interactive star map and constellations for your location. Hover over stars and constellations to see details, magnitude and mythology.",
       "mast": "Access the MAST archive (Kepler, K2, TESS, Hubble, JWST) with lightkurve and astroquery: star light curves, famous transits and TESS FFI images.",
+      "missions": "Every major space probe and telescope, one gallery: Voyager, Hubble, JWST, Roman and more, past and present.",
       "hubble": "The Hubble Space Telescope: 3D model, latest images from the MAST archive, orbit, instruments and mission facts since 1990.",
       "jwst": "The James Webb Space Telescope: 3D model, latest infrared images from the MAST archive, 18-segment mirror, sunshield, and the Sun-Earth L2 point.",
       "roman": "The Nancy Grace Roman Space Telescope: 3D model, live launch stream on August 30, 2026, a field of view 100x wider than Hubble, dark energy and exoplanet surveys.",
@@ -2279,6 +2282,62 @@
     "body": "This page doesn't exist in our galaxy. Perhaps a black hole swallowed it, or you simply drifted off course.",
     "home": "Return to Earth",
     "back": "Back"
+  },
+  "missions": {
+    "hero": {
+      "eyebrow": "Beyond Earth orbit",
+      "title": "Probes &amp; <span class=\"accent\">telescopes</span>",
+      "sub": "Every major spacecraft humanity has sent beyond Earth orbit — flagship telescopes and interplanetary probes, past and present. Voyager, Hubble, JWST and Roman have full pages; the rest are on the way."
+    },
+    "type": {
+      "probe": "Probe",
+      "telescope": "Telescope",
+      "rover": "Rover"
+    },
+    "status": {
+      "active": "Active",
+      "ended": "Mission ended",
+      "upcoming": "Upcoming"
+    },
+    "open": "Open page",
+    "comingSoon": "Detailed page coming soon",
+    "footNote": "More missions are getting dedicated pages over time — this gallery will keep growing.",
+    "names": {
+      "newhorizons": "New Horizons",
+      "parker": "Parker Solar Probe",
+      "juno": "Juno",
+      "chandra": "Chandra X-ray Observatory",
+      "tess": "TESS",
+      "europaclipper": "Europa Clipper",
+      "perseverance": "Perseverance",
+      "cassini": "Cassini",
+      "osirisrex": "OSIRIS-REx",
+      "gaia": "Gaia",
+      "kepler": "Kepler",
+      "spitzer": "Spitzer",
+      "pioneer10": "Pioneer 10",
+      "pioneer11": "Pioneer 11"
+    },
+    "blurbs": {
+      "voyager": "Twin probes launched in 1977, now the only human-made objects in interstellar space and still phoning home after nearly five decades.",
+      "hubble": "In orbit since 1990, still delivering some of astronomy's sharpest visible-light images after more than three decades.",
+      "jwst": "The largest telescope ever launched, watching the universe in infrared from a million miles beyond Earth.",
+      "roman": "NASA's newest flagship observatory, built to survey the sky 100 times faster than Hubble.",
+      "newhorizons": "Flew past Pluto in 2015 and is now exploring the Kuiper Belt at the edge of the solar system.",
+      "parker": "Flies closer to the Sun than any spacecraft before it, diving repeatedly through the solar corona.",
+      "juno": "Orbiting Jupiter since 2016, mapping its interior and photographing its storms up close.",
+      "chandra": "NASA's flagship X-ray observatory, in orbit since 1999, imaging black holes and supernova remnants.",
+      "tess": "A space telescope surveying the whole sky for planets orbiting nearby bright stars.",
+      "europaclipper": "Launched in 2024, en route to Jupiter's moon Europa to study the ocean hidden beneath its icy shell.",
+      "perseverance": "NASA's Mars rover, exploring Jezero Crater since 2021 and collecting samples for a future return to Earth.",
+      "cassini": "Spent 13 years orbiting Saturn before a final plunge into the planet in 2017.",
+      "osirisrex": "Collected a sample from asteroid Bennu and delivered it to Earth in 2023; the spacecraft flies on toward Apophis as OSIRIS-APEX.",
+      "gaia": "Mapped the precise positions and motions of nearly two billion stars before ending science observations in 2025.",
+      "kepler": "Found thousands of exoplanets by watching stars dim as planets crossed in front of them, before running out of fuel in 2018.",
+      "spitzer": "An infrared observatory that studied everything from asteroids to distant galaxies for over 16 years.",
+      "pioneer10": "The first spacecraft to cross the asteroid belt and fly past Jupiter; last heard from in 2003.",
+      "pioneer11": "Followed Pioneer 10 past Jupiter and went on to fly by Saturn; contact was lost in 1995."
+    }
   },
   "planetarium": {
     "hero": {

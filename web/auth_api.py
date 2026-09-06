@@ -52,6 +52,7 @@ from web.auth import (
     create_session_token,
     get_current_web_user,
     hash_password,
+    is_admin,
     set_session_cookie,
     verify_google_id_token,
     verify_password,
@@ -92,6 +93,8 @@ def _public_user(web_user: dict) -> dict:
         "lat": float(web_user["lat"]) if web_user.get("lat") is not None else None,
         "lon": float(web_user["lon"]) if web_user.get("lon") is not None else None,
         "lang": web_user.get("lang"),
+        "role": web_user.get("role") or "user",
+        "is_admin": is_admin(web_user),
         "created_at": str(web_user.get("created_at")) if web_user.get("created_at") else None,
         "telegram": {
             "linked": telegram_linked,

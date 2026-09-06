@@ -109,6 +109,21 @@ def get_current_web_user(request: Request) -> Optional[dict]:
     return user
 
 
+def is_admin(web_user: Optional[dict]) -> bool:
+    """Admin dashboard (/admin) gate — DB-backed role (web_users.role), not
+    the ADMIN_EMAILS env var (that's only a one-time bootstrap seed, see
+    config.py and database.init_db())."""
+    if not web_user:
+        return False
+    return web_user.get("role") == "admin"
+
+
+def get_current_admin(request: Request) -> Optional[dict]:
+    """FastAPI dependency: the logged-in web_users row if it's an admin, else None."""
+    user = get_current_web_user(request)
+    return user if is_admin(user) else None
+
+
 class GoogleTokenError(Exception):
     pass
 

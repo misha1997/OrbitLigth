@@ -142,6 +142,25 @@ with a "connect Telegram" prompt, since delivery is exclusively via the bot.
   noindex and excluded from the sitemap (`web/seo.py` `_NOINDEX_NAMES`) —
   utility pages, not content.
 
+### News editing dashboard (`/admin/news`)
+An internal maintainer tool for editing/deleting/creating rows in
+`news_articles` directly — the same table both the RSS ingest pipeline
+(`parsers/news.py`) and the public `/api/news*` routes read from, so a save
+here is live on the site immediately (no draft/review step, no separate
+roles table). Gated by `ADMIN_EMAILS` (config.py) checked against the
+signed-in web account's email (`web.auth.is_admin`/`get_current_admin`) —
+sign in as a normal web account first (see "Website accounts" above), then
+the email just needs to be on that list; there's no admin-management UI.
+- Backend: `web/admin_api.py`, mounted at `/api/admin/news*`.
+- Frontend: `my-app/src/pages/admin/AdminNews.js`, Ukrainian-only (a
+  maintainer tool, not bilingual content) and deliberately **not** part of
+  the `/:lang/*` tree or `web/seo.py`'s `SLUGS` map — it's a top-level route
+  registered in `App.js` under the bare `EmbedLayout` (no header/footer),
+  same pattern as `/embed/dark-sky`. `web/app.py`'s `_admin_news` serves the
+  SPA shell with a fixed noindex head (`web/seo.py: render_admin_html`),
+  registered before the unprefixed legacy-slug catch-all for the same reason
+  `_embed_dark_sky` is.
+
 ### Website frontend (`my-app/`, React SPA)
 Create React App (react-scripts 5, React 19) — **replaced the old static
 `site/` templates**. Key deps: `react-router-dom` v7, `react-i18next`,
@@ -524,6 +543,7 @@ SESSION_SECRET=         # Website account sessions — generate with `python3 -c
 GOOGLE_CLIENT_ID=       # Optional. Google Sign-In — OAuth Web-application client at console.cloud.google.com/apis/credentials
 GOOGLE_CLIENT_SECRET=   # Optional. Paired with GOOGLE_CLIENT_ID above (not actually used server-side, kept for parity)
 TELEGRAM_BOT_USERNAME=  # Optional. Telegram Login Widget — needs @BotFather /setdomain on the site's domain too
+ADMIN_EMAILS=           # Optional, comma-separated. Web accounts (web_users.email) allowed into the /admin/news dashboard — see web/auth.py's is_admin()
 DEFAULT_LAT/LON/ALT     # Default location (Kyiv)
 DB_HOST/PORT/NAME/USER/PASSWORD  # MySQL credentials
 ```

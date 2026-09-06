@@ -19,7 +19,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import time
-from datetime import date
+from datetime import date, timedelta
 
 from web.cache import get_or_fetch
 
@@ -54,6 +54,16 @@ def touch(client_id: str) -> int:
         del _SEEN[cid]
     if client_id:
         _SEEN[client_id] = now
+    return len(_SEEN)
+
+
+def get_online_count() -> int:
+    """Current online count without registering a heartbeat — for the admin
+    dashboard's stats page, which shouldn't count itself as a visitor."""
+    now = time.monotonic()
+    cutoff = now - ONLINE_WINDOW
+    for cid in [c for c, t in _SEEN.items() if t < cutoff]:
+        del _SEEN[cid]
     return len(_SEEN)
 
 
@@ -130,3 +140,36 @@ def get_visit_counts() -> dict:
     """Unique-visitor counts for today and the trailing 7 days (today
     inclusive), cached briefly to keep the footer's poll rate off the DB."""
     return get_or_fetch("site_visit_counts", VISIT_COUNTS_TTL, _visit_counts_raw)
+
+
+def _daily_visit_counts_raw() -> list:
+    # Always return all 7 calendar days (zero-filled), even on a fresh
+    # install with only today's row — a chart with 6 days silently missing
+    # renders as a single full-height bar instead of a real 7-day series.
+    days = [(date.today() - timedelta(days=i)).isoformat() for i in range(6, -1, -1)]
+    counts = {d: 0 for d in days}
+    try:
+        from database import get_db_connection
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+        try:
+            cur.execute(
+                "SELECT visit_date, COUNT(DISTINCT client_hash) FROM site_visits "
+                "WHERE visit_date >= CURDATE() - INTERVAL 6 DAY "
+                "GROUP BY visit_date ORDER BY visit_date"
+            )
+            for d, c in cur.fetchall():
+                counts[str(d)] = c
+        finally:
+            cur.close()
+            conn.close()
+    except Exception:
+        logger.debug("get_daily_visit_counts: DB unavailable", exc_info=True)
+    return [{"date": d, "count": counts[d]} for d in days]
+
+
+def get_daily_visit_counts() -> list:
+    """Per-day unique-visitor counts for the trailing 7 days (admin dashboard
+    chart) — same cache/retention window as get_visit_counts."""
+    return get_or_fetch("site_daily_visit_counts", VISIT_COUNTS_TTL, _daily_visit_counts_raw)

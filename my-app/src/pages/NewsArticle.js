@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { useLang } from "../context/LanguageContext";
 import { useApi } from "../hooks/useApi";
 import { getNewsArticle } from "../lib/api";
+import { parseArticleBody, isVideoFile } from "../lib/articleBody";
 import { SITE_URL, pathFor } from "../lib/seo";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import { TelegramShareIcon, LinkIcon, CheckIcon, XShareIcon } from "../lib/icons";
@@ -179,15 +180,10 @@ export default function NewsArticle({ slug }) {
         <section className="section article-layout" style={{ paddingTop: 0 }}>
           <div className="article-main">
             <div className="article-body">
-              {(article.body || article.excerpt || "")
-                .split("\n\n")
-                .map((para, i) => {
-                  const trimmed = para.trim();
-                  if (!trimmed) return null;
-                  const imgMatch = trimmed.match(/^\[IMG:(\d+)\]$/);
-                  if (imgMatch) {
+              {parseArticleBody(article.body || article.excerpt || "").map((block, i) => {
+                  if (block.type === "img") {
                     const img = (article.body_images || [])
-                      .find((im) => String(im.position) === imgMatch[1]);
+                      .find((im) => String(im.position) === block.position);
                     if (!img) return null;
                     return (
                       <img
@@ -200,15 +196,11 @@ export default function NewsArticle({ slug }) {
                       />
                     );
                   }
-                  const videoMatch = trimmed.match(/^\[VIDEO:(\d+)\]$/);
-                  if (videoMatch) {
+                  if (block.type === "video") {
                     const vid = (article.body_videos || [])
-                      .find((v) => String(v.position) === videoMatch[1]);
+                      .find((v) => String(v.position) === block.position);
                     if (!vid) return null;
-                    // Self-hosted NASA clips are direct .mp4/.webm files, not
-                    // a YouTube/Vimeo embed page — a real <video> element,
-                    // not an <iframe>, is what actually plays them.
-                    const isFile = /\.(mp4|webm|ogv|ogg)(\?|$)/i.test(vid.src);
+                    const isFile = isVideoFile(vid.src);
                     return (
                       <div className="article-inline-video" key={i}>
                         {isFile ? (
@@ -231,7 +223,7 @@ export default function NewsArticle({ slug }) {
                       </div>
                     );
                   }
-                  return <p key={i}>{trimmed}</p>;
+                  return <p key={i}>{block.text}</p>;
                 })}
               {!article.body && article.excerpt ? (
                 <p className="note">{t("news.article.bodyNa")}</p>

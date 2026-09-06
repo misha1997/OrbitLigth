@@ -55,6 +55,14 @@ GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '')
 # widget.
 TELEGRAM_BOT_USERNAME = os.getenv('TELEGRAM_BOT_USERNAME', '')
 
+# Admin dashboard (/admin) bootstrap. Admin status itself is a DB column
+# (web_users.role) managed from the dashboard's Users page — this env var is
+# only a one-time seed, applied on every startup by database.init_db(): any
+# address listed here gets promoted to role='admin' if it isn't already, so
+# an operator can grant the very first admin (or recover access) via env var
+# + restart with no direct DB access. Not read anywhere else.
+ADMIN_EMAILS = {e.strip().lower() for e in os.getenv('ADMIN_EMAILS', '').split(',') if e.strip()}
+
 # NASA API
 NASA_NEO_URL = "https://api.nasa.gov/neo/rest/v1/feed"
 NASA_APOD_URL = "https://api.nasa.gov/planetary/apod"
