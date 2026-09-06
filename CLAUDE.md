@@ -63,7 +63,13 @@ serving the public dashboard (weather/sky/launches don't need the DB).
   behind `PRERENDER_ENABLED=1` (see `web/prerender.py`).
 - `web/api.py` — all `/api/*` JSON routes (thin; consumed by the React pages
   via `fetch`). See the endpoint list below.
-- `web/data.py` — structured data layer. The bot's `services/*` return
+- `web/data/` — structured data layer, one module per domain (weather,
+  launches, iss, sky, objects, voyager, dsn, planets_table, observing,
+  geocode, tle, meteors, events, mars, apod, news, debris, planet_pages,
+  galaxies, alerts, comets_exoplanets, mast, history; `_shared.py` holds
+  small cross-module helpers) — `web/data/__init__.py` re-exports every
+  name, so `web/api.py`'s `from web import data` + `data.get_x(...)` call
+  sites are unaffected. The bot's `services/*` return
   Telegram-formatted *text*; this module reuses their internal raw-data helpers
   (e.g. `SpaceWeatherAPI._get_kp_index`) to produce JSON for the site. Sync
   `requests` calls are wrapped in `asyncio.to_thread` by the API layer. Also
@@ -371,7 +377,7 @@ sourced differently based on what's actually publicly/reliably available:
   feed's `<station>` and `<dish>` elements are **siblings** under `<dsn>`,
   not nested — a dish belongs to whichever station most recently preceded it
   in document order; `DSNService.get_status()` reconstructs the grouping
-  while walking the tree once. 30s cache TTL (`DSN_TTL` in `web/data.py`) —
+  while walking the tree once. 30s cache TTL (`DSN_TTL` in `web/data/dsn.py`) —
   short because this is genuinely live, unlike the hour-scale TTLs elsewhere.
   Voyager 1/2 frequently show "no active contact" — DSN doesn't track them
   continuously, only during scheduled passes — the frontend treats that as a

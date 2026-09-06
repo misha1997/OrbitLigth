@@ -4,7 +4,7 @@ Split from a single 3,655-line database.py into one module per concern.
 This __init__ re-exports every public and private name the old flat module
 exposed, so existing call sites (``from database import get_user``, etc.)
 keep working unchanged — see CLAUDE.md's "Database" section for the table
-list and web/data.py for how the site layer consumes this package.
+list and web/data/ for how the site layer consumes this package.
 """
 from .pool import get_db_connection
 from .schema import init_db
