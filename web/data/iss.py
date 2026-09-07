@@ -25,7 +25,7 @@ ISS_PASSES_TTL = 600      # per location key
 
 ELEVATION_TTL = 2592000   # 30d — a point's elevation never changes; public API is rate-limited
 
-def _iss_pass_row(p: dict, lon: float | None = None, lang: str = DEFAULT_LANG) -> dict:
+def _iss_pass_row(p: dict[str, Any], lon: float | None = None, lang: str = DEFAULT_LANG) -> dict[str, Any]:
     """Map one N2YO visualpasses record to a dashboard card payload."""
     start_utc = datetime.fromtimestamp(p["startUTC"], tz=timezone.utc)
     
@@ -61,7 +61,7 @@ def _iss_pass_row(p: dict, lon: float | None = None, lang: str = DEFAULT_LANG) -
     }
 
 
-def _iss_passes_raw(lat: float, lon: float, lang: str = DEFAULT_LANG) -> dict:
+def _iss_passes_raw(lat: float, lon: float, lang: str = DEFAULT_LANG) -> dict[str, Any]:
     data = N2YOAPI.get_iss_passes_raw(lat, lon, alt=0, days=10)
     passes = (data or {}).get("passes") or []
     return {
@@ -70,7 +70,7 @@ def _iss_passes_raw(lat: float, lon: float, lang: str = DEFAULT_LANG) -> dict:
     }
 
 
-async def get_iss_passes(lat: float, lon: float, lang: str = DEFAULT_LANG) -> dict:
+async def get_iss_passes(lat: float, lon: float, lang: str = DEFAULT_LANG) -> dict[str, Any]:
     """Next ISS visible passes over the observer's location."""
     key = f"iss_passes:{round(lat,2)}:{round(lon,2)}:{lang}"
     return await asyncio.to_thread(
@@ -78,7 +78,7 @@ async def get_iss_passes(lat: float, lon: float, lang: str = DEFAULT_LANG) -> di
     )
 
 
-async def get_elevation(lat: float, lon: float) -> dict:
+async def get_elevation(lat: float, lon: float) -> dict[str, Any]:
     """Elevation in meters at (lat, lon) — Dark Sky map point-click popup."""
     key = f"elevation:{round(lat,3)}:{round(lon,3)}"
     elevation = await asyncio.to_thread(
@@ -91,7 +91,7 @@ async def get_elevation(lat: float, lon: float) -> dict:
 ISS_NOW_TTL = 120   # 2 min
 CREW_TTL = 3600     # 1 h
 
-def _iss_now_raw(lang: str = DEFAULT_LANG) -> dict:
+def _iss_now_raw(lang: str = DEFAULT_LANG) -> dict[str, Any]:
     try:
         url = f"{N2YO_BASE_URL}/positions/{ISS_NORAD_ID}/0/0/0/1"
         resp = requests.get(url, params={"apiKey": N2YO_API_KEY}, timeout=10)
@@ -120,11 +120,11 @@ def _iss_now_raw(lang: str = DEFAULT_LANG) -> dict:
         return {}
 
 
-async def get_iss_now(lang: str = DEFAULT_LANG) -> dict:
+async def get_iss_now(lang: str = DEFAULT_LANG) -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, f"iss_now:{lang}", ISS_NOW_TTL, lambda: _iss_now_raw(lang))
 
 
-def _crew_raw(lang: str = DEFAULT_LANG) -> dict:
+def _crew_raw(lang: str = DEFAULT_LANG) -> dict[str, Any]:
     try:
         data = ISSCrewAPI.get_iss_crew()
         if not data:
@@ -166,7 +166,7 @@ def _crew_raw(lang: str = DEFAULT_LANG) -> dict:
         return {}
 
 
-async def get_iss_crew(lang: str = DEFAULT_LANG) -> dict:
+async def get_iss_crew(lang: str = DEFAULT_LANG) -> dict[str, Any]:
     return await asyncio.to_thread(
         get_or_fetch, f"iss_crew:{lang}", CREW_TTL, lambda: _crew_raw(lang))
 
