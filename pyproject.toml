@@ -56,3 +56,17 @@ disallow_untyped_defs = true
 disallow_incomplete_defs = true
 warn_return_any = true
 disallow_any_generics = true
+
+[[tool.mypy.overrides]]
+module = "web.data.events"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+warn_return_any = true
+disallow_any_generics = true
+
+[[tool.mypy.overrides]]
+module = "web.data.planet_pages"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+warn_return_any = true
+disallow_any_generics = true

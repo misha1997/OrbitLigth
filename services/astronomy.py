@@ -1,6 +1,7 @@
 """Astronomical events — eclipses and planet conjunctions"""
 import math
 from datetime import datetime, timedelta, timezone
+from typing import TypedDict
 from zoneinfo import ZoneInfo
 import logging
 from utils.i18n import t, pick, days, DEFAULT_LANG
@@ -22,7 +23,16 @@ def _now_kyiv_naive() -> datetime:
 # `type` is a language-neutral key used for emoji lookup and the scheduler's
 # "is it total?" check (do NOT substring-match Ukrainian here).
 # Each entry carries Ukrainian (name/visibility) and English (*_en) fields.
-_ECLIPSES = [
+class _EclipseInfo(TypedDict):
+    date: tuple[int, int, int]
+    type: str
+    name: str
+    name_en: str
+    visibility: str
+    visibility_en: str
+
+
+_ECLIPSES: list[_EclipseInfo] = [
     # 2026
     {"date": (2026, 3, 14), "type": "moon_total", "name": "Повне місячне затемнення", "name_en": "Total lunar eclipse", "visibility": "Європа, Африка, Азія, Австралія", "visibility_en": "Europe, Africa, Asia, Australia"},
     {"date": (2026, 3, 20), "type": "sun_partial", "name": "Часткове сонячне затемнення", "name_en": "Partial solar eclipse", "visibility": "Арктика, пн. Атлантика", "visibility_en": "Arctic, N. Atlantic"},
@@ -41,7 +51,14 @@ _ECLIPSES = [
 ]
 
 # Known conjunctions 2026–2028 (date, planets, angular separation)
-_CONJUNCTIONS = [
+class _ConjunctionInfo(TypedDict):
+    date: tuple[int, int, int]
+    bodies: str
+    bodies_en: str
+    separation: float
+
+
+_CONJUNCTIONS: list[_ConjunctionInfo] = [
     {"date": (2026, 6, 1), "bodies": "Венера і Юпітер", "bodies_en": "Venus and Jupiter", "separation": 0.2},
     {"date": (2026, 7, 14), "bodies": "Марс і Юпітер", "bodies_en": "Mars and Jupiter", "separation": 0.3},
     {"date": (2026, 9, 11), "bodies": "Меркурій і Венера", "bodies_en": "Mercury and Venus", "separation": 0.4},

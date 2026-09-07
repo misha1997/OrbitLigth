@@ -2,6 +2,7 @@
 import logging
 import asyncio
 from datetime import datetime, timedelta
+from typing import Any
 
 from services.astronomy import (
     get_upcoming_events,
@@ -22,13 +23,13 @@ logger = logging.getLogger(__name__)
 
 EVENTS_TTL = 3600         # eclipses / conjunctions / weekly digest
 
-def _weekly_structured(now: datetime, lang: str = DEFAULT_LANG) -> list:
+def _weekly_structured(now: datetime, lang: str = DEFAULT_LANG) -> list[dict[str, Any]]:
     """Structured 'this week in the sky' digest (next 7 days).
 
     Reuses the same internal pieces as astronomy.get_weekly_calendar but
     returns a list of plain dicts for JSON instead of Telegram text.
     """
-    items: list[dict] = []
+    items: list[dict[str, Any]] = []
 
     # Eclipses within 7 days
     for e in ASTRO_ECLIPSES:
@@ -96,7 +97,7 @@ def _weekly_structured(now: datetime, lang: str = DEFAULT_LANG) -> list:
     return items
 
 
-def _events_raw(lang: str = DEFAULT_LANG) -> dict:
+def _events_raw(lang: str = DEFAULT_LANG) -> dict[str, Any]:
     now = datetime.now()
     events = get_upcoming_events(days_ahead=365, lang=lang)
     eclipses = []
@@ -126,6 +127,6 @@ def _events_raw(lang: str = DEFAULT_LANG) -> dict:
     }
 
 
-async def get_events(lang: str = DEFAULT_LANG) -> dict:
+async def get_events(lang: str = DEFAULT_LANG) -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, f"events:{lang}", EVENTS_TTL, lambda: _events_raw(lang))
 
