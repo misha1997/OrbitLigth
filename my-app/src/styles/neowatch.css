@@ -2174,6 +2174,32 @@ table.data tr:hover td {
   margin: 10px 12px
 }
 
+/* Dark Sky map popups (click-anywhere point, saved place, nearest-finder —
+   see DarkSkyMap.js's `className: "darksky-popup"`) can exceed their
+   maxHeight (300px) and get an internal scrollbar; the browser default one
+   reads as a light-theme sliver against this dark popup. */
+.darksky-popup .leaflet-popup-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(237, 238, 245, .18) transparent;
+}
+
+.darksky-popup .leaflet-popup-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.darksky-popup .leaflet-popup-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.darksky-popup .leaflet-popup-content::-webkit-scrollbar-thumb {
+  background: rgba(237, 238, 245, .18);
+  border-radius: 8px;
+}
+
+.darksky-popup .leaflet-popup-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(237, 238, 245, .3);
+}
+
 .leaflet-control-zoom a {
   background: var(--panel) !important;
   color: var(--text) !important;
@@ -2297,6 +2323,25 @@ table.data tr:hover td {
   color: var(--text-dim);
 }
 
+/* "Прозорість шару" is long enough in Ukrainian to wrap mid-word when
+   squeezed onto one line beside the slider (the generic .dsm-field-row
+   layout); stacking the label above a full-width slider reads cleanly at
+   the panel's fixed 240px width regardless of language. */
+.dsm-opacity-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.dsm-opacity-row span {
+  color: var(--text-dim);
+}
+
+.dsm-opacity-row .dsm-opacity-range {
+  flex: none;
+  width: 100%;
+}
+
 .dsm-search-row {
   flex-direction: column;
   align-items: stretch;
@@ -2344,8 +2389,7 @@ table.data tr:hover td {
   font-size: 10.5px;
 }
 
-.dsm-locate-btn,
-.dsm-share-btn {
+.dsm-locate-btn {
   background: var(--panel);
   color: var(--text);
   border: 1px solid var(--border);
@@ -2356,8 +2400,7 @@ table.data tr:hover td {
   cursor: pointer;
 }
 
-.dsm-locate-btn:hover,
-.dsm-share-btn:hover {
+.dsm-locate-btn:hover {
   border-color: var(--gold);
   color: var(--gold);
 }
@@ -2436,6 +2479,7 @@ table.data tr:hover td {
 
 .dsm-play-btn {
   width: 30px;
+  padding: 6px 0;
   background: var(--bg);
   color: var(--text);
   border: 1px solid var(--border);
@@ -2449,17 +2493,9 @@ table.data tr:hover td {
   color: var(--gold);
 }
 
-.dsm-myplaces {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.dsm-myplaces-add {
-  gap: 6px;
-}
-
-.dsm-myplaces-input {
+/* "Save this place" name field inside a point popup (pointActionsHtml) —
+   paired with .dsm-save-place-btn (styled via the shared .dsm-locate-btn). */
+.dsm-save-place-input {
   flex: 1;
   background: var(--bg);
   color: var(--text);
@@ -2471,50 +2507,84 @@ table.data tr:hover td {
   min-width: 0;
 }
 
-.dsm-myplaces-add-btn {
-  width: 26px;
-  background: var(--panel);
-  color: var(--gold);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
+/* A saved place's marker on the map itself (myPlaceDivIcon) — a small flag
+   (pole + triangular pennant) drawn in CSS rather than a text glyph, in a
+   violet distinct from the curated Dark Sky Places star (teal) and the gold
+   "your location" marker. A font glyph (⚑) was tried first but IBM Plex Mono
+   has no coverage for it and rendered as tofu — a drawn shape has no font
+   dependency. */
+.dsm-myplace-marker {
+  position: relative;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, .9));
 }
 
-.dsm-myplaces-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 4px 0;
-  border-bottom: 1px solid var(--border);
+.dsm-myplace-marker .dsm-flag-pole {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  width: 2px;
+  height: 15px;
+  background: #B98CE8;
+  border-radius: 1px;
 }
 
-.dsm-myplaces-name {
-  color: var(--text);
-  font-size: 12px;
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.dsm-myplace-marker .dsm-flag-cloth {
+  position: absolute;
+  left: 3px;
+  top: 1px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4px 0 4px 9px;
+  border-color: transparent transparent transparent #B98CE8;
 }
 
-.dsm-myplaces-name:hover {
-  color: var(--gold);
+/* Below ~900px the map itself narrows enough that Leaflet's own attribution
+   control (bottom-right, and long here — CARTO + OSM + the Light Pollution
+   Atlas credit) no longer fits on one line and wraps. Because it's pinned to
+   the map's bottom edge and the settings `.dsm-panel` is deliberately sized
+   to reach that same bottom edge (see the max-height comment above), a
+   wrapped multi-line attribution then renders on top of the panel's last
+   visible row instead of beside it. Shrinking the attribution text and
+   trimming the panel's max-height opens a clear gap between the two instead
+   of chasing an exact pixel match against attribution text that can rewrap
+   at any width. */
+@media (max-width: 900px) {
+  .leaflet-control-attribution {
+    font-size: 9.5px !important;
+    line-height: 1.3 !important;
+  }
+
+  .dsm-panel {
+    max-height: 250px;
+  }
 }
 
-.dsm-myplaces-del {
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 1;
-  padding: 0 2px;
-}
+@media (max-width: 560px) {
+  .leaflet-control-attribution {
+    font-size: 9px !important;
+  }
 
-.dsm-myplaces-del:hover {
-  color: #e07a5f;
+  .dsm-panel {
+    max-height: 210px;
+  }
+
+  /* Touch targets: the settings toggle is the entry point to the whole
+     panel, so it gets the biggest bump; everything inside the (already
+     scrollable) panel just needs to clear a comfortable tap size. */
+  .dsm-toggle-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  .dsm-locate-btn,
+  .dsm-search-input,
+  .dsm-year-select,
+  .dsm-play-btn,
+  .dsm-save-place-input {
+    min-height: 38px;
+  }
 }
 
 /* ---------- FAQ (Dark Sky page) ---------- */

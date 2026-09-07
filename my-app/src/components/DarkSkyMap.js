@@ -145,12 +145,22 @@ function loadingHtml() {
     i18next.t("darksky.popup.loading") + "</div>";
 }
 
+// "/en/login" or "/ua/uviyty" depending on the current UI language — the
+// login link shown wherever a popup asks a signed-out visitor to log in
+// before saving a place.
+function loginUrl() {
+  return "/" + (i18next.language === "en" ? "en/login" : "ua/uviyty");
+}
+
 // Shared action-button markup for a popup about a specific point: "use this
 // point for tonight's verdict" (wired in wirePopupButtons), an optional
-// "get directions" deep link (a plain <a>, needs no JS), and "copy
-// coordinates". Reused by the LP click-point popup and the nearest-finder
-// result popup.
-function pointActionsHtml(lat, lon, { directions } = {}) {
+// "get directions" deep link (a plain <a>, needs no JS), "copy coordinates",
+// and — when `offerSave` is set — either a name field + "save this place"
+// button (signed in) or a "log in to save" hint (signed out). Reused by the
+// LP click-point popup and the nearest-finder result popup; the "already
+// saved" marker popup (myPlacePopupHtml) omits `offerSave` since re-saving a
+// place that's already saved doesn't make sense.
+function pointActionsHtml(lat, lon, { directions, offerSave, loggedIn } = {}) {
   const t = i18next.t.bind(i18next);
   let html =
     '<button type="button" class="dsm-use-point dsm-locate-btn" data-lat="' + lat + '" data-lon="' + lon +
@@ -164,14 +174,27 @@ function pointActionsHtml(lat, lon, { directions } = {}) {
   html +=
     '<button type="button" class="dsm-copy-coords dsm-locate-btn" data-lat="' + lat + '" data-lon="' + lon +
     '" style="margin-top:6px;width:100%">📋 ' + lat.toFixed(4) + ", " + lon.toFixed(4) + "</button>";
+  if (offerSave) {
+    html += loggedIn
+      ? '<div class="dsm-row" style="margin-top:6px;gap:6px">' +
+        '<input type="text" class="dsm-save-place-input" placeholder="' +
+        esc(t("darksky.map.myPlacesLabelPlaceholder")) + '" autocomplete="off" />' +
+        '<button type="button" class="dsm-save-place-btn dsm-locate-btn" data-lat="' + lat + '" data-lon="' + lon +
+        '" style="white-space:nowrap">💾 ' + t("darksky.map.savePlace") + "</button></div>"
+      : '<div class="dsm-poi-caption" style="margin-top:6px">' + t("darksky.map.myPlacesLoginHint") +
+        ' <a class="dsm-login-link" href="' + loginUrl() + '">' + t("darksky.map.myPlacesLogin") + "</a></div>";
+  }
   return html;
 }
 
-// Wires the "use this point"/"copy coordinates" buttons inside an already
-// open popup's DOM (event delegation — the buttons are raw HTML Leaflet drops
-// into the DOM, not React). `onUsePoint(lat, lon)` fires the caller's
-// onSelectPoint callback; safe to call even if the popup has no such buttons.
-function wirePopupButtons(popup, onUsePoint) {
+// Wires the "use this point"/"copy coordinates"/"save this place" buttons
+// inside an already open popup's DOM (event delegation — the buttons are raw
+// HTML Leaflet drops into the DOM, not React). `onUsePoint(lat, lon)` fires
+// the caller's onSelectPoint callback; `onSavePlace(lat, lon, label)` (only
+// needed when the popup was built with `offerSave`) persists a saved place
+// and resolves once the map's saved-place markers have been refreshed. Both
+// are safe to omit if the popup has no matching button.
+function wirePopupButtons(popup, onUsePoint, onSavePlace) {
   const t = i18next.t.bind(i18next);
   const el = popup.getElement ? popup.getElement() : popup;
   if (!el) return;
@@ -196,14 +219,29 @@ function wirePopupButtons(popup, onUsePoint) {
       setTimeout(() => { useBtn.innerHTML = original; }, 1800);
     });
   }
+  const saveBtn = el.querySelector(".dsm-save-place-btn");
+  if (saveBtn && onSavePlace) {
+    L.DomEvent.on(saveBtn, "click", () => {
+      const input = el.querySelector(".dsm-save-place-input");
+      const label = input ? input.value.trim() : "";
+      const lat = parseFloat(saveBtn.dataset.lat), lon = parseFloat(saveBtn.dataset.lon);
+      saveBtn.disabled = true;
+      const original = saveBtn.innerHTML;
+      onSavePlace(lat, lon, label).then(() => {
+        if (input) input.value = "";
+        saveBtn.innerHTML = "✓ " + t("darksky.map.placeSaved");
+        setTimeout(() => { saveBtn.innerHTML = original; saveBtn.disabled = false; }, 1800);
+      }).catch(() => { saveBtn.disabled = false; });
+    });
+  }
 }
 
-function pointPopupHtml(zoneNow, trend, year, lat, lon, elevationM, cond) {
+// The tier/trend-chart/stats block shared by the click-anywhere popup
+// (pointPopupHtml) and a saved place's own popup (myPlacePopupHtml) — every
+// point on this map gets the same read: current tier, the LPI trend chart,
+// and the elevation/cloud/moon context for tonight.
+function pointInfoBodyHtml(zoneNow, trend, year, elevationM, cond) {
   const t = i18next.t.bind(i18next);
-  if (!zoneNow) {
-    return '<div style="font-family:var(--font-mono,monospace);font-size:12px;min-width:180px">' +
-      t("darksky.card.zoneUnknown") + "</div>";
-  }
   const color = TIER_COLORS[zoneNow.tier] || "#8B90AC";
   const nelmRange = TIER_NELM_RANGE[zoneNow.tier] || "—";
   const elevationLine = elevationM != null
@@ -216,7 +254,6 @@ function pointPopupHtml(zoneNow, trend, year, lat, lon, elevationM, cond) {
     ? t("darksky.popup.moon", { n: cond.moon_illumination_pct })
     : t("darksky.popup.moonUnknown");
   return (
-    '<div style="font-family:var(--font-mono,monospace);min-width:236px">' +
     '<div style="font-weight:600;color:' + color + ';margin-bottom:2px">' + t("darksky.tier." + zoneNow.tier) + "</div>" +
     '<div style="font-size:11px;color:#8B90AC;margin-bottom:8px">Zone ' + zoneNow.zone + " · " + t("darksky.popup.lpi", { n: zoneNow.lpi.toFixed(2) }) +
     " · " + t("darksky.popup.asOfYear", { year }) + "</div>" +
@@ -230,8 +267,20 @@ function pointPopupHtml(zoneNow, trend, year, lat, lon, elevationM, cond) {
     elevationLine + "<br/>" +
     cloudLine + "<br/>" +
     moonLine +
-    "</div>" +
-    pointActionsHtml(lat, lon) +
+    "</div>"
+  );
+}
+
+function pointPopupHtml(zoneNow, trend, year, lat, lon, elevationM, cond, loggedIn) {
+  const t = i18next.t.bind(i18next);
+  if (!zoneNow) {
+    return '<div style="font-family:var(--font-mono,monospace);font-size:12px;min-width:180px">' +
+      t("darksky.card.zoneUnknown") + "</div>";
+  }
+  return (
+    '<div style="font-family:var(--font-mono,monospace);min-width:236px">' +
+    pointInfoBodyHtml(zoneNow, trend, year, elevationM, cond) +
+    pointActionsHtml(lat, lon, { offerSave: true, loggedIn }) +
     "</div>"
   );
 }
@@ -262,6 +311,39 @@ function poiDivIcon() {
     iconSize: [16, 16],
     iconAnchor: [8, 8],
   });
+}
+
+// A user's own saved place (website account, see loadMyPlaces below) — a
+// small flag (see .dsm-myplace-marker in neowatch.css), anchored at the base
+// of its pole so the flag "plants" exactly on the saved coordinate.
+function myPlaceDivIcon() {
+  return L.divIcon({
+    className: "dsm-myplace-marker",
+    html: '<span class="dsm-flag-pole"></span><span class="dsm-flag-cloth"></span>',
+    iconSize: [14, 18],
+    iconAnchor: [2, 16],
+  });
+}
+
+// Same tier/trend/elevation/cloud/moon read as the click-anywhere popup
+// (pointInfoBodyHtml) under the saved label, plus "use point"/"directions"/
+// "copy coords" (no `offerSave` — this place is already saved) and a delete
+// button. `zoneNow` is null while the click handler's fetch is still in
+// flight (see showMyPlaceInfo) or if the atlas has no data for this pixel.
+function myPlacePopupHtml(place, zoneNow, trend, year, elevationM, cond) {
+  const t = i18next.t.bind(i18next);
+  const body = zoneNow
+    ? pointInfoBodyHtml(zoneNow, trend, year, elevationM, cond)
+    : '<div style="font-size:12px;color:#8B90AC;margin-bottom:8px">' + t("darksky.card.zoneUnknown") + "</div>";
+  return (
+    '<div style="font-family:var(--font-mono,monospace);min-width:236px">' +
+    '<div style="font-weight:600;color:#B98CE8;margin-bottom:4px">' + esc(place.label) + "</div>" +
+    body +
+    pointActionsHtml(place.lat, place.lon, { directions: true }) +
+    '<button type="button" class="dsm-myplace-delete dsm-locate-btn" data-id="' + place.id +
+    '" style="margin-top:6px;width:100%">🗑 ' + t("darksky.map.myPlacesDelete") + "</button>" +
+    "</div>"
+  );
 }
 
 function esc(s) {
@@ -388,8 +470,76 @@ const DarkSkyMap = forwardRef(function DarkSkyMap({ loc, onSelectPoint }, ref) {
       if (onSelectPointRef.current) onSelectPointRef.current({ lat, lon, label: label || null });
     }
 
+    // ---- saved places (website account) — markers on the map, not a list --
+    // in the settings panel. Signed-out visitors never fetch (no bookmarks to
+    // show); `loadMyPlaces` also doubles as the "refresh after
+    // save/delete/login" entry point — exposed via myPlacesApiRef so the
+    // `[user]` effect below can call it after login/logout.
+    const myPlacesLayer = L.layerGroup([]).addTo(map);
+
+    function wireMyPlaceDelete(popup, id) {
+      const el = popup.getElement ? popup.getElement() : popup;
+      const delBtn = el && el.querySelector(".dsm-myplace-delete");
+      if (!delBtn) return;
+      L.DomEvent.on(delBtn, "click", () => {
+        delBtn.disabled = true;
+        deleteSavedLocation(id).then(() => {
+          map.closePopup();
+          loadMyPlaces();
+        }).catch(() => { delBtn.disabled = false; });
+      });
+    }
+
+    // Same read as clicking anywhere else on the map (tier, trend chart,
+    // elevation/cloud/moon) — fetched on click rather than eagerly for every
+    // saved place at load time, same reasoning as showPointInfo below.
+    function showMyPlaceInfo(place, latlng) {
+      const popup = L.popup({ maxWidth: 260, maxHeight: 300, className: "darksky-popup" })
+        .setLatLng(latlng)
+        .setContent(loadingHtml())
+        .openOn(map);
+      Promise.all([
+        getZoneAtPoint(place.lat, place.lon, currentYear),
+        getTrendAtPoint(place.lat, place.lon),
+        getElevation(place.lat, place.lon).catch(() => null),
+        getObservingConditions({ lat: place.lat, lon: place.lon }).catch(() => null),
+      ]).then(([zoneNow, trend, elevation, cond]) => {
+        if (!alive || map.hasLayer(popup) === false) return;
+        const elevationM = elevation && elevation.elevation_m;
+        popup.setContent(myPlacePopupHtml(place, zoneNow, trend, currentYear, elevationM, cond));
+        wirePopupButtons(popup, onUsePoint);
+        wireMyPlaceDelete(popup, place.id);
+      });
+    }
+
+    function loadMyPlaces() {
+      if (!userRef.current) {
+        myPlacesLayer.clearLayers();
+        return;
+      }
+      getSavedLocations().then((data) => {
+        if (!alive) return;
+        myPlacesLayer.clearLayers();
+        ((data && data.locations) || []).forEach((place) => {
+          const marker = L.marker([place.lat, place.lon], { icon: myPlaceDivIcon() });
+          marker.on("click", (e) => showMyPlaceInfo(place, e.latlng));
+          myPlacesLayer.addLayer(marker);
+        });
+      }).catch(() => {});
+    }
+    myPlacesApiRef.current = { refresh: loadMyPlaces };
+    loadMyPlaces();
+
+    function onSavePlace(lat, lon, label) {
+      const finalLabel = label || (lat.toFixed(2) + ", " + lon.toFixed(2));
+      return addSavedLocation(finalLabel, lat, lon).then((res) => {
+        loadMyPlaces();
+        return res;
+      });
+    }
+
     function showPointInfo(lat, lon, latlng) {
-      const popup = L.popup({ maxWidth: 260, className: "darksky-popup" })
+      const popup = L.popup({ maxWidth: 260, maxHeight: 300, className: "darksky-popup" })
         .setLatLng(latlng)
         .setContent(loadingHtml())
         .openOn(map);
@@ -401,8 +551,8 @@ const DarkSkyMap = forwardRef(function DarkSkyMap({ loc, onSelectPoint }, ref) {
       ]).then(([zoneNow, trend, elevation, cond]) => {
         if (!alive || map.hasLayer(popup) === false) return;
         const elevationM = elevation && elevation.elevation_m;
-        popup.setContent(pointPopupHtml(zoneNow, trend, currentYear, lat, lon, elevationM, cond));
-        wirePopupButtons(popup, onUsePoint);
+        popup.setContent(pointPopupHtml(zoneNow, trend, currentYear, lat, lon, elevationM, cond, !!userRef.current));
+        wirePopupButtons(popup, onUsePoint, onSavePlace);
       });
     }
 
@@ -463,7 +613,7 @@ const DarkSkyMap = forwardRef(function DarkSkyMap({ loc, onSelectPoint }, ref) {
               <button type="button" class="dsm-play-btn" title="${esc(t("darksky.map.playYears"))}" aria-label="${esc(t("darksky.map.playYears"))}">▶</button>
             </span>
           </div>
-          <label class="dsm-row dsm-field-row">
+          <label class="dsm-row dsm-opacity-row">
             <span>${esc(t("darksky.map.opacityLabel"))}</span>
             <input type="range" class="dsm-opacity-range" min="10" max="100" value="${Math.round(DEFAULT_OPACITY * 100)}" />
           </label>
@@ -473,8 +623,6 @@ const DarkSkyMap = forwardRef(function DarkSkyMap({ loc, onSelectPoint }, ref) {
           </label>
           <div class="dsm-poi-caption">${esc(t("darksky.map.poiCaption"))}</div>
           <button type="button" class="dsm-locate-btn dsm-nearest-btn">🧭 ${esc(t("darksky.map.findNearest"))}</button>
-          <button type="button" class="dsm-share-btn">🔗 ${esc(t("darksky.map.copyLink"))}</button>
-          <div class="dsm-myplaces"></div>
         `;
 
         let open = false;
@@ -666,89 +814,19 @@ const DarkSkyMap = forwardRef(function DarkSkyMap({ loc, onSelectPoint }, ref) {
                 '<div style="font-size:11px;color:#8B90AC;margin-top:2px">' +
                 t("darksky.map.nearestDistance", { km: Math.round(pixelResult.distanceKm) }) + "</div>";
             }
-            html += pointActionsHtml(primary.lat, primary.lon, { directions: true }) + "</div>";
+            html += pointActionsHtml(primary.lat, primary.lon, {
+              directions: true, offerSave: true, loggedIn: !!userRef.current,
+            }) + "</div>";
 
-            nearestMarker.bindPopup(html, { maxWidth: 260 });
+            nearestMarker.bindPopup(html, { maxWidth: 260, maxHeight: 300, className: "darksky-popup" });
             jumpTo(primary.lat, primary.lon, 9);
             nearestMarker.openPopup();
-            wirePopupButtons(nearestMarker.getPopup(), onUsePoint);
+            wirePopupButtons(nearestMarker.getPopup(), onUsePoint, onSavePlace);
           }).catch(() => {
             nearestBtn.disabled = false;
             nearestBtn.innerHTML = original;
             if (alive) showStatus(t("darksky.map.nearestNotFound"), true);
           });
-        });
-
-        // -- My places (saved locations, website account) --
-        const myPlacesEl = panel.querySelector(".dsm-myplaces");
-        function renderMyPlaces() {
-          if (!alive) return;
-          if (!userRef.current) {
-            myPlacesEl.innerHTML =
-              '<div class="dsm-poi-caption">' + t("darksky.map.myPlacesLoginHint") +
-              ' <a class="dsm-login-link" href="/' + (i18next.language === "en" ? "en/login" : "ua/uviyty") + '">' +
-              t("darksky.map.myPlacesLogin") + "</a></div>";
-            return;
-          }
-          myPlacesEl.innerHTML = '<div class="dsm-status" style="display:block">' + t("darksky.map.myPlacesLoading") + "</div>";
-          getSavedLocations().then((data) => {
-            if (!alive) return;
-            const locations = (data && data.locations) || [];
-            myPlacesEl.innerHTML = "";
-            const addRow = document.createElement("div");
-            addRow.className = "dsm-row dsm-myplaces-add";
-            addRow.innerHTML =
-              '<input type="text" class="dsm-myplaces-input" placeholder="' +
-              esc(t("darksky.map.myPlacesLabelPlaceholder")) + '" autocomplete="off" />' +
-              '<button type="button" class="dsm-myplaces-add-btn">+</button>';
-            myPlacesEl.appendChild(addRow);
-            const labelInput = addRow.querySelector(".dsm-myplaces-input");
-            const addBtn = addRow.querySelector(".dsm-myplaces-add-btn");
-            L.DomEvent.on(addBtn, "click", () => {
-              const c = map.getCenter();
-              const label = labelInput.value.trim() || (c.lat.toFixed(2) + ", " + c.lng.toFixed(2));
-              addSavedLocation(label, c.lat, c.lng).then(() => renderMyPlaces()).catch(() => showStatus(t("darksky.map.locateFail"), true));
-            });
-            locations.forEach((loc0) => {
-              const row = document.createElement("div");
-              row.className = "dsm-myplaces-row";
-              const name = document.createElement("span");
-              name.className = "dsm-myplaces-name";
-              name.textContent = loc0.label;
-              L.DomEvent.on(name, "click", () => {
-                jumpTo(loc0.lat, loc0.lon, 9);
-                onUsePoint(loc0.lat, loc0.lon, loc0.label);
-              });
-              const del = document.createElement("button");
-              del.type = "button";
-              del.className = "dsm-myplaces-del";
-              del.textContent = "×";
-              del.title = t("darksky.map.myPlacesDelete");
-              L.DomEvent.on(del, "click", () => {
-                deleteSavedLocation(loc0.id).then(() => renderMyPlaces()).catch(() => showStatus(t("darksky.map.locateFail"), true));
-              });
-              row.appendChild(name);
-              row.appendChild(del);
-              myPlacesEl.appendChild(row);
-            });
-          }).catch(() => { if (alive) myPlacesEl.innerHTML = ""; });
-        }
-        myPlacesApiRef.current = { refresh: renderMyPlaces };
-        renderMyPlaces();
-
-        // -- copy permalink --
-        const shareBtn = panel.querySelector(".dsm-share-btn");
-        L.DomEvent.on(shareBtn, "click", () => {
-          const c = map.getCenter();
-          writePermalink(c.lat, c.lng, map.getZoom());
-          const done = () => {
-            const original = shareBtn.innerHTML;
-            shareBtn.innerHTML = "✓ " + esc(t("darksky.map.linkCopied"));
-            setTimeout(() => { shareBtn.innerHTML = original; }, 1800);
-          };
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(window.location.href).then(done).catch(() => showStatus(t("darksky.map.locateFail"), true));
-          }
         });
 
         return wrap;
