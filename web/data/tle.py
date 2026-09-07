@@ -3,7 +3,7 @@ import logging
 import asyncio
 import json
 import os
-from typing import TypedDict
+from typing import Any, TypedDict
 
 from utils.i18n import DEFAULT_LANG, pick
 import requests
@@ -20,8 +20,8 @@ CELESTAK_SUP_URL = "https://celestrak.org/NORAD/elements/supplemental/sup-gp.php
 # error) we serve the stashed copy instead of an empty map. The stash is also
 # persisted to ``data/tle_stash/`` so a server restart doesn't blank the map
 # while Celestrak's per-group 2-hour window is still closed.
-_TLE_CACHE: dict[str, tuple[float, dict]] = {}
-_TLE_STASH: dict[str, dict] = {}
+_TLE_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
+_TLE_STASH: dict[str, dict[str, Any]] = {}
 _TLE_STASH_DIR = os.path.join("data", "tle_stash")
 
 
@@ -71,9 +71,9 @@ TLE_GROUPS: dict[str, _TLEGroupSpec] = {
 }
 
 
-def _parse_3le(text: str) -> list:
+def _parse_3le(text: str) -> list[dict[str, Any]]:
     """Parse Celestrak 3-line TLE text into [{name, norad_id, tle1, tle2}]."""
-    out = []
+    out: list[dict[str, Any]] = []
     lines = [ln.rstrip("\r") for ln in text.splitlines() if ln.strip()]
     i = 0
     while i < len(lines) - 2:
@@ -97,7 +97,7 @@ def _parse_3le(text: str) -> list:
     return out
 
 
-def _tle_raw(group_key: str) -> dict:
+def _tle_raw(group_key: str) -> dict[str, Any]:
     """Fetch the full TLE set for a group. Unlimited/untruncated — callers
     (``get_tle``) cache this once per group and slice to each request's
     ``limit`` themselves, so pages asking for the same group with different
@@ -139,7 +139,7 @@ def _stash_path(key: str) -> str:
     return os.path.join(_TLE_STASH_DIR, safe + ".json")
 
 
-def _stash_save(key: str, payload: dict) -> None:
+def _stash_save(key: str, payload: dict[str, Any]) -> None:
     try:
         os.makedirs(_TLE_STASH_DIR, exist_ok=True)
         with open(_stash_path(key), "w", encoding="utf-8") as f:
@@ -148,7 +148,7 @@ def _stash_save(key: str, payload: dict) -> None:
         logger.warning("TLE stash save %s: %s", key, e)
 
 
-def _stash_load(key: str) -> dict | None:
+def _stash_load(key: str) -> dict[str, Any] | None:
     try:
         p = _stash_path(key)
         if os.path.exists(p):
@@ -160,7 +160,7 @@ def _stash_load(key: str) -> dict | None:
     return None
 
 
-async def get_tle(group: str, limit: int = 300, lang: str = DEFAULT_LANG) -> dict:
+async def get_tle(group: str, limit: int = 300, lang: str = DEFAULT_LANG) -> dict[str, Any]:
     """Cached TLE set for a satellite group (Celestrak).
 
     Cached and fetched per ``group`` only — ``limit`` is applied by slicing
@@ -182,7 +182,7 @@ async def get_tle(group: str, limit: int = 300, lang: str = DEFAULT_LANG) -> dic
     spec = TLE_GROUPS.get(group, {})
     label = pick(spec, "label", lang) if spec else group
 
-    def _view(p: dict) -> dict:
+    def _view(p: dict[str, Any]) -> dict[str, Any]:
         items = p.get("items", [])
         shown = items[:limit] if limit else items
         return {
@@ -237,7 +237,7 @@ async def get_tle(group: str, limit: int = 300, lang: str = DEFAULT_LANG) -> dic
     return _view(payload)
 
 
-def tle_groups(lang: str = DEFAULT_LANG) -> list:
+def tle_groups(lang: str = DEFAULT_LANG) -> list[dict[str, Any]]:
     """Group registry for the map UI (key, label, color, icon)."""
     return [
         {"key": k, "label": pick(v, "label", lang), "color": v["color"], "icon": v["icon"]}
