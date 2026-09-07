@@ -1,6 +1,7 @@
 """Voyager 1/2 propagated distance/speed/light-time."""
 import asyncio
 from datetime import datetime, timezone
+from typing import Any
 
 from services.voyager import _PROBES as VOYAGER_PROBES, AU_KM, C_KM_S
 from web.cache import get_or_fetch
@@ -8,7 +9,7 @@ from web.cache import get_or_fetch
 VOYAGER_TTL = 3600
 
 
-def _voyager_probe(idx: int) -> dict:
+def _voyager_probe(idx: int) -> dict[str, Any]:
     p = VOYAGER_PROBES[idx]
     seconds = (datetime.now(tz=timezone.utc) - p["epoch"]).total_seconds()
     helio_km = p["dist_km"] + p["velocity_km_s"] * seconds
@@ -25,10 +26,10 @@ def _voyager_probe(idx: int) -> dict:
     }
 
 
-def _voyager_raw() -> dict:
+def _voyager_raw() -> dict[str, Any]:
     return {"1": _voyager_probe(1), "2": _voyager_probe(2)}
 
 
-async def get_voyager() -> dict:
+async def get_voyager() -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, "voyager", VOYAGER_TTL, _voyager_raw)
 
