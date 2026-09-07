@@ -3,6 +3,7 @@ import logging
 import asyncio
 import time
 from datetime import datetime, timezone, timedelta
+from typing import Any
 
 from services.jupiter import get_jupiter as _build_jupiter
 from services.mercury import get_mercury as _build_mercury
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 JUPITER_TTL = 3600        # moon catalog is static; live distance refreshes hourly
 MERCURY_TTL = 3600        # live distance and elongation updates hourly
 
-def _jupiter_raw() -> dict:
+def _jupiter_raw() -> dict[str, Any]:
     try:
         return _build_jupiter()
     except Exception as e:  # noqa: BLE001
@@ -27,7 +28,7 @@ def _jupiter_raw() -> dict:
         return {}
 
 
-async def get_jupiter() -> dict:
+async def get_jupiter() -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, "jupiter", JUPITER_TTL, _jupiter_raw)
 
 
@@ -35,7 +36,7 @@ async def get_jupiter() -> dict:
 # Mercury — live distance and greatest elongation dates
 # ---------------------------------------------------------------------------
 
-def _mercury_raw() -> dict:
+def _mercury_raw() -> dict[str, Any]:
     try:
         return _build_mercury()
     except Exception as e:
@@ -43,14 +44,14 @@ def _mercury_raw() -> dict:
         return {}
 
 
-async def get_mercury() -> dict:
+async def get_mercury() -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, "mercury", MERCURY_TTL, _mercury_raw)
 
 
 NEPTUNE_TTL = 300
 
 
-def _neptune_raw() -> dict:
+def _neptune_raw() -> dict[str, Any]:
     try:
         return _build_neptune()
     except Exception as e:
@@ -58,27 +59,27 @@ def _neptune_raw() -> dict:
         return {}
 
 
-async def get_neptune() -> dict:
+async def get_neptune() -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, "neptune", NEPTUNE_TTL, _neptune_raw)
 
 
 SATURN_TTL = 300
 
-def _saturn_raw() -> dict:
+def _saturn_raw() -> dict[str, Any]:
     try:
         return _build_saturn()
     except Exception as e:
         logger.error("saturn: %s", e)
         return {}
 
-async def get_saturn() -> dict:
+async def get_saturn() -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, "saturn", SATURN_TTL, _saturn_raw)
 
 
 URANUS_TTL = 300
 
 
-def _uranus_raw() -> dict:
+def _uranus_raw() -> dict[str, Any]:
     try:
         return _build_uranus()
     except Exception as e:
@@ -86,18 +87,18 @@ def _uranus_raw() -> dict:
         return {}
 
 
-async def get_uranus() -> dict:
+async def get_uranus() -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, "uranus", URANUS_TTL, _uranus_raw)
 
 
 EARTH_TTL = 300
 
 
-def _earth_raw() -> dict:
+def _earth_raw() -> dict[str, Any]:
     """Fetch CO2, temperature anomaly from global-warming.org, and latest earthquake from USGS."""
     import time
     
-    out = {
+    out: dict[str, Any] = {
         "co2": None,
         "co2_trend": None,
         "temperature_anomaly": None,
@@ -141,7 +142,7 @@ def _earth_raw() -> dict:
     return out
 
 
-async def get_earth() -> dict:
+async def get_earth() -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, "earth", EARTH_TTL, _earth_raw)
 
 
@@ -157,7 +158,7 @@ async def get_earth() -> dict:
 EARTHQUAKES_TTL = 300  # 5 min
 
 
-def _earthquake_row(feature: dict, now_epoch: float) -> dict:
+def _earthquake_row(feature: dict[str, Any], now_epoch: float) -> dict[str, Any]:
     props = feature.get("properties", {}) or {}
     coords = (feature.get("geometry", {}) or {}).get("coordinates") or [None, None, None]
     lon, lat = coords[0], coords[1]
@@ -174,8 +175,8 @@ def _earthquake_row(feature: dict, now_epoch: float) -> dict:
     }
 
 
-def _earthquakes_raw() -> dict:
-    out = {"latest": None, "recent": [], "count_24h": 0}
+def _earthquakes_raw() -> dict[str, Any]:
+    out: dict[str, Any] = {"latest": None, "recent": [], "count_24h": 0}
     try:
         start = datetime.now(timezone.utc) - timedelta(hours=24)
         resp = requests.get(
@@ -201,7 +202,7 @@ def _earthquakes_raw() -> dict:
     return out
 
 
-async def get_earthquakes() -> dict:
+async def get_earthquakes() -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, "earthquakes", EARTHQUAKES_TTL, _earthquakes_raw)
 
 
@@ -213,7 +214,7 @@ async def get_earthquakes() -> dict:
 EARTH_DAY_TTL = 300
 
 
-def _earth_day_raw(lat: float, lon: float) -> dict:
+def _earth_day_raw(lat: float, lon: float) -> dict[str, Any]:
     try:
         info = PlanetsAPI.compute_day_info(lat, lon)
     except Exception as e:
@@ -222,7 +223,7 @@ def _earth_day_raw(lat: float, lon: float) -> dict:
     return info or {"sunrise": None, "sunset": None, "day_length_hours": None}
 
 
-async def get_earth_day(lat: float, lon: float) -> dict:
+async def get_earth_day(lat: float, lon: float) -> dict[str, Any]:
     key = f"earth_day:{round(lat,1)}:{round(lon,1)}"
     return await asyncio.to_thread(get_or_fetch, key, EARTH_DAY_TTL, lambda: _earth_day_raw(lat, lon))
 
@@ -230,7 +231,7 @@ async def get_earth_day(lat: float, lon: float) -> dict:
 VENUS_TTL = 300
 
 
-def _venus_raw() -> dict:
+def _venus_raw() -> dict[str, Any]:
     try:
         return _build_venus()
     except Exception as e:
@@ -238,7 +239,7 @@ def _venus_raw() -> dict:
         return {}
 
 
-async def get_venus() -> dict:
+async def get_venus() -> dict[str, Any]:
     return await asyncio.to_thread(get_or_fetch, "venus", VENUS_TTL, _venus_raw)
 
 
