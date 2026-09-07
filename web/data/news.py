@@ -2,6 +2,7 @@
 import logging
 import asyncio
 import re
+from typing import Any
 
 from parsers import NewsParser
 from utils.i18n import DEFAULT_LANG
@@ -32,7 +33,7 @@ NEWS_PAGE_SIZE_MAX = 24
 NEWS_CATEGORIES = {"launches", "missions", "discoveries", "tech"}
 
 
-def _news_localize(items: list[dict], lang: str) -> list[dict]:
+def _news_localize(items: list[dict[str, Any]], lang: str) -> list[dict[str, Any]]:
     """Pick the title/excerpt in the requested language (fall back to EN)."""
     out = []
     for it in items:
@@ -52,7 +53,7 @@ def _news_localize(items: list[dict], lang: str) -> list[dict]:
     return out
 
 
-def _news_live(lang: str) -> list[dict]:
+def _news_live(lang: str) -> list[dict[str, Any]]:
     """Live SpaceflightNow fetch used when the DB archive is empty/unavailable.
     Best-effort stores into the archive, then reads back; if the DB is off,
     returns the freshly-parsed list with id=null (cards link out to source)."""
@@ -74,7 +75,7 @@ def _news_live(lang: str) -> list[dict]:
 
 
 def _news_raw(lang: str, page: int = 0, page_size: int = NEWS_PAGE_SIZE_DEFAULT,
-              q: str = "", category: str = "") -> dict:
+              q: str = "", category: str = "") -> dict[str, Any]:
     """One page of the news archive, optionally filtered by `category` and/or
     a `q` search term (title/excerpt substring, either language) — both
     applied at the DB level. Falls back to a live unpaginated fetch only for
@@ -107,7 +108,7 @@ def _news_raw(lang: str, page: int = 0, page_size: int = NEWS_PAGE_SIZE_DEFAULT,
 
 
 async def get_news(lang: str = DEFAULT_LANG, page: int = 0, page_size: int = NEWS_PAGE_SIZE_DEFAULT,
-                    q: str = "", category: str = "") -> dict:
+                    q: str = "", category: str = "") -> dict[str, Any]:
     q = (q or "").strip()
     ttl = NEWS_TTL if not q and not category and page == 0 else NEWS_SEARCH_TTL
     key = f"news:{lang}:{page}:{page_size}:{q.lower()}:{category}"
@@ -154,7 +155,7 @@ _KEYWORD_STOP_UK = {
 }
 
 
-def _extract_trending_keywords(lang: str, top_n: int = NEWS_KEYWORDS_TOP_N) -> list:
+def _extract_trending_keywords(lang: str, top_n: int = NEWS_KEYWORDS_TOP_N) -> list[str]:
     """Rank words appearing in the most recent article titles by how many
     distinct articles mention them (not raw word count, so one repetitive
     headline can't dominate). Stopwords filter out function words and
@@ -179,14 +180,14 @@ def _extract_trending_keywords(lang: str, top_n: int = NEWS_KEYWORDS_TOP_N) -> l
     return [display[w] for w, _ in ranked[:top_n]]
 
 
-async def get_news_keywords(lang: str = DEFAULT_LANG) -> dict:
+async def get_news_keywords(lang: str = DEFAULT_LANG) -> dict[str, list[str]]:
     keywords = await asyncio.to_thread(
         get_or_fetch, f"news_kw:{lang}", NEWS_KEYWORDS_TTL, lambda: _extract_trending_keywords(lang)
     )
     return {"keywords": keywords}
 
 
-def _news_article_raw(slug: str, lang: str) -> dict:
+def _news_article_raw(slug: str, lang: str) -> dict[str, Any]:
     """Article page data keyed by slug. The body (English) is stored at ingest
     time (from the RSS ``content:encoded``), so this only translates it to UK
     on first view (lazily, persisted — never retranslated). For legacy rows with
@@ -272,7 +273,7 @@ def _news_article_raw(slug: str, lang: str) -> dict:
     }
 
 
-async def get_news_article_api(slug: str, lang: str = DEFAULT_LANG) -> dict:
+async def get_news_article_api(slug: str, lang: str = DEFAULT_LANG) -> dict[str, Any]:
     return await asyncio.to_thread(
         get_or_fetch, f"news_art:{slug}:{lang}", NEWS_ARTICLE_TTL,
         lambda: _news_article_raw(slug, lang)
