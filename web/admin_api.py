@@ -38,6 +38,7 @@ from database import (
     create_news_article_manual,
     delete_apod_entry,
     delete_galaxy_photo,
+    delete_mission_preview,
     delete_news_article,
     galaxy_key_exists,
     get_apod_entries_admin,
@@ -45,6 +46,7 @@ from database import (
     get_galaxies,
     get_galaxy_photo_counts,
     get_galaxy_photos,
+    get_mission_previews,
     get_news_article,
     get_news_article_images,
     get_news_article_videos,
@@ -53,10 +55,12 @@ from database import (
     get_web_user_by_id,
     list_web_users,
     refresh_news_article_from_source,
+    set_mission_preview,
     set_web_user_role,
     update_apod_entry,
     update_news_article,
 )
+from web import cache as web_cache
 from web.auth import get_current_admin
 from web.online import get_daily_visit_counts, get_online_count, get_visit_counts
 
@@ -66,6 +70,17 @@ router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 _CATEGORIES = ("launches", "missions", "discoveries", "tech")
 _ROLES = ("user", "admin")
+
+# Mirrors the `key` field of every entry in my-app/src/lib/missions.js
+# MISSIONS — there's no DB table for the registry itself (see
+# database/schema.py's mission_previews docstring), so this hardcoded tuple
+# is what validates a mission_key on the admin preview-image routes below.
+# Keep in sync by hand when a mission is added/removed there.
+_MISSION_KEYS = (
+    "voyager", "hubble", "jwst", "roman", "newhorizons", "parker", "juno",
+    "chandra", "tess", "europaclipper", "perseverance", "cassini",
+    "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11",
+)
 
 # News cover-image upload (admin_upload_news_cover below): center-cropped is
 # wrong for a landscape news card, so this just caps the long edge instead —
@@ -497,4 +512,99 @@ async def admin_delete_galaxy_photo(galaxy_key: str, nasa_id: str, request: Requ
     ok = await asyncio.to_thread(delete_galaxy_photo, galaxy_key, nasa_id)
     if not ok:
         return JSONResponse({"ok": False, "error": "not_found"}, status_code=404)
+    return {"ok": True}
+
+
+# --- Missions hub preview images -----------------------------------------
+# Admin-side counterpart to web/data/missions.py's public /api/missions/previews
+# read. The mission registry (name, year, icon, default `img`, …) stays a
+# hardcoded frontend list — my-app/src/lib/missions.js — so there's nothing
+# to CRUD there (same reasoning as `admin_list_galaxies`'s read-only catalog
+# fields); this only manages the one override each mission can have.
+
+class MissionPreviewPayload(BaseModel):
+    url: str = Field(..., min_length=1, max_length=1000)
+    credit: str | None = Field(None, max_length=300)
+
+
+def _mission_preview_url(row: dict) -> dict:
+    row = dict(row)
+    updated = row.get("updated_at")
+    version = int(updated.timestamp()) if updated else 0
+    row["image_url"] = f"/mission-img/{row['image_path']}?v={version}"
+    row["updated_at"] = str(updated) if updated else None
+    return row
+
+
+@router.get("/missions")
+async def admin_list_mission_previews(request: Request):
+    if not _require_admin(request):
+        return JSONResponse({"ok": False, "error": "forbidden"}, status_code=403)
+    rows = await asyncio.to_thread(get_mission_previews)
+    return {"ok": True, "keys": list(_MISSION_KEYS), "previews": {k: _mission_preview_url(v) for k, v in rows.items()}}
+
+
+@router.post("/missions/{mission_key}")
+async def admin_set_mission_preview(mission_key: str, payload: MissionPreviewPayload, request: Request):
+    """Mirrors an admin-supplied image URL — same pattern as
+    admin_add_galaxy_photo, but overwrites the mission's one card image
+    instead of appending to a gallery."""
+    if not _require_admin(request):
+        return JSONResponse({"ok": False, "error": "forbidden"}, status_code=403)
+    if mission_key not in _MISSION_KEYS:
+        return JSONResponse({"ok": False, "error": "unknown_mission"}, status_code=404)
+    from services.mission_images import fetch_and_save_photo
+
+    ok = await asyncio.to_thread(fetch_and_save_photo, mission_key, payload.url)
+    if not ok:
+        return JSONResponse({"ok": False, "error": "download_failed"}, status_code=400)
+    row = await asyncio.to_thread(set_mission_preview, mission_key, f"{mission_key}.jpg", payload.credit, payload.url)
+    if not row:
+        return JSONResponse({"ok": False, "error": "save_failed"}, status_code=500)
+    web_cache.clear("mission_previews")
+    return {"ok": True, "preview": _mission_preview_url(row)}
+
+
+@router.post("/missions/{mission_key}/upload")
+async def admin_upload_mission_preview(mission_key: str, request: Request, file: UploadFile = File(...)):
+    """Admin file-upload counterpart to the URL-based route above — for a
+    local photo the admin has (a screenshot, a downloaded press image) with
+    no public URL to mirror from."""
+    if not _require_admin(request):
+        return JSONResponse({"ok": False, "error": "forbidden"}, status_code=403)
+    if mission_key not in _MISSION_KEYS:
+        return JSONResponse({"ok": False, "error": "unknown_mission"}, status_code=404)
+    if not (file.content_type or "").startswith("image/"):
+        return JSONResponse({"ok": False, "error": "invalid_file_type"}, status_code=400)
+
+    raw = await file.read()
+    if len(raw) > _NEWS_COVER_MAX_BYTES:  # reuses the same 8 MB cap, no mission-specific reason to differ
+        return JSONResponse({"ok": False, "error": "file_too_large"}, status_code=400)
+
+    from services.mission_images import save_uploaded_photo
+
+    try:
+        ok = await asyncio.to_thread(save_uploaded_photo, mission_key, raw)
+    except Exception:
+        ok = False
+    if not ok:
+        return JSONResponse({"ok": False, "error": "invalid_image"}, status_code=400)
+
+    row = await asyncio.to_thread(set_mission_preview, mission_key, f"{mission_key}.jpg", None, None)
+    if not row:
+        return JSONResponse({"ok": False, "error": "save_failed"}, status_code=500)
+    web_cache.clear("mission_previews")
+    return {"ok": True, "preview": _mission_preview_url(row)}
+
+
+@router.delete("/missions/{mission_key}")
+async def admin_delete_mission_preview(mission_key: str, request: Request):
+    """Reverts to the static default `img` from lib/missions.js (or the
+    emoji-icon fallback, for a mission with no default)."""
+    if not _require_admin(request):
+        return JSONResponse({"ok": False, "error": "forbidden"}, status_code=403)
+    ok = await asyncio.to_thread(delete_mission_preview, mission_key)
+    if not ok:
+        return JSONResponse({"ok": False, "error": "not_found"}, status_code=404)
+    web_cache.clear("mission_previews")
     return {"ok": True}

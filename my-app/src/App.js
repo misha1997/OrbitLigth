@@ -26,6 +26,7 @@ import AdminPhotos from "./pages/admin/AdminPhotos";
 import AdminPhotoEditor from "./pages/admin/AdminPhotoEditor";
 import AdminGalaxies from "./pages/admin/AdminGalaxies";
 import AdminGalaxyPhotos from "./pages/admin/AdminGalaxyPhotos";
+import AdminMissions from "./pages/admin/AdminMissions";
 
 // GA4 pageview on every SPA route change. The gtag() snippet in
 // public/index.html fires the initial pageview; this sends the rest so
@@ -62,6 +63,7 @@ export default function App() {
                     <Route path="photos/:date" element={<AdminPhotoEditor />} />
                     <Route path="galaxies" element={<AdminGalaxies />} />
                     <Route path="galaxies/:key" element={<AdminGalaxyPhotos />} />
+                    <Route path="missions" element={<AdminMissions />} />
                   </Route>
                 </Route>
                 <Route element={<Layout />}>

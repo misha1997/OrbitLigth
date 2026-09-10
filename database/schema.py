@@ -235,6 +235,26 @@ def init_db():
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
 
+        # Admin-set override for one mission's card photo on the Missions hub
+        # (/missions, my-app/src/lib/missions.js MISSIONS[].img). The registry
+        # itself stays a hardcoded frontend list (like `galaxies` curated
+        # fields — see admin_list_galaxies' docstring for why), but its
+        # per-mission image can be swapped from /admin/missions without a
+        # deploy: mission_key isn't a foreign key to anything (the registry
+        # has no DB table), just validated against the same key list
+        # server-side (web/admin_api.py _MISSION_KEYS). image_path is
+        # relative to data/missions/ (mirrored via services/mission_images.py
+        # or uploaded directly), served through /mission-img.
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS mission_previews (
+                mission_key VARCHAR(40) PRIMARY KEY,
+                image_path VARCHAR(300) NOT NULL,
+                credit VARCHAR(300),
+                source_url VARCHAR(500),
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ''')
+
         # Hazardous asteroids notifications tracking
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS neo_notifications (

@@ -9,7 +9,7 @@
 // is an internal tool, styled like one.
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { GridIcon, NewspaperIcon, UsersIcon, ImageIcon, SparkleIcon, LogOutIcon, ExternalLinkIcon, UserCircleIcon } from "../../lib/adminIcons";
+import { GridIcon, NewspaperIcon, UsersIcon, ImageIcon, SparkleIcon, RocketIcon, LogOutIcon, ExternalLinkIcon, UserCircleIcon } from "../../lib/adminIcons";
 import "../../styles/admin.css";
 
 const NAV = [
@@ -18,6 +18,7 @@ const NAV = [
   { to: "/admin/users", label: "Користувачі", icon: UsersIcon },
   { to: "/admin/photos", label: "Фотоархів", icon: ImageIcon },
   { to: "/admin/galaxies", label: "Галактики", icon: SparkleIcon },
+  { to: "/admin/missions", label: "Місії", icon: RocketIcon },
 ];
 
 export default function AdminLayout() {

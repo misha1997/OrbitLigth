@@ -377,6 +377,15 @@ async def flares(limit: int = Query(20, ge=1, le=75)):
     return await data.get_flares(limit)
 
 
+@router.get("/missions/previews")
+async def mission_previews():
+    """Admin-set override photos for the Missions hub (/missions, see
+    /admin/missions). Returns ``{mission_key: {image_url, credit}}`` for only
+    the missions an admin has overridden — a key absent here means the
+    frontend's static default `img` from lib/missions.js applies."""
+    return await data.get_mission_previews_api()
+
+
 @router.get("/comets")
 async def comets(lang: str = LANG_Q):
     """Observable comets digest: brightest now, visible catalog, orbit, famous."""

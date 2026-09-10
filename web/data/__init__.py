@@ -38,6 +38,7 @@ from .alerts import get_grb, get_gw, get_sentry, get_reentries, get_flares
 from .comets_exoplanets import get_comets, get_exoplanets
 from .mast import get_mast_lightcurve, get_mast_hubble_jwst
 from .history import get_history_today
+from .missions import get_mission_previews_api
 
 __all__ = [
     "get_space_weather", "get_weather_series",
@@ -64,4 +65,5 @@ __all__ = [
     "get_comets", "get_exoplanets",
     "get_mast_lightcurve", "get_mast_hubble_jwst",
     "get_history_today",
+    "get_mission_previews_api",
 ]

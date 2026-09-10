@@ -66,6 +66,10 @@ export const getGalaxies = (lang) => fetchJSON(API + "/galaxies" + withLang("", 
 // One galaxy detail: full record + NASA Image Library photo gallery.
 export const getGalaxy = (slug, lang) =>
   fetchJSON(API + "/galaxies/" + encodeURIComponent(slug) + withLang("", lang));
+// Admin-set override photos for the Missions hub cards (/admin/missions).
+// {mission_key: {image_url, credit}} — a key absent here means lib/missions.js's
+// static default `img` applies (see Missions.js's merge).
+export const getMissionPreviews = () => fetchJSON(API + "/missions/previews");
 export const getGrb = (limit = 12) => fetchJSON(API + "/grb?limit=" + limit);
 // Gravitational-wave alerts (LIGO/Virgo/KAGRA via GCN Kafka, cached from the
 // bot's notification log). {items[], count, configured} — `configured`

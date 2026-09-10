@@ -4,10 +4,11 @@
 // for the full registry and what's built vs. not). Ports the Planetarium
 // hub's card-grid pattern (see Planetarium.js) since the "some pages exist,
 // some don't yet" shape is identical.
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import { MISSIONS } from "../lib/missions";
+import { getMissionPreviews } from "../lib/api";
 import { useSeo } from "../hooks/useSeo";
 import "../styles/missions.css";
 
@@ -15,6 +16,14 @@ export default function Missions() {
   const { t } = useTranslation();
   useSeo();
   useEffect(() => { document.title = t("title.missions"); }, [t]);
+
+  // Admin-set card-photo overrides (/admin/missions) layered over the
+  // static `img` in lib/missions.js — see web/data/missions.py. Best-effort:
+  // a fetch failure just means every card falls back to its static default.
+  const [previews, setPreviews] = useState({});
+  useEffect(() => {
+    getMissionPreviews().then(setPreviews).catch(() => {});
+  }, []);
 
   return (
     <>
@@ -32,11 +41,12 @@ export default function Missions() {
         <div className="wrap">
           <div className="mission-grid">
             {MISSIONS.map((m) => {
+              const img = previews[m.key]?.image_url || m.img;
               const body = (
                 <>
                   <div className="mission-visual-wrap">
-                    {m.img ? (
-                      <img className="mission-photo" src={m.img} alt={t(m.labelKey)} loading="lazy" decoding="async" />
+                    {img ? (
+                      <img className="mission-photo" src={img} alt={t(m.labelKey)} loading="lazy" decoding="async" />
                     ) : (
                       <span className="mission-icon" style={{ color: m.accent }}>{m.icon}</span>
                     )}

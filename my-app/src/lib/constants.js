@@ -23,9 +23,6 @@ export const NAV_GROUPS = [
     { name: "launches", labelKey: "nav.launches" },
     { name: "news", labelKey: "nav.news" },
     { name: "missions", labelKey: "nav.missionsHub", end: true },
-    { name: "hubble", labelKey: "nav.hubble" },
-    { name: "jwst", labelKey: "nav.jwst" },
-    { name: "roman", labelKey: "nav.roman" },
   ]},
   { labelKey: "nav.planetarium", items: [
     { name: "planetarium", labelKey: "nav.planetariumHub", end: true },

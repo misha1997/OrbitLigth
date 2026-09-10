@@ -93,3 +93,27 @@ export const addGalaxyPhoto = (key, fields) =>
 
 export const deleteGalaxyPhoto = (key, nasaId) =>
   adminFetch(`/galaxies/${key}/photos/${encodeURIComponent(nasaId)}`, { method: "DELETE" });
+
+export const listMissionPreviews = () => adminFetch("/missions");
+
+export const setMissionPreview = (key, fields) =>
+  adminFetch(`/missions/${key}`, { method: "POST", body: JSON.stringify(fields) });
+
+export const deleteMissionPreview = (key) =>
+  adminFetch(`/missions/${key}`, { method: "DELETE" });
+
+// Bypasses adminFetch for the same reason uploadNewsCover does — a FormData
+// body needs the browser's own multipart Content-Type.
+export async function uploadMissionPreview(key, file) {
+  const form = new FormData();
+  form.append("file", file);
+  const r = await fetch(`${API}/missions/${key}/upload`, { method: "POST", credentials: "include", body: form });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    const err = new Error(data.error || "request_failed");
+    err.code = data.error;
+    err.status = r.status;
+    throw err;
+  }
+  return data;
+}

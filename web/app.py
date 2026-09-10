@@ -343,6 +343,16 @@ _NEWS_COVER_DIR = Path(__file__).resolve().parent.parent / "data" / "news_covers
 _NEWS_COVER_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/news-cover-img", StaticFiles(directory=_NEWS_COVER_DIR), name="news-cover-img")
 
+# Admin-set Missions hub card photos (data/missions/<mission_key>.jpg),
+# written by web/admin_api.py's POST /api/admin/missions/{key} (URL mirror)
+# and /api/admin/missions/{key}/upload — see services/mission_images.py and
+# database/schema.py's mission_previews table. Fixed filename per mission,
+# overwritten on re-set; web/data/missions.py's image_url carries a `?v=`
+# cache-buster so the browser refetches.
+_MISSION_IMG_DIR = Path(__file__).resolve().parent.parent / "data" / "missions"
+_MISSION_IMG_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/mission-img", StaticFiles(directory=_MISSION_IMG_DIR), name="mission-img")
+
 
 def _spa_html(name: str, lang: str, status_code: int = 200,
               extra_jsonld: str = "", overrides: dict | None = None) -> HTMLResponse:

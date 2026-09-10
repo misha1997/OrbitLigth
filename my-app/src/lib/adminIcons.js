@@ -170,6 +170,17 @@ export function TrendingUpIcon({ size = 16, ...p }) {
   );
 }
 
+export function RocketIcon({ size = 18, ...p }) {
+  return (
+    <svg {...base(size, size)} {...p}>
+      <path d="M12 2.5c2.8 1.6 4.5 4.6 4.5 8.5 0 3-1.5 6.4-4.5 10.5-3-4.1-4.5-7.5-4.5-10.5 0-3.9 1.7-6.9 4.5-8.5z" />
+      <circle cx="12" cy="10.5" r="1.8" />
+      <path d="M7.5 14.5L4 18l3-1M16.5 14.5L20 18l-3-1" />
+      <path d="M9.5 21l1-2M14.5 21l-1-2" />
+    </svg>
+  );
+}
+
 export function UserCircleIcon({ size = 20, ...p }) {
   return (
     <svg {...base(size, size)} {...p}>
