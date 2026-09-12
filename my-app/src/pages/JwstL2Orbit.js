@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Stars, Line, useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -91,74 +91,89 @@ function JwstMarker() {
 
 export default function JwstL2Orbit() {
   const { t } = useTranslation();
+  const [viewMode, setViewMode] = useState("local");
+
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "450px", background: "#06070a", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border)", margin: "40px 0" }}>
+    <div style={{ position: "relative", width: "100%", height: viewMode === "nasa" ? "650px" : "450px", background: "#06070a", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border)", margin: "40px 0", transition: "height 0.3s ease" }}>
       
-      {/* Legend Overlay */}
-      <div style={{ position: "absolute", top: 20, left: 20, zIndex: 10, color: "#fff", fontSize: "13px", fontFamily: "var(--font-mono)", display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#4dabf7" }} />
-          <span>{t("jwst.l2.diagram_earth", "Earth")}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#e0aaff" }} />
-          <span>JWST</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#8b7355" }} />
-          <span>L2 point</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ffd700" }} />
-          <span>{t("jwst.l2.diagram_sun", "Sun")} direction &larr;</span>
-        </div>
+      {/* View Toggle */}
+      <div style={{ position: "absolute", top: 16, right: 16, zIndex: 20, display: "flex", background: "var(--panel)", borderRadius: 6, padding: 4, border: "1px solid var(--border)" }}>
+        <button 
+          onClick={() => setViewMode("local")}
+          style={{ 
+            background: viewMode === "local" ? "var(--gold)" : "transparent",
+            color: viewMode === "local" ? "#000" : "var(--text)",
+            border: "none", padding: "6px 12px", borderRadius: 4, cursor: "pointer", 
+            fontSize: "0.85rem", fontWeight: 600, transition: "0.2s"
+          }}>
+          {t("jwst.l2.view_local", "3D Модель")}
+        </button>
+        <button 
+          onClick={() => setViewMode("nasa")}
+          style={{ 
+            background: viewMode === "nasa" ? "var(--gold)" : "transparent",
+            color: viewMode === "nasa" ? "#000" : "var(--text)",
+            border: "none", padding: "6px 12px", borderRadius: 4, cursor: "pointer", 
+            fontSize: "0.85rem", fontWeight: 600, transition: "0.2s"
+          }}>
+          {t("jwst.l2.view_nasa", "NASA Eyes")}
+        </button>
       </div>
-      
-      {/* Controls Hint */}
-      <div style={{ position: "absolute", bottom: 16, right: 20, zIndex: 10, color: "rgba(255,255,255,0.4)", fontSize: "11px", fontFamily: "var(--font-mono)", userSelect: "none" }}>
-        Click & drag to rotate &middot; Scroll to zoom
+
+      {viewMode === "local" && (
+        <div style={{ position: "absolute", top: 20, left: 20, zIndex: 10, color: "#fff", fontSize: "13px", fontFamily: "var(--font-mono)", display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#4dabf7" }} />
+            <span>{t("jwst.l2.diagram_earth", "Earth")}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#e0aaff" }} />
+            <span>JWST</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#8b7355" }} />
+            <span>L2 point</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ffd700" }} />
+            <span>{t("jwst.l2.diagram_sun", "Sun")} direction &larr;</span>
+          </div>
+        </div>
+      )}
+
+      {viewMode === "local" && (
+        <div style={{ position: "absolute", bottom: 16, right: 20, zIndex: 10, color: "rgba(255,255,255,0.4)", fontSize: "11px", fontFamily: "var(--font-mono)", userSelect: "none" }}>
+          Click & drag to rotate &middot; Scroll to zoom
+        </div>
+      )}
+
+      <div style={{ width: "100%", height: "100%" }}>
+        {viewMode === "local" ? (
+          <Canvas camera={{ position: [0, 20, 40], fov: 45 }}>
+            <color attach="background" args={["#06070a"]} />
+            <ambientLight intensity={0.05} />
+            <directionalLight position={[-50, 0, 0]} intensity={3} color="#fffcf2" />
+            <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
+            <OrbitControls enablePan={false} maxDistance={80} minDistance={15} target={[5, 0, 0]} />
+            <Earth />
+            <mesh position={[15, 0, 0]}>
+              <sphereGeometry args={[0.3, 16, 16]} />
+              <meshBasicMaterial color="#8b7355" />
+            </mesh>
+            <Line points={[[-20, 0, 0], [25, 0, 0]]} color="#ffffff" lineWidth={1} dashed={true} dashSize={1} dashScale={0.5} dashOffset={0} transparent opacity={0.15} />
+            <HaloOrbit />
+            <JwstMarker />
+          </Canvas>
+        ) : (
+          <iframe 
+            src="https://eyes.nasa.gov/apps/solar-system/#/sc_jwst?search=false&shareButton=false&menu=false&collapseSettingsOptions=true" 
+            title="NASA Eyes JWST"
+            style={{ width: "100%", height: "100%", border: "none" }}
+            allowFullScreen
+          />
+        )}
       </div>
-
-      <Canvas camera={{ position: [0, 20, 40], fov: 45 }}>
-        <color attach="background" args={["#06070a"]} />
-        <ambientLight intensity={0.05} />
-        {/* Sun comes from left (negative X) */}
-        <directionalLight position={[-50, 0, 0]} intensity={3} color="#fffcf2" />
-        
-        <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
-        
-        <OrbitControls 
-          enablePan={false} 
-          maxDistance={80} 
-          minDistance={15}
-          target={[5, 0, 0]} 
-        />
-
-        <Earth />
-        
-        {/* L2 Point */}
-        <mesh position={[15, 0, 0]}>
-          <sphereGeometry args={[0.3, 16, 16]} />
-          <meshBasicMaterial color="#8b7355" />
-        </mesh>
-
-        {/* Sun to L2 dashed line */}
-        <Line
-          points={[[-20, 0, 0], [25, 0, 0]]}
-          color="#ffffff"
-          lineWidth={1}
-          dashed={true}
-          dashSize={1}
-          dashScale={0.5}
-          dashOffset={0}
-          transparent
-          opacity={0.15}
-        />
-
-        <HaloOrbit />
-        <JwstMarker />
-      </Canvas>
     </div>
   );
 }

@@ -4749,12 +4749,15 @@
       "speed_label": "Current Speed (model)",
       "speed_note": "Computed from the vis-viva equation for the current orbit position",
       "speedUnit": "km/h",
-      "daysLeft": "{{days}} days left",
+      "daysLeft": "in {{days}} days",
       "legend_sun": "Sun",
       "legend_venus": "Venus's orbit",
       "legend_earth": "Earth's orbit",
       "legend_parker": "Parker's orbit",
-      "diagramNote": "An illustrative orbit model: distances are shown to scale (perihelion ≈8.8 solar radii, aphelion near Venus's orbit, eccentricity ≈0.89); Sun and planet marker sizes are exaggerated for visibility. The speed shown is computed from the vis-viva equation for the marker's current position — not live spacecraft telemetry."
+      "diagramNote": "An illustrative orbit model: distances are shown to scale (perihelion ≈8.8 solar radii, aphelion near Venus's orbit, eccentricity ≈0.89); Sun and planet marker sizes are exaggerated for visibility. The speed shown is computed from the vis-viva equation for the marker's current position — not live spacecraft telemetry.",
+      "telemetry_note": "Live telemetry is streamed in real-time via NASA JPL Horizons API",
+      "view_local": "3D Model",
+      "view_nasa": "NASA Eyes"
     },
     "timeline": {
       "eyebrow": "Seven Years and Counting",
@@ -4819,6 +4822,24 @@
       "g6_tag": "August 12, 2018, 03:31 EDT",
       "g6_title": "Liftoff from Cape Canaveral",
       "g6_body": "The Delta IV Heavy sends Parker Solar Probe on its trajectory toward Venus — the start of a seven-year journey to the Sun."
+    },
+    "telemetry": {
+      "title": "Live Telemetry",
+      "speed_sun": "Speed (rel. to Sun)",
+      "dist_sun": "Distance to Sun",
+      "dist_earth": "Distance to Earth",
+      "kms": "km/s",
+      "mln_km": "mln km",
+      "loading": "Contacting JPL Horizons...",
+      "error": "Failed to fetch JPL Horizons data."
+    },
+    "tracker": {
+      "title": "Perihelion Tracker",
+      "approaching": "Approaching the Sun",
+      "receding": "Receding from the Sun",
+      "perihelion": "At Perihelion",
+      "next_perihelion": "Next Perihelion:",
+      "orbit": "Orbit #"
     }
   }
 }

@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next";
 import { useSeo } from "../hooks/useSeo";
 import SectionHead from "../components/primitives/SectionHead";
 import FeatureRow from "../components/primitives/FeatureRow";
+import MissionTimeline from "../components/parker/MissionTimeline";
 import "../styles/telescope3d.css";
+
 
 const ParkerHeroPreview = lazy(() => import("./ParkerHeroPreview"));
 const ParkerFullscreen = lazy(() => import("./ParkerFullscreen"));
@@ -94,14 +96,11 @@ export default function Parker() {
         </div>
       </section>
 
+
       <section className="section" id="timeline" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <SectionHead eyebrow={t("parker.timeline.eyebrow")} title={t("parker.timeline.title")} />
-          {TIMELINE.map((k) => (
-            <FeatureRow key={k} tag={t(`parker.timeline.${k}_tag`)} title={t(`parker.timeline.${k}_title`)} num={t(`parker.timeline.${k}_num`)}>
-              {t(`parker.timeline.${k}_body`)}
-            </FeatureRow>
-          ))}
+          <MissionTimeline events={TIMELINE} />
         </div>
       </section>
 

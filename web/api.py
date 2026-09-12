@@ -593,3 +593,19 @@ async def push_unsubscribe(payload: PushUnsubscribePayload):
         logger.error("Push unsubscribe failed: %s", exc)
         return JSONResponse({"ok": False, "error": "delete_failed"}, status_code=500)
     return {"ok": True}
+@router.get('/parker/live')
+async def parker_live():
+    from services.parker import get_parker_telemetry
+    from fastapi import HTTPException
+    import asyncio
+    try:
+        # get_parker_telemetry uses get_or_fetch which calls sync requests, 
+        # so we wrap in to_thread to avoid blocking the event loop on cache miss
+        res = await asyncio.to_thread(get_parker_telemetry)
+        if not res:
+            raise HTTPException(status_code=503, detail='Parker telemetry unavailable')
+        return res
+    except Exception as e:
+        logger.error(f'Error fetching parker telemetry: {e}')
+        raise HTTPException(status_code=500, detail='Internal server error')
+

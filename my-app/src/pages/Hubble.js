@@ -15,6 +15,7 @@ import { useApi } from "../hooks/useApi";
 import { getMastHubbleJwst } from "../lib/api";
 import RecentlyObserved from "../components/hubble/RecentlyObserved";
 import AltitudeDecayChart from "../components/hubble/AltitudeDecayChart";
+import HubbleOrbitDiagram from "./HubbleOrbitDiagram";
 
 // three.js/@react-three/fiber/drei are heavy — lazy-load so the base page
 // bundle stays light (same reasoning as Iss.js's IssStationHeroPreview).
@@ -130,6 +131,14 @@ export default function Hubble() {
           <SectionHead eyebrow={t("hubble.recentlyObserved.eyebrow")} title={t("hubble.recentlyObserved.title")} />
           <p className="section-sub">{t("hubble.recentlyObserved.sub")}</p>
           <RecentlyObserved />
+        </div>
+      </section>
+
+      <section className="section" id="orbit" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("hubble.orbit.eyebrow") || "Орбітальна траєкторія"} title={t("hubble.orbit.title") || "Низька навколоземна орбіта"} />
+          <p className="section-sub">{t("hubble.orbit.sub") || "Габбл обертається навколо Землі на висоті приблизно 535 км. Така висота дозволяє йому уникати впливу земної атмосфери, забезпечуючи кришталево чисті знімки."}</p>
+          <HubbleOrbitDiagram />
         </div>
       </section>
 

@@ -12,6 +12,7 @@ import SectionHead from "../components/primitives/SectionHead";
 import Eyebrow from "../components/primitives/Eyebrow";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import RomanCountdown from "../components/RomanCountdown";
+import RomanL2Orbit from "./RomanL2Orbit";
 
 // three.js/@react-three/fiber/drei are heavy — lazy-load so the base page
 // bundle stays light (same reasoning as Hubble.js/Jwst.js).
@@ -105,6 +106,14 @@ export default function Roman() {
         </div>
       </section>
 
+      <section className="section" id="orbit" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("roman.orbit.eyebrow") || "Орбітальна траєкторія"} title={t("roman.orbit.title") || "Точка Лагранжа L2"} />
+          <p className="section-sub">{t("roman.orbit.sub") || "Nancy Grace Roman буде розташований на гало-орбіті навколо другої точки Лагранжа (L2), на відстані 1.5 млн км від Землі."}</p>
+          <RomanL2Orbit />
+        </div>
+      </section>
+
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <SectionHead eyebrow={t("roman.s1.eyebrow")} title={t("roman.s1.title")} />
@@ -182,6 +191,14 @@ export default function Roman() {
         </div>
       </section>
 
+      <section className="section" id="orbit" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("roman.orbit.eyebrow") || "Орбітальна траєкторія"} title={t("roman.orbit.title") || "Точка Лагранжа L2"} />
+          <p className="section-sub">{t("roman.orbit.sub") || "Nancy Grace Roman буде розташований на гало-орбіті навколо другої точки Лагранжа (L2), на відстані 1.5 млн км від Землі."}</p>
+          <RomanL2Orbit />
+        </div>
+      </section>
+
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <SectionHead eyebrow={t("roman.science.eyebrow")} title={t("roman.science.title")} />
@@ -194,6 +211,14 @@ export default function Roman() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="section" id="orbit" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("roman.orbit.eyebrow") || "Орбітальна траєкторія"} title={t("roman.orbit.title") || "Точка Лагранжа L2"} />
+          <p className="section-sub">{t("roman.orbit.sub") || "Nancy Grace Roman буде розташований на гало-орбіті навколо другої точки Лагранжа (L2), на відстані 1.5 млн км від Землі."}</p>
+          <RomanL2Orbit />
         </div>
       </section>
 
