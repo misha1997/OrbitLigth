@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import SatMap from "./SatMap";
+import SatDetailPanel from "./SatDetailPanel";
 import "../styles/constellations.css";
 
 export default function SatMapFullscreen({ active, groups, toggle, count, lang, onClose }) {
@@ -21,7 +22,12 @@ export default function SatMapFullscreen({ active, groups, toggle, count, lang, 
 
   // Use a default limit for fullscreen (can be larger, e.g. 1000)
   const [fsCount, setFsCount] = useState(null);
+  const [selected, setSelected] = useState(null);
   const countTxt = fsCount == null ? t("satellites.loading") : t("satellites.onMap", { n: fsCount });
+  const closeSelection = () => {
+    if (mapRef.current) mapRef.current.clearSelection();
+    setSelected(null);
+  };
 
   // Get only the active keys for the initial load
   const activeKeys = Object.keys(active).filter(k => active[k]);
@@ -38,7 +44,9 @@ export default function SatMapFullscreen({ active, groups, toggle, count, lang, 
       <div className="sat-map-fs-body" style={{ flex: 1, position: 'relative' }}>
         <SatMap ref={mapRef} groups={activeKeys} limit={1000} lang={lang}
                 onReady={(n) => setFsCount(n)}
-                onCount={(n) => setFsCount(n)} />
+                onCount={(n) => setFsCount(n)}
+                onSelect={setSelected} />
+        <SatDetailPanel data={selected} onClose={closeSelection} />
       </div>
       
       <div className="sat-controls" style={{ background: '#0a0c14', padding: '16px', borderTop: '1px solid var(--border)', zIndex: 10 }}>

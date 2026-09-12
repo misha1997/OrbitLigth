@@ -36,7 +36,8 @@ from .planet_pages import (
 from .galaxies import get_galaxies, get_galaxy_api
 from .alerts import get_grb, get_gw, get_sentry, get_reentries, get_flares
 from .comets_exoplanets import get_comets, get_exoplanets
-from .mast import get_mast_lightcurve, get_mast_hubble_jwst
+from .mast import get_mast_lightcurve, get_mast_hubble_jwst, get_mast_hst_recent
+from .hubble import get_hubble_decay
 from .history import get_history_today
 from .missions import get_mission_previews_api
 
@@ -63,7 +64,8 @@ __all__ = [
     "get_galaxies", "get_galaxy_api",
     "get_grb", "get_gw", "get_sentry", "get_reentries", "get_flares",
     "get_comets", "get_exoplanets",
-    "get_mast_lightcurve", "get_mast_hubble_jwst",
+    "get_mast_lightcurve", "get_mast_hubble_jwst", "get_mast_hst_recent",
+    "get_hubble_decay",
     "get_history_today",
     "get_mission_previews_api",
 ]

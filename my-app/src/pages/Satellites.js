@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useLang } from "../context/LanguageContext";
 import SatMap from "../components/SatMap";
 import SatMapFullscreen from "../components/SatMapFullscreen";
+import SatDetailPanel from "../components/SatDetailPanel";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import SectionHead from "../components/primitives/SectionHead";
 import { useApi } from "../hooks/useApi";
@@ -70,6 +71,12 @@ export default function Satellites() {
   );
   const [count, setCount] = useState(null);
   const [showFs, setShowFs] = useState(false);
+  const [selected, setSelected] = useState(null);
+
+  const closeSelection = () => {
+    if (mapRef.current) mapRef.current.clearSelection();
+    setSelected(null);
+  };
 
   const toggle = (g) => {
     const map = mapRef.current;
@@ -133,7 +140,9 @@ export default function Satellites() {
               </button>
               <SatMap ref={mapRef} groups={DEFAULTS} limit={400} lang={lang}
                 onReady={(n) => setCount(n)}
-                onCount={(n) => setCount(n)} />
+                onCount={(n) => setCount(n)}
+                onSelect={setSelected} />
+              <SatDetailPanel data={selected} onClose={closeSelection} />
             </div>
           </div>
           <p className="section-sub" style={{ marginTop: 14 }}>{t("satellites.s1_sub")}</p>

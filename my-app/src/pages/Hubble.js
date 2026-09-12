@@ -13,6 +13,8 @@ import FeatureRow from "../components/primitives/FeatureRow";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import { useApi } from "../hooks/useApi";
 import { getMastHubbleJwst } from "../lib/api";
+import RecentlyObserved from "../components/hubble/RecentlyObserved";
+import AltitudeDecayChart from "../components/hubble/AltitudeDecayChart";
 
 // three.js/@react-three/fiber/drei are heavy — lazy-load so the base page
 // bundle stays light (same reasoning as Iss.js's IssStationHeroPreview).
@@ -120,6 +122,14 @@ export default function Hubble() {
               <div className="foot">{t("hubble.card.observationsFoot")}</div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("hubble.recentlyObserved.eyebrow")} title={t("hubble.recentlyObserved.title")} />
+          <p className="section-sub">{t("hubble.recentlyObserved.sub")}</p>
+          <RecentlyObserved />
         </div>
       </section>
 
@@ -264,6 +274,12 @@ export default function Hubble() {
               <div className="k">{t("hubble.future.proposalTitle")}</div>
               <div style={{ marginTop: 10, fontSize: "13.5px", color: "var(--text-dim)", lineHeight: 1.7 }}>{t("hubble.future.proposalBody")}</div>
             </div>
+          </div>
+
+          <div style={{ marginTop: 20 }}>
+            <SectionHead eyebrow={t("hubble.future.decayChart.eyebrow")} title={t("hubble.future.decayChart.title")} />
+            <p className="section-sub">{t("hubble.future.decayChart.sub")}</p>
+            <AltitudeDecayChart />
           </div>
         </div>
       </section>

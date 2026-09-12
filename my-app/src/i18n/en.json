@@ -293,6 +293,34 @@
       "velocity": "Velocity",
       "subpoint": "Subpoint",
       "updated": "Updated"
+    },
+    "panel": {
+      "close": "Close",
+      "category": "Category",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "altitude": "Altitude",
+      "speed": "Speed",
+      "inclination": "Inclination",
+      "eccentricity": "Eccentricity",
+      "apogee": "Apogee",
+      "perigee": "Perigee",
+      "period": "Orbit period",
+      "completesIn": "Orbit completes in",
+      "intlDesignator": "Intl. designator",
+      "yearsInOrbit": "Years in orbit",
+      "unknown": "unknown",
+      "eclipseShadowed": "Currently in Earth's shadow",
+      "eclipseSunlit": "Currently sunlit",
+      "entersSunlightIn": "sunlight in {{time}}",
+      "entersShadowIn": "shadow in {{time}}",
+      "updated": "Updated {{time}}",
+      "orbitClass": {
+        "LEO": "Low Earth orbit (LEO)",
+        "MEO": "Medium Earth orbit (MEO)",
+        "GEO": "Geostationary (GEO)",
+        "HEO": "Highly elliptical (HEO)"
+      }
     }
   },
   "sky": {
@@ -804,7 +832,10 @@
       "open3d": "3D model",
       "open3dLabel": "Open the fullscreen 3D model of the telescope"
     },
-    "s1": { "eyebrow": "The telescope in numbers", "title": "Hubble in orbit" },
+    "s1": {
+      "eyebrow": "The telescope in numbers",
+      "title": "Hubble in orbit"
+    },
     "card": {
       "launch": "Launched",
       "launchValue": "Apr 24, 1990",
@@ -817,6 +848,16 @@
       "observations": "Observations",
       "observationsUnit": "M",
       "observationsFoot": "Data used in 21,000+ scientific papers"
+    },
+    "recentlyObserved": {
+      "eyebrow": "MAST archive",
+      "title": "What Hubble recently observed",
+      "sub": "The most recent published science image from the MAST archive — delayed by hours to a few days for processing, not a live feed of the current target.",
+      "loading": "Loading…",
+      "empty": "Data temporarily unavailable.",
+      "targetLabel": "Observed target",
+      "viewOnMast": "View on MAST →",
+      "disclaimer": "Data from the MAST science archive · not a live feed of the current target"
     },
     "gallery": {
       "eyebrow": "MAST archive",
@@ -953,7 +994,26 @@
       "decayTitle": "Orbital decay",
       "decayBody": "Atmospheric drag is gradually lowering the telescope's orbit. Without a boost, an uncontrolled natural reentry is projected for sometime in the 2030s.",
       "proposalTitle": "Mission-extension proposals",
-      "proposalBody": "In 2022, NASA and SpaceX studied a private mission to raise Hubble's orbit — a commercial flight that could extend the telescope's operation for years."
+      "proposalBody": "In 2022, NASA and SpaceX studied a private mission to raise Hubble's orbit — a commercial flight that could extend the telescope's operation for years.",
+      "decayChart": {
+        "eyebrow": "Live orbital altitude",
+        "title": "Hubble is falling: altitude over time",
+        "sub": "Historical figures after each servicing mission, today's altitude from live TLE data (Celestrak), and an illustrative projected decline.",
+        "loading": "Loading orbit data…",
+        "empty": "Data temporarily unavailable.",
+        "currentAltitudeLabel": "Current altitude",
+        "currentAltitudeNote": "live, from Celestrak TLE",
+        "reentryLabel": "Estimated re-entry window",
+        "reentryRange": "{{start}}–{{end}}",
+        "reentryNote": "Without a reboost · depends on solar activity · estimate by J. McDowell, Feb 2026",
+        "chartHistorical": "Historical altitude",
+        "chartProjected": "Projected decline",
+        "chartLaunchAlt": "Launch altitude (1990)",
+        "axisYear": "Year",
+        "axisAltitude": "Altitude, km",
+        "disclaimer": "An illustrative model built from public TLE data and documented altitudes after each servicing mission — not an official NASA forecast.",
+        "sources": "Sources: "
+      }
     },
     "station3d": {
       "title": "Hubble 3D Model",
@@ -983,7 +1043,10 @@
       "open3d": "3D model",
       "open3dLabel": "Open the fullscreen 3D model of the telescope"
     },
-    "s1": { "eyebrow": "The telescope in numbers", "title": "JWST at L2" },
+    "s1": {
+      "eyebrow": "The telescope in numbers",
+      "title": "JWST at L2"
+    },
     "card": {
       "launch": "Launched",
       "launchValue": "Dec 25, 2021",
@@ -1169,7 +1232,10 @@
       "padValue": "LC-39A, Kennedy Space Center",
       "note": "Date is a no-earlier-than target — weather or technical issues could still slip it. After launch this video becomes the recorded broadcast."
     },
-    "s1": { "eyebrow": "The telescope by the numbers", "title": "Roman on its way to L2" },
+    "s1": {
+      "eyebrow": "The telescope by the numbers",
+      "title": "Roman on its way to L2"
+    },
     "iconic": {
       "eyebrow": "Build and launch prep",
       "title": "The road to launch",
@@ -2316,7 +2382,32 @@
       "kepler": "Kepler",
       "spitzer": "Spitzer",
       "pioneer10": "Pioneer 10",
-      "pioneer11": "Pioneer 11"
+      "pioneer11": "Pioneer 11",
+      "galileo": "Galileo",
+      "curiosity": "Curiosity",
+      "rosetta": "Rosetta",
+      "dawn": "Dawn",
+      "messenger": "MESSENGER",
+      "magellan": "Magellan",
+      "bepicolombo": "BepiColombo",
+      "hayabusa2": "Hayabusa2",
+      "swift": "Swift",
+      "euclid": "Euclid",
+      "soho": "SOHO",
+      "sdo": "SDO",
+      "fermi": "Fermi",
+      "planck": "Planck",
+      "wmap": "WMAP",
+      "wise": "WISE / NEOWISE",
+      "opportunity": "Opportunity",
+      "spirit": "Spirit",
+      "viking": "Viking 1 & 2",
+      "huygens": "Huygens",
+      "lro": "LRO",
+      "akatsuki": "Akatsuki",
+      "giotto": "Giotto",
+      "change4": "Chang'e 4",
+      "change6": "Chang'e 6"
     },
     "blurbs": {
       "voyager": "Twin probes launched in 1977, now the only human-made objects in interstellar space and still phoning home after nearly five decades.",
@@ -2336,7 +2427,32 @@
       "kepler": "Found thousands of exoplanets by watching stars dim as planets crossed in front of them, before running out of fuel in 2018.",
       "spitzer": "An infrared observatory that studied everything from asteroids to distant galaxies for over 16 years.",
       "pioneer10": "The first spacecraft to cross the asteroid belt and fly past Jupiter; last heard from in 2003.",
-      "pioneer11": "Followed Pioneer 10 past Jupiter and went on to fly by Saturn; contact was lost in 1995."
+      "pioneer11": "Followed Pioneer 10 past Jupiter and went on to fly by Saturn; contact was lost in 1995.",
+      "galileo": "The first spacecraft to orbit Jupiter and study its moons in detail.",
+      "curiosity": "NASA rover exploring Gale Crater since 2012 for past habitable conditions.",
+      "rosetta": "ESA mission that became the first to orbit and land a probe on a comet.",
+      "dawn": "The first spacecraft to orbit two extraterrestrial bodies: Vesta and Ceres.",
+      "messenger": "The first probe to orbit Mercury and map its entire surface.",
+      "magellan": "NASA mission that performed the first global radar mapping of Venus.",
+      "bepicolombo": "A joint European-Japanese mission for comprehensive study of Mercury.",
+      "hayabusa2": "Japanese mission that successfully returned samples from asteroid Ryugu.",
+      "swift": "NASA space observatory dedicated to the study of gamma-ray bursts, active since 2004.",
+      "euclid": "ESA space telescope designed to explore the evolution of the dark Universe.",
+      "soho": "Joint ESA/NASA mission that provides near-continuous observations of the Sun.",
+      "sdo": "Solar Dynamics Observatory capturing ultra-high definition images of the Sun every few seconds.",
+      "fermi": "Gamma-ray space observatory studying the most extreme phenomena in the universe.",
+      "planck": "ESA mission that mapped the anisotropies of the cosmic microwave background at high resolution.",
+      "wmap": "NASA probe that precisely measured the age of the universe via the cosmic microwave background.",
+      "wise": "Infrared-wavelength astronomical space telescope that discovered thousands of minor planets.",
+      "opportunity": "Legendary Mars rover that operated for nearly 15 years, vastly exceeding its 90-day planned lifetime.",
+      "spirit": "Twin rover to Opportunity that found evidence of ancient hydrothermal environments on Mars.",
+      "viking": "The first NASA spacecraft to successfully land on Mars and return high-resolution images.",
+      "huygens": "ESA lander that successfully touched down on Saturn's moon Titan in 2005.",
+      "lro": "Lunar Reconnaissance Orbiter mapping the Moon's surface in high resolution since 2009.",
+      "akatsuki": "Japanese Venus climate orbiter studying the planet's atmospheric dynamics and weather.",
+      "giotto": "ESA's first deep space mission, famous for its close flyby of Halley's Comet.",
+      "change4": "Chinese mission that achieved the first soft landing on the far side of the Moon.",
+      "change6": "Historic mission that returned the first-ever lunar samples from the far side of the Moon."
     }
   },
   "planetarium": {
@@ -4124,9 +4240,21 @@
       "eyebrow": "The most spectacular in the system",
       "title": "What the rings are made of",
       "sub": "Saturn's rings stretch from ~7,000 to ~80,000 km above the cloud tops, yet are mostly less than a kilometer thick — if Saturn were shrunk to the size of a football, the rings would be thinner than a sheet of paper.",
-      "c1": { "title": "Composition", "val": "~99% water ice", "foot": "Plus traces of rock and dust" },
-      "c2": { "title": "Thickness", "val": "10 m – 1 km", "foot": "Across a diameter of over 270,000 km" },
-      "c3": { "title": "Origin", "val": "unresolved", "foot": "Debris from a shattered moon, or primordial material — debate continues" },
+      "c1": {
+        "title": "Composition",
+        "val": "~99% water ice",
+        "foot": "Plus traces of rock and dust"
+      },
+      "c2": {
+        "title": "Thickness",
+        "val": "10 m – 1 km",
+        "foot": "Across a diameter of over 270,000 km"
+      },
+      "c3": {
+        "title": "Origin",
+        "val": "unresolved",
+        "foot": "Debris from a shattered moon, or primordial material — debate continues"
+      },
       "planetaryRing": "Planetary ring",
       "radiusLabel": "Orbital radius",
       "widthLabel": "Ring width",
@@ -4180,14 +4308,46 @@
       "title_block": "Saturn's moons",
       "sub_block": "From the dense ice ball Mimas to the atmosphere-wrapped Titan — eight moons that shaped how we picture Saturn's system.",
       "note": "Titan is the only moon in the Solar System with a dense atmosphere (1.45× denser than Earth's), with lakes and seas of liquid methane and ethane on its surface",
-      "mimas": { "name": "Mimas", "tag": "0.9 days · orbit", "desc": "The huge Herschel crater makes it look like the 'Death Star' — nearly a third of the moon's own diameter." },
-      "enceladus": { "name": "Enceladus", "tag": "1.4 days · orbit", "desc": "Icy geysers at the south pole spray water vapor from a subsurface ocean — directly feeding Saturn's E ring." },
-      "tethys": { "name": "Tethys", "tag": "1.9 days · orbit", "desc": "An icy moon scarred by the giant Ithaca Chasma canyon, which runs three-quarters of the way around it." },
-      "dione": { "name": "Dione", "tag": "2.7 days · orbit", "desc": "'Wispy terrain' on its trailing hemisphere creates bright streaks visible from a distance." },
-      "rhea": { "name": "Rhea", "tag": "4.5 days · orbit", "desc": "Saturn's second-largest moon, heavily cratered — it may even have a faint dust ring of its own." },
-      "titan": { "name": "Titan", "tag": "15.9 days · orbit", "desc": "The only moon with a dense atmosphere — with lakes and seas of liquid methane and ethane on its surface." },
-      "hyperion": { "name": "Hyperion", "tag": "21.3 days · orbit", "desc": "A porous, 'sponge-like' shape and chaotic, unpredictable rotation — unique among the large moons." },
-      "iapetus": { "name": "Iapetus", "tag": "79.3 days · orbit", "desc": "A two-toned moon — one hemisphere dark as coal, the other bright as snow. The cause is still not fully settled." }
+      "mimas": {
+        "name": "Mimas",
+        "tag": "0.9 days · orbit",
+        "desc": "The huge Herschel crater makes it look like the 'Death Star' — nearly a third of the moon's own diameter."
+      },
+      "enceladus": {
+        "name": "Enceladus",
+        "tag": "1.4 days · orbit",
+        "desc": "Icy geysers at the south pole spray water vapor from a subsurface ocean — directly feeding Saturn's E ring."
+      },
+      "tethys": {
+        "name": "Tethys",
+        "tag": "1.9 days · orbit",
+        "desc": "An icy moon scarred by the giant Ithaca Chasma canyon, which runs three-quarters of the way around it."
+      },
+      "dione": {
+        "name": "Dione",
+        "tag": "2.7 days · orbit",
+        "desc": "'Wispy terrain' on its trailing hemisphere creates bright streaks visible from a distance."
+      },
+      "rhea": {
+        "name": "Rhea",
+        "tag": "4.5 days · orbit",
+        "desc": "Saturn's second-largest moon, heavily cratered — it may even have a faint dust ring of its own."
+      },
+      "titan": {
+        "name": "Titan",
+        "tag": "15.9 days · orbit",
+        "desc": "The only moon with a dense atmosphere — with lakes and seas of liquid methane and ethane on its surface."
+      },
+      "hyperion": {
+        "name": "Hyperion",
+        "tag": "21.3 days · orbit",
+        "desc": "A porous, 'sponge-like' shape and chaotic, unpredictable rotation — unique among the large moons."
+      },
+      "iapetus": {
+        "name": "Iapetus",
+        "tag": "79.3 days · orbit",
+        "desc": "A two-toned moon — one hemisphere dark as coal, the other bright as snow. The cause is still not fully settled."
+      }
     },
     "system": {
       "title": "The full system of Saturn's moons",
@@ -4231,9 +4391,21 @@
     "magnetic": {
       "eyebrow": "A puzzle for dynamo theory",
       "title": "Saturn's magnetic field",
-      "c1": { "title": "Axial alignment", "val": "< 0.01° tilt", "foot": "The only planet with an almost perfectly axisymmetric field — a puzzle for dynamo theory" },
-      "c2": { "title": "Field strength", "val": "578× stronger than Earth's", "foot": "Much weaker than Jupiter's, but stronger than Earth's" },
-      "c3": { "title": "Magnetosphere", "val": "20+ Saturn radii", "foot": "Shaped by interaction with the rings and Titan" }
+      "c1": {
+        "title": "Axial alignment",
+        "val": "< 0.01° tilt",
+        "foot": "The only planet with an almost perfectly axisymmetric field — a puzzle for dynamo theory"
+      },
+      "c2": {
+        "title": "Field strength",
+        "val": "578× stronger than Earth's",
+        "foot": "Much weaker than Jupiter's, but stronger than Earth's"
+      },
+      "c3": {
+        "title": "Magnetosphere",
+        "val": "20+ Saturn radii",
+        "foot": "Shaped by interaction with the rings and Titan"
+      }
     },
     "missions": {
       "eyebrow": "Who has explored and who is exploring",
@@ -4261,9 +4433,21 @@
     "facts": {
       "eyebrow": "Fun facts",
       "title": "Saturn's records",
-      "c1": { "title": "Least dense planet", "val": "would float", "foot": "The only planet in the Solar System lighter than water" },
-      "c2": { "title": "Most moons", "val": "146+", "foot": "Overtook Jupiter after the 2023 discoveries" },
-      "c3": { "title": "Titan's weather cycle", "val": "Earth-like", "foot": "The only other body in the Solar System with stable surface liquids" }
+      "c1": {
+        "title": "Least dense planet",
+        "val": "would float",
+        "foot": "The only planet in the Solar System lighter than water"
+      },
+      "c2": {
+        "title": "Most moons",
+        "val": "146+",
+        "foot": "Overtook Jupiter after the 2023 discoveries"
+      },
+      "c3": {
+        "title": "Titan's weather cycle",
+        "val": "Earth-like",
+        "foot": "The only other body in the Solar System with stable surface liquids"
+      }
     },
     "tooltip": {
       "group": "Group:",
@@ -4285,7 +4469,10 @@
       "sub": "A light-pollution map and a plain verdict — is tonight worth taking the telescope out, for your saved location.",
       "map": "To the map →"
     },
-    "legend": { "title": "Legend", "hint": "Click anywhere on the map to see how light pollution there has changed over time" },
+    "legend": {
+      "title": "Legend",
+      "hint": "Click anywhere on the map to see how light pollution there has changed over time"
+    },
     "fullscreen": "Fullscreen",
     "fullscreenHint": "Open the fullscreen map — pan, zoom, and click anywhere to read that point's light-pollution history",
     "close": "Close",
@@ -4478,15 +4665,42 @@
     "notificationsHint": "Changes here apply instantly in the Telegram bot too — one set of subscriptions for the site and the bot.",
     "notificationsLockedHint": "Connect Telegram to manage bot notifications.",
     "rows": {
-      "iss": { "title": "ISS", "desc": "Reminder 10 min before a visible pass over your city" },
-      "launches": { "title": "Launches", "desc": "24h, 2h and 30 min before liftoff" },
-      "neo": { "title": "NEO (asteroids)", "desc": "Alert on a potentially hazardous asteroid" },
-      "apod": { "title": "APOD", "desc": "Astronomy Picture of the Day at 09:00" },
-      "news": { "title": "News", "desc": "Daily space news digest at 10:00" },
-      "meteors": { "title": "Meteors", "desc": "Reminder before a meteor shower peak" },
-      "flares": { "title": "Solar flares", "desc": "Alert on a major solar flare" },
-      "grb": { "title": "Gamma-ray bursts (GRB)", "desc": "Alert on a detected gamma-ray burst" },
-      "gw": { "title": "Gravitational waves", "desc": "Alert on a confirmed LIGO/Virgo/KAGRA event" }
+      "iss": {
+        "title": "ISS",
+        "desc": "Reminder 10 min before a visible pass over your city"
+      },
+      "launches": {
+        "title": "Launches",
+        "desc": "24h, 2h and 30 min before liftoff"
+      },
+      "neo": {
+        "title": "NEO (asteroids)",
+        "desc": "Alert on a potentially hazardous asteroid"
+      },
+      "apod": {
+        "title": "APOD",
+        "desc": "Astronomy Picture of the Day at 09:00"
+      },
+      "news": {
+        "title": "News",
+        "desc": "Daily space news digest at 10:00"
+      },
+      "meteors": {
+        "title": "Meteors",
+        "desc": "Reminder before a meteor shower peak"
+      },
+      "flares": {
+        "title": "Solar flares",
+        "desc": "Alert on a major solar flare"
+      },
+      "grb": {
+        "title": "Gamma-ray bursts (GRB)",
+        "desc": "Alert on a detected gamma-ray burst"
+      },
+      "gw": {
+        "title": "Gravitational waves",
+        "desc": "Alert on a confirmed LIGO/Virgo/KAGRA event"
+      }
     },
     "dangerEyebrow": "Careful",
     "dangerTitle": "Danger zone",

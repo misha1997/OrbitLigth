@@ -1,19 +1,23 @@
 // Live satellite map — Leaflet + satellite.js (TLE propagation in the
 // browser). Port of site/assets/sat-map.js. The browser propagates each
 // satellite's TLE itself every second, so markers move in real time with no
-// per-frame API calls. Click a marker for a popup (name, NORAD id, altitude,
-// velocity, subpoint).
+// per-frame API calls. Click a marker to select it — the parent renders a
+// SatDetailPanel from the `onSelect` payload (name, NORAD id, live position,
+// TLE-derived orbital elements, eclipse status; see lib/satOrbit.js).
 //
 // Imperative by design: Leaflet mutates the DOM directly, so the map is built
 // once in a mount effect and exposed to the parent through a ref handle
-// (addGroup/removeGroup/setFollow/redrawTrack + the live `sats` array). This
-// faithfully reproduces the legacy NEOwatch.SatMap.create() API.
+// (addGroup/removeGroup/setFollow/redrawTrack/clearSelection + the live
+// `sats` array). This faithfully reproduces the legacy NEOwatch.SatMap.create()
+// API, extended with selection.
 import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import L from "leaflet";
 import * as satellite from "satellite.js";
-import i18next from "../i18n";
 import { getTle, getTleGroups } from "../lib/api";
 import { CARTO_KEY } from "../lib/constants";
+import { orbitalElements, orbitClass, parseIntlDesignator, yearsInOrbit, orbitProgress, nextEclipseChange } from "../lib/satOrbit";
+
+const ECLIPSE_REFRESH_MS = 20000;
 
 const TILE_URL = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${CARTO_KEY}`;
 const TILE_ATTR = "© OpenStreetMap © CARTO · TLE: Celestrak";
@@ -34,28 +38,49 @@ function propagate(satrec, date) {
   };
 }
 
-function fmtLatLon(lat, lon) {
-  return (
-    Math.abs(lat).toFixed(2) + "°" + (lat >= 0 ? i18next.t("common.compass.N") : i18next.t("common.compass.S")) + " · " +
-    Math.abs(lon).toFixed(2) + "°" + (lon >= 0 ? i18next.t("common.compass.E") : i18next.t("common.compass.W"))
-  );
+// Static (TLE-derived, don't change tick-to-tick) info for the selected-sat
+// detail panel — computed once per selection and cached on the sat entry.
+function computeStaticInfo(sat) {
+  if (sat._static) return sat._static;
+  const elems = orbitalElements(sat.satrec);
+  const desig = parseIntlDesignator(sat.tle1);
+  sat._static = {
+    ...elems,
+    orbitClass: orbitClass(elems.meanAltKm),
+    intlDesignator: desig ? desig.text : null,
+    yearsInOrbit: desig ? yearsInOrbit(desig.year) : null,
+  };
+  return sat._static;
 }
 
-function popupHtml(sat, p) {
-  const row = (k, vv) =>
-    '<div style="display:flex;justify-content:space-between;gap:12px;font-size:12px;margin:2px 0">' +
-    '<span style="color:var(--text-dim)">' + k + '</span><span>' + vv + "</span></div>";
-  return (
-    '<div style="font-family:var(--font-mono,monospace);min-width:200px">' +
-    '<div style="color:' + sat.color + ';font-weight:600;margin-bottom:4px">' + sat.name + "</div>" +
-    '<div style="color:#000;font-size:11px;margin-bottom:8px">' +
-    sat.groupLabel + " · NORAD " + sat.norad + "</div>" +
-    row(i18next.t("sat.popup.altitude"), p.alt.toFixed(1) + " " + i18next.t("common.units.km")) +
-    row(i18next.t("sat.popup.velocity"), p.vel.toFixed(2) + " " + i18next.t("common.units.km_s")) +
-    row(i18next.t("sat.popup.subpoint"), fmtLatLon(p.lat, p.lon)) +
-    row(i18next.t("sat.popup.updated"), new Date().toLocaleTimeString(i18next.language === "en" ? "en-US" : "uk-UA")) +
-    "</div>"
-  );
+// Full panel payload for the selected satellite: static orbital elements +
+// this tick's live position, refreshing the (relatively expensive) eclipse
+// forecast only every ECLIPSE_REFRESH_MS rather than every 1s tick.
+function buildPanelData(sat, p, date) {
+  const staticInfo = computeStaticInfo(sat);
+  const progress = orbitProgress(sat.satrec, date);
+  let eclipse = sat._eclipse;
+  if (!eclipse || date.getTime() - eclipse.at >= ECLIPSE_REFRESH_MS) {
+    const next = nextEclipseChange(sat.satrec, date);
+    eclipse = { at: date.getTime(), ...(next || { shadowedNow: null, minutesToChange: null }) };
+    sat._eclipse = eclipse;
+  }
+  return {
+    name: sat.name,
+    norad: sat.norad,
+    group: sat.group,
+    groupLabel: sat.groupLabel,
+    color: sat.color,
+    lat: p.lat,
+    lon: p.lon,
+    alt: p.alt,
+    vel: p.vel,
+    ...staticInfo,
+    minutesToOrbitComplete: staticInfo.periodMin * (1 - progress),
+    eclipseShadowedNow: eclipse.shadowedNow,
+    eclipseMinutesToChange: eclipse.minutesToChange,
+    updatedAt: date,
+  };
 }
 
 function splitAntimeridian(pts) {
@@ -72,7 +97,7 @@ function splitAntimeridian(pts) {
 }
 
 const SatMap = forwardRef(function SatMap(
-  { groups = ["iss"], limit = 300, follow = false, track = false, lang, onReady, onCount, onTick },
+  { groups = ["iss"], limit = 300, follow = false, track = false, lang, onReady, onCount, onTick, onSelect },
   ref
 ) {
   const elRef = useRef(null);
@@ -86,9 +111,10 @@ const SatMap = forwardRef(function SatMap(
   const tickIdRef = useRef(null);
   const trackIdRef = useRef(null);
   const readyRef = useRef(false);
+  const selectedRef = useRef(null);
   // Latest callbacks/flags kept in refs so the mount effect sees fresh values.
-  const cbRef = useRef({ onReady, onCount, onTick, track });
-  cbRef.current = { onReady, onCount, onTick, track };
+  const cbRef = useRef({ onReady, onCount, onTick, onSelect, track });
+  cbRef.current = { onReady, onCount, onTick, onSelect, track };
   const methodsRef = useRef({});
 
   useImperativeHandle(ref, () => ({
@@ -98,6 +124,7 @@ const SatMap = forwardRef(function SatMap(
     setFollow: (v) => { followRef.current = !!v; },
     redrawTrack: () => methodsRef.current.redrawTrack && methodsRef.current.redrawTrack(),
     invalidateSize: () => methodsRef.current.invalidateSize && methodsRef.current.invalidateSize(),
+    clearSelection: () => methodsRef.current.clearSelection && methodsRef.current.clearSelection(),
   }), []);
 
   useEffect(() => {
@@ -126,6 +153,26 @@ const SatMap = forwardRef(function SatMap(
 
     function emitCount() {
       if (cbRef.current.onCount) cbRef.current.onCount(sats.length);
+    }
+
+    function markSelected(sat, on) {
+      const el = sat.marker && sat.marker.getElement && sat.marker.getElement();
+      if (el) el.classList.toggle("sat-selected-marker", on);
+    }
+
+    function selectSat(sat) {
+      if (selectedRef.current === sat) return;
+      if (selectedRef.current) markSelected(selectedRef.current, false);
+      selectedRef.current = sat;
+      markSelected(sat, true);
+      const p = sat._last || propagate(sat.satrec, new Date());
+      if (p && cbRef.current.onSelect) cbRef.current.onSelect(buildPanelData(sat, p, new Date()));
+    }
+
+    function clearSelection() {
+      if (selectedRef.current) markSelected(selectedRef.current, false);
+      selectedRef.current = null;
+      if (cbRef.current.onSelect) cbRef.current.onSelect(null);
     }
 
     function loadGroup(key) {
@@ -169,17 +216,12 @@ const SatMap = forwardRef(function SatMap(
             interactive: true,
           });
           marker.addTo(map);
-          marker.bindPopup("", { maxWidth: 280 });
-          marker.on("popupopen", (e) => {
-            const sat = e.target._neosat;
-            if (!sat) return;
-            const p = propagate(sat.satrec, new Date());
-            if (p) e.target.setPopupContent(popupHtml(sat, p));
-          });
-          sats.push({
-            satrec, name: it.name, norad: it.norad_id,
+          const satEntry = {
+            satrec, name: it.name, norad: it.norad_id, tle1: it.tle1,
             group: key, groupLabel: data.label, marker, color,
-          });
+          };
+          marker.on("click", () => { selectSat(satEntry); });
+          sats.push(satEntry);
         });
         if (!readyRef.current && sats.length) {
           readyRef.current = true;
@@ -223,7 +265,6 @@ const SatMap = forwardRef(function SatMap(
         const p = propagate(s.satrec, date);
         if (!p) continue;
         s.marker.setLatLng([p.lat, p.lon]);
-        s.marker._neosat = s;
         s._last = p;
         if (!firstMoved) firstMoved = s;
       }
@@ -233,6 +274,10 @@ const SatMap = forwardRef(function SatMap(
       if (cbRef.current.onTick && firstMoved) {
         cbRef.current.onTick(firstMoved._last, sats);
       }
+      const sel = selectedRef.current;
+      if (sel && sel._last && cbRef.current.onSelect) {
+        cbRef.current.onSelect(buildPanelData(sel, sel._last, date));
+      }
     }
 
     // Expose imperative methods to the parent (via the methodsRef the handle reads).
@@ -241,7 +286,11 @@ const SatMap = forwardRef(function SatMap(
       removeGroup: (key) => {
         if (!alive) return;
         for (let i = sats.length - 1; i >= 0; i--) {
-          if (sats[i].group === key) { map.removeLayer(sats[i].marker); sats.splice(i, 1); }
+          if (sats[i].group === key) {
+            if (selectedRef.current === sats[i]) clearSelection();
+            map.removeLayer(sats[i].marker);
+            sats.splice(i, 1);
+          }
         }
         emitCount();
       },
@@ -251,6 +300,7 @@ const SatMap = forwardRef(function SatMap(
           map.invalidateSize();
         }
       },
+      clearSelection,
     };
 
     // Kick off: load all requested groups, then animate.
@@ -272,6 +322,7 @@ const SatMap = forwardRef(function SatMap(
       mapRef.current = null;
       sats.length = 0;
       readyRef.current = false;
+      selectedRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

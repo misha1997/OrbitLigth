@@ -516,6 +516,19 @@ async def mast_hubble_jwst():
     return await data.get_mast_hubble_jwst()
 
 
+@router.get("/mast/hst-recent")
+async def mast_hst_recent():
+    """Most-recent public HST science image(s), sky-wide — "recently
+    observed", not a literal live feed (see MastService.get_hst_recent_observation)."""
+    return await data.get_mast_hst_recent()
+
+
+@router.get("/hubble/decay")
+async def hubble_decay():
+    """Hubble altitude history + live "now" point + illustrative re-entry projection."""
+    return await data.get_hubble_decay()
+
+
 # --- Web Push (VAPID) --------------------------------------------------
 # Anonymous browser subscriptions, not tied to a Telegram user — see
 # database.push_subscriptions and services/scheduler.py's push fan-out.

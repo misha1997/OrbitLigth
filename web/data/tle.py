@@ -42,6 +42,7 @@ class _TLEGroupSpec(TypedDict, total=False):
     catnr: int
     group: str
     file: str
+    internal: bool
 
 
 TLE_GROUPS: dict[str, _TLEGroupSpec] = {
@@ -68,6 +69,12 @@ TLE_GROUPS: dict[str, _TLEGroupSpec] = {
                   "color": "#A3E635", "icon": "🌐", "group": "geo"},
     "amateur":   {"label": "Радіоаматорські", "label_en": "Amateur radio",
                   "color": "#22C55E", "icon": "📡", "group": "amateur"},
+    # `internal: True` — resolvable via get_tle() like any other group (the
+    # Hubble page's altitude-decay chart fetches it directly), but left out
+    # of tle_groups() so it doesn't add an extra chip to the satellites-page
+    # map, which is unrelated to that feature.
+    "hubble":    {"label": "Габбл", "label_en": "Hubble",
+                  "color": "#F5A623", "icon": "🔭", "catnr": 20580, "internal": True},
 }
 
 
@@ -238,9 +245,34 @@ async def get_tle(group: str, limit: int = 300, lang: str = DEFAULT_LANG) -> dic
 
 
 def tle_groups(lang: str = DEFAULT_LANG) -> list[dict[str, Any]]:
-    """Group registry for the map UI (key, label, color, icon)."""
+    """Group registry for the map UI (key, label, color, icon). Skips
+    `internal`-flagged entries (see TLE_GROUPS) — those exist for get_tle()
+    to resolve, not to appear as a chip on the satellites-page map."""
     return [
         {"key": k, "label": pick(v, "label", lang), "color": v["color"], "icon": v["icon"]}
-        for k, v in TLE_GROUPS.items()
+        for k, v in TLE_GROUPS.items() if not v.get("internal")
     ]
+
+
+def altitude_km_from_tle(tle2: str) -> float | None:
+    """Mean orbital altitude (km) from a TLE line 2, via Kepler's third law.
+
+    Uses the mean motion field (revs/day, cols 53-63) to get the semi-major
+    axis, then subtracts Earth's mean radius. This is the same "altitude
+    above a spherical Earth" approximation satellite.js/SGP4 consumers on
+    the frontend already treat as good enough for display (see the
+    satellite maps' ISS/satellites pages) — not a perigee/apogee-accurate
+    figure, just enough for a chart/stat card.
+    """
+    try:
+        mean_motion = float(tle2[52:63])  # revs/day
+        if mean_motion <= 0:
+            return None
+        n = mean_motion * 2 * 3.141592653589793 / 86400  # rad/s
+        mu = 398600.4418  # km^3/s^2, Earth's standard gravitational parameter
+        semi_major_axis = (mu / (n * n)) ** (1 / 3)
+        earth_radius_km = 6371.0
+        return round(semi_major_axis - earth_radius_km, 1)
+    except (ValueError, IndexError):
+        return None
 

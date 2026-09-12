@@ -149,6 +149,10 @@ export const getTleGroups = (lang) => fetchJSON(API + "/tle/groups" + withLang("
 export const getMastLightcurve = (target) =>
   fetchJSON(API + "/mast/lightcurve?target=" + encodeURIComponent(target));
 export const getMastHubbleJwst = () => fetchJSON(API + "/mast/hubble-jwst");
+export const getMastHstRecent = () => fetchJSON(API + "/mast/hst-recent");
+
+// Hubble altitude-decay chart (history + live "now" point + projection)
+export const getHubbleDecay = () => fetchJSON(API + "/hubble/decay");
 
 // Feedback form (footer modal). Returns {ok:true} on success; on failure
 // throws with .status so the modal can map 503 → "service unavailable" etc.

@@ -99,6 +99,63 @@ def _mast_hj_stash_save(payload: list) -> None:
         logger.warning("MAST hubble-jwst stash save: %s", e)
 
 
+def _mast_hst_recent_raw() -> list | None:
+    # Same Cloudflare-proxy reasoning as _mast_hubble_jwst_raw's 90s budget
+    # (see that function's comment) — a single sky-wide query_criteria call,
+    # but observed taking anywhere from ~15s to 100s+ depending on how much
+    # MAST has to search/paginate, so it gets the same tight deadline rather
+    # than the default 180s.
+    return _run_mast_subprocess(["hst-recent"], timeout=90)
+
+
+# Last-good hst-recent payload — same "stash" pattern as _MAST_HJ_STASH above
+# (and _TLE_STASH elsewhere): a slow/failed poll shouldn't blank the
+# "recently observed" card for every visitor until the next poll succeeds.
+_MAST_HR_STASH: list | None = None
+_MAST_HR_STASH_PATH = os.path.join("data", "mast_hr_stash.json")
+
+
+def _mast_hr_stash_load() -> list | None:
+    global _MAST_HR_STASH
+    if _MAST_HR_STASH is not None:
+        return _MAST_HR_STASH
+    try:
+        if os.path.exists(_MAST_HR_STASH_PATH):
+            with open(_MAST_HR_STASH_PATH, encoding="utf-8") as f:
+                _MAST_HR_STASH = json.load(f)
+                return _MAST_HR_STASH
+    except Exception as e:
+        logger.warning("MAST hst-recent stash load: %s", e)
+    return None
+
+
+def _mast_hr_stash_save(payload: list) -> None:
+    global _MAST_HR_STASH
+    _MAST_HR_STASH = payload
+    try:
+        os.makedirs("data", exist_ok=True)
+        with open(_MAST_HR_STASH_PATH, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False)
+    except Exception as e:
+        logger.warning("MAST hst-recent stash save: %s", e)
+
+
+async def get_mast_hst_recent() -> list:
+    """Most-recent public HST science image(s), sky-wide — an honest
+    "recently observed" feature, not a literal live feed (see
+    MastService.get_hst_recent_observation's docstring). Shorter TTL than
+    get_mast_hubble_jwst's 12h: this is meant to feel closer to current, and
+    new HST exposures land in the public archive multiple times a day."""
+    val = await asyncio.to_thread(
+        get_or_fetch, "mast_hr", 14400, _mast_hst_recent_raw,
+        lambda v: bool(v),
+    )
+    if val:
+        _mast_hr_stash_save(val)
+        return val
+    return _mast_hr_stash_load() or []
+
+
 async def get_mast_hubble_jwst() -> list:
     # `v is not None` isn't enough here: a subprocess that ran fine but hit
     # its internal 45s per-batch deadline on every target (see
