@@ -1,18 +1,11 @@
-// "What Hubble recently observed" card for the Hubble page — the most
-// recent public science image in the MAST archive, sky-wide (not the 6
-// famous targets the gallery below cones-searches). Deliberately NOT a
-// live "what it's pointed at right now" feed — see
-// services/mast.py: MastService.get_hst_recent_observation's docstring for
-// why (that would need spacetelescopelive.org's undocumented, session-gated
-// API, which this project has already ruled out — see CLAUDE.md).
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useApi } from "../../hooks/useApi";
-import { getMastHstRecent } from "../../lib/api";
+import { getMastJwstRecent } from "../../lib/api";
 
-export default function RecentlyObserved() {
+export default function RecentlyObservedJwst() {
   const { t } = useTranslation();
-  const { data } = useApi(getMastHstRecent);
+  const { data } = useApi(getMastJwstRecent);
   const [idx, setIdx] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -20,7 +13,7 @@ export default function RecentlyObserved() {
     if (!data || data.length <= 1 || isHovered) return;
     const timer = setInterval(() => {
       setIdx((i) => (i + 1) % data.length);
-    }, 4500);
+    }, 5000);
     return () => clearInterval(timer);
   }, [data, isHovered]);
 
@@ -42,12 +35,12 @@ export default function RecentlyObserved() {
     >
       {!data && (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 300, width: "100%", color: "var(--text-dim)" }}>
-          {t("hubble.recentlyObserved.loading", "Завантаження...")}
+          {t("jwst.recentlyObserved.loading", "Завантаження...")}
         </div>
       )}
       {data && !current && (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 300, width: "100%" }}>
-          <p className="section-sub">{t("hubble.recentlyObserved.empty", "Немає нещодавніх спостережень.")}</p>
+          <p className="section-sub">{t("jwst.recentlyObserved.empty", "Немає нещодавніх спостережень.")}</p>
         </div>
       )}
       
@@ -142,24 +135,24 @@ export default function RecentlyObserved() {
             borderLeft: "1px solid var(--border)"
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-               <span style={{ background: "var(--gold)", color: "#000", padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 700, letterSpacing: 0.5 }}>HUBBLE</span>
+               <span style={{ background: "var(--gold)", color: "#000", padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 700, letterSpacing: 0.5 }}>JWST</span>
                <span style={{ color: "var(--text-dim)", fontSize: 13, fontFamily: "var(--font-mono)" }}>
-                 {current.instrument.replace("HST · ", "")}
+                 {current.instrument.replace("JWST · ", "")}
                </span>
             </div>
             
-            <div className="foot" style={{ marginBottom: 4 }}>{t("hubble.recentlyObserved.targetLabel", "Ціль спостереження")}</div>
+            <div className="foot" style={{ marginBottom: 4 }}>{t("jwst.recentlyObserved.targetLabel", "Ціль спостереження")}</div>
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 32, lineHeight: 1.2, color: "var(--text)" }}>
               {current.target}
             </div>
             
             <div style={{ marginTop: 24 }}>
-              <div className="foot">{t("hubble.recentlyObserved.dateLabel", "Дата публікації")}</div>
+              <div className="foot">{t("jwst.recentlyObserved.dateLabel", "Дата публікації")}</div>
               <div style={{ fontSize: 16, marginTop: 2 }}>{current.date}</div>
             </div>
             
             <div style={{ marginTop: 16 }}>
-              <div className="foot">{t("hubble.recentlyObserved.coordsLabel", "Координати")}</div>
+              <div className="foot">{t("jwst.recentlyObserved.coordsLabel", "Координати")}</div>
               <div style={{ fontFamily: "var(--font-mono)", fontSize: 14, marginTop: 4, color: "var(--text)" }}>{current.coords}</div>
             </div>
 
@@ -171,10 +164,10 @@ export default function RecentlyObserved() {
                 className="btn ghost"
                 style={{ width: "100%", justifyContent: "center" }}
               >
-                {t("hubble.recentlyObserved.viewOnMast", "Переглянути в архіві MAST")} ↗
+                {t("jwst.recentlyObserved.viewOnMast", "Переглянути в архіві MAST")} ↗
               </a>
               <p className="foot" style={{ marginTop: 16, fontSize: 12, textAlign: "center" }}>
-                {t("hubble.recentlyObserved.disclaimer", "Показано 5 останніх загальнодоступних наукових зображень з архіву (без врахування калібрувальних кадрів).")}
+                {t("jwst.recentlyObserved.disclaimer", "Показано 5 останніх загальнодоступних наукових зображень з архіву (без врахування калібрувальних кадрів).")}
               </p>
             </div>
           </div>

@@ -30,6 +30,7 @@ export const SLUGS = {
   hubble:         { uk: "hubble",            en: "hubble" },
   jwst:           { uk: "jwst",              en: "jwst" },
   roman:          { uk: "roman",             en: "roman" },
+  parker:         { uk: "parker",            en: "parker" },
   meteors:        { uk: "meteory",           en: "meteors" },
   asteroids:      { uk: "asteroidy",         en: "asteroids" },
   events:         { uk: "podiyi",            en: "events" },

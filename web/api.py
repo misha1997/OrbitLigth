@@ -523,6 +523,12 @@ async def mast_hst_recent():
     return await data.get_mast_hst_recent()
 
 
+@router.get("/mast/jwst-recent")
+async def mast_jwst_recent():
+    """Most-recent public JWST science image(s)."""
+    return await data.get_mast_jwst_recent()
+
+
 @router.get("/hubble/decay")
 async def hubble_decay():
     """Hubble altitude history + live "now" point + illustrative re-entry projection."""

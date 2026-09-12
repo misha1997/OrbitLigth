@@ -80,6 +80,11 @@ _MISSION_KEYS = (
     "voyager", "hubble", "jwst", "roman", "newhorizons", "parker", "juno",
     "chandra", "tess", "europaclipper", "perseverance", "cassini",
     "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11",
+    "galileo", "curiosity", "rosetta", "dawn", "messenger", "magellan",
+    "bepicolombo", "hayabusa2", "swift", "euclid", "soho", "sdo",
+    "fermi", "planck", "wmap", "wise", "opportunity", "spirit",
+    "viking", "huygens", "lro", "akatsuki", "giotto", "change4",
+    "change6",
 )
 
 # News cover-image upload (admin_upload_news_cover below): center-cropped is

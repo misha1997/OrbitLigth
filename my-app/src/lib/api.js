@@ -150,6 +150,7 @@ export const getMastLightcurve = (target) =>
   fetchJSON(API + "/mast/lightcurve?target=" + encodeURIComponent(target));
 export const getMastHubbleJwst = () => fetchJSON(API + "/mast/hubble-jwst");
 export const getMastHstRecent = () => fetchJSON(API + "/mast/hst-recent");
+export const getMastJwstRecent = () => fetchJSON(API + "/mast/jwst-recent");
 
 // Hubble altitude-decay chart (history + live "now" point + projection)
 export const getHubbleDecay = () => fetchJSON(API + "/hubble/decay");

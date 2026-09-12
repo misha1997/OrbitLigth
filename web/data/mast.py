@@ -155,6 +155,45 @@ async def get_mast_hst_recent() -> list:
         return val
     return _mast_hr_stash_load() or []
 
+def _mast_jr_recent_raw() -> list | None:
+    return _run_mast_subprocess(["jwst-recent"], timeout=90)
+
+_MAST_JR_STASH: list | None = None
+_MAST_JR_STASH_PATH = os.path.join("data", "mast_jr_stash.json")
+
+def _mast_jr_stash_load() -> list | None:
+    global _MAST_JR_STASH
+    if _MAST_JR_STASH is not None:
+        return _MAST_JR_STASH
+    try:
+        if os.path.exists(_MAST_JR_STASH_PATH):
+            with open(_MAST_JR_STASH_PATH, encoding="utf-8") as f:
+                _MAST_JR_STASH = json.load(f)
+                return _MAST_JR_STASH
+    except Exception as e:
+        logger.warning("MAST jwst-recent stash load: %s", e)
+    return None
+
+def _mast_jr_stash_save(payload: list) -> None:
+    global _MAST_JR_STASH
+    _MAST_JR_STASH = payload
+    try:
+        os.makedirs("data", exist_ok=True)
+        with open(_MAST_JR_STASH_PATH, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False)
+    except Exception as e:
+        logger.warning("MAST jwst-recent stash save: %s", e)
+
+async def get_mast_jwst_recent() -> list:
+    val = await asyncio.to_thread(
+        get_or_fetch, "mast_jr", 14400, _mast_jr_recent_raw,
+        lambda v: bool(v),
+    )
+    if val:
+        _mast_jr_stash_save(val)
+        return val
+    return _mast_jr_stash_load() or []
+
 
 async def get_mast_hubble_jwst() -> list:
     # `v is not None` isn't enough here: a subprocess that ran fine but hit

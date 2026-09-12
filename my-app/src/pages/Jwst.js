@@ -10,9 +10,11 @@ import SectionHead from "../components/primitives/SectionHead";
 import FeatureRow from "../components/primitives/FeatureRow";
 import { useApi } from "../hooks/useApi";
 import { getMastHubbleJwst } from "../lib/api";
+import RecentlyObservedJwst from "../components/jwst/RecentlyObservedJwst";
 
 const JwstHeroPreview = lazy(() => import("./JwstHeroPreview"));
 const JwstFullscreen = lazy(() => import("./JwstFullscreen"));
+const JwstL2Orbit = lazy(() => import("./JwstL2Orbit"));
 
 const INSTR_BODY_STYLE = { fontSize: "1rem", lineHeight: 1.4, color: "var(--text)", marginTop: 8, fontWeight: 400 };
 const FACT_TITLE_STYLE = { fontSize: "1.2rem", marginBottom: 8, color: "var(--accent)" };
@@ -130,6 +132,11 @@ export default function Jwst() {
         <div className="wrap">
           <SectionHead eyebrow={t("jwst.l2.eyebrow")} title={t("jwst.l2.title")} />
           <p className="section-sub">{t("jwst.l2.intro")}</p>
+          
+          <Suspense fallback={<div style={{ height: 450, margin: "40px 0", background: "#06070a", borderRadius: 16 }} />}>
+            <JwstL2Orbit />
+          </Suspense>
+
           <div className="grid cols-3">
             <div className="card">
               <div className="k">{t("jwst.l2.stability_title")}</div>
@@ -159,6 +166,14 @@ export default function Jwst() {
             </FeatureRow>
           ))}
           <p className="section-sub" style={{ marginTop: 14, marginBottom: 0, fontSize: 11 }}>{t("jwst.deployment.note")}</p>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("jwst.recentlyObserved.eyebrow", "Останні дані")} title={t("jwst.recentlyObserved.title", "Що нещодавно спостерігав JWST")} />
+          <p className="section-sub">{t("jwst.recentlyObserved.sub", "Остання загальнодоступна ціль з архіву MAST.")}</p>
+          <RecentlyObservedJwst />
         </div>
       </section>
 

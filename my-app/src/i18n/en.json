@@ -224,7 +224,8 @@
     "news": "Space news — NEOwatch",
     "login": "Log in — OrbitLight",
     "register": "Sign up — OrbitLight",
-    "account": "My account — OrbitLight"
+    "account": "My account — OrbitLight",
+    "parker": "Parker Solar Probe — Orbit & Data"
   },
   "seo": {
     "desc": {
@@ -265,7 +266,8 @@
       "news": "The top spaceflight stories in Ukrainian — translated and summarized coverage from SpaceflightNow, NASA, ESA and other sources, updated daily.",
       "login": "Log in to your OrbitLight account with email, Google or Telegram.",
       "register": "Create an OrbitLight account to manage site and bot notifications in one place.",
-      "account": "Your OrbitLight profile: personal details, Telegram connection and notification settings."
+      "account": "Your OrbitLight profile: personal details, Telegram connection and notification settings.",
+      "parker": "Track the Parker Solar Probe: current orbit, record-breaking speed, and closest solar approaches."
     }
   },
   "lang": {
@@ -1120,7 +1122,11 @@
       "servicing_body": "Too far away for missions like the ones that saved Hubble",
       "period_title": "Halo orbit period",
       "period_value": "~6 months",
-      "period_body": "One loop around the L2 point itself"
+      "period_body": "One loop around the L2 point itself",
+      "diagram_sun": "Sun",
+      "diagram_earth": "Earth",
+      "diagram_dist": "1.5M km",
+      "diagram_halo": "Halo Orbit"
     },
     "deployment": {
       "eyebrow": "A two-week engineering thriller",
@@ -4714,6 +4720,105 @@
       "file_too_large": "File is too large — 5 MB max.",
       "invalid_image": "Couldn't process that image.",
       "generic": "Couldn't upload the photo. Please try again."
+    }
+  },
+  "parker": {
+    "hero": {
+      "eyebrow": "Solar Probe",
+      "title": "Parker Solar Probe",
+      "sub": "The first spacecraft to touch the Sun. Parker is exploring the solar corona, unraveling the mysteries of the solar wind and magnetic fields.",
+      "factsCta": "Mission Facts",
+      "instrumentsCta": "Instruments"
+    },
+    "facts": {
+      "title": "Mission Records",
+      "speed_title": "Top Speed",
+      "speed_val": "692,000 km/h",
+      "speed_desc": "The fastest object ever built by humanity.",
+      "dist_title": "Minimum Distance",
+      "dist_val": "6.16 million km",
+      "dist_desc": "From the Sun's surface — 7 times closer than any previous spacecraft.",
+      "venus_title": "Venus Flybys",
+      "venus_val": "7 Gravity Assists",
+      "venus_desc": "Used to gradually shrink the orbit's perihelion."
+    },
+    "orbit": {
+      "title": "Orbital Trajectory",
+      "sub": "Each flyby past Venus shrinks Parker's elliptical orbit, allowing it to dive deeper into the solar corona.",
+      "perihelion_label": "Next Perihelion",
+      "speed_label": "Current Speed (model)",
+      "speed_note": "Computed from the vis-viva equation for the current orbit position",
+      "speedUnit": "km/h",
+      "daysLeft": "{{days}} days left",
+      "legend_sun": "Sun",
+      "legend_venus": "Venus's orbit",
+      "legend_earth": "Earth's orbit",
+      "legend_parker": "Parker's orbit",
+      "diagramNote": "An illustrative orbit model: distances are shown to scale (perihelion ≈8.8 solar radii, aphelion near Venus's orbit, eccentricity ≈0.89); Sun and planet marker sizes are exaggerated for visibility. The speed shown is computed from the vis-viva equation for the marker's current position — not live spacecraft telemetry."
+    },
+    "timeline": {
+      "eyebrow": "Seven Years and Counting",
+      "title": "Mission Timeline",
+      "t1_tag": "Aug 12, 2018",
+      "t1_title": "Launch",
+      "t1_num": "Delta IV Heavy",
+      "t1_body": "Liftoff from Cape Canaveral aboard the most powerful US rocket of its time — even that wasn't enough to fly straight to the Sun, so the mission needed repeated Venus gravity assists.",
+      "t2_tag": "Oct 3, 2018",
+      "t2_title": "First Venus flyby",
+      "t2_num": "Flyby 1 of 7",
+      "t2_body": "The first of seven gravity assists at Venus, each one shaving off orbital energy to gradually pull Parker's perihelion closer to the Sun.",
+      "t3_tag": "Nov 6, 2018",
+      "t3_title": "First perihelion",
+      "t3_num": "24.8 million km",
+      "t3_body": "Parker flew closer to the Sun than any spacecraft before it — a record held by Helios 2 since 1976, broken within weeks of launch.",
+      "t4_tag": "Apr 28, 2021",
+      "t4_title": "Diving into the solar corona",
+      "t4_num": "Alfvén surface",
+      "t4_body": "For the first time, a spacecraft crossed the Alfvén surface — the boundary where the solar wind accelerates past the local sound speed — and entered the Sun's atmosphere itself.",
+      "t5_tag": "Nov 6, 2024",
+      "t5_title": "Seventh and final Venus flyby",
+      "t5_num": "Final orbit",
+      "t5_body": "The last gravity assist locked in the mission's final orbit — as close to the Sun as the heat shield allows.",
+      "t6_tag": "Dec 24, 2024",
+      "t6_title": "Closest approach in history",
+      "t6_num": "6.16 million km",
+      "t6_body": "Parker passed just 6.16 million km from the Sun's surface at 692,000 km/h — and keeps repeating this record perihelion roughly every 91 days for the rest of the mission."
+    },
+    "instruments": {
+      "eyebrow": "Scientific Payload",
+      "title": "Instruments on Board",
+      "fields_title": "FIELDS",
+      "fields_desc": "Measures the electric and magnetic fields in the corona.",
+      "wispr_title": "WISPR",
+      "wispr_desc": "Wide-field imagers for taking pictures of the corona and inner heliosphere.",
+      "sweap_title": "SWEAP",
+      "sweap_desc": "Catches electrons, protons, and helium ions to measure the solar wind.",
+      "isis_title": "ISʘIS",
+      "isis_desc": "Detects high-energy particles energized in the solar atmosphere."
+    },
+    "gallery": {
+      "eyebrow": "Observations",
+      "title": "Mission Gallery",
+      "sub": "From cleanroom assembly to liftoff at Cape Canaveral — the spacecraft's road to space in NASA photographs.",
+      "credit": "Photos: NASA",
+      "g1_tag": "April 2018",
+      "g1_title": "Spacecraft assembly",
+      "g1_body": "The probe in a cleanroom at the Johns Hopkins Applied Physics Laboratory (APL) — the carbon-composite heat shield and a deployed solar array are visible ahead of final testing.",
+      "g2_tag": "June 27, 2018",
+      "g2_title": "Heat shield installation",
+      "g2_body": "Engineers install components of the Thermal Protection System (TPS) — an 11.4 cm carbon-composite shield rated to withstand over 1,370°C.",
+      "g3_tag": "July 2018",
+      "g3_title": "Encapsulation in the fairing",
+      "g3_body": "The spacecraft is enclosed inside the rocket's payload fairing at the Astrotech facility in Florida — the last step before rolling out to the launch pad.",
+      "g4_tag": "July 31, 2018",
+      "g4_title": "Lift and mate to the booster",
+      "g4_body": "The encapsulated payload is lifted and mated atop the Delta IV Heavy at Space Launch Complex 37 — the most powerful US rocket at the time.",
+      "g5_tag": "August 10, 2018",
+      "g5_title": "Mobile service tower rollback",
+      "g5_body": "The mobile service tower rolls back, exposing the Delta IV Heavy on the pad the night before launch.",
+      "g6_tag": "August 12, 2018, 03:31 EDT",
+      "g6_title": "Liftoff from Cape Canaveral",
+      "g6_body": "The Delta IV Heavy sends Parker Solar Probe on its trajectory toward Venus — the start of a seven-year journey to the Sun."
     }
   }
 }

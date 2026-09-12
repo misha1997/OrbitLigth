@@ -287,6 +287,49 @@ class MastService:
             logger.error("MAST: hst-recent query failed: %s", e)
         return rows_out
 
+    @staticmethod
+    def get_jwst_recent_observation() -> list[dict]:
+        """Sky-wide most-recent public JWST science image(s)."""
+        rows_out: list[dict] = []
+        try:
+            now_mjd = Time.now().mjd
+            res = Observations.query_criteria(
+                obs_collection="JWST",
+                dataproduct_type="image",
+                intentType="science",
+                dataRights="PUBLIC",
+                t_min=[now_mjd - 30, now_mjd],
+            )
+            if len(res) == 0:
+                return rows_out
+
+            res = res[~res['jpegURL'].mask]
+            if len(res) == 0:
+                return rows_out
+
+            res.sort('t_min')
+            res.reverse()
+
+            for row in res[:5]:
+                jpeg_uri = row['jpegURL']
+                if jpeg_uri.startswith("mast:"):
+                    jpeg_url = f"https://mast.stsci.edu/api/v0.1/Download/file/?uri={jpeg_uri}"
+                else:
+                    jpeg_url = jpeg_uri
+
+                target_name = str(row['target_name']) if row['target_name'] else "—"
+                rows_out.append({
+                    "instrument": f"{row['obs_collection']} · {row['instrument_name']}",
+                    "target": target_name,
+                    "coords": f"RA {row['s_ra']:.2f}° / Dec {row['s_dec']:.2f}°",
+                    "date": mjd_to_date(row['t_min']),
+                    "jpeg_url": jpeg_url,
+                    "collection": row['obs_collection'],
+                })
+        except Exception as e:
+            logger.error("MAST: jwst-recent query failed: %s", e)
+        return rows_out
+
 
 def _main() -> None:
     """CLI entry used by ``web.data._run_mast_subprocess`` for process isolation.
@@ -323,6 +366,11 @@ def _main() -> None:
         os._exit(0)
     elif mode == "hst-recent":
         result = MastService.get_hst_recent_observation()
+        print(json.dumps(result))
+        sys.stdout.flush()
+        os._exit(0)
+    elif mode == "jwst-recent":
+        result = MastService.get_jwst_recent_observation()
         print(json.dumps(result))
         sys.stdout.flush()
         os._exit(0)

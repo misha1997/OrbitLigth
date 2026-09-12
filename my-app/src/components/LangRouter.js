@@ -29,6 +29,7 @@ const Missions = lazy(() => import("../pages/Missions"));
 const Hubble = lazy(() => import("../pages/Hubble"));
 const Jwst = lazy(() => import("../pages/Jwst"));
 const Roman = lazy(() => import("../pages/Roman"));
+const Parker = lazy(() => import("../pages/Parker"));
 const Gallery = lazy(() => import("../pages/Gallery"));
 const Planetarium = lazy(() => import("../pages/Planetarium"));
 const Mars = lazy(() => import("../pages/Mars"));
@@ -67,6 +68,7 @@ const PAGES = {
   hubble: Hubble,
   jwst: Jwst,
   roman: Roman,
+  parker: Parker,
   gallery: Gallery,
   planetarium: Planetarium,
   mars: Mars,

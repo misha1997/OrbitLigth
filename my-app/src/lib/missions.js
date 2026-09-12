@@ -37,8 +37,8 @@ export const MISSIONS = [
     blurbKey: "missions.blurbs.newhorizons",
   },
   {
-    key: "parker", labelKey: "missions.names.parker",
-    disabled: true, type: "probe", status: "active", year: "2018",
+    key: "parker", labelKey: "missions.names.parker", to: "parker",
+    disabled: false, type: "probe", status: "active", year: "2018",
     icon: "☀️", accent: "#E8834D", img: "/parker/images/parker_probe.jpg",
     blurbKey: "missions.blurbs.parker",
   },
