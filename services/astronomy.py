@@ -34,20 +34,21 @@ class _EclipseInfo(TypedDict):
 
 _ECLIPSES: list[_EclipseInfo] = [
     # 2026
-    {"date": (2026, 3, 14), "type": "moon_total", "name": "Повне місячне затемнення", "name_en": "Total lunar eclipse", "visibility": "Європа, Африка, Азія, Австралія", "visibility_en": "Europe, Africa, Asia, Australia"},
-    {"date": (2026, 3, 20), "type": "sun_partial", "name": "Часткове сонячне затемнення", "name_en": "Partial solar eclipse", "visibility": "Арктика, пн. Атлантика", "visibility_en": "Arctic, N. Atlantic"},
-    {"date": (2026, 8, 12), "type": "moon_partial", "name": "Часткове місячне затемнення", "name_en": "Partial lunar eclipse", "visibility": "Європа, Африка, Азія, Австралія", "visibility_en": "Europe, Africa, Asia, Australia"},
-    {"date": (2026, 8, 20), "type": "sun_partial", "name": "Часткове сонячне затемнення", "name_en": "Partial solar eclipse", "visibility": "Арктика, пн. Америка, пн. Атлантика", "visibility_en": "Arctic, N. America, N. Atlantic"},
+    {"date": (2026, 2, 17), "type": "sun_annular", "name": "Кільцеве сонячне затемнення", "name_en": "Annular solar eclipse", "visibility": "Антарктида, пд. Атлантика", "visibility_en": "Antarctica, S. Atlantic"},
+    {"date": (2026, 3, 3), "type": "moon_total", "name": "Повне місячне затемнення", "name_en": "Total lunar eclipse", "visibility": "Азія, Австралія, Тихий океан, Америка", "visibility_en": "Asia, Australia, Pacific, Americas"},
+    {"date": (2026, 8, 12), "type": "sun_total", "name": "Повне сонячне затемнення", "name_en": "Total solar eclipse", "visibility": "Гренландія, Ісландія, Іспанія", "visibility_en": "Greenland, Iceland, Spain"},
+    {"date": (2026, 8, 28), "type": "moon_partial", "name": "Часткове місячне затемнення", "name_en": "Partial lunar eclipse", "visibility": "Європа, Африка, Америка", "visibility_en": "Europe, Africa, Americas"},
     # 2027
-    {"date": (2027, 2, 6), "type": "moon_partial", "name": "Часткове місячне затемнення", "name_en": "Partial lunar eclipse", "visibility": "Європа, Африка, Азія, Австралія", "visibility_en": "Europe, Africa, Asia, Australia"},
-    {"date": (2027, 2, 16), "type": "sun_annular", "name": "Кільцеве сонячне затемнення", "name_en": "Annular solar eclipse", "visibility": "Африка, Аравія, Індія", "visibility_en": "Africa, Arabia, India"},
-    {"date": (2027, 8, 2), "type": "moon_total", "name": "Повне місячне затемнення", "name_en": "Total lunar eclipse", "visibility": "Європа, Африка, Азія, Австралія", "visibility_en": "Europe, Africa, Asia, Australia"},
-    {"date": (2027, 8, 11), "type": "sun_total", "name": "Повне сонячне затемнення", "name_en": "Total solar eclipse", "visibility": "Пн. Америка, Європа", "visibility_en": "N. America, Europe"},
+    {"date": (2027, 2, 6), "type": "sun_annular", "name": "Кільцеве сонячне затемнення (Вогняне кільце)", "name_en": "Annular solar eclipse (Ring of Fire)", "visibility": "Чилі, Аргентина, Атлантика, Зх. Африка", "visibility_en": "Chile, Argentina, Atlantic, W. Africa"},
+    {"date": (2027, 2, 20), "type": "moon_penumbral", "name": "Півтіньове місячне затемнення", "name_en": "Penumbral lunar eclipse", "visibility": "Америка, Європа, Африка, Азія", "visibility_en": "Americas, Europe, Africa, Asia"},
+    {"date": (2027, 8, 2), "type": "sun_total", "name": "Повне сонячне затемнення століття (Єгипет, Луксор)", "name_en": "Total solar eclipse of the century (Egypt, Luxor)", "visibility": "Іспанія, Єгипет, Саудівська Аравія", "visibility_en": "Spain, Egypt, Saudi Arabia"},
+    {"date": (2027, 8, 17), "type": "moon_penumbral", "name": "Півтіньове місячне затемнення", "name_en": "Penumbral lunar eclipse", "visibility": "Тихий океан, Америка", "visibility_en": "Pacific, Americas"},
     # 2028
-    {"date": (2028, 1, 22), "type": "moon_partial", "name": "Часткове місячне затемнення", "name_en": "Partial lunar eclipse", "visibility": "Європа, Африка, Азія, Австралія", "visibility_en": "Europe, Africa, Asia, Australia"},
-    {"date": (2028, 2, 5), "type": "sun_annular", "name": "Кільцеве сонячне затемнення", "name_en": "Annular solar eclipse", "visibility": "Атлантика, Африка", "visibility_en": "Atlantic, Africa"},
-    {"date": (2028, 7, 16), "type": "moon_partial", "name": "Часткове місячне затемнення", "name_en": "Partial lunar eclipse", "visibility": "Європа, Африка, Азія, Австралія", "visibility_en": "Europe, Africa, Asia, Australia"},
-    {"date": (2028, 7, 31), "type": "sun_total", "name": "Повне сонячне затемнення", "name_en": "Total solar eclipse", "visibility": "Австралія, Тихий океан", "visibility_en": "Australia, Pacific Ocean"},
+    {"date": (2028, 1, 12), "type": "moon_partial", "name": "Часткове місячне затемнення", "name_en": "Partial lunar eclipse", "visibility": "Америка, Європа, Африка", "visibility_en": "Americas, Europe, Africa"},
+    {"date": (2028, 1, 26), "type": "sun_annular", "name": "Кільцеве сонячне затемнення", "name_en": "Annular solar eclipse", "visibility": "Пд. Америка, Атлантика, Іспанія", "visibility_en": "S. America, Atlantic, Spain"},
+    {"date": (2028, 7, 6), "type": "moon_partial", "name": "Часткове місячне затемнення", "name_en": "Partial lunar eclipse", "visibility": "Австралія, Нова Зеландія, Америка", "visibility_en": "Australia, New Zealand, Americas"},
+    {"date": (2028, 7, 22), "type": "sun_total", "name": "Повне сонячне затемнення (Австралія, Сідней)", "name_en": "Total solar eclipse (Australia, Sydney)", "visibility": "Австралія, Нова Зеландія", "visibility_en": "Australia, New Zealand"},
+    {"date": (2028, 12, 31), "type": "moon_total", "name": "Повне місячне затемнення", "name_en": "Total lunar eclipse", "visibility": "Європа, Африка, Азія, Австралія", "visibility_en": "Europe, Africa, Asia, Australia"},
 ]
 
 # Known conjunctions 2026–2028 (date, planets, angular separation)
@@ -72,6 +73,7 @@ _CONJUNCTIONS: list[_ConjunctionInfo] = [
 _TYPE_EMOJI = {
     "moon_total": "🌕",
     "moon_partial": "🌗",
+    "moon_penumbral": "🌖",
     "sun_total": "☀️",
     "sun_partial": "🌑",
     "sun_annular": "🔴",

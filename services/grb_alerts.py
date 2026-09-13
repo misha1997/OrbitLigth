@@ -2,12 +2,14 @@
 import requests
 import re
 import logging
+from html import unescape
 from datetime import datetime
 from utils.i18n import t, DEFAULT_LANG
 
 logger = logging.getLogger(__name__)
 
-GCN_ARCHIVE_URL = "https://gcn.gsfc.nasa.gov/gcn3_archive.html"
+GCN_ARCHIVE_URL = "https://gcn.nasa.gov/circulars"
+GCN_ROOT_URL = "https://gcn.nasa.gov/"
 
 
 class GRBAlertAPI:
@@ -26,22 +28,30 @@ class GRBAlertAPI:
             html = response.text
 
             grbs = []
-            # Pattern: HREF=gcn3/12345.gcn3>12345</A> GRB 230414B: some title
-            pattern = re.compile(
-                r'HREF=gcn3/(\d+)\.gcn3\>(\d+)\</A\>\s*(GRB\s+\d+[A-Z]):\s*([^<\n]+)',
-                re.IGNORECASE
+            # Current GCN markup: /circulars/45557"> GRB 260913A: title
+            current_pattern = re.compile(
+                r'href=["\']/circulars/(\d+)["\'][^>]*>\s*(GRB\s+\d+[A-Z]):\s*([^<\n]+)',
+                re.IGNORECASE,
             )
+            matches = [(match[0], match[1], match[2]) for match in current_pattern.findall(html)]
 
-            for match in pattern.findall(html):
-                circular_id = match[0]
-                grb_name = match[2].strip()
-                title = match[3].strip()
+            # Keep compatibility with the legacy archive while old mirrors remain available.
+            if not matches:
+                legacy_pattern = re.compile(
+                    r'HREF=gcn3/(\d+)\.gcn3\>(\d+)\</A\>\s*(GRB\s+\d+[A-Z]):\s*([^<\n]+)',
+                    re.IGNORECASE,
+                )
+                matches = [(match[0], match[2], match[3]) for match in legacy_pattern.findall(html)]
+
+            for circular_id, grb_name, title in matches:
+                grb_name = unescape(grb_name.strip())
+                title = unescape(title.strip())
 
                 grbs.append({
                     'circular_id': circular_id,
                     'grb_name': grb_name,
                     'title': title,
-                    'url': f"https://gcn.gsfc.nasa.gov/gcn3/{circular_id}.gcn3",
+                    'url': f"{GCN_ROOT_URL}circulars/{circular_id}",
                 })
 
             # Keep only unique GRB names (first circular per GRB)
@@ -62,7 +72,7 @@ class GRBAlertAPI:
     def get_grb_details(circular_id: str):
         """Fetch full text of a GCN Circular for more details."""
         try:
-            url = f"https://gcn.gsfc.nasa.gov/gcn3/{circular_id}.gcn3"
+            url = f"https://gcn.nasa.gov/circulars/{circular_id}"
             response = requests.get(url, timeout=10)
             response.raise_for_status()
             text = response.text

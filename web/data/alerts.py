@@ -25,11 +25,25 @@ def _grb_raw(limit: int) -> dict:
     except Exception as e:
         logger.error("grb: %s", e)
         items = []
-    return {"items": items, "count": len(items)}
+    class_counts = {"short": 0, "long": 0, "unknown": 0}
+    for item in items:
+        title = (item.get("title") or "").lower()
+        if "short" in title:
+            class_counts["short"] += 1
+        elif "long" in title:
+            class_counts["long"] += 1
+        else:
+            class_counts["unknown"] += 1
+    return {
+        "items": items,
+        "count": len(items),
+        "stats": {"classification": class_counts},
+        "source": "GCN Circulars",
+    }
 
 
 async def get_grb(limit: int = 20) -> dict:
-    return await asyncio.to_thread(get_or_fetch, "grb", GRB_TTL, lambda: _grb_raw(limit))
+    return await asyncio.to_thread(get_or_fetch, f"grb:{limit}", GRB_TTL, lambda: _grb_raw(limit))
 
 
 # ---------------------------------------------------------------------------
@@ -46,6 +60,9 @@ def _gw_raw(limit: int = 10) -> dict:
     except Exception as e:
         logger.error("gw: %s", e)
         items = []
+    for item in items:
+        item["instruments"] = [name.strip() for name in (item.get("instruments") or "").split(",") if name.strip()]
+        item["classification"] = item.get("classification") or {}
     return {
         "items": items,
         "count": len(items),
@@ -54,7 +71,7 @@ def _gw_raw(limit: int = 10) -> dict:
 
 
 async def get_gw(limit: int = 10) -> dict:
-    return await asyncio.to_thread(get_or_fetch, "gw", GW_TTL, lambda: _gw_raw(limit))
+    return await asyncio.to_thread(get_or_fetch, f"gw:{limit}", GW_TTL, lambda: _gw_raw(limit))
 
 
 # ---------------------------------------------------------------------------

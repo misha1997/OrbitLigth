@@ -48,6 +48,7 @@ const SolarSystem3D = lazy(() => import("../pages/SolarSystem3D"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 const Account = lazy(() => import("../pages/Account"));
+const Deep = lazy(() => import("../pages/Deep"));
 
 const PAGES = {
   home: Home,
@@ -85,6 +86,7 @@ const PAGES = {
   login: Login,
   register: Register,
   account: Account,
+  deep: Deep,
 };
 
 function Loading() {

@@ -15,7 +15,10 @@ from services.astronomy import (
 from services.meteor_shower import MeteorShower
 from services.moon_mars import MoonMarsAPI
 from utils.i18n import DEFAULT_LANG, t
-from web.cache import get_or_fetch
+from web.cache import get_or_fetch, clear as clear_cache
+
+# Clear stale cache on reload so updated astronomical catalog takes effect immediately
+clear_cache("events:")
 
 from ._shared import _strip_tags
 

@@ -1506,6 +1506,17 @@
       "next": "Next eclipse →",
       "weekly": "This week"
     },
+    "dashboard": {
+      "index": "SKY LOG",
+      "updated": "data updates automatically",
+      "nextSignal": "NEXT SIGNAL",
+      "calendar": "Calendar events",
+      "calendarDetail": "eclipses · phases · conjunctions",
+      "grb": "GRBs in feed",
+      "grbDetail": "latest GCN circulars",
+      "gw": "GW alerts",
+      "gwDetail": "GCN / LVK cache"
+    },
     "next": {
       "label": "Eclipse",
       "title": "Next eclipse",
@@ -1534,7 +1545,42 @@
     "supermoonTitle": "Supermoon",
     "supermoonBody": " — a full Moon near perigee (closest to Earth), appears 14% larger and brighter.",
     "retroTitle": "Retrograde motion",
-    "retroBody": " — a planet appears to move “backward” among the stars: an optical effect of Earth overtaking it in its orbit."
+    "retroBody": " — a planet appears to move “backward” among the stars: an optical effect of Earth overtaking it in its orbit.",
+    "timeline": {
+      "title": "Upcoming events",
+      "label": "Observation order",
+      "eclipse": "Eclipse",
+      "conjunction": "Conjunction",
+      "weekly": "Digest"
+    },
+    "charts": {
+      "grbTitle": "GRB classifications in the feed",
+      "gwTitle": "Average GW classification probabilities",
+      "probability": "Probability",
+      "noData": "There is not enough numeric data for a chart.",
+      "error": "Could not load the data. Please try again later."
+    },
+    "grb": {
+      "short": "Short",
+      "long": "Long",
+      "unknown": "Unclassified"
+    },
+    "gw": {
+      "years": "years",
+      "lessThanYear": "less than a year"
+    },
+    "table": {
+      "event": "Event",
+      "notice": "Circular",
+      "source": "Source",
+      "signal": "Signal",
+      "detectors": "Detectors",
+      "noTitle": "No description",
+      "grbLabel": "Gamma-ray burst table",
+      "gwLabel": "Gravitational-wave alert table",
+      "grbTitle": "Latest gamma-ray bursts",
+      "gwTitle": "Latest gravitational-wave alerts"
+    }
   },
   "asteroids": {
     "hero": {
@@ -1938,6 +1984,9 @@
       "whatBody1": "Unlike light, gravitational waves are barely absorbed by matter — they carry information straight from the merger site that no telescope can capture.",
       "whatBody2": "Each alert flags the likely event type (black hole merger, neutron star merger, or a mixed pair) and how confident the pipeline is that it isn't a false alarm.",
       "link": "GraceDB ↗",
+      "significant": "significant event",
+      "notSignificant": "needs review",
+      "far": "false alarm once per",
       "type": {
         "EARLYWARNING": "early warning",
         "PRELIMINARY": "preliminary",

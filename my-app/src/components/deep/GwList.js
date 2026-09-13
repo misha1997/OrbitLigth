@@ -6,9 +6,18 @@ import { useTranslation } from "react-i18next";
 import { useApi } from "../../hooks/useApi";
 import { getGw } from "../../lib/api";
 
-export default function GwList() {
+function farLabel(far, t) {
+  if (!far || Number(far) <= 0) return "—";
+  const years = 1 / (Number(far) * 31557600);
+  return years >= 1
+    ? `${years.toLocaleString(undefined, { maximumFractionDigits: years >= 100 ? 0 : 1 })} ${t("events.gw.years")}`
+    : t("events.gw.lessThanYear");
+}
+
+export default function GwList({ data: suppliedData }) {
   const { t } = useTranslation();
-  const { data } = useApi(() => getGw(6));
+  const { data: fetchedData } = useApi(() => getGw(6), { deps: [suppliedData] });
+  const data = suppliedData || fetchedData;
   const items = (data && data.items) || [];
 
   if (data && data.configured === false) {
@@ -34,6 +43,22 @@ export default function GwList() {
               <span className="t">{t("deep.gw.type." + (a.alert_type || "UPDATE"))}</span>
             </div>
             <p>{a.top_class ? t("deep.gw.class." + a.top_class) : t("deep.gw.class.Terrestrial")}</p>
+            <div className="gw-meta">
+              <span>{a.event_time || "—"}</span>
+              <span>{a.instruments?.join(" · ") || "—"}</span>
+              <span>{a.significant ? t("deep.gw.significant") : t("deep.gw.notSignificant")}</span>
+              <span>{t("deep.gw.far")}: {farLabel(a.far, t)}</span>
+            </div>
+            {a.classification && Object.keys(a.classification).length > 0 && (
+              <div className="gw-classification">
+                {Object.entries(a.classification)
+                  .sort(([, first], [, second]) => Number(second) - Number(first))
+                  .slice(0, 3)
+                  .map(([key, value]) => (
+                    <span key={key}>{t("deep.gw.class." + key, { defaultValue: key })} {Math.round(Number(value) * 100)}%</span>
+                  ))}
+              </div>
+            )}
             {a.gracedb_url && (
               <a href={a.gracedb_url} target="_blank" rel="noopener noreferrer"
                  style={{ fontFamily: "var(--font-mono)", fontSize: 11.5, color: "var(--teal)" }}>
