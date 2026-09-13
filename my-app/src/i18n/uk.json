@@ -1040,6 +1040,14 @@
       "orbitValue": "~535 км, 95 хв",
       "instrumentsLabel": "Приладів",
       "instrumentsValue": "5"
+    },
+    "orbit": {
+      "eyebrow": "Орбітальна траєкторія",
+      "title": "Низька навколоземна орбіта",
+      "sub": "Габбл обертається навколо Землі на висоті приблизно 535 км. Така висота дозволяє йому уникати впливу земної атмосфери, забезпечуючи кришталево чисті знімки.",
+      "diagram_earth": "Земля",
+      "view_local": "3D Модель",
+      "view_nasa": "NASA Eyes"
     }
   },
   "jwst": {
@@ -1133,7 +1141,9 @@
       "diagram_sun": "Сонце",
       "diagram_earth": "Земля",
       "diagram_dist": "1.5 млн км",
-      "diagram_halo": "Гало-орбіта"
+      "diagram_halo": "Гало-орбіта",
+      "view_local": "3D Модель",
+      "view_nasa": "NASA Eyes"
     },
     "deployment": {
       "eyebrow": "Двотижнева інженерна драма",
@@ -1365,6 +1375,17 @@
       "orbitValue": "~1.5 млн км (L2)",
       "instrumentsLabel": "Приладів",
       "instrumentsValue": "2"
+    },
+    "orbit": {
+      "eyebrow": "Орбітальна траєкторія",
+      "title": "Точка Лагранжа L2",
+      "sub": "Nancy Grace Roman буде розташований на гало-орбіті навколо другої точки Лагранжа (L2), на відстані 1.5 млн км від Землі."
+    },
+    "l2": {
+      "diagram_earth": "Земля",
+      "diagram_sun": "Сонце",
+      "view_local": "3D Модель",
+      "view_nasa": "NASA Eyes"
     }
   },
   "launches": {

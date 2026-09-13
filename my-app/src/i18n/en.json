@@ -1033,6 +1033,14 @@
       "orbitValue": "~535 km, 95 min",
       "instrumentsLabel": "Instruments",
       "instrumentsValue": "5"
+    },
+    "orbit": {
+      "eyebrow": "Orbital Path",
+      "title": "Low Earth Orbit",
+      "sub": "Hubble orbits the Earth at an altitude of approximately 535 km, above the distortion of the atmosphere, providing crystal-clear images.",
+      "diagram_earth": "Earth",
+      "view_local": "3D Model",
+      "view_nasa": "NASA Eyes"
     }
   },
   "jwst": {
@@ -1126,7 +1134,9 @@
       "diagram_sun": "Sun",
       "diagram_earth": "Earth",
       "diagram_dist": "1.5M km",
-      "diagram_halo": "Halo Orbit"
+      "diagram_halo": "Halo Orbit",
+      "view_local": "3D Model",
+      "view_nasa": "NASA Eyes"
     },
     "deployment": {
       "eyebrow": "A two-week engineering thriller",
@@ -1358,6 +1368,17 @@
       "orbitValue": "~1.5M km (L2)",
       "instrumentsLabel": "Instruments",
       "instrumentsValue": "2"
+    },
+    "orbit": {
+      "eyebrow": "Orbital Path",
+      "title": "Lagrange Point L2",
+      "sub": "Nancy Grace Roman will be stationed in a halo orbit around the second Lagrange point (L2), 1.5 million km from Earth."
+    },
+    "l2": {
+      "diagram_earth": "Earth",
+      "diagram_sun": "Sun",
+      "view_local": "3D Model",
+      "view_nasa": "NASA Eyes"
     }
   },
   "launches": {
