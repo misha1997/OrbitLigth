@@ -51,6 +51,10 @@ _MEM_MAX = 256
 
 def _disk_path(lang: str, rest: str) -> Path:
     safe = rest.replace("/", "__") or "_home"
+    if "?" in rest:
+        # Query variants need separate, Windows-safe cache filenames.
+        from hashlib import sha256
+        safe = sha256(rest.encode("utf-8")).hexdigest()
     return _CACHE_DIR / lang / f"{safe}.html"
 
 

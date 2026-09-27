@@ -16,6 +16,9 @@ import { SITE_URL, pathFor } from "../lib/seo";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import { TelegramShareIcon, LinkIcon, CheckIcon, XShareIcon } from "../lib/icons";
 import "../styles/news.css";
+import { getNewsBootstrap } from "../lib/news";
+import NewsSkeleton from "../components/NewsSkeleton";
+import { useSeo } from "../hooks/useSeo";
 
 const STOP = new Set([
   "live", "coverage", "to", "for", "from", "on", "the", "a", "of", "and",
@@ -26,29 +29,23 @@ const STOP = new Set([
 export default function NewsArticle({ slug }) {
   const { t } = useTranslation();
   const { lang } = useLang();
-  const { data, loading, error } = useApi(() => getNewsArticle(slug, lang), {
-    deps: [slug, lang],
+  const { data, loading, error, refetch } = useApi(() => getNewsArticle(slug, lang), {
+    deps: [slug, lang], initialData: getNewsBootstrap()?.data || null,
+    revalidate: Boolean(getNewsBootstrap()?.data?.needs_enrichment),
   });
   const [copied, setCopied] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const article = data && data.available ? data : null;
+  const article = !loading && data && data.available ? data : null;
+  useSeo(article, !loading && !error && !article);
   const shareUrl = article
     ? `${SITE_URL}${pathFor("news", lang)}/${article.slug || slug}`
     : "";
 
-  // Per-article client-side title + canonical (no server meta for dynamic
-  // /news/:slug). Keeps the tab + crawlable head in sync on SPA navigation.
   useEffect(() => {
-    if (article && article.title) document.title = article.title;
-    if (shareUrl) {
-      let el = document.head.querySelector('link[rel="canonical"]');
-      if (!el) { el = document.createElement("link"); el.setAttribute("rel", "canonical"); document.head.appendChild(el); }
-      el.setAttribute("href", shareUrl);
-    }
     document.body.classList.add("p-news");
     return () => document.body.classList.remove("p-news");
-  }, [article, shareUrl]);
+  }, []);
 
   // Thin fixed progress bar tracking how far the reader has scrolled.
   useEffect(() => {
@@ -131,10 +128,13 @@ export default function NewsArticle({ slug }) {
         </nav>
 
         {loading ? (
-          <p style={{ color: "var(--text-dim)", fontFamily: "var(--font-mono)", fontSize: 14 }}>
-            {t("news.article.loading")}
-          </p>
-        ) : error || !article ? (
+          <NewsSkeleton article />
+        ) : error && !article ? (
+          <div className="news-feedback" role="alert">
+            <h1>{t("news.loadError")}</h1><p>{t("news.loadErrorSub")}</p>
+            <button className="filter-pill" type="button" onClick={refetch}>{t("news.retry")}</button>
+          </div>
+        ) : !article ? (
           <div className="news-article-unavailable">
             <h3>{t("news.article.unavailable")}</h3>
             <p>{t("news.article.unavailableSub")}</p>
@@ -165,7 +165,8 @@ export default function NewsArticle({ slug }) {
                   src={article.image}
                   alt={article.title}
                   referrerPolicy="no-referrer"
-                  loading="lazy"
+                  loading="eager"
+                  fetchPriority="high"
                 />
                 <div className="article-hero-credit">{article.source}</div>
               </>

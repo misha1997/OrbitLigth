@@ -3094,7 +3094,15 @@
       "factsDate": "Published",
       "factsCategory": "Category",
       "factsRead": "Read time"
-    }
+    },
+    "loadError": "Could not load the news",
+    "loadErrorSub": "Please try again. Your search and filters have been saved.",
+    "retry": "Try again",
+    "reset": "Clear filters and show all news",
+    "emptyArchive": "There are no articles in the archive yet. Please check back later.",
+    "pageEmpty": "There are no articles on this page.",
+    "video": "Watch video",
+    "searchButton": "Search"
   },
   "mercury": {
     "hero": {

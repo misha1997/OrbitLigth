@@ -10,6 +10,8 @@ import { useParams } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { nameFromPath } from "../lib/seo";
 import NotFound from "../pages/NotFound";
+import { getNewsBootstrap } from "../lib/news";
+import NewsSkeleton from "./NewsSkeleton";
 
 const Home = lazy(() => import("../pages/Home"));
 const Weather = lazy(() => import("../pages/Weather"));
@@ -89,6 +91,11 @@ const PAGES = {
   deep: Deep,
 };
 
+function NewsFallback({ article = false }) {
+  const initial = getNewsBootstrap();
+  return initial?.html ? <div dangerouslySetInnerHTML={{ __html: initial.html }} /> : <div className="wrap"><NewsSkeleton article={article} /></div>;
+}
+
 function Loading() {
   return <div style={{ height: "60vh" }} />;
 }
@@ -102,8 +109,8 @@ export default function LangRouter() {
   }
   if (resolved.name === "news" && resolved.articleSlug) {
     return (
-      <Suspense fallback={<Loading />}>
-        <NewsArticle slug={resolved.articleSlug} />
+      <Suspense fallback={<NewsFallback article />}>
+        <NewsArticle key={`${lang}:${resolved.articleSlug}`} slug={resolved.articleSlug} />
       </Suspense>
     );
   }
@@ -117,7 +124,7 @@ export default function LangRouter() {
   const Page = PAGES[resolved.name];
   if (!Page) return <NotFound />;
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={resolved.name === "news" ? <NewsFallback /> : <Loading />}>
       <Page />
     </Suspense>
   );

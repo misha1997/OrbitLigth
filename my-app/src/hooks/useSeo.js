@@ -9,7 +9,8 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { nameFromPath, locFor } from "../lib/seo";
+import { readNewsQuery, newsQueryString } from "../lib/news";
+import { nameFromPath, locFor, SITE_URL, pathFor } from "../lib/seo";
 
 function upsertMeta(selector, attrKey, attrVal, content) {
   let el = document.head.querySelector(selector);
@@ -45,19 +46,54 @@ function upsertHreflang(hreflang, href) {
   el.setAttribute("href", href);
 }
 
-export function useSeo() {
-  const { pathname } = useLocation();
+export function useSeo(article = null, noindex = false) {
+  const { pathname, search } = useLocation();
   const { t } = useTranslation();
   const resolved = nameFromPath(pathname);
   const { name, lang } = resolved;
 
   useEffect(() => {
-    const title = t(`title.${name}`);
-    const desc = t(`seo.desc.${name}`);
-    const canonical = locFor(name, lang);
-    const ukAlt = locFor(name, "uk");
-    const enAlt = locFor(name, "en");
+    // Preserve the server's article metadata while its API request is pending.
+    if (resolved.articleSlug && !article && !noindex) return;
+    const filters = readNewsQuery(new URLSearchParams(search));
+    const isNewsList = name === "news" && !resolved.articleSlug;
+    const page = isNewsList ? filters.page : 0;
+    const suffix = resolved.articleSlug ? `/${resolved.articleSlug}` : isNewsList ? newsQueryString(filters) : "";
+    const title = article?.title || (t(`title.${name}`) + (page ? ` — ${lang === "uk" ? "Сторінка" : "Page"} ${page + 1}` : ""));
+    const desc = article?.excerpt?.slice(0, 160) || t(`seo.desc.${name}`);
+    const canonical = locFor(name, lang) + suffix;
+    const ukAlt = locFor(name, "uk") + suffix;
+    const enAlt = locFor(name, "en") + suffix;
 
+    const image = article?.image ? new URL(article.image, SITE_URL).href : `${SITE_URL}/og-image.png`;
+    upsertMeta('meta[property="og:type"]', "property", "og:type", resolved.articleSlug ? "article" : "website");
+    upsertMeta('meta[property="og:image"]', "property", "og:image", image);
+    upsertMeta('meta[name="twitter:image"]', "name", "twitter:image", image);
+    upsertMeta('meta[name="robots"]', "name", "robots", ["404", "login", "register", "account"].includes(name) ? "noindex,nofollow" : noindex ? "noindex,follow" : isNewsList && (filters.q || filters.category !== "all") ? "noindex,follow" : "index,follow,max-image-preview:large");
+    // Replace initial server markup when navigating between news pages.
+    if (name === "news") {
+      document.head.querySelectorAll('script[type="application/ld+json"]').forEach(el => el.remove());
+      if (article) {
+        const el = document.createElement("script");
+        el.type = "application/ld+json";
+        const parts = (article.date || "").match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+        el.textContent = JSON.stringify({
+          "@context": "https://schema.org", "@type": "NewsArticle",
+          headline: article.title, description: desc, url: canonical,
+          mainEntityOfPage: canonical, inLanguage: lang, image,
+          ...(parts ? { datePublished: `${parts[3]}-${parts[2]}-${parts[1]}` } : {}),
+          author: { "@type": "Organization", name: article.source || "OrbitLight" },
+          publisher: { "@type": "Organization", name: "OrbitLight" },
+          breadcrumb: { "@type": "BreadcrumbList", itemListElement: [
+            { "@type": "ListItem", position: 1, name: "OrbitLight", item: locFor("home", lang) },
+            { "@type": "ListItem", position: 2, name: t("nav.news"), item: SITE_URL + pathFor("news", lang) },
+            { "@type": "ListItem", position: 3, name: article.title, item: canonical },
+          ] },
+        });
+        el.dataset.newsSeo = "true";
+        document.head.appendChild(el);
+      }
+    }
     if (title) document.title = title;
     if (desc) upsertMeta('meta[name="description"]', "name", "description", desc);
     upsertLink("canonical", canonical);
@@ -70,5 +106,6 @@ export function useSeo() {
     upsertMeta('meta[name="twitter:title"]', "name", "twitter:title", title || "");
     upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", desc || "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, name, lang, t]);
+    return () => document.head.querySelectorAll('script[data-news-seo]').forEach(el => el.remove());
+  }, [pathname, search, name, lang, t, article, resolved.articleSlug, noindex]);
 }

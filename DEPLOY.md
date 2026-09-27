@@ -385,3 +385,37 @@ mysqldump -u neowatch -p neowatch > neowatch_backup_$(date +%Y%m%d).sql
 ## Відкат на SQLite (якщо треба)
 
 Є бекап `database_sqlite.py` - просто заміни `database.py`.
+
+### News HTML, archive sitemaps and filters
+
+News list and article routes now render stored content into the initial HTML for
+all visitors. This works with JavaScript disabled and does not require
+`PRERENDER_ENABLED`. React starts from `#news-bootstrap`; only incomplete article bodies or
+translations trigger background API enrichment. Route chunk loading preserves
+the server content, and an older API cache cannot replace the fresh HTML snapshot. Server rendering only
+reads the database: it never fetches an upstream story or requests a translation.
+For legacy articles without a stored body, it renders the stored excerpt; the
+existing API enrichment path can populate the full body/translation afterwards.
+
+`/sitemap.xml` lists `/sitemap-news-{part}.xml` directly. Each numbered file covers
+a stable range of 500 article IDs and contains up to 1,000 UK/EN URLs. The existing
+`/sitemap-news.xml` URL is now an independent sitemap index for the entire archive.
+There are no nested sitemap indexes or 500-article archive cutoff. No migration
+is required. Empty ID ranges are omitted. Unknown shards return 404; database
+outages return an uncached 503 with Retry-After rather than an empty sitemap.
+
+News URLs preserve `q`, `category`, and zero-based `page`. Search and category
+changes reset pagination; pagination preserves filters. Filtered results use
+`noindex,follow` and their own canonical URL. An out-of-range archive page or
+missing article returns 404; database outages return 503. The frontend distinguishes
+errors from empty results and offers retry/reset actions in both languages.
+
+After deploying the backend and rebuilding `my-app`, check an article with JS
+disabled and inspect `/sitemap.xml` and a numbered news sitemap. The existing
+Search Console sitemap submission can continue using `/sitemap.xml` or
+`/sitemap-news.xml`. Unit checks without a live DB:
+
+```powershell
+python -m unittest discover -s tests -p 'test_news_*_unit.py'
+npm --prefix my-app test -- --watch=false --runInBand --runTestsByPath src/pages/News.test.js src/hooks/useApi.test.js src/hooks/useSeo.test.js
+```

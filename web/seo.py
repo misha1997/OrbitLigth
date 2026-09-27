@@ -33,6 +33,8 @@ import html
 import json
 import re
 import time
+from datetime import datetime, timedelta, timezone
+from urllib.parse import urljoin
 from pathlib import Path
 
 import os
@@ -277,7 +279,7 @@ def _render_news_jsonld(article: dict, lang: str) -> str:
     slug = article.get("slug") or ""
     news_slug = slug_for_name("news", lang)
     url = f"{SITE_URL}/{prefix_for(lang)}/{news_slug}/{slug}" if slug else ""
-    image = article.get("image") or _OG_IMAGE
+    image = urljoin(SITE_URL + "/", article.get("image") or _OG_IMAGE)
     pub = article.get("published_date") or article.get("fetched_at") or ""
     obj = {
         "@context": "https://schema.org",
@@ -285,6 +287,7 @@ def _render_news_jsonld(article: dict, lang: str) -> str:
         "headline": title or "",
         "inLanguage": lang,
         "url": url,
+        "mainEntityOfPage": url,
         "image": image if image else _OG_IMAGE,
         "datePublished": _pub_date_iso(pub),
         "author": {"@type": "Organization", "name": article.get("source") or "OrbitLight"},
@@ -364,16 +367,26 @@ def render_head(name: str, lang: str, extra_jsonld: str = "",
     ov = overrides or {}
     title = ov.get("title") or _title(lang, name)
     desc = ov.get("desc") or _desc(lang, name) or "OrbitLight — небо зараз."
-    image = ov.get("image") or _OG_IMAGE
+    image = urljoin(SITE_URL + "/", ov.get("image") or _OG_IMAGE)
     canonical = ov.get("canonical") or (_loc(name, lang) if name != "404" else f"{SITE_URL}/{prefix_for(lang)}/404")
     uk_alt = ov.get("uk_alt") or (_loc(name, "uk") if name != "404" else f"{SITE_URL}/ua/404")
     en_alt = ov.get("en_alt") or (_loc(name, "en") if name != "404" else f"{SITE_URL}/en/404")
     e = lambda s: html.escape(s, quote=True)  # noqa: E731
     jsonld = _render_webpage_jsonld(name, lang) if name != "404" else ""
+    if jsonld and ov:
+        page = json.loads(jsonld)
+        page.update(name=title, description=desc, url=canonical)
+        if ov.get("og_type") == "article":
+            page["breadcrumb"]["itemListElement"].append({
+                "@type": "ListItem", "position": 3, "name": title, "item": canonical,
+            })
+        jsonld = json.dumps(page, ensure_ascii=False)
     robots = (
         '    <meta name="robots" content="noindex,nofollow" />\n'
-        if name in _NOINDEX_NAMES else ""
+        if name in _NOINDEX_NAMES or name == "404" else '    <meta name="robots" content="index,follow,max-image-preview:large" />\n'
     )
+    if ov.get("noindex"):
+        robots = '    <meta name="robots" content="noindex,follow" />\n'
     head = (
         f'<title>{e(title)}</title>\n'
         f'    <meta name="description" content="{e(desc)}" />\n'
@@ -382,7 +395,7 @@ def render_head(name: str, lang: str, extra_jsonld: str = "",
         f'    <link rel="alternate" hreflang="uk" href="{e(uk_alt)}" />\n'
         f'    <link rel="alternate" hreflang="en" href="{e(en_alt)}" />\n'
         f'    <link rel="alternate" hreflang="x-default" href="{e(en_alt)}" />\n'
-        f'    <meta property="og:type" content="website" />\n'
+        f'    <meta property="og:type" content="{e(ov.get("og_type") or "website")}" />\n'
         f'    <meta property="og:site_name" content="OrbitLight" />\n'
         f'    <meta property="og:locale" content="{_og_locale(lang)}" />\n'
         f'    <meta property="og:locale:alternate" content="{"en_US" if lang == "uk" else "uk_UA"}" />\n'
@@ -409,9 +422,9 @@ def render_head(name: str, lang: str, extra_jsonld: str = "",
         f'    <meta name="twitter:image" content="{e(image)}" />\n'
     )
     if jsonld:
-        head += f'    <script type="application/ld+json">{jsonld}</script>'
+        head += f'    <script type="application/ld+json">{jsonld.replace(chr(60), chr(92) + "u003c")}</script>'
     if extra_jsonld:
-        head += f'\n    <script type="application/ld+json">{extra_jsonld}</script>'
+        head += f'\n    <script type="application/ld+json">{extra_jsonld.replace(chr(60), chr(92) + "u003c")}</script>'
     return head
 
 
@@ -432,7 +445,7 @@ def render_html(index_html: str, name: str, lang: str, extra_jsonld: str = "",
     survive Create React App's production build, which strips comments.
     """
     head = render_head(name, lang, extra_jsonld=extra_jsonld, overrides=overrides)
-    out, n = _HEAD_BLOCK_RE.subn(head, index_html, count=1)
+    out, n = _HEAD_BLOCK_RE.subn(lambda _: head, index_html, count=1)
     if n == 0:
         # Markers missing (e.g. an older build) — inject before </head> as a
         # graceful fallback so crawlers still get per-route meta.
@@ -469,7 +482,7 @@ def render_embed_html(index_html: str, lang: str = "en") -> str:
         f'    <meta name="robots" content="noindex,nofollow" />\n'
         f'    <link rel="canonical" href="{e(canonical)}" />\n'
     )
-    out, n = _HEAD_BLOCK_RE.subn(head, index_html, count=1)
+    out, n = _HEAD_BLOCK_RE.subn(lambda _: head, index_html, count=1)
     if n == 0:
         out = index_html.replace("</head>", head + "\n  </head>", 1)
     out = _HTML_LANG_RE.sub(f'<html lang="{lang}">', out, count=1)
@@ -486,7 +499,7 @@ def render_admin_html(index_html: str) -> str:
         '<title>OrbitLight — Admin</title>\n'
         '    <meta name="robots" content="noindex,nofollow" />\n'
     )
-    out, n = _HEAD_BLOCK_RE.subn(head, index_html, count=1)
+    out, n = _HEAD_BLOCK_RE.subn(lambda _: head, index_html, count=1)
     if n == 0:
         out = index_html.replace("</head>", head + "\n  </head>", 1)
     out = _HTML_LANG_RE.sub('<html lang="en">', out, count=1)
@@ -498,10 +511,10 @@ def build_sitemap_index_xml() -> str:
     subs = [
         (f"{SITE_URL}/sitemap-pages.xml", _LASTMOD),
         (f"{SITE_URL}/sitemap-images.xml", _LASTMOD),
-        (f"{SITE_URL}/sitemap-news.xml", _LASTMOD),
     ]
+    subs.extend((loc, "") for loc in news_sitemap_locations())
     items = "\n".join(
-        f"  <sitemap>\n    <loc>{html.escape(loc)}</loc>\n    <lastmod>{lm}</lastmod>\n  </sitemap>"
+        f"  <sitemap>\n    <loc>{html.escape(loc)}</loc>\n  </sitemap>"
         for loc, lm in subs
     )
     return (
@@ -569,19 +582,23 @@ def _wrap_urlset(urls: list[str]) -> str:
     )
 
 
-def build_sitemap_news_xml() -> str:
-    """Sitemap for news articles (``/ua/novyny/<slug>`` + ``/en/news/<slug>``).
+def news_sitemap_locations() -> list[str]:
+    from database import get_news_sitemap_parts
+    return [f"{SITE_URL}/sitemap-news-{part}.xml" for part in get_news_sitemap_parts()]
 
-    Reads recent articles from the DB; returns an empty (but valid) urlset if
-    the DB is unavailable so the site never 500s on /sitemap-news.xml. Article
-    slugs are language-neutral (one slug per article, shared across prefixes).
-    """
+
+def build_sitemap_news_xml(part: int | None = None) -> str:
+    """The legacy URL is an index; each numbered file covers a stable ID range."""
+    if part is None:
+        items = "".join(f"<sitemap><loc>{html.escape(loc)}</loc></sitemap>" for loc in news_sitemap_locations())
+        return ('<?xml version="1.0" encoding="UTF-8"?>\n'
+                '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+                + items + '</sitemapindex>')
+    from database import get_news_sitemap_articles
+    articles = get_news_sitemap_articles(part)
+    if not articles:
+        raise LookupError("Unknown news sitemap")
     urls: list[str] = []
-    try:
-        from database import get_news_articles  # local import — avoid hard DB dep at import
-        articles = get_news_articles(limit=500)
-    except Exception:  # noqa: BLE001 — must never break the sitemap
-        articles = []
 
     news_slugs = {lang: slug_for_name("news", lang) for lang in LANGS}
     seen = set()
@@ -591,7 +608,15 @@ def build_sitemap_news_xml() -> str:
             continue
         seen.add(slug)
         pub = a.get("published_date") or a.get("fetched_at")
-        pub_iso = _pub_date_iso(pub) or _LASTMOD
+        pub_iso = _pub_date_iso(pub)
+        try:
+            published = datetime.fromisoformat(pub_iso.replace("Z", "+00:00"))
+            if published.tzinfo is None:
+                published = published.replace(tzinfo=timezone.utc)
+            recent = timedelta(0) <= datetime.now(timezone.utc) - published <= timedelta(days=2)
+        except (ValueError, TypeError):
+            pub_iso = ""
+            recent = False
         title_uk = a.get("title_uk") or a.get("title") or ""
         title_en = a.get("title") or ""
         for lang in LANGS:
@@ -614,10 +639,13 @@ def build_sitemap_news_xml() -> str:
                 f"      <news:title>{html.escape(title_uk if lang == 'uk' else title_en)}</news:title>\n"
                 "    </news:news>\n"
             )
+            if not recent:
+                news_block = ""
+            lastmod = f"    <lastmod>{pub_iso}</lastmod>\n" if pub_iso else ""
             url = (
                 f"  <url>\n"
                 f"    <loc>{html.escape(loc)}</loc>\n"
-                f"    <lastmod>{pub_iso}</lastmod>\n"
+                f"{lastmod}"
                 f"    {news_block}"
                 f'    <xhtml:link rel="alternate" hreflang="uk" href="{html.escape(uk_alt)}" />\n'
                 f'    <xhtml:link rel="alternate" hreflang="en" href="{html.escape(en_alt)}" />\n'

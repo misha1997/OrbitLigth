@@ -31,6 +31,7 @@ the site + API are served.
 from __future__ import annotations
 
 import logging
+import asyncio
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -57,7 +58,7 @@ from web.seo import (
     render_head,
     slug_for_name,
 )
-from web.seo import _render_news_jsonld, _render_faq_jsonld, render_admin_html, render_embed_html
+from web.seo import _render_faq_jsonld, render_admin_html, render_embed_html
 
 logger = logging.getLogger(__name__)
 
@@ -370,22 +371,38 @@ def _spa_html(name: str, lang: str, status_code: int = 200,
                         headers={"Cache-Control": "public, max-age=300"})
 
 
+async def _sitemap_response(builder, *args):
+    try:
+        content = await asyncio.to_thread(builder, *args)
+    except LookupError:
+        return Response(status_code=404)
+    except Exception:
+        logger.exception("Sitemap database read failed")
+        return Response(status_code=503, headers={"Retry-After": "60", "Cache-Control": "no-store"})
+    return Response(content, media_type="application/xml; charset=utf-8",
+                    headers={"Cache-Control": "public, max-age=3600"})
+
+
 @app.api_route("/sitemap.xml", methods=["GET", "HEAD"], include_in_schema=False)
 async def _sitemap():
-    return Response(build_sitemap_index_xml(), media_type="application/xml; charset=utf-8",
-                    headers={"Cache-Control": "public, max-age=3600"})
+    return await _sitemap_response(build_sitemap_index_xml)
 
 
 @app.api_route("/sitemap-pages.xml", methods=["GET", "HEAD"], include_in_schema=False)
 async def _sitemap_pages():
-    return Response(build_sitemap_pages_xml(), media_type="application/xml; charset=utf-8",
-                    headers={"Cache-Control": "public, max-age=3600"})
+    return await _sitemap_response(build_sitemap_pages_xml)
 
 
 @app.api_route("/sitemap-news.xml", methods=["GET", "HEAD"], include_in_schema=False)
 async def _sitemap_news():
-    return Response(build_sitemap_news_xml(), media_type="application/xml; charset=utf-8",
-                    headers={"Cache-Control": "public, max-age=3600"})
+    return await _sitemap_response(build_sitemap_news_xml)
+
+
+@app.api_route("/sitemap-news-{part:int}.xml", methods=["GET", "HEAD"], include_in_schema=False)
+async def _sitemap_news_part(part: int):
+    if part < 1:
+        return Response(status_code=404)
+    return await _sitemap_response(build_sitemap_news_xml, part)
 
 
 @app.api_route("/sitemap-images.xml", methods=["GET", "HEAD"], include_in_schema=False)
@@ -455,21 +472,6 @@ def _serve_static_asset(full_path: str):
     return None
 
 
-def _try_news_article(slug: str):
-    """Fetch a news article by slug for JSON-LD; None if DB unavailable / missing.
-
-    Imported lazily so a DB outage never breaks the site shell; the news page
-    still renders, just without per-article JSON-LD.
-    """
-    if not slug:
-        return None
-    try:
-        from database import get_news_article_by_slug
-        return get_news_article_by_slug(slug)
-    except Exception:  # noqa: BLE001
-        return None
-
-
 def _try_galaxy(slug: str):
     """Fetch a galaxy by slug for per-galaxy SEO meta; None if DB unavailable /
     unknown slug. Lazy import so a DB outage never breaks the site shell."""
@@ -489,8 +491,8 @@ async def _spa_lang(lang: str, rest: str, request: Request):
     - News list (rest == news slug) → news meta.
     - News article (rest == <news slug>/<slug>) → per-article meta + NewsArticle
       JSON-LD; HTTP 404 if the article slug doesn't resolve in the DB (real 404,
-      not a soft SPA 404). If the DB is unreachable we can't verify, so we serve
-      the shell (200) and let the client decide.
+      not a soft SPA 404). DB failures return a retryable 503. News content
+      is rendered from stored data for all visitors, with React bootstrap data.
     - Other rest → resolved via the slug map; unknown → HTTP 404.
     """
     rest = (rest or "").strip("/")
@@ -501,8 +503,18 @@ async def _spa_lang(lang: str, rest: str, request: Request):
     path = request.url.path
     pfx = prefix_for(lang)
     if path not in (f"/{pfx}/", f"/{pfx}") and path.endswith("/"):
-        return RedirectResponse(url=path.rstrip("/") or f"/{pfx}", status_code=301)
+        return RedirectResponse(url=(path.rstrip("/") or f"/{pfx}") + ("?" + request.url.query if request.url.query else ""), status_code=301)
     news_slug = slug_for_name("news", lang)
+    if rest == news_slug or rest.startswith(news_slug + "/"):
+        from web.news_pages import news_response
+        tail = rest[len(news_slug) + 1:] if rest != news_slug else None
+        if tail is not None and (not tail or "/" in tail):
+            return _spa_html("404", lang, status_code=404)
+        return await news_response(
+            _SPA_INDEX.read_text(encoding="utf-8"), lang, tail,
+            request.url.path + ("?" + request.url.query if request.url.query else ""),
+            request.query_params,
+        )
     galaxies_slug = slug_for_name("galaxies", lang)
     name = "home"
     status = 200
@@ -511,32 +523,6 @@ async def _spa_lang(lang: str, rest: str, request: Request):
 
     if rest == "" or rest == "/":
         name = "home"
-    elif rest == news_slug:
-        name = "news"
-    elif rest.startswith(news_slug + "/"):
-        tail = rest[len(news_slug) + 1:]
-        article_slug = tail.split("/")[0]
-        if not article_slug or "/" in tail:
-            name = "404"
-            status = 404
-        else:
-            article = _try_news_article(article_slug)
-            if article is None:
-                name = "404"
-                status = 404
-            else:
-                name = "news"
-                headline = (article.get("title_uk") or article.get("title")) if lang == "uk" else article.get("title")
-                excerpt = (article.get("excerpt_uk") or article.get("excerpt")) if lang == "uk" else article.get("excerpt")
-                overrides = {
-                    "title": headline or None,
-                    "desc": (excerpt or "")[:160] or None,
-                    "image": article.get("image") or None,
-                    "canonical": f"{SITE_URL}/{prefix_for(lang)}/{news_slug}/{article_slug}",
-                    "uk_alt": f"{SITE_URL}/ua/{slug_for_name('news','uk')}/{article_slug}",
-                    "en_alt": f"{SITE_URL}/en/{slug_for_name('news','en')}/{article_slug}",
-                }
-                extra_jsonld = _render_news_jsonld(article, lang)
     elif rest.startswith(galaxies_slug + "/"):
         tail = rest[len(galaxies_slug) + 1:]
         galaxy_slug = tail.split("/")[0]

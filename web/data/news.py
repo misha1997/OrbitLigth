@@ -75,7 +75,7 @@ def _news_live(lang: str) -> list[dict[str, Any]]:
 
 
 def _news_raw(lang: str, page: int = 0, page_size: int = NEWS_PAGE_SIZE_DEFAULT,
-              q: str = "", category: str = "") -> dict[str, Any]:
+              q: str = "", category: str = "", *, allow_live: bool = True) -> dict[str, Any]:
     """One page of the news archive, optionally filtered by `category` and/or
     a `q` search term (title/excerpt substring, either language) — both
     applied at the DB level. Falls back to a live unpaginated fetch only for
@@ -86,15 +86,15 @@ def _news_raw(lang: str, page: int = 0, page_size: int = NEWS_PAGE_SIZE_DEFAULT,
     page_size = max(1, min(NEWS_PAGE_SIZE_MAX, page_size))
     offset = page * page_size
 
-    total = count_news_articles(search=q or None, category=category or None)
-    if total == 0 and not q and not category and page == 0:
+    total = count_news_articles(search=q or None, category=category or None, strict=True)
+    if allow_live and total == 0 and not q and not category and page == 0:
         live = _news_live(lang)
         return {
             "available": bool(live), "items": live, "total": len(live),
             "page": 0, "page_size": page_size, "total_pages": 1, "has_more": False,
         }
 
-    rows = get_news_articles(page_size, offset=offset, search=q or None, category=category or None)
+    rows = get_news_articles(page_size, offset=offset, search=q or None, category=category or None, strict=True)
     total_pages = max(1, -(-total // page_size))  # ceil division
     return {
         "available": total > 0,
@@ -187,13 +187,13 @@ async def get_news_keywords(lang: str = DEFAULT_LANG) -> dict[str, list[str]]:
     return {"keywords": keywords}
 
 
-def _news_article_raw(slug: str, lang: str) -> dict[str, Any]:
+def _news_article_raw(slug: str, lang: str, *, enrich: bool = True) -> dict[str, Any]:
     """Article page data keyed by slug. The body (English) is stored at ingest
     time (from the RSS ``content:encoded``), so this only translates it to UK
     on first view (lazily, persisted — never retranslated). For legacy rows with
     no stored body, falls back to a lazy HTML fetch via ``get_article_content``.
     Returns 3 related articles in the same category."""
-    it = get_news_article_by_slug(slug)
+    it = get_news_article_by_slug(slug, strict=True)
     if not it:
         return {"available": False}
     article_id: int = it["id"]
@@ -205,7 +205,7 @@ def _news_article_raw(slug: str, lang: str) -> dict[str, Any]:
     # docstring and database/pool.py's module docstring) — a crash between
     # them can leave the body referencing image/video placeholders with no
     # matching rows yet. Deliberately left as a follow-up.
-    if not it.get("body"):
+    if enrich and not it.get("body"):
         try:
             content = NewsParser.get_article_content(it["url"])
             body = content.get("body", "")
@@ -231,7 +231,7 @@ def _news_article_raw(slug: str, lang: str) -> dict[str, Any]:
     # Lazy UK translation of the stored EN body — persisted so it's only done
     # once per article (DeepL quota: translating every new article's full body
     # at ingest would exceed the 500k/month free limit).
-    if lang == "uk" and it.get("body") and not it.get("body_uk"):
+    if enrich and lang == "uk" and it.get("body") and not it.get("body_uk"):
         try:
             body_uk = Translator.translate_body(it["body"])
             if body_uk and body_uk != it["body"]:
@@ -239,7 +239,7 @@ def _news_article_raw(slug: str, lang: str) -> dict[str, Any]:
                 it["body_uk"] = body_uk
         except Exception as e:
             logger.error("news article body translate: %s", e)
-    body = (it.get("body_uk") if lang == "uk" and it.get("body_uk") else it.get("body")) or it.get("excerpt") or ""
+    body = (it.get("body_uk") if lang == "uk" and it.get("body_uk") else it.get("body")) or (it.get("excerpt_uk") if lang == "uk" else "") or it.get("excerpt") or ""
     title = (it.get("title_uk") if lang == "uk" and it.get("title_uk") else it.get("title")) or ""
     related = _news_localize(
         get_related_news_articles(it.get("category") or "missions", slug, 3), lang
@@ -258,11 +258,13 @@ def _news_article_raw(slug: str, lang: str) -> dict[str, Any]:
             body_videos.append({"position": row.get("position"), "src": row.get("video_url") or ""})
     return {
         "available": True,
+        "needs_enrichment": not bool(it.get("body")) or (lang == "uk" and not bool(it.get("body_uk"))),
         "id": article_id,
         "slug": it.get("slug") or slug,
         "url": it.get("url") or "",
         "title": title,
         "body": body,
+        "excerpt": (it.get("excerpt_uk") if lang == "uk" else "") or it.get("excerpt") or "",
         "body_images": body_images,
         "body_videos": body_videos,
         "image": it.get("image") or "",

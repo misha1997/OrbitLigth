@@ -13,7 +13,7 @@ import { pathFor, switchLangPath } from "../../lib/seo";
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState(null);
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { lang } = useLang();
@@ -52,7 +52,7 @@ export default function Header() {
   // Language switcher: navigate to the same content in the other language.
   // The URL is the source of truth; Layout's effect then syncs localStorage +
   // i18next to the new prefix. (setLang alone doesn't change the URL.)
-  const switchLang = (code) => navigate(switchLangPath(pathname, code));
+  const switchLang = (code) => navigate(switchLangPath(pathname, code) + search);
 
   const LangBtn = ({ code }) => (
     <button

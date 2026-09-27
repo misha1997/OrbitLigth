@@ -6,7 +6,7 @@
 // page's items. Items with an `id` link to the on-site article page
 // (/news/:slug); live-without-DB items (id === null) link out to the source.
 import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { useLang } from "../context/LanguageContext";
 import { useApi } from "../hooks/useApi";
@@ -14,65 +14,56 @@ import { useSeo } from "../hooks/useSeo";
 import { getNews, getNewsKeywords } from "../lib/api";
 import { pathFor } from "../lib/seo";
 import LocalizedLink from "../components/primitives/LocalizedLink";
+import NewsSkeleton from "../components/NewsSkeleton";
+import { getNewsBootstrap, readNewsQuery, newsQueryString, NEWS_CATEGORIES as CATS } from "../lib/news";
 import HistoryWidget from "../components/home/HistoryWidget";
 import "../styles/news.css";
 import "../styles/gallery.css"; // .pagination / .pg-btn
 
 const PAGE_SIZE = 12;
-const CATS = ["all", "launches", "missions", "discoveries", "tech"];
+
 const SEARCH_DEBOUNCE_MS = 350;
 
 export default function News() {
   const { t } = useTranslation();
   const { lang } = useLang();
-  useSeo();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     document.body.classList.add("p-news");
     return () => document.body.classList.remove("p-news");
   }, []);
 
-  const [filter, setFilter] = useState("all");
-  const [rawQuery, setRawQuery] = useState("");
-  const [query, setQuery] = useState(""); // debounced, drives the API call
-  const [view, setView] = useState("cards");
-
-
-  // Page number lives in the URL (?page=N, 0-indexed, omitted at 0) so it's
-  // shareable/bookmarkable and survives a reload — same convention as the
-  // APOD gallery (Gallery.js).
   const [searchParams, setSearchParams] = useSearchParams();
-  const page = Math.max(0, parseInt(searchParams.get("page") || "0", 10) || 0);
-  const setPage = (p, opts) => {
-    setSearchParams((prev) => {
-      const next = new URLSearchParams(prev);
-      if (p === 0) next.delete("page"); else next.set("page", String(p));
-      return next;
-    }, opts);
+  const { page, q: query, category: filter } = readNewsQuery(searchParams);
+  const [rawQuery, setRawQuery] = useState(query);
+  const [view, setView] = useState("cards");
+  const searchTimer = useRef(null);
+  useEffect(() => {
+    clearTimeout(searchTimer.current);
+    setRawQuery(query);
+  }, [query, searchParams]);
+  useEffect(() => () => clearTimeout(searchTimer.current), []);
+
+  const updateFilters = (next, replace = false) => {
+    clearTimeout(searchTimer.current);
+    const values = { page: 0, q: query, category: filter, ...next };
+    setRawQuery(values.q);
+    setSearchParams(newsQueryString(values).slice(1), { replace });
   };
-
-  // Debounce the free-text search box so we don't hit the backend on every
-  // keystroke; keyword chips / category pills set `query` immediately below.
-  useEffect(() => {
-    const id = setTimeout(() => setQuery(rawQuery), SEARCH_DEBOUNCE_MS);
-    return () => clearTimeout(id);
-  }, [rawQuery]);
-
-  // Reset to the first page whenever the active filter / search changes.
-  const firstRun = useRef(true);
-  useEffect(() => {
-    if (firstRun.current) { firstRun.current = false; return; }
-    setPage(0, { replace: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, query]);
+  const search = (value) => {
+    setRawQuery(value);
+    clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => updateFilters({ q: value.trim().slice(0, 100) }, true), SEARCH_DEBOUNCE_MS);
+  };
 
   const isDefaultView = filter === "all" && !query;
 
-  const { data, loading, error } = useApi(
+  const { data, loading, error, refetch } = useApi(
     () => getNews(lang, { page, pageSize: PAGE_SIZE, q: query, category: filter }),
-    { deps: [lang, page, query, filter] }
+    { deps: [lang, page, query, filter], initialData: getNewsBootstrap()?.data || null, revalidate: false }
   );
   const items = (data && data.items) || [];
+  useSeo(null, !loading && !error && page > 0 && items.length === 0);
 
   // Trending keywords mined server-side from recent article titles (not a
   // hardcoded list) — refetch only when the language changes.
@@ -85,14 +76,10 @@ export default function News() {
   // The featured hero only makes sense on the plain, unfiltered first page.
   const featured = isDefaultView && safePage === 0 ? items[0] : null;
 
-  const pageHref = (n) => pathFor("news", lang) + (n === 0 ? "" : `?page=${n}`);
+  const pageHref = (n) => pathFor("news", lang) + newsQueryString({ page: n, q: query, category: filter });
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
-  const setKeyword = (kw) => {
-    setFilter("all");
-    setRawQuery(kw);
-    setQuery(kw); // skip the debounce for an explicit chip click
-  };
+  const setKeyword = (kw) => updateFilters({ q: kw, category: "all" });
 
   // Compact pagination: first, last, current ±1, with ellipses.
   const pageBtns = [];
@@ -157,10 +144,12 @@ export default function News() {
 
         <div className="news-search">
           <input
-            type="text"
+            type="search"
+            maxLength={100}
             placeholder={t("news.search.placeholder")}
+            aria-label={t("news.search.placeholder")}
             value={rawQuery}
-            onChange={(e) => setRawQuery(e.target.value)}
+            onChange={(e) => search(e.target.value)}
           />
         </div>
         {keywords.length ? (
@@ -185,23 +174,19 @@ export default function News() {
               key={c}
               className={"filter-pill" + (filter === c ? " on" : "")}
               type="button"
-              onClick={() => setFilter(c)}
+              aria-pressed={filter === c}
+              onClick={() => updateFilters({ category: c, q: rawQuery.trim().slice(0, 100) })}
             >
               {catLabel(c)}
             </button>
           ))}
         </div>
 
+        {(query || filter !== "all") && <button className="filter-pill" type="button" onClick={() => updateFilters({ q: "", category: "all" })}>{t("news.reset")}</button>}
         <div className="news-count">
-          <span
-            dangerouslySetInnerHTML={{
-              __html: t("news.count", {
-                n: `<b>${total}</b>`,
-                q: query.trim(),
-                defaultValue: `Знайдено <b>${total}</b> новин`,
-              }),
-            }}
-          />
+          <span aria-live="polite">
+            {!loading && !error && <Trans i18nKey="news.count" values={{ n: total, q: query }} components={{ b: <b /> }} />}
+          </span>
           <div className="view-toggle">
             <button
               className={"vt-btn" + (view === "cards" ? " active" : "")}
@@ -225,26 +210,18 @@ export default function News() {
         </div>
 
         {loading ? (
-          <div className="news-list view-rows">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div className="news-card" key={i} aria-hidden="true">
-                <div className="top-row">
-                  <span className="cat-pill missions">—</span>
-                </div>
-                <h4 style={{ color: "var(--text-dim)" }}>—</h4>
-                <p style={{ color: "var(--text-dim)" }}>—</p>
-              </div>
-            ))}
-            <p style={{ color: "var(--text-dim)", fontFamily: "var(--font-mono)", fontSize: 13 }}>
-              {t("news.loading")}
-            </p>
-          </div>
+          <NewsSkeleton view={view} />
         ) : error ? (
-          <p style={{ color: "var(--coral)", marginTop: 18 }}>{t("news.empty")}</p>
+          <div className="news-feedback" role="alert">
+            <h3>{t("news.loadError")}</h3>
+            <p>{t("news.loadErrorSub")}</p>
+            <button className="filter-pill" type="button" onClick={refetch}>{t("news.retry")}</button>
+          </div>
         ) : pageItems.length === 0 ? (
-          <p style={{ color: "var(--text-dim)", fontSize: 14, marginTop: 18 }}>
-            {t("news.noMatch")}
-          </p>
+          <div className="news-feedback" role="status">
+            <p>{t(query || filter !== "all" ? "news.noMatch" : page > 0 ? "news.pageEmpty" : "news.emptyArchive")}</p>
+            {(query || filter !== "all" || page > 0) && <button className="filter-pill" type="button" onClick={() => updateFilters({ q: "", category: "all" })}>{t("news.reset")}</button>}
+          </div>
         ) : (
           <>
             <div className={"news-list view-" + view}>
@@ -253,10 +230,7 @@ export default function News() {
                 // have a slug, else out to the source (live-without-DB items).
                 const hasSlug = !!(it.id && it.slug);
                 const preview = it.image ? (
-                  <div
-                    className="news-card-preview"
-                    style={{ backgroundImage: `url("${it.image}")` }}
-                  />
+                  <img className="news-card-preview" src={it.image} alt="" loading="lazy" decoding="async" />
                 ) : (
                   <div className={"news-card-preview news-card-preview-ph cat-" + (it.category || "missions")} />
                 );

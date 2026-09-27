@@ -74,6 +74,7 @@ from .notifications import (
 )
 
 from .news import (
+    get_news_sitemap_parts, get_news_sitemap_articles,
     normalize_url,
     ingest_news_articles,
     set_news_article_videos,
@@ -172,6 +173,7 @@ __all__ = [
     "set_news_article_images", "get_news_article_images", "get_news_articles",
     "count_news_articles", "get_news_article", "get_news_article_by_slug",
     "get_related_news_articles", "set_news_article_body",
+    "get_news_sitemap_parts", "get_news_sitemap_articles",
     "ingest_apod_entries", "get_apod_entries", "get_apod_entries_admin",
     "count_apod_entries", "get_apod_entry", "update_apod_entry",
     "delete_apod_entry", "backfill_apod_archive",

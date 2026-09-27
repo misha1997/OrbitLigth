@@ -523,11 +523,11 @@ def _news_filter_clause(search: Optional[str], category: Optional[str]) -> tuple
 
 
 def get_news_articles(limit: int = 60, offset: int = 0, search: Optional[str] = None,
-                       category: Optional[str] = None) -> list:
+                       category: Optional[str] = None, *, strict: bool = False) -> list:
     """Return archived news articles (newest first) as dicts, optionally
     filtered by `category` and/or a `search` substring (title/excerpt, both
     languages) and paged via `offset`. Returns [] on any DB error (never
-    raises) so the web layer can fall back to a live SpaceflightNow fetch."""
+    raises unless strict=True). Strict callers distinguish outages from empty results."""
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
@@ -536,21 +536,23 @@ def get_news_articles(limit: int = 60, offset: int = 0, search: Optional[str] = 
             f'''SELECT id, url, slug, title, title_uk, excerpt, excerpt_uk, image,
                       category, category_raw, published_date, source, fetched_at
                FROM news_articles {clause}
-               ORDER BY fetched_at DESC LIMIT %s OFFSET %s''',
+               ORDER BY fetched_at DESC, id DESC LIMIT %s OFFSET %s''',
             params + [limit, offset]
         )
         return list(cursor.fetchall())
     except Error as e:
         logger.error(f"Error reading news articles: {e}")
+        if strict:
+            raise
         return []
     finally:
         cursor.close()
         conn.close()
 
 
-def count_news_articles(search: Optional[str] = None, category: Optional[str] = None) -> int:
+def count_news_articles(search: Optional[str] = None, category: Optional[str] = None, *, strict: bool = False) -> int:
     """Total archived articles matching the same filter as get_news_articles
-    (for pagination). Returns 0 on DB error."""
+    (for pagination). Returns 0 on DB error unless strict=True."""
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
@@ -560,6 +562,8 @@ def count_news_articles(search: Optional[str] = None, category: Optional[str] = 
         return int(row[0]) if row else 0
     except Error as e:
         logger.error(f"Error counting news articles: {e}")
+        if strict:
+            raise
         return 0
     finally:
         cursor.close()
@@ -582,9 +586,9 @@ def get_news_article(article_id: int) -> Optional[dict]:
         conn.close()
 
 
-def get_news_article_by_slug(slug: str) -> Optional[dict]:
+def get_news_article_by_slug(slug: str, *, strict: bool = False) -> Optional[dict]:
     """Return a single archived article (all columns) by its public slug, or
-    None if not found / DB error. This is the key for the /news/<slug> page."""
+    None if not found / DB error. strict=True propagates DB failures."""
     if not slug:
         return None
     conn = get_db_connection()
@@ -594,6 +598,8 @@ def get_news_article_by_slug(slug: str) -> Optional[dict]:
         return cursor.fetchone()
     except Error as e:
         logger.error(f"Error reading news article by slug {slug}: {e}")
+        if strict:
+            raise
         return None
     finally:
         cursor.close()
@@ -660,3 +666,36 @@ def set_news_article_body(article_id: int, body: str, body_uk: str, image: Optio
         conn.close()
 
 
+# Stable ID ranges: <=500 articles / 1000 language URLs per sitemap.
+NEWS_SITEMAP_PART_SIZE = 500
+
+
+def get_news_sitemap_parts() -> list[int]:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            "SELECT DISTINCT FLOOR((id - 1) / %s) + 1 AS part "
+            "FROM news_articles WHERE slug IS NOT NULL AND slug != '' ORDER BY part",
+            (NEWS_SITEMAP_PART_SIZE,),
+        )
+        return [int(row[0]) for row in cursor.fetchall()]
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_news_sitemap_articles(part: int) -> list[dict]:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute(
+            "SELECT slug, title, title_uk, published_date, fetched_at "
+            "FROM news_articles WHERE id > %s AND id <= %s "
+            "AND slug IS NOT NULL AND slug != '' ORDER BY id",
+            ((part - 1) * NEWS_SITEMAP_PART_SIZE, part * NEWS_SITEMAP_PART_SIZE),
+        )
+        return list(cursor.fetchall())
+    finally:
+        cursor.close()
+        conn.close()

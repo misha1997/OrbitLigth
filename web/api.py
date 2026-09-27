@@ -10,7 +10,7 @@ from __future__ import annotations
 import asyncio
 import logging
 
-from fastapi import APIRouter, Query, Request
+from fastapi import APIRouter, Query, Request, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -207,7 +207,10 @@ async def news(
     live-without-DB fallback entries) so the front can route cards with an id
     to the on-site article page and the rest out to the source.
     """
-    return await data.get_news(lang, page, page_size, q, category)
+    try:
+        return await data.get_news(lang, page, page_size, q, category)
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail="News temporarily unavailable", headers={"Retry-After": "60"}) from exc
 
 
 @router.get("/news/keywords")
@@ -233,7 +236,10 @@ async def news_article(slug: str, lang: str = LANG_Q):
     archive (requires the DB). Also returns ``related[]`` (up to 3 same-category
     articles) for the «Пов'язані новини» section.
     """
-    return await data.get_news_article_api(slug, lang)
+    try:
+        return await data.get_news_article_api(slug, lang)
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail="News temporarily unavailable", headers={"Retry-After": "60"}) from exc
 
 
 @router.get("/apod")
