@@ -1,18 +1,12 @@
-// Nancy Grace Roman Space Telescope page: hero with a live auto-rotating 3D
-// preview (fullscreen free-orbit viewer on click), an embedded launch
-// livestream, mission stats, real build/launch-prep photos (Roman hasn't
-// launched yet, so there's no MAST science-imagery gallery like
-// Hubble.js/Jwst.js — these are curated NASA Image Library photos instead,
-// mirrored locally the same way Hubble.js's ICONIC images are), a vs-Hubble
-// comparison table, science goals, instruments, and facts.
+// Roman mission status, launch replay, and locally mirrored NASA build photos.
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "../styles/telescope3d.css"; // For .tele3d-hero-* (hero 3D preview + loading placeholder)
 import SectionHead from "../components/primitives/SectionHead";
 import Eyebrow from "../components/primitives/Eyebrow";
 import LocalizedLink from "../components/primitives/LocalizedLink";
-import RomanCountdown from "../components/RomanCountdown";
 import RomanL2Orbit from "./RomanL2Orbit";
+import RomanNews from "../components/RomanNews";
 
 // three.js/@react-three/fiber/drei are heavy — lazy-load so the base page
 // bundle stays light (same reasoning as Hubble.js/Jwst.js).
@@ -28,6 +22,11 @@ const SCI_VALUE_STYLE = { fontSize: 20 };
 const SCIENCE = ["sci1", "sci2", "sci3"];
 const FACTS = ["f1", "f2", "f3", "f4", "f5", "f6"];
 const VS_ROWS = ["mirror", "fov", "launch", "orbit", "role"];
+const UPDATES = [
+  { key: "data", date: "2026-09-25", url: "https://science.nasa.gov/blogs/roman/2026/09/25/nasas-roman-team-confirms-ground-stations-receiving-data/" },
+  { key: "instruments", date: "2026-09-15", url: "https://science.nasa.gov/blogs/roman/2026/09/15/nasa-activates-romans-primary-instrument-checks-out-coronagraph/" },
+  { key: "fuel", date: "2026-09-14", url: "https://science.nasa.gov/blogs/roman/2026/09/14/fuel-savings-double-potential-lifetime-for-nasas-roman-mission/" },
+];
 // Real NASA Image Library photos (images-api.nasa.gov), mirrored locally —
 // same treatment as Hubble.js's ICONIC array. Chronological build/launch-prep
 // milestones, since Roman has no in-orbit science images yet.
@@ -50,11 +49,12 @@ export default function Roman() {
       <section className="hero">
         <div className="wrap hero-grid">
           <div style={{ maxWidth: 680 }}>
-            <div className="eyebrow"><span className="dot live" /> {t("roman.hero.eyebrow")}</div>
+            <div className="eyebrow">{t("roman.hero.eyebrow")}</div>
             <h1 className="hero-title" dangerouslySetInnerHTML={{ __html: t("roman.hero.title") }} />
             <p className="hero-sub">{t("roman.hero.sub")}</p>
             <div className="hero-actions">
-              <a href="#launch" className="btn primary">{t("roman.hero.launchCta")}</a>
+              <a href="#status" className="btn primary">{t("roman.status.cta")}</a>
+              <a href="#launch" className="btn ghost">{t("roman.hero.launchCta")}</a>
               <a href="#facts" className="btn ghost">{t("roman.hero.factsCta")}</a>
             </div>
           </div>
@@ -64,7 +64,27 @@ export default function Roman() {
         </div>
       </section>
 
-      <section className="section" id="launch" style={{ paddingTop: 24 }}>
+      <section className="section" id="status" style={{ paddingTop: 24 }}>
+        <div className="wrap">
+          <SectionHead eyebrow={t("roman.status.eyebrow")} title={t("roman.status.title")} />
+          <p className="section-sub">{t("roman.status.sub")}</p>
+          <p className="section-sub"><time dateTime="2026-09-28">{t("roman.status.updated")}</time></p>
+          <div className="grid cols-3">
+            {UPDATES.map(({ key, date, url }) => (
+              <article className="card" key={key}>
+                <time className="k" dateTime={date}>{t(`roman.status.${key}.date`)}</time>
+                <h3 style={SCI_VALUE_STYLE}>{t(`roman.status.${key}.title`)}</h3>
+                <p>{t(`roman.status.${key}.body`)}</p>
+                <a href={url} className="section-link" target="_blank" rel="noopener noreferrer">{t("roman.status.source")} →</a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <RomanNews />
+
+      <section className="section" id="launch" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <div className="section-head" style={{ alignItems: "flex-start" }}>
             <div>
@@ -72,7 +92,6 @@ export default function Roman() {
               <h2 className="section-title">{t("roman.launch.title")}</h2>
               <p className="section-sub">{t("roman.launch.sub")}</p>
             </div>
-            <RomanCountdown />
           </div>
           <div className="video-embed-16x9">
             <iframe
@@ -103,6 +122,7 @@ export default function Roman() {
             </div>
           </div>
           <p className="section-sub" style={{ marginTop: 14, marginBottom: 0 }}>{t("roman.launch.note")}</p>
+          <a className="section-link" href="https://science.nasa.gov/mission/roman-space-telescope/roman-launch/" target="_blank" rel="noopener noreferrer">{t("roman.status.source")} →</a>
         </div>
       </section>
 

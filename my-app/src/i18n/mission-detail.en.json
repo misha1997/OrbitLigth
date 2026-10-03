@@ -1,0 +1,104 @@
+{
+  "ui": {
+    "model": { "open": "Explore in 3D", "loading": "Loading 3D model…", "subtitle": "Interactive spacecraft model", "close": "Close 3D view", "reset": "Reset view", "facts": "Mission facts", "hint": "Drag to rotate · Scroll or pinch to zoom · Right-drag to pan · Esc to close", "unavailable": "The 3D model could not be displayed. Try reloading the page or using a browser with WebGL support." },
+    "back": "All missions", "facts": "Mission facts", "gallery": "Image gallery", "overview": "Mission profile",
+    "trajectory": "Through space", "schematic": "Illustrative diagram: sizes, distances and positions are not to scale. This is not live tracking.",
+    "history": "From launch to discovery", "timeline": "Mission milestones", "technology": "On board", "instruments": "Scientific instruments",
+    "discoveries": "Science in images", "enlarge": "Enlarge image", "imageSource": "Image & original credit", "sources": "Explore the mission",
+    "sourceNote": "Mission facts and images from NASA and the Chandra X-ray Center. Follow the official sources for operational updates.",
+    "close": "Close image", "previous": "Previous image", "next": "Next image"
+  },
+  "newhorizons": {
+    "name": "New Horizons", "tagline": "Beyond Pluto", "eyebrow": "NASA · New Frontiers · 2006",
+    "intro": "The first close encounter with Pluto opened a window onto the icy worlds beyond Neptune. New Horizons continued to Arrokoth, carrying its exploration into the Kuiper Belt.",
+    "heroAlt": "NASA illustration of the New Horizons spacecraft", "heroCaption": "New Horizons · illustration · NASA / Johns Hopkins APL / SwRI",
+    "stats": [
+      {"label": "Launch", "value": "19 Jan 2006", "note": "Atlas V 551 · Cape Canaveral"},
+      {"label": "Pluto encounter", "value": "14 Jul 2015", "note": "First close-up exploration of Pluto"},
+      {"label": "Launch mass", "value": "478 kg", "note": "A compact interplanetary spacecraft"},
+      {"label": "Power", "value": "RTG", "note": "A radioisotope thermoelectric generator"}
+    ],
+    "orbit": {"title": "A one-way journey to the outer solar system", "body": "Jupiter's gravity accelerated the probe toward Pluto. Both Pluto and Arrokoth were flyby targets: New Horizons did not enter orbit around either world.", "labels": {"description": "Flight sequence from Earth via Jupiter and Pluto to Arrokoth", "stops": ["Earth", "Jupiter", "Pluto", "Arrokoth"]}},
+    "timeline": [
+      {"date": "2006-01-19", "displayDate": "19 January 2006", "title": "Leaving Earth", "body": "An Atlas V launches the spacecraft toward the outer planets."},
+      {"date": "2007-02-28", "displayDate": "28 February 2007", "title": "Jupiter gravity assist", "body": "The encounter shortens the journey to Pluto by about three years."},
+      {"date": "2015-07-14", "displayDate": "14 July 2015", "title": "Pluto and its moons", "body": "A brief encounter reveals an unexpectedly varied icy system."},
+      {"date": "2019-01-01", "displayDate": "1 January 2019", "title": "Arrokoth flyby", "body": "The probe explores a second Kuiper Belt world up close."}
+    ],
+    "instrumentIntro": "Seven investigations combine imaging, spectroscopy, radio science and measurements of the space environment.",
+    "instruments": [
+      {"name": "LORRI + Ralph", "body": "Detailed images, colour mapping and infrared spectra reveal terrain and surface composition."},
+      {"name": "Alice + REX", "body": "Ultraviolet spectroscopy and a radio experiment investigate atmospheres."},
+      {"name": "SWAP + PEPSSI", "body": "Particle instruments study the solar wind and energetic particles along the flight path."},
+      {"name": "Student Dust Counter", "body": "A student-built detector measures dust impacts far from the Sun."}
+    ],
+    "galleryTitle": "An icy world in unexpected detail", "galleryIntro": "Images from the 2015 encounter. Enhanced colours reveal surface differences and atmospheric structure.",
+    "gallery": [
+      {"title": "Pluto in colour", "alt": "Enhanced-colour Pluto with a bright heart-shaped region", "body": "Ralph's visible and infrared images bring out subtle differences across Pluto's surface."},
+      {"title": "Charon's contrasting terrain", "alt": "Charon with a dark reddish polar region and fractured terrain", "body": "Enhanced colours highlight the reddish north pole of Pluto's largest moon."},
+      {"title": "A blue atmospheric haze", "alt": "The crescent of Pluto outlined by a thin blue haze", "body": "Looking back after the flyby, New Horizons reveals layers of haze above Pluto's limb."}
+    ]
+  },
+  "juno": {
+    "name": "Juno", "tagline": "Beneath Jupiter's clouds", "eyebrow": "NASA · New Frontiers · 2011",
+    "intro": "A solar-powered explorer of Jupiter's atmosphere, interior and magnetic environment. Juno links dramatic cloudscapes with measurements that help explain how a giant planet works.",
+    "heroAlt": "NASA illustration of Juno and its three solar-array wings", "heroCaption": "Juno · spacecraft illustration · NASA / JPL-Caltech",
+    "stats": [
+      {"label": "Launch", "value": "5 Aug 2011", "note": "Atlas V · Cape Canaveral"},
+      {"label": "Jupiter arrival", "value": "July 2016", "note": "Orbit insertion: 5 July UTC / 4 July PDT"},
+      {"label": "Solar arrays", "value": "3 wings", "note": "Solar power at Jupiter's distance"},
+      {"label": "Orbit", "value": "Polar", "note": "Close passes over the cloud tops"}
+    ],
+    "orbit": {"title": "From pole to pole", "body": "An elongated orbit brings Juno close to Jupiter during each perijove, then carries it far away. Moon flybys have changed the orbit during the extended mission.", "labels": {"description": "Schematic elongated polar orbit of Juno around Jupiter", "center": "Jupiter", "orbit": "Close approach · perijove"}},
+    "timeline": [
+      {"date": "2011-08-05", "displayDate": "5 August 2011", "title": "Launch", "body": "Juno begins a five-year journey to Jupiter."},
+      {"date": "2013-10-09", "displayDate": "9 October 2013", "title": "Earth gravity assist", "body": "A return to Earth provides the boost needed to reach Jupiter."},
+      {"date": "2016-07-05", "displayDate": "5 July 2016 · UTC", "title": "Jupiter orbit insertion", "body": "A main-engine burn lets Jupiter capture the spacecraft."},
+      {"date": "2021", "displayDate": "2021", "title": "A wider exploration", "body": "The extended mission includes close encounters with Ganymede, Europa and Io."}
+    ],
+    "instrumentIntro": "Complementary instruments connect Jupiter's deep atmosphere to its powerful magnetic environment.",
+    "instruments": [
+      {"name": "MWR", "body": "The microwave radiometer probes water and ammonia beneath the visible cloud tops."},
+      {"name": "JunoCam + JIRAM", "body": "Visible-light and infrared imaging reveal clouds, auroras and features on Jupiter's moons."},
+      {"name": "MAG + Gravity Science", "body": "Magnetic measurements and radio tracking investigate the field and the planet's internal mass distribution."},
+      {"name": "JADE · JEDI · Waves · UVS", "body": "Particles, plasma waves and ultraviolet emissions reveal the physics of Jupiter's auroras."}
+    ],
+    "galleryTitle": "Jupiter through Juno's eyes", "galleryIntro": "JunoCam data processed by citizen scientists. Credits and original processing details accompany each image.",
+    "gallery": [
+      {"title": "Clouds in motion", "alt": "Jupiter's swirling cloud bands and a bright oval storm", "body": "An enhanced-colour view from February 2017 highlights a storm in the southern hemisphere."},
+      {"title": "The Great Red Spot", "alt": "Jupiter's Great Red Spot surrounded by turbulent cloud bands", "body": "This July 2017 view uses a natural-colour rendering of Jupiter's most recognisable storm."},
+      {"title": "Io's south polar region", "alt": "Jupiter's volcanic moon Io seen over its south polar region", "body": "The April 2024 encounter adds a new perspective on the volcanic moon."}
+    ]
+  },
+  "chandra": {
+    "name": "Chandra", "tagline": "The X-ray Universe", "eyebrow": "NASA · Great Observatories · 1999",
+    "intro": "Exploded stars, hot gas and matter around black holes shine in X-rays. Chandra observes this energetic Universe from above Earth's absorbing atmosphere.",
+    "heroAlt": "NASA illustration of the Chandra X-ray Observatory in space", "heroCaption": "Chandra · observatory illustration · NASA / CXC",
+    "stats": [
+      {"label": "Launch", "value": "23 Jul 1999", "note": "Space Shuttle Columbia · STS-93"},
+      {"label": "Focal length", "value": "10 m", "note": "Grazing-incidence X-ray optics"},
+      {"label": "Angular resolution", "value": "0.5″", "note": "Fine detail in high-energy sources"},
+      {"label": "Mirror assembly", "value": "4 pairs", "note": "Nested mirrors focus the X-rays"}
+    ],
+    "orbit": {"title": "A high orbit for long observations", "body": "Chandra follows an elongated Earth orbit, reaching roughly 140,000 km in altitude. Long stretches far from Earth allow extended observations of faint X-ray sources.", "labels": {"description": "Schematic high elliptical orbit of Chandra around Earth", "center": "Earth", "orbit": "High elliptical Earth orbit"}},
+    "timeline": [
+      {"date": "1999-07-23", "displayDate": "23 July 1999", "title": "Launch on Columbia", "body": "The STS-93 crew deploys the observatory into space."},
+      {"date": "1999-08-19", "displayDate": "19 August 1999", "title": "First light", "body": "Cassiopeia A reveals the fine structure of a supernova remnant."},
+      {"date": "2006-08-21", "displayDate": "21 August 2006", "title": "The Bullet Cluster", "body": "X-ray and lensing maps provide strong evidence for dark matter."},
+      {"date": "2024-07-23", "displayDate": "23 July 2024", "title": "A quarter century", "body": "Chandra marks 25 years since launch with a rich archive of discoveries."}
+    ],
+    "instrumentIntro": "Two focal-plane detectors and two sets of gratings turn incoming X-rays into images and spectra.",
+    "instruments": [
+      {"name": "ACIS", "body": "CCD detectors record both the positions and energies of X-ray photons."},
+      {"name": "HRC", "body": "The high-resolution camera records fine spatial detail and precise photon arrival times."},
+      {"name": "HETG", "body": "High-energy transmission gratings spread X-rays into spectra for detailed analysis."},
+      {"name": "LETG", "body": "Low-energy transmission gratings reveal spectral features at longer X-ray wavelengths."}
+    ],
+    "galleryTitle": "Light our eyes cannot see", "galleryIntro": "X-ray energies are mapped to visible colours. Composite views can combine several telescopes and measurements.",
+    "gallery": [
+      {"title": "Cassiopeia A", "alt": "Multicoloured X-ray shell of the supernova remnant Cassiopeia A", "body": "Different X-ray energies trace hot debris from an exploded star."},
+      {"title": "The Crab's central engine", "alt": "Bright rings and jets around the Crab Nebula pulsar in X-rays", "body": "A spinning neutron star powers rings and jets of energetic particles."},
+      {"title": "The Bullet Cluster", "alt": "Composite of colliding galaxy clusters with pink gas and blue mass maps", "body": "Pink marks hot gas; blue shows mass inferred from lensing. Their separation is evidence for dark matter."}
+    ]
+  }
+}

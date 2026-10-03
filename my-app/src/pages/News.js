@@ -15,6 +15,7 @@ import { getNews, getNewsKeywords } from "../lib/api";
 import { pathFor } from "../lib/seo";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import NewsSkeleton from "../components/NewsSkeleton";
+import NewsCard from "../components/NewsCard";
 import { getNewsBootstrap, readNewsQuery, newsQueryString, NEWS_CATEGORIES as CATS } from "../lib/news";
 import HistoryWidget from "../components/home/HistoryWidget";
 import "../styles/news.css";
@@ -225,50 +226,7 @@ export default function News() {
         ) : (
           <>
             <div className={"news-list view-" + view}>
-              {pageItems.map((it, i) => {
-                // Whole card is a link — to the on-site article page when we
-                // have a slug, else out to the source (live-without-DB items).
-                const hasSlug = !!(it.id && it.slug);
-                const preview = it.image ? (
-                  <img className="news-card-preview" src={it.image} alt="" loading="lazy" decoding="async" />
-                ) : (
-                  <div className={"news-card-preview news-card-preview-ph cat-" + (it.category || "missions")} />
-                );
-                const body = (
-                  <div className="news-card-body">
-                    <div className="top-row">
-                      <span className={"cat-pill " + (it.category || "missions")}>
-                        {catLabel(it.category)}
-                      </span>
-                    </div>
-                    <h4>{it.title || "—"}</h4>
-                    <p>{it.excerpt}</p>
-                    <div className="bottom-row">
-                      <span>{it.source} · {it.date}</span>
-                    </div>
-                  </div>
-                );
-                if (hasSlug) {
-                  return (
-                    <LocalizedLink className="news-card" to={`${pathFor("news", lang)}/${it.slug}`} key={it.slug}>
-                      {preview}
-                      {body}
-                    </LocalizedLink>
-                  );
-                }
-                return (
-                  <a
-                    className="news-card"
-                    href={it.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    key={"live" + i}
-                  >
-                    {preview}
-                    {body}
-                  </a>
-                );
-              })}
+              {pageItems.map((item, i) => <NewsCard key={item.id || item.url || i} item={item} />)}
             </div>
 
             {totalPages > 1 && (

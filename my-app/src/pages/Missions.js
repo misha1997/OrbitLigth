@@ -1,6 +1,6 @@
-// Missions hub (/missions): a gallery of space probes and telescopes. Voyager,
-// Hubble, JWST and Roman already have dedicated pages so their cards link
-// through; the rest render as disabled "coming soon" tiles (see lib/missions.js
+// Missions hub (/missions): a gallery of space probes and telescopes. Missions
+// with dedicated pages link through; the rest render as disabled "coming soon"
+// tiles (see lib/missions.js
 // for the full registry and what's built vs. not). Ports the Planetarium
 // hub's card-grid pattern (see Planetarium.js) since the "some pages exist,
 // some don't yet" shape is identical.

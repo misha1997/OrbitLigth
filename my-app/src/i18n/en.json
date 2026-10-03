@@ -83,6 +83,9 @@
     "policy": "Privacy policy"
   },
   "nav": {
+    "newhorizons": "New Horizons",
+    "juno": "Juno",
+    "chandra": "Chandra X-ray Observatory",
     "home": "Sky now",
     "sky_group": "Sky",
     "sky": "For observer",
@@ -187,6 +190,9 @@
     "fbClose": "Close"
   },
   "title": {
+    "newhorizons": "New Horizons — Pluto & the Kuiper Belt | OrbitLight",
+    "juno": "Juno — Exploring Jupiter | OrbitLight",
+    "chandra": "Chandra — The X-ray Universe | OrbitLight",
     "404": "Not found — OrbitLight",
     "home": "OrbitLight — space live: ISS, asteroids, meteors, launches",
     "iss": "ISS live — OrbitLight",
@@ -198,7 +204,7 @@
     "missions": "Space Missions — Probes & Telescopes — OrbitLight",
     "hubble": "Hubble Space Telescope — OrbitLight",
     "jwst": "James Webb Space Telescope — OrbitLight",
-    "roman": "Roman Space Telescope — launch live — OrbitLight",
+    "roman": "Roman Space Telescope — mission status — OrbitLight",
     "meteors": "Meteor showers — OrbitLight",
     "asteroids": "Asteroids — OrbitLight",
     "events": "Astronomical events — OrbitLight",
@@ -229,6 +235,9 @@
   },
   "seo": {
     "desc": {
+      "newhorizons": "Explore New Horizons: the journey to Pluto and Arrokoth, scientific instruments, mission milestones and NASA images.",
+      "juno": "Discover NASA's Juno mission: Jupiter's polar orbit, scientific instruments, mission milestones and JunoCam images.",
+      "chandra": "Explore the Chandra X-ray Observatory: its orbit, instruments, mission history and images of supernovas and galaxy clusters.",
       "404": "Page not found — return to the OrbitLight home to track the ISS, asteroids, meteors, space weather and launches live.",
       "home": "Space live on OrbitLight: track the ISS in real time, near-Earth asteroids, meteor showers, space weather, satellites and rocket launches.",
       "iss": "ISS live on OrbitLight: real-time ground-track map, next visible passes over your city, current crew, expedition and orbital parameters.",
@@ -240,7 +249,7 @@
       "missions": "Every major space probe and telescope, one gallery: Voyager, Hubble, JWST, Roman and more, past and present.",
       "hubble": "The Hubble Space Telescope: 3D model, latest images from the MAST archive, orbit, instruments and mission facts since 1990.",
       "jwst": "The James Webb Space Telescope: 3D model, latest infrared images from the MAST archive, 18-segment mirror, sunshield, and the Sun-Earth L2 point.",
-      "roman": "The Nancy Grace Roman Space Telescope: 3D model, live launch stream on August 30, 2026, a field of view 100x wider than Hubble, dark energy and exoplanet surveys.",
+      "roman": "Nancy Grace Roman Space Telescope: mission status after its August 30, 2026 launch, cruise to L2, instrument commissioning, launch replay and 3D model.",
       "meteors": "Meteor showers: full calendar, peak dates, ZHR, radiants and best viewing times all year round — alerts the day before each peak on OrbitLight.",
       "asteroids": "Asteroids: upcoming Earth close approaches, LD distances, hazardous objects and a live NASA NEO catalogue of near-Earth objects updated daily.",
       "events": "Astronomy events: solar and lunar eclipses, planetary conjunctions, Moon phases, retrograde stations and a weekly event calendar on OrbitLight.",
@@ -1225,19 +1234,25 @@
     }
   },
   "roman": {
+    "news": {
+      "eyebrow": "Mission news",
+      "title": "Latest Roman news",
+      "all": "All Roman news →",
+      "empty": "There are no Roman telescope articles in the archive yet."
+    },
     "hero": {
-      "eyebrow": "🔴 Launching August 30, 2026",
+      "eyebrow": "In space · Cruising to L2",
       "title": "Nancy Grace <span class=\"accent\">Roman</span> Space Telescope",
-      "sub": "NASA's next telescope has a mirror the same size as Hubble's, but a field of view 100 times wider — a hunter for dark energy and exoplanets.",
-      "launchCta": "Launch stream →",
+      "sub": "Launched on August 30, 2026, NASA’s Roman Space Telescope is heading to L2 and commissioning its instruments ahead of dark energy and exoplanet surveys.",
+      "launchCta": "Launch replay →",
       "factsCta": "Mission facts →",
       "open3d": "3D model",
       "open3dLabel": "Open the fullscreen 3D model of the telescope"
     },
     "launch": {
-      "eyebrow": "Live",
-      "title": "Roman launch",
-      "sub": "A Falcon Heavy sends Roman on its way to the Sun-Earth L2 point — NASA's live broadcast.",
+      "eyebrow": "Launched",
+      "title": "Roman launch replay",
+      "sub": "On August 30, 2026, Falcon Heavy launched Roman from LC-39A onto its trajectory toward Sun–Earth L2.",
       "dateLabel": "Date",
       "dateValue": "August 30, 2026",
       "timeLabel": "Time",
@@ -1246,7 +1261,7 @@
       "vehicleValue": "Falcon Heavy (SpaceX)",
       "padLabel": "Launch pad",
       "padValue": "LC-39A, Kennedy Space Center",
-      "note": "Date is a no-earlier-than target — weather or technical issues could still slip it. After launch this video becomes the recorded broadcast."
+      "note": "Actual liftoff: 11:26 UTC (7:26 a.m. EDT). The video is an archived launch broadcast."
     },
     "s1": {
       "eyebrow": "The telescope by the numbers",
@@ -1282,12 +1297,12 @@
       "fov": "Field of view",
       "fovUnit": "× Hubble",
       "fovFoot": "One image covers a huge patch of sky",
-      "distance": "Distance from Earth",
+      "distance": "Target orbit distance",
       "distanceUnit": "million km",
-      "distanceFoot": "Sun-Earth Lagrange point L2",
-      "lifespan": "Design lifetime",
+      "distanceFoot": "Near L2; not the spacecraft’s current distance",
+      "lifespan": "Primary science mission",
       "lifespanUnit": "years",
-      "lifespanFoot": "Mission goal is up to 10 years of operation"
+      "lifespanFoot": "5 years; NASA estimates fuel for at least 22 potential years, depending on upcoming maneuvers"
     },
     "vsHubble": {
       "eyebrow": "Comparison",
@@ -1305,7 +1320,7 @@
       "launch_roman": "2026",
       "launch_hubble": "1990",
       "orbit_label": "Orbit",
-      "orbit_roman": "L2 point, 1.5M km out",
+      "orbit_roman": "en route to L2, ~1.5M km",
       "orbit_hubble": "around Earth, 535 km",
       "role_label": "Primary role",
       "role_roman": "dark energy, exoplanets, sky surveys",
@@ -1331,14 +1346,14 @@
       "title": "What's on board",
       "sub": "Two instruments — one for wide surveys, one for direct planet imaging.",
       "wfi_title": "Wide Field Instrument (WFI)",
-      "wfi_body": "The main camera, a 100-megapixel sensor with a field of view roughly 100× larger than Hubble's — one image covers what would take Hubble hundreds of exposures.",
+      "wfi_body": "A 300-megapixel infrared camera with 18 detectors and a field of view roughly 100 times larger than Hubble’s. WFI is powered on; focusing and calibration are underway.",
       "cgi_title": "Coronagraph Instrument (CGI)",
-      "cgi_body": "A technology demonstrator: blocks the light of a central star to directly photograph gas-giant planets and dusty disks around other stars."
+      "cgi_body": "A technology demonstrator for directly imaging gas giants and dusty disks. The coronagraph is powered on and has passed initial electronics, mechanism, and thermal-control checks."
     },
     "facts": {
       "eyebrow": "Fun facts",
       "title": "Facts about Roman",
-      "sub": "NASA's next flagship space telescope after Hubble and Webb.",
+      "sub": "NASA’s new space observatory is preparing for science operations.",
       "f1_title": "Named after a pioneer",
       "f1_body": "Named for Nancy Grace Roman, NASA's first chief astronomer, often called the \"mother of Hubble\" for her role in making it happen.",
       "f2_title": "Hubble's mirror, 100× the view",
@@ -1348,9 +1363,9 @@
       "f4_title": "A census of a billion galaxies",
       "f4_body": "Over its mission, Roman is expected to measure light from a billion galaxies to map dark energy.",
       "f5_title": "Riding a Falcon Heavy",
-      "f5_body": "Launches on a SpaceX Falcon Heavy from pad LC-39A — the same pad that launched Apollo and Space Shuttle missions.",
-      "f6_title": "First science images take a while",
-      "f6_body": "After launch, the telescope spends months cruising to L2, deploying hardware, and calibrating instruments before science observations begin."
+      "f5_body": "Launched on August 30, 2026, aboard a SpaceX Falcon Heavy from LC-39A at Kennedy Space Center.",
+      "f6_title": "First science images by early 2027",
+      "f6_body": "NASA expects to release the first science images by early 2027. WFI has already captured an out-of-focus test image while optical alignment continues."
     },
     "station3d": {
       "title": "Roman 3D model",
@@ -1364,7 +1379,7 @@
       "launchValue": "08/30/2026",
       "mirrorLabel": "Mirror",
       "mirrorValue": "2.4 m",
-      "orbitLabel": "Distance",
+      "orbitLabel": "Target orbit",
       "orbitValue": "~1.5M km (L2)",
       "instrumentsLabel": "Instruments",
       "instrumentsValue": "2"
@@ -1372,13 +1387,36 @@
     "orbit": {
       "eyebrow": "Orbital Path",
       "title": "Lagrange Point L2",
-      "sub": "Nancy Grace Roman will be stationed in a halo orbit around the second Lagrange point (L2), 1.5 million km from Earth."
+      "sub": "Roman is traveling to a halo orbit around L2, about 1.5 million km from Earth. NASA’s September 14 plan targets orbital insertion in early December 2026. The animation illustrates the future orbit, not the spacecraft’s current position."
     },
     "l2": {
       "diagram_earth": "Earth",
       "diagram_sun": "Sun",
       "view_local": "3D Model",
       "view_nasa": "NASA Eyes"
+    },
+    "status": {
+      "cta": "Mission status →",
+      "eyebrow": "After launch",
+      "title": "Cruising to L2 and commissioning instruments",
+      "sub": "Checks and calibration are underway ahead of science operations. The antenna and sunshade are deployed, and both instruments are powered on.",
+      "updated": "Updated September 28, 2026 · latest NASA update: September 25",
+      "source": "Source: NASA",
+      "data": {
+        "date": "September 25, 2026",
+        "title": "Ground network ready",
+        "body": "NASA confirmed readiness of stations in the U.S., Australia, and Japan. Tests reached up to 500 Mbps; the expected science downlink is about 1.4 TB per day."
+      },
+      "instruments": {
+        "date": "September 15, 2026",
+        "title": "WFI and coronagraph checkout",
+        "body": "The 300-megapixel WFI camera is activated, and the coronagraph passed initial checks. NASA expects to release the first science images by early 2027."
+      },
+      "fuel": {
+        "date": "September 14, 2026",
+        "title": "Potential fuel supply for 22 years",
+        "body": "A precise launch, efficient course correction, and extra propellant increased the potential lifetime. The estimate includes projected savings from upcoming maneuvers; the primary mission remains five years."
+      }
     }
   },
   "launches": {
@@ -2489,7 +2527,7 @@
       "voyager": "Twin probes launched in 1977, now the only human-made objects in interstellar space and still phoning home after nearly five decades.",
       "hubble": "In orbit since 1990, still delivering some of astronomy's sharpest visible-light images after more than three decades.",
       "jwst": "The largest telescope ever launched, watching the universe in infrared from a million miles beyond Earth.",
-      "roman": "NASA's newest flagship observatory, built to survey the sky 100 times faster than Hubble.",
+      "roman": "NASA’s new observatory is cruising to L2 and commissioning its instruments for dark energy and exoplanet surveys.",
       "newhorizons": "Flew past Pluto in 2015 and is now exploring the Kuiper Belt at the edge of the solar system.",
       "parker": "Flies closer to the Sun than any spacecraft before it, diving repeatedly through the solar corona.",
       "juno": "Orbiting Jupiter since 2016, mapping its interior and photographing its storms up close.",

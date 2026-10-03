@@ -1,7 +1,7 @@
 // Space-probe/telescope registry for the Missions hub (/missions). Mirrors
 // lib/planets.js's shape for the Planetarium hub: `labelKey`/`blurbKey`
 // resolve via i18next; `to` is the i18n route name (only set for missions
-// that already have a dedicated page — Hubble/JWST/Roman/Voyager); `disabled`
+// that already have a dedicated page); `disabled`
 // entries render as non-clickable "coming soon" tiles. `status` is the
 // mission's own real-world state (independent of whether this site has a
 // page for it yet) — "active" | "ended" | "upcoming".
@@ -31,8 +31,8 @@ export const MISSIONS = [
     blurbKey: "missions.blurbs.roman",
   },
   {
-    key: "newhorizons", labelKey: "missions.names.newhorizons",
-    disabled: true, type: "probe", status: "active", year: "2006",
+    key: "newhorizons", labelKey: "missions.names.newhorizons", to: "newhorizons",
+    disabled: false, type: "probe", status: "active", year: "2006",
     icon: "🛰️", accent: "#7FA8D9", img: "/newhorizons/images/newhorizons_probe.jpg",
     blurbKey: "missions.blurbs.newhorizons",
   },
@@ -43,14 +43,14 @@ export const MISSIONS = [
     blurbKey: "missions.blurbs.parker",
   },
   {
-    key: "juno", labelKey: "missions.names.juno",
-    disabled: true, type: "probe", status: "active", year: "2011",
+    key: "juno", labelKey: "missions.names.juno", to: "juno",
+    disabled: false, type: "probe", status: "active", year: "2011",
     icon: "🛰️", accent: "#E8A374", img: "/juno/images/juno_probe.jpg",
     blurbKey: "missions.blurbs.juno",
   },
   {
-    key: "chandra", labelKey: "missions.names.chandra",
-    disabled: true, type: "telescope", status: "active", year: "1999",
+    key: "chandra", labelKey: "missions.names.chandra", to: "chandra",
+    disabled: false, type: "telescope", status: "active", year: "1999",
     icon: "🔭", accent: "#6A9CF2", img: "/chandra/images/chandra_probe.jpg",
     blurbKey: "missions.blurbs.chandra",
   },
