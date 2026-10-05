@@ -3,6 +3,7 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),asse
 const profile=fs.mkdtempSync(path.join(os.tmpdir(),'mission3d-'));
 const browser=spawn('C:/Program Files/Google/Chrome/Application/chrome.exe',['--headless=new','--remote-debugging-port=9226',`--user-data-dir=${profile}`,'--no-first-run','--enable-unsafe-swiftshader','--disable-background-networking','about:blank'],{windowsHide:true,stdio:'ignore'});
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
+const orbitOnly=process.env.MISSION_QA_ORBITS==='1';
 (async()=>{
  let tabs;
  for(let i=0;i<80;i++){try{tabs=await(await fetch('http://127.0.0.1:9226/json/list')).json();break;}catch{await delay(250);}}
@@ -20,16 +21,19 @@ const delay=ms=>new Promise(r=>setTimeout(r,ms));
  const results=[];
  for(const width of [1440,390]){
   await cdp('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width<600});
-  for(const slug of ['new-horizons','juno','chandra']){
-   await cdp('Page.navigate',{url:`http://127.0.0.1:4173/ua/${slug}`});
+  for(const lang of (orbitOnly ? ['ua'] : ['ua','en'])) for(const slug of ['new-horizons','juno','chandra','tess','europa-clipper']){
+   await cdp('Page.navigate',{url:`http://127.0.0.1:4173/${lang}/${slug}`});
    await until('!!document.querySelector(".tele3d-hero-wrap canvas") && !document.querySelector(".tele3d-hero-loading")');
+   await until('!!document.querySelector(".mission-orbit-canvas canvas") && !!document.querySelector(".mission-time-controls input")');
+   await evaluate('Array.from(document.querySelectorAll("button")).find(button=>/Тільки необхідні|Only necessary/.test(button.textContent))?.click()');
    assert(await evaluate('document.documentElement.scrollWidth<=innerWidth'),'Page fits');
    assert.equal(await evaluate('!!document.querySelector(".mission-model-error")'),false);
-   await shot(`mission3d-${slug}-${width}-hero.png`);
+   if(lang==='ua') await shot(`mission3d-${slug}-${width}-hero.png`);
+   if(!orbitOnly) {
    await evaluate('document.querySelector(".tele3d-hero-cta").focus();document.querySelector(".tele3d-hero-cta").click()');
    await until('!!document.querySelector("dialog[open] canvas") && !document.querySelector(".tele3d-loading")');
    assert.equal(await evaluate('document.body.style.overflow'),'hidden');
-   await shot(`mission3d-${slug}-${width}-full.png`);
+   if(lang==='ua') await shot(`mission3d-${slug}-${width}-full.png`);
    const start=await evaluate('document.querySelector("dialog canvas").toDataURL()');
    await cdp('Input.dispatchMouseEvent',{type:'mousePressed',x:width/2,y:450,button:'left',clickCount:1});
    await cdp('Input.dispatchMouseEvent',{type:'mouseMoved',x:width/2+70,y:510,button:'left',buttons:1});
@@ -46,9 +50,31 @@ const delay=ms=>new Promise(r=>setTimeout(r,ms));
    await until('!document.querySelector("dialog[open]")');
    assert.notEqual(await evaluate('document.body.style.overflow'),'hidden');
    assert.equal(await evaluate('document.activeElement.className'),'tele3d-hero-cta');
-   results.push({slug,width,loaded:true,controls:true,canvasReadable:!!start&&!!end});
+   }
+   await evaluate('document.querySelector("#trajectory").scrollIntoView()');
+   await delay(500);
+   if(lang==='ua') await shot(`mission3d-${slug}-${width}-orbit.png`);
+   const initialTime=await evaluate('document.querySelector(".mission-time-controls time").dateTime');
+   await evaluate('const slider=document.querySelector(".mission-time-controls input");Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set.call(slider,"0");slider.dispatchEvent(new Event("input",{bubbles:true}));slider.dispatchEvent(new Event("change",{bubbles:true}));');
+   await until(`document.querySelector(".mission-time-controls time").dateTime!==${JSON.stringify(initialTime)}`);
+   await evaluate('document.querySelectorAll(".mission-time-buttons button")[1].click()');
+   await until(`document.querySelector(".mission-time-controls time").dateTime===${JSON.stringify(initialTime)}`);
+   await evaluate('document.querySelector("#live").scrollIntoView(); document.querySelectorAll(".mission-live-header .mission-segmented button")[1].click()');
+   await delay(200);
+   assert(await evaluate('document.querySelectorAll(".mission-live-header .mission-segmented button")[1].getAttribute("aria-pressed")==="true"'));
+   if(lang==='ua') await shot(`mission3d-${slug}-${width}-live.png`);
+   await evaluate('document.querySelector("#instruments summary").click();document.querySelector("#questions summary").click()');
+   assert(await evaluate('document.querySelector("#instruments details").open && document.querySelector("#questions details").open'));
+   assert(await evaluate('!document.body.innerText.includes("missionDetail.")'));
+   assert(await evaluate('document.documentElement.scrollWidth<=innerWidth'),'Enriched page fits');
+   results.push({slug,lang,width,loaded:true,controls:true,ephemeris:true});
   }
  }
+ await cdp('Network.enable');
+ await cdp('Network.setBlockedURLs',{urls:['*api/missions/*/ephemeris']});
+ await cdp('Page.navigate',{url:'http://127.0.0.1:4173/en/juno'});
+ await until('!!document.querySelector(".mission-data-retry")');
+ assert(await evaluate('!!document.querySelector(".mission-diagram") && !document.querySelector(".mission-time-controls")'),'Fallback is a labelled schematic');
  assert.equal(errors.length,0,JSON.stringify(errors));
  console.log(JSON.stringify({passed:results.length,results},null,2));
  await cdp('Browser.close');ws.close();

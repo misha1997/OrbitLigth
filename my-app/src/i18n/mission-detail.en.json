@@ -63,7 +63,7 @@
       {"name": "MAG + Gravity Science", "body": "Magnetic measurements and radio tracking investigate the field and the planet's internal mass distribution."},
       {"name": "JADE · JEDI · Waves · UVS", "body": "Particles, plasma waves and ultraviolet emissions reveal the physics of Jupiter's auroras."}
     ],
-    "galleryTitle": "Jupiter through Juno's eyes", "galleryIntro": "JunoCam data processed by citizen scientists. Credits and original processing details accompany each image.",
+    "galleryTitle": "Jupiter through Juno's eyes", "galleryIntro": "JunoCam data processed by citizen scientists. Open an image to see its credits and original source.",
     "gallery": [
       {"title": "Clouds in motion", "alt": "Jupiter's swirling cloud bands and a bright oval storm", "body": "An enhanced-colour view from February 2017 highlights a storm in the southern hemisphere."},
       {"title": "The Great Red Spot", "alt": "Jupiter's Great Red Spot surrounded by turbulent cloud bands", "body": "This July 2017 view uses a natural-colour rendering of Jupiter's most recognisable storm."},

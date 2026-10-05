@@ -55,14 +55,14 @@ export const MISSIONS = [
     blurbKey: "missions.blurbs.chandra",
   },
   {
-    key: "tess", labelKey: "missions.names.tess",
-    disabled: true, type: "telescope", status: "active", year: "2018",
+    key: "tess", labelKey: "missions.names.tess", to: "tess",
+    disabled: false, type: "telescope", status: "active", year: "2018",
     icon: "🔭", accent: "#4FD1C5", img: "/tess/images/tess_probe.jpg",
     blurbKey: "missions.blurbs.tess",
   },
   {
-    key: "europaclipper", labelKey: "missions.names.europaclipper",
-    disabled: true, type: "probe", status: "active", year: "2024",
+    key: "europaclipper", labelKey: "missions.names.europaclipper", to: "europaclipper",
+    disabled: false, type: "probe", status: "active", year: "2024",
     icon: "🛰️", accent: "#7FD9E8", img: "/europaclipper/images/europaclipper_probe.jpg",
     blurbKey: "missions.blurbs.europaclipper",
   },

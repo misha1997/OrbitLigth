@@ -4,7 +4,10 @@ import { useSeo } from "../../hooks/useSeo";
 import SectionHead from "../primitives/SectionHead";
 import LocalizedLink from "../primitives/LocalizedLink";
 import { MISSION_DETAILS } from "../../lib/missionDetails";
-import MissionDiagram from "./MissionDiagram";
+import { useApi } from "../../hooks/useApi";
+import MissionOrbitExplorer from "./MissionOrbitExplorer";
+import { MissionTelemetry, MissionContact, SignalCalculator } from "./MissionLiveData";
+import MissionNews from "./MissionNews";
 import "../../styles/mission-detail.css";
 import "../../styles/telescope3d.css";
 
@@ -16,6 +19,7 @@ export default function MissionDetail({ mission }) {
   const data = MISSION_DETAILS[mission];
   const content = t(`missionDetail.${mission}`, { returnObjects: true });
   const ui = t("missionDetail.ui", { returnObjects: true });
+  const ephemeris = useApi(`/api/missions/${mission}/ephemeris`, { deps: [mission], interval: 3600000 });
   const [photoIndex, setPhotoIndex] = useState(null);
   const dialog = useRef(null);
   const isPhotoOpen = photoIndex !== null;
@@ -58,6 +62,10 @@ export default function MissionDetail({ mission }) {
         </div>
       </section>
 
+      <nav className="wrap mission-section-nav" aria-label={ui.sections}>
+        {[["live", ui.live.title], ["trajectory", ui.trajectory], ["science", content.scienceTitle || ui.science], ["instruments", ui.instruments], ["communication", ui.communication], ["news", ui.news.title]].map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
+      </nav>
+
       <section className="section" id="facts">
         <div className="wrap">
           <SectionHead eyebrow={ui.overview} title={ui.facts} />
@@ -73,10 +81,12 @@ export default function MissionDetail({ mission }) {
         </div>
       </section>
 
+      <MissionTelemetry mission={mission} {...ephemeris} />
+
       <section className="section" id="trajectory">
         <div className="wrap">
           <SectionHead eyebrow={ui.trajectory} title={content.orbit.title} sub={content.orbit.body} />
-          <MissionDiagram mission={mission} labels={content.orbit.labels} note={ui.schematic} />
+          <MissionOrbitExplorer mission={mission} {...ephemeris} content={content} accent={data.accent} />
         </div>
       </section>
 
@@ -95,19 +105,35 @@ export default function MissionDetail({ mission }) {
         </div>
       </section>
 
+      <section className="section" id="science"><div className="wrap">
+        <SectionHead eyebrow={content.scienceEyebrow || ui.discoveries} title={content.scienceTitle || ui.science} sub={content.scienceIntro} />
+        <div className="grid cols-3">{content.science.map((item, index) => <article className="card mission-science" key={item.title}><span className="mission-science-number">0{index + 1}</span><h3>{item.title}</h3><p>{item.body}</p><a href={item.source} target="_blank" rel="noopener noreferrer" className="section-link">{ui.readResearch} ↗</a></article>)}</div>
+      </div></section>
+
       <section className="section" id="instruments">
         <div className="wrap">
           <SectionHead eyebrow={ui.technology} title={ui.instruments} sub={content.instrumentIntro} />
           <div className="grid cols-4">
-            {content.instruments.map((instrument) => (
+            {content.instruments.map((instrument, index) => (
               <article className="card mission-instrument" key={instrument.name}>
                 <h3>{instrument.name}</h3>
                 <p>{instrument.body}</p>
+                <details><summary>{ui.howItWorks}</summary><p>{content.instrumentDetails[index]}</p></details>
               </article>
             ))}
           </div>
         </div>
       </section>
+
+      <section className="section" id="communication"><div className="wrap">
+        <SectionHead eyebrow={ui.contact.eyebrow} title={ui.communication} />
+        <div className="mission-two-columns"><MissionContact mission={mission} /><SignalCalculator mission={mission} data={ephemeris.data} /></div>
+      </div></section>
+
+      <section className="section" id="questions"><div className="wrap">
+        <SectionHead title={ui.questions} />
+        <div className="mission-faq">{content.faq.map(item => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div>
+      </div></section>
 
       <section className="section" id="gallery">
         <div className="wrap">
@@ -115,21 +141,21 @@ export default function MissionDetail({ mission }) {
           <div className="grid cols-3">
             {data.gallery.map((photo, index) => (
               <article className="iconic-img-card mission-gallery-card" key={photo.image}>
-                <button type="button" className="mission-photo-button" onClick={() => setPhotoIndex(index)} aria-label={`${ui.enlarge}: ${content.gallery[index].title}`}>
+                <button type="button" className="photo mission-photo-button" onClick={() => setPhotoIndex(index)} aria-label={`${ui.enlarge}: ${content.gallery[index].title}`}>
                   <img src={photo.image} alt={content.gallery[index].alt} width="640" height="480" loading="lazy" decoding="async" />
-                  <span aria-hidden="true">↗</span>
+                  <span className="tag">{photo.year}</span>
                 </button>
                 <div className="body">
-                  <h3>{content.gallery[index].title}</h3>
+                  <h4>{content.gallery[index].title}</h4>
                   <p>{content.gallery[index].body}</p>
-                  <small className="mission-credit">{photo.credit}</small>
-                  <a href={photo.source} className="section-link" target="_blank" rel="noopener noreferrer">{ui.imageSource} ↗</a>
                 </div>
               </article>
             ))}
           </div>
         </div>
       </section>
+
+      <MissionNews mission={mission} />
 
       <section className="section mission-sources" id="sources">
         <div className="wrap">
@@ -155,7 +181,9 @@ export default function MissionDetail({ mission }) {
             <button type="button" className="btn ghost mission-lightbox-close" onClick={() => setPhotoIndex(null)} aria-label={ui.close}>✕</button>
             <img src={data.gallery[photoIndex].image} alt={content.gallery[photoIndex].alt} />
             <h2>{content.gallery[photoIndex].title}</h2>
+            <p className="mission-lightbox-description">{content.gallery[photoIndex].body}</p>
             <p className="mission-credit">{data.gallery[photoIndex].credit}</p>
+            <a href={data.gallery[photoIndex].source} className="section-link" target="_blank" rel="noopener noreferrer">{ui.imageSource} ↗</a>
             <div className="mission-lightbox-nav">
               <button type="button" className="btn ghost" onClick={() => changePhoto(-1)} aria-label={ui.previous}>←</button>
               <span aria-live="polite">{photoIndex + 1} / {data.gallery.length}</span>

@@ -1,7 +1,7 @@
 import { Component, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Stars, useGLTF } from "@react-three/drei";
+import { Environment, Lightformer, OrbitControls, Stars, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import "../../styles/telescope3d.css";
 import "../../styles/mission-model.css";
@@ -13,7 +13,7 @@ class ModelBoundary extends Component {
 }
 
 function Model({ url, direction, interactive, resetKey, onLoaded, reducedMotion }) {
-  const { scene: cached } = useGLTF(url);
+  const { scene: cached } = useGLTF(url, "/draco/");
   // Clone the hierarchy but keep the cached geometry/textures shared. The
   // preview and fullscreen scene must never reparent or dispose one another.
   const scene = useMemo(() => {
@@ -75,6 +75,11 @@ function ModelCanvas({ model, interactive = false, resetKey = 0, onLoaded, ui, r
       <ambientLight intensity={0.85} />
       <directionalLight position={[6, 8, 4]} intensity={2.2} />
       <directionalLight position={[-6, -3, -5]} intensity={0.65} />
+      <Environment resolution={128}>
+        <Lightformer intensity={3} position={[0, 5, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={[10, 10, 1]} />
+        <Lightformer intensity={2} position={[5, 0, 5]} rotation={[0, -Math.PI / 4, 0]} scale={[8, 8, 1]} />
+        <Lightformer intensity={1.5} position={[-5, 1, -5]} rotation={[0, Math.PI * 3 / 4, 0]} scale={[6, 6, 1]} />
+      </Environment>
       {interactive && <Stars radius={35} depth={30} count={1800} factor={2} saturation={0} fade speed={reducedMotion ? 0 : 0.3} />}
       <Suspense fallback={null}>
         <Model url={model.url} direction={model.direction} interactive={interactive} resetKey={resetKey}
@@ -85,7 +90,7 @@ function ModelCanvas({ model, interactive = false, resetKey = 0, onLoaded, ui, r
 }
 
 function ModelCredit({ credit }) {
-  return credit ? <small className="mission-model-credit"><a href={credit.source} target="_blank" rel="noopener noreferrer">{credit.author}</a> · <a href={credit.licenseUrl} target="_blank" rel="noopener noreferrer">{credit.license}</a></small> : null;
+  return credit ? <small className="mission-model-credit"><a href={credit.source} target="_blank" rel="noopener noreferrer">{credit.author}</a>{credit.license && <> · <a href={credit.licenseUrl} target="_blank" rel="noopener noreferrer">{credit.license}</a></>}</small> : null;
 }
 
 function Fullscreen({ model, name, stats, ui, onClose, reducedMotion }) {

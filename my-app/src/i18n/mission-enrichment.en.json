@@ -1,0 +1,229 @@
+{
+  "ui": {
+    "sections": "On this page",
+    "science": "What the mission revealed",
+    "readResearch": "Explore the science",
+    "howItWorks": "How it works",
+    "communication": "Communicating across space",
+    "questions": "Questions about the mission",
+    "explorer": {
+      "centers": {
+        "newhorizons": "Sun",
+        "juno": "Jupiter",
+        "chandra": "Earth",
+        "tess": "Earth",
+        "europaclipper": "Sun"
+      },
+      "view": "Orbit view",
+      "local": "3D orbit",
+      "eyesNote": "Explore the solar system in NASA Eyes. Use its search to find this spacecraft.",
+      "external": "Open NASA Eyes",
+      "loading": "Loading the trajectory…",
+      "hint": "Drag to rotate · Scroll or pinch to zoom",
+      "pause": "Pause",
+      "play": "Play trajectory",
+      "latest": "Latest position",
+      "reset": "Reset camera",
+      "selected": "Selected time",
+      "selectedRange": "Distance from centre",
+      "selectedSpeed": "Speed relative to centre",
+      "km": "km",
+      "kms": "km/s",
+      "geometryNote": "Geometric states from JPL Horizons, in the J2000 ecliptic frame. The line joins discrete samples; close encounters may be simplified. Body and spacecraft sizes are enlarged. The time slider changes this diagram only; the data cards show the latest fetched state. Ephemerides are calculated positions, not a confirmation of spacecraft health.",
+      "fallback": "Illustrative route: sizes and distances are not to scale. This is not live tracking.",
+      "unavailable": "The trajectory is unavailable. An illustrative diagram is shown instead.",
+      "stale": "Showing previously cached data.",
+      "retry": "Retry"
+    },
+    "live": {
+      "title": "Where is the spacecraft?",
+      "note": "Calculated positions and velocities from NASA JPL Horizons. Distances are measured from body centres; they are not altitude above the surface.",
+      "loading": "Fetching ephemeris…",
+      "stale": "Cached data · update unavailable",
+      "ready": "Ephemeris available",
+      "unavailable": "Current ephemeris unavailable",
+      "units": "Distance units",
+      "km": "km",
+      "au": "AU",
+      "kms": "km/s",
+      "seconds": "seconds",
+      "refresh": "Refresh",
+      "earth": "Distance from Earth",
+      "center": {
+        "newhorizons": "Distance from the Sun",
+        "juno": "Distance from Jupiter",
+        "chandra": "Earth-centred radius",
+        "tess": "Earth-centred radius",
+        "europaclipper": "Distance from the Sun"
+      },
+      "speed": {
+        "newhorizons": "Speed relative to the Sun",
+        "juno": "Speed relative to Jupiter",
+        "chandra": "Speed relative to Earth",
+        "tess": "Speed relative to Earth",
+        "europaclipper": "Speed relative to the Sun"
+      },
+      "delay": "One-way light time",
+      "updated": "State epoch",
+      "cache": "Server cache: up to 1 hour · 1 AU = 149,597,870.7 km"
+    },
+    "contact": {
+      "eyebrow": "Earth ↔ spacecraft",
+      "title": "Antenna activity",
+      "loading": "Checking DSN…",
+      "unavailable": "DSN data unavailable",
+      "stale": "The DSN snapshot is out of date",
+      "active": "A link appears in the current DSN snapshot",
+      "quiet": "No active link in the current DSN snapshot",
+      "uplink": "Earth → spacecraft",
+      "downlink": "Spacecraft → Earth",
+      "note": "DSN activity refreshes every minute. An absent link does not mean a spacecraft is inactive: communication happens in scheduled windows, and this feed does not cover every network.",
+      "updated": "Snapshot",
+      "retry": "Retry"
+    },
+    "signal": {
+      "eyebrow": "Try it yourself",
+      "title": "How long does a message take?",
+      "intro": "Change the distance to explore the delay imposed by the speed of light.",
+      "distance": "Distance from Earth",
+      "km": "km",
+      "seconds": "s",
+      "minutes": "min",
+      "oneway": "One way",
+      "return": "There and back",
+      "fromApi": "Using the latest available Earth distance.",
+      "example": "Illustrative calculation with a selected distance.",
+      "note": "Uses 299,792.458 km/s and a fixed distance; excludes processing and antenna scheduling.",
+      "useCurrent": "Use API distance",
+      "reset": "Reset example"
+    },
+    "news": {
+      "eyebrow": "Mission archive",
+      "title": "Mission news",
+      "all": "All related news",
+      "error": "News could not be loaded.",
+      "retry": "Try again",
+      "empty": "No matching articles are in our archive yet. Official mission sources are linked below."
+    }
+  },
+  "newhorizons": {
+    "scienceIntro": "A brief flyby changed our picture of small, cold worlds. These are three of its enduring discoveries.",
+    "science": [
+      {
+        "title": "An active icy landscape",
+        "body": "Pluto has mountains, varied terrain and flowing nitrogen ice. The encounter showed that a small world far from the Sun can have a complex geological history.",
+        "source": "https://science.nasa.gov/mission/new-horizons/"
+      },
+      {
+        "title": "An atmosphere seen from behind",
+        "body": "Backlit images revealed haze above Pluto. Ultraviolet and radio measurements complement the pictures by probing the atmosphere's structure and composition.",
+        "source": "https://science.nasa.gov/blogs/new-horizons/2015/10/30/in-the-shadows-of-pluto-and-charon/"
+      },
+      {
+        "title": "A relic of planet formation",
+        "body": "Arrokoth's two joined lobes preserve clues to how small bodies assembled in the early solar system. Its distant, cold environment makes it a valuable record of that process.",
+        "source": "https://science.nasa.gov/solar-system/kuiper-belt/arrokoth-2014-mu69/"
+      }
+    ],
+    "instrumentDetails": [
+      "LORRI is a narrow-angle telescope for fine detail. Ralph combines a colour camera with an infrared spectrometer, connecting the appearance of terrain to the ices present there.",
+      "Alice separates ultraviolet light into wavelengths. REX measures changes to an Earth-transmitted radio signal as it passes through an atmosphere, helping infer its structure.",
+      "SWAP measures lower-energy solar-wind particles; PEPSSI studies more energetic particles. Together they sample the environment the spacecraft travels through.",
+      "Dust impacts generate electrical signals in detector films. Counting these events along the journey helps map how interplanetary dust is distributed."
+    ],
+    "faq": [
+      {
+        "question": "Why did New Horizons fly past Pluto instead of orbiting?",
+        "answer": "It arrived on a fast flyby trajectory. Capturing into orbit would require a large reduction in velocity and a different spacecraft and propulsion budget. The flyby also allowed the journey to continue into the Kuiper Belt."
+      },
+      {
+        "question": "Why does it use an RTG rather than solar panels?",
+        "answer": "Sunlight becomes much weaker with increasing distance. An RTG converts heat from radioactive decay into electricity, providing power for a spacecraft operating far from the Sun."
+      },
+      {
+        "question": "Is the trajectory a live radio measurement?",
+        "answer": "No. Horizons returns calculated spacecraft states based on available trajectory solutions. The page displays their epoch and cache status. DSN activity is a separate snapshot of ground antenna links."
+      }
+    ]
+  },
+  "juno": {
+    "scienceIntro": "Juno connects Jupiter's visible weather with the atmosphere, gravity and magnetic field beneath it.",
+    "science": [
+      {
+        "title": "Storms have depth",
+        "body": "Microwave and gravity observations show that Jupiter's great storms extend below the visible clouds. The Great Red Spot reaches hundreds of kilometres down into the atmosphere.",
+        "source": "https://www.nasa.gov/news-release/nasas-juno-science-results-offer-first-3d-view-of-jupiter-atmosphere/"
+      },
+      {
+        "title": "A view over the poles",
+        "body": "The polar orbit opened a view of cyclone patterns and auroras that are difficult to study from Earth. Different instruments connect these structures to heat and charged particles.",
+        "source": "https://science.nasa.gov/mission/juno/"
+      },
+      {
+        "title": "Beyond the planet",
+        "body": "The extended mission added close encounters with Ganymede, Europa and Io, bringing new imaging and measurements of Jupiter's diverse moons.",
+        "source": "https://science.nasa.gov/mission/juno/juno-orbits/"
+      }
+    ],
+    "instrumentDetails": [
+      "Six microwave channels probe different atmospheric depths. Comparing them helps scientists infer how ammonia and water vary beneath the clouds.",
+      "JunoCam supplies visible-light context and public imaging opportunities. JIRAM measures infrared radiation, revealing thermal structure and emissions that visible images cannot show.",
+      "Magnetometers measure the local magnetic field. Tiny Doppler shifts in Juno's radio link reveal changes in motion caused by Jupiter's gravity, constraining its interior.",
+      "JADE and JEDI measure charged particles at different energies. Waves measures plasma and radio waves; UVS maps ultraviolet light from auroras. The measurements are most useful together."
+    ],
+    "faq": [
+      {
+        "question": "Why fly on an elongated polar orbit?",
+        "answer": "Passes over the poles provide views of auroras and global coverage. The elongated path gives brief close approaches for detailed measurements while limiting time in the harshest radiation environment."
+      },
+      {
+        "question": "How can solar power work at Jupiter?",
+        "answer": "Juno uses three large solar-array wings and careful power management. The arrays compensate for sunlight that is much weaker than at Earth."
+      },
+      {
+        "question": "Why does the displayed path not always look like a closed ellipse?",
+        "answer": "The diagram connects the recent states returned by Horizons. Its time window may cover only part of an orbit, and perturbations or manoeuvres can change the path. It is not a fixed, idealised ellipse."
+      }
+    ]
+  },
+  "chandra": {
+    "scienceIntro": "X-rays reveal hot matter and energetic processes that visible-light images alone cannot explain.",
+    "science": [
+      {
+        "title": "Tracing an exploded star",
+        "body": "Cassiopeia A reveals hot debris and fine structure left by a supernova. X-ray imaging and spectra help distinguish material and physical conditions within the remnant.",
+        "source": "https://chandra.harvard.edu/photo/1999/0237/"
+      },
+      {
+        "title": "A pulsar's powerful engine",
+        "body": "In the Crab Nebula, Chandra resolves rings and jets around a spinning neutron star. The structures trace particles energised by the pulsar.",
+        "source": "https://chandra.harvard.edu/photo/1999/0052/"
+      },
+      {
+        "title": "Mass separated from hot gas",
+        "body": "In the Bullet Cluster, the X-ray gas and the mass inferred from gravitational lensing have different distributions. Their separation provides strong evidence for dark matter; Chandra does not directly photograph dark matter.",
+        "source": "https://chandra.harvard.edu/photo/2006/1e0657/"
+      }
+    ],
+    "instrumentDetails": [
+      "Each CCD event records a photon's position and an estimate of its energy. Scientists can build an image and compare spectra from different parts of the same source.",
+      "Microchannel plates amplify signals from incoming X-rays. Precise positions and arrival times support detailed imaging and studies of sources that vary rapidly.",
+      "When inserted into the light path, the gratings disperse X-rays. Spectral lines reveal elements and provide clues to temperature and motion in the emitting gas.",
+      "These gratings disperse lower-energy X-rays into a spectrum. They complement the high-energy gratings and are used with a focal-plane detector."
+    ],
+    "faq": [
+      {
+        "question": "Why must an X-ray telescope operate in space?",
+        "answer": "Earth's atmosphere absorbs astronomical X-rays before they reach ground-based telescopes. An observatory above the atmosphere can detect them directly."
+      },
+      {
+        "question": "Why are Chandra images so colourful?",
+        "answer": "Our eyes cannot see X-rays. Scientists assign visible colours to energy bands or combine X-ray data with other observations. The colours communicate measured information, rather than the scene as a human eye would see it."
+      },
+      {
+        "question": "How do mirrors focus X-rays?",
+        "answer": "X-rays reflect efficiently only at shallow grazing angles. Chandra uses nested pairs of precisely shaped mirrors to redirect them gently toward its detectors."
+      }
+    ]
+  }
+}

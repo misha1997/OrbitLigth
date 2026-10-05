@@ -43,6 +43,7 @@ _SPACECRAFT_NAMES = {
     "NHPC": "New Horizons", "JNO": "Juno", "EMM": "Hope (EMM)",
     "KPLO": "Danuri (KPLO)", "LRO": "Lunar Reconnaissance Orbiter",
     "GAIA": "Gaia", "SOLO": "Solar Orbiter", "CHDR": "Chandra",
+    "EURC": "Europa Clipper",
     "DSN": "(calibration / no spacecraft)",
 }
 

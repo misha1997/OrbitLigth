@@ -35,6 +35,8 @@ const Parker = lazy(() => import("../pages/Parker"));
 const NewHorizons = lazy(() => import("../pages/NewHorizons"));
 const Juno = lazy(() => import("../pages/Juno"));
 const Chandra = lazy(() => import("../pages/Chandra"));
+const Tess = lazy(() => import("../pages/Tess"));
+const EuropaClipper = lazy(() => import("../pages/EuropaClipper"));
 const Gallery = lazy(() => import("../pages/Gallery"));
 const Planetarium = lazy(() => import("../pages/Planetarium"));
 const Mars = lazy(() => import("../pages/Mars"));
@@ -78,6 +80,8 @@ const PAGES = {
   newhorizons: NewHorizons,
   juno: Juno,
   chandra: Chandra,
+  tess: Tess,
+  europaclipper: EuropaClipper,
   gallery: Gallery,
   planetarium: Planetarium,
   mars: Mars,

@@ -34,6 +34,8 @@ export const SLUGS = {
   newhorizons:    { uk: "new-horizons",      en: "new-horizons" },
   juno:           { uk: "juno",              en: "juno" },
   chandra:        { uk: "chandra",           en: "chandra" },
+  tess:           { uk: "tess",              en: "tess" },
+  europaclipper:  { uk: "europa-clipper",    en: "europa-clipper" },
   meteors:        { uk: "meteory",           en: "meteors" },
   asteroids:      { uk: "asteroidy",         en: "asteroids" },
   events:         { uk: "podiyi",            en: "events" },

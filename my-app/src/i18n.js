@@ -8,6 +8,12 @@ import uk from "./i18n/uk.json";
 import en from "./i18n/en.json";
 import missionDetailUk from "./i18n/mission-detail.uk.json";
 import missionDetailEn from "./i18n/mission-detail.en.json";
+import missionEnrichmentUk from "./i18n/mission-enrichment.uk.json";
+import missionEnrichmentEn from "./i18n/mission-enrichment.en.json";
+import missionAdditionsUk from "./i18n/mission-additions.uk.json";
+import missionAdditionsEn from "./i18n/mission-additions.en.json";
+
+const missionTranslations = (base, extra) => Object.fromEntries(Object.entries(base).map(([key, value]) => [key, { ...value, ...extra[key] }]));
 
 const KEY = "neowatch.lang";
 export const DEFAULT_LANG = "uk";
@@ -50,8 +56,8 @@ export function initI18n(initialLang) {
   if (initialised) return i18next;
   i18next.use(initReactI18next).init({
     resources: {
-      uk: { translation: { ...uk, missionDetail: missionDetailUk } },
-      en: { translation: { ...en, missionDetail: missionDetailEn } },
+      uk: { translation: { ...uk, missionDetail: missionTranslations({ ...missionDetailUk, ...missionAdditionsUk }, missionEnrichmentUk) } },
+      en: { translation: { ...en, missionDetail: missionTranslations({ ...missionDetailEn, ...missionAdditionsEn }, missionEnrichmentEn) } },
     },
     lng: initialLang || readLang(),
     fallbackLng: DEFAULT_LANG,

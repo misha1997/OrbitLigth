@@ -11,7 +11,7 @@ class MissionSeoTests(unittest.TestCase):
     def test_new_missions_have_matching_client_routes_and_bilingual_metadata(self):
         client = (Path(__file__).resolve().parents[1] / "my-app/src/lib/seo.js").read_text(encoding="utf-8")
         sitemap = seo.build_sitemap_pages_xml()
-        for mission in ("newhorizons", "juno", "chandra"):
+        for mission in ("newhorizons", "juno", "chandra", "tess", "europaclipper"):
             match = re.search(rf'{mission}:\s*\{{ uk: "([^"]+)",\s*en: "([^"]+)"', client)
             self.assertIsNotNone(match)
             for lang, slug in zip(("uk", "en"), match.groups()):
@@ -41,6 +41,15 @@ class MissionSeoTests(unittest.TestCase):
             return None
 
         self.assertEqual(keys(dictionaries[0]), keys(dictionaries[1]))
+        additions = [json.loads((root / f"src/i18n/mission-additions.{lang}.json").read_text(encoding="utf-8")) for lang in ("uk", "en")]
+        self.assertEqual(keys(additions[0]), keys(additions[1]))
+        enrichment = [json.loads((root / f"src/i18n/mission-enrichment.{lang}.json").read_text(encoding="utf-8")) for lang in ("uk", "en")]
+        self.assertEqual(keys(enrichment[0]), keys(enrichment[1]))
+        for dictionary, extra in zip(enrichment, additions):
+            dictionary = {**dictionary, **extra}
+            for mission in ("newhorizons", "juno", "chandra", "tess", "europaclipper"):
+                self.assertEqual(len(dictionary[mission]["instrumentDetails"]), 4)
+                self.assertEqual(len(dictionary[mission]["science"]), 3)
         config = (root / "src/lib/missionDetails.js").read_text(encoding="utf-8")
         for mission, image in re.findall(r'photo\("([^"]+)", "([^"]+)"', config):
             with self.subTest(mission=mission, image=image):

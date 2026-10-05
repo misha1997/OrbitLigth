@@ -8,6 +8,7 @@ import { pathFor, nameFromPath, switchLangPath, SITE_URL } from "../../lib/seo";
 let mockLang = "en";
 jest.mock("../../context/LanguageContext", () => ({ useLang: () => ({ lang: mockLang }) }));
 jest.mock("./MissionModelViewer", () => ({ __esModule: true, default: ({ name, ui }) => <button>{ui.open}: {name}</button> }));
+jest.mock("../../hooks/useApi", () => ({ useApi: () => ({ data: null, loading: false, error: null, refetch: jest.fn() }) }));
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -23,7 +24,7 @@ const mount = (mission) => render(
   </MemoryRouter>
 );
 
-test.each(["newhorizons", "juno", "chandra"].flatMap((mission) => ["uk", "en"].map((lang) => [mission, lang])))
+test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper"].flatMap((mission) => ["uk", "en"].map((lang) => [mission, lang])))
 ("%s renders translated content and SEO in %s, with working catalogue routes", async (mission, lang) => {
   mockLang = lang;
   i18next.changeLanguage(lang);

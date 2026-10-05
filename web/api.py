@@ -392,6 +392,15 @@ async def mission_previews():
     return await data.get_mission_previews_api()
 
 
+@router.get("/missions/{mission}/ephemeris")
+async def mission_ephemeris(mission: str):
+    """Cached geometric states, not spacecraft engineering telemetry."""
+    from services.mission_ephemeris import MISSIONS, get_mission_ephemeris
+    if mission not in MISSIONS:
+        raise HTTPException(status_code=404, detail="Unknown mission")
+    return await asyncio.to_thread(get_mission_ephemeris, mission)
+
+
 @router.get("/comets")
 async def comets(lang: str = LANG_Q):
     """Observable comets digest: brightest now, visible catalog, orbit, famous."""

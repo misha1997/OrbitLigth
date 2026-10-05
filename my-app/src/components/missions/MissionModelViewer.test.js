@@ -2,17 +2,20 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import MissionModelViewer from "./MissionModelViewer";
 import { MISSION_DETAILS } from "../../lib/missionDetails";
-import content from "../../i18n/mission-detail.en.json";
+import baseContent from "../../i18n/mission-detail.en.json";
+import additions from "../../i18n/mission-additions.en.json";
+
+const content = { ...baseContent, ...additions };
 
 jest.mock("@react-three/fiber", () => ({ Canvas: () => <div data-testid="model-canvas" />, useFrame: jest.fn(), useThree: jest.fn() }));
-jest.mock("@react-three/drei", () => ({ OrbitControls: () => null, Stars: () => null, useGLTF: jest.fn() }));
+jest.mock("@react-three/drei", () => ({ OrbitControls: () => null, Stars: () => null, Environment: () => null, Lightformer: () => null, useGLTF: jest.fn() }));
 
 beforeEach(() => {
   HTMLDialogElement.prototype.showModal = jest.fn(function () { this.setAttribute("open", ""); });
   HTMLDialogElement.prototype.close = jest.fn(function () { this.removeAttribute("open"); });
 });
 
-test.each(["newhorizons", "juno", "chandra"])("%s opens a fullscreen model, then restores focus and page scrolling", (mission) => {
+test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper"])("%s opens a fullscreen model, then restores focus and page scrolling", (mission) => {
   document.body.style.overflow = "auto";
   render(<MissionModelViewer model={MISSION_DETAILS[mission].model} name={content[mission].name} stats={content[mission].stats} ui={content.ui.model} />);
   const trigger = screen.getByRole("button", { name: `Explore in 3D: ${content[mission].name}` });

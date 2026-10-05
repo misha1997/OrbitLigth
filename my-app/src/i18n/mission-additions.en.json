@@ -1,0 +1,89 @@
+{
+  "tess": {
+    "name": "TESS", "tagline": "Finding worlds around nearby stars", "eyebrow": "NASA · Explorer · 2018",
+    "intro": "The Transiting Exoplanet Survey Satellite measures tiny changes in starlight to find planets crossing their stars. Its wide-field cameras turn repeated observations into a map of promising worlds for further study.",
+    "heroAlt": "Illustration of the TESS spacecraft", "heroCaption": "TESS · NASA",
+    "stats": [
+      {"label": "Launch", "value": "18 Apr 2018", "note": "Falcon 9 · Cape Canaveral"},
+      {"label": "Cameras", "value": "4", "note": "A single wide-field imaging instrument"},
+      {"label": "Combined field", "value": "24° × 96°", "note": "A long strip of sky observed together"},
+      {"label": "Orbit period", "value": "≈ 13.7 days", "note": "High elliptical Earth orbit"}
+    ],
+    "orbit": {"title": "A quiet vantage point above Earth", "body": "TESS's high elliptical orbit is in a 2:1 resonance with the Moon: it circles Earth twice during one lunar orbit. Long observing stretches support precise brightness measurements; data are transmitted near perigee.", "labels": {"description": "Illustrative elliptical Earth orbit of TESS", "center": "Earth", "orbit": "High Earth orbit · lunar resonance"}},
+    "timeline": [
+      {"date": "2018-04-18", "displayDate": "18 April 2018", "title": "Launch", "body": "A Falcon 9 sends TESS toward its observing orbit."},
+      {"date": "2018-08-07", "displayDate": "7 August 2018", "title": "First science image", "body": "All four cameras capture a strip of the southern sky; the image is released in September."},
+      {"date": "2020-01", "displayDate": "January 2020", "title": "New kinds of worlds", "body": "TOI 700 d and the circumbinary planet TOI 1338 b are announced."},
+      {"date": "2020-07", "displayDate": "July 2020", "title": "Beyond the primary survey", "body": "The two-year primary mission ends; extended surveys revisit the sky."}
+    ],
+    "instrumentIntro": "TESS has one science instrument: four cameras with CCD detectors. These cards show the parts of the measurement chain, rather than four separate experiments.",
+    "instruments": [
+      {"name": "Four wide-field cameras", "body": "Each camera covers 24° × 24°; together they observe a 24° × 96° strip."},
+      {"name": "CCD detectors", "body": "Four CCDs per camera record light from thousands of stars at once."},
+      {"name": "Precision photometry", "body": "Repeated measurements build light curves that reveal transits and other variations."},
+      {"name": "Data handling & downlink", "body": "Onboard processing packages observations for transmission to Earth."}
+    ],
+    "instrumentDetails": ["The aligned cameras observe adjacent fields. Moving to a new observing sector expands the survey across the sky.", "The detector pixels measure accumulated light. Calibration corrects instrumental effects before stellar brightness is compared over time.", "A transit produces a temporary dip in brightness. Its repetition constrains the orbital period; its depth helps estimate the planet-to-star radius ratio.", "Observations reach public archives after processing. Full-frame images and target data allow researchers to study more than the original planet-search targets."],
+    "scienceIntro": "TESS discoveries span planets, stars and transient events. Candidate planets require follow-up before they can be treated as confirmed worlds.",
+    "science": [
+      {"title": "An Earth-size habitable-zone world", "body": "TOI 700 d was TESS's first Earth-size planet found in its star's habitable zone. That describes a range of possible irradiation conditions, rather than evidence of an ocean or life.", "source": "https://www.nasa.gov/image-article/tess-finds-first-earth-size-planet-habitable-zone/"},
+      {"title": "A planet with two suns", "body": "TOI 1338 b orbits a pair of stars. Its changing transit pattern shows why discovery sometimes requires detailed inspection of a light curve.", "source": "https://www.nasa.gov/universe/nasas-tess-mission-uncovers-its-1st-world-with-two-stars/"},
+      {"title": "A changing Universe", "body": "The same repeated imaging also tracks pulsating stars, eclipsing binaries and transient events. Public observations support research beyond exoplanets.", "source": "https://heasarc.gsfc.nasa.gov/docs/tess/what-is-tess.html"}
+    ],
+    "galleryTitle": "From starlight to new worlds", "galleryIntro": "A real TESS star-field image and artists' concepts of discovered planets. Open an image for its credit and source.",
+    "gallery": [
+      {"title": "First light", "alt": "TESS's first science star field with many bright stars", "body": "The August 2018 observation demonstrates the cameras' wide view of the southern sky."},
+      {"title": "TOI 700 d · artist's concept", "alt": "Artist's illustration of the imagined appearance of TOI 700 d", "body": "An illustration of a possible appearance. TESS measured a transit, not a resolved picture of this planet."},
+      {"title": "TOI 1338 b · artist's concept", "alt": "Artist's concept of TOI 1338 b with two stars", "body": "This illustration visualises a circumbinary system discovered through changes in starlight."}
+    ],
+    "faq": [
+      {"question": "How does a transit reveal a planet?", "answer": "If an orbit is aligned with our line of sight, the planet blocks a small fraction of its star's light. Repeated dips reveal a possible orbital period. In a simplified model, transit depth is approximately the square of the planet-to-star radius ratio."},
+      {"question": "Is every brightness dip a confirmed planet?", "answer": "No. Eclipsing stars, background objects and instrumental effects can mimic a transit. Follow-up observations and analysis distinguish planet candidates from false positives."},
+      {"question": "Can I explore TESS observations?", "answer": "Yes. TESS data are publicly available through MAST. The science links below include NASA's guides to light curves, full-frame images and data products."}
+    ]
+  },
+  "europaclipper": {
+    "name": "Europa Clipper", "tagline": "Toward an ocean beneath the ice", "eyebrow": "NASA · Flagship · 2024",
+    "intro": "Europa Clipper is travelling to Jupiter to investigate whether Europa has conditions suitable for life. Repeated flybys will connect measurements of its ice, ocean and chemistry into a portrait of this ocean world.",
+    "heroAlt": "Illustration of Europa Clipper with its solar arrays deployed", "heroCaption": "Europa Clipper · NASA / JPL-Caltech",
+    "stats": [
+      {"label": "Launch", "value": "14 Oct 2024", "note": "Falcon Heavy · Kennedy Space Center"},
+      {"label": "Jupiter arrival", "value": "April 2030", "note": "Planned orbit insertion"},
+      {"label": "Europa flybys", "value": "49 planned", "note": "From an orbit around Jupiter"},
+      {"label": "Science instruments", "value": "9", "note": "Plus gravity and radio science"}
+    ],
+    "orbit": {"title": "Gravity assists on the way to Jupiter", "body": "A Mars flyby in March 2025 and a planned Earth flyby in December 2026 shape the route to Jupiter. At the destination, the spacecraft will orbit Jupiter and repeatedly pass Europa.", "labels": {"description": "Illustrative Europa Clipper route from Earth via Mars and Earth to Jupiter", "stops": ["Earth", "Mars", "Earth", "Jupiter"], "years": ["2024", "2025", "2026", "2030"]}},
+    "timeline": [
+      {"date": "2024-10-14", "displayDate": "14 October 2024", "title": "Launch", "body": "A Falcon Heavy sends the spacecraft on its interplanetary journey."},
+      {"date": "2025-03-01", "displayDate": "1 March 2025", "title": "Mars gravity assist", "body": "The close encounter bends the trajectory toward a return to Earth."},
+      {"date": "2026-12", "displayDate": "December 2026 · planned", "title": "Earth gravity assist", "body": "A second planetary encounter is planned to supply the boost for Jupiter."},
+      {"date": "2030-04", "displayDate": "April 2030 · planned", "title": "Jupiter orbit insertion", "body": "A braking manoeuvre is planned before the Europa flyby campaign."}
+    ],
+    "instrumentIntro": "Nine instruments combine imaging, radar, spectroscopy and environmental measurements. Radio tracking adds a gravity investigation; the groups below explain how the measurements complement one another.",
+    "instruments": [
+      {"name": "EIS · MISE · E-THEMIS", "body": "Visible, infrared and thermal views map terrain, composition and temperatures."},
+      {"name": "REASON · Europa-UVS", "body": "Radar probes the icy shell; ultraviolet spectra investigate the tenuous atmosphere."},
+      {"name": "ECM · PIMS · radio science", "body": "Magnetic, plasma and gravity measurements constrain Europa's interior."},
+      {"name": "MASPEX · SUDA", "body": "Gas and dust measurements investigate the chemistry of material around Europa."}
+    ],
+    "instrumentDetails": ["EIS supplies surface context, MISE identifies materials through reflected infrared light, and E-THEMIS searches for temperature patterns. Combining their maps can highlight places where the surface may exchange material with the interior.", "REASON sends radar pulses and analyses echoes from within the ice. Europa-UVS measures ultraviolet light to study atmospheric gases and search for signs of possible plume activity.", "ECM measures magnetic variations, while PIMS helps account for the surrounding plasma. Radio tracking measures changes in spacecraft motion under gravity; the combined evidence informs models of the ocean and ice shell.", "MASPEX analyses gases by mass; SUDA analyses dust particles encountered in flight. Their results can link surrounding material to surface chemistry."],
+    "scienceTitle": "What the mission will investigate", "scienceEyebrow": "Science objectives",
+    "scienceIntro": "These are planned investigations at Europa. The mission is assessing habitability, rather than claiming that life has been detected.",
+    "science": [
+      {"title": "How do the ice and ocean connect?", "body": "Radar and interior measurements will investigate the icy shell, possible water within it and the ocean underneath.", "source": "https://www.jpl.nasa.gov/press-kits/europa-clipper/mission/science/"},
+      {"title": "What is the world made of?", "body": "Spectra and samples of gas and dust will help constrain Europa's chemistry and the availability of ingredients relevant to habitability.", "source": "https://science.nasa.gov/mission/europa-clipper/spacecraft-instruments/"},
+      {"title": "How active is the surface?", "body": "Imaging and thermal mapping will relate surface structures to processes that may move material between the surface and interior.", "source": "https://science.nasa.gov/mission/europa-clipper/"}
+    ],
+    "galleryTitle": "The spacecraft and its destination", "galleryIntro": "Mission preparation and launch, alongside a Galileo view of Europa. The Europa image predates Clipper's arrival and is not a Clipper observation.",
+    "gallery": [
+      {"title": "Leaving Earth", "alt": "Falcon Heavy launching Europa Clipper from Kennedy Space Center", "body": "The 14 October 2024 launch began the journey to the Jupiter system."},
+      {"title": "A link across the solar system", "alt": "Europa Clipper in a clean room with its high-gain antenna installed", "body": "The three-metre dish, installed in 2023, supports communication over interplanetary distances."},
+      {"title": "Europa through Galileo's eyes", "alt": "Galileo's global colour mosaic of the cracked icy surface of Europa", "body": "A reprocessed mosaic from Galileo's late-1990s images shows the ocean world's fractured surface."}
+    ],
+    "faq": [
+      {"question": "Will Europa Clipper land on Europa?", "answer": "The mission uses close flybys from an orbit around Jupiter. It carries instruments for remote and in-flight measurements rather than a lander."},
+      {"question": "Why orbit Jupiter instead of Europa?", "answer": "Europa lies in a harsh radiation environment. Repeated flybys provide close measurements while allowing the spacecraft to spend much of each orbit farther from the most intense radiation."},
+      {"question": "Will the mission prove that life exists?", "answer": "Its primary task is to investigate whether Europa has conditions suitable for life. Evidence about water, chemistry and energy can assess habitability; it is not itself a detection of living organisms."}
+    ]
+  }
+}
