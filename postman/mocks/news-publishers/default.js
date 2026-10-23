@@ -24,6 +24,10 @@ http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": "text/html" });
     return res.end(article);
   }
+  if (path === "/refresh-article") {
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+    return res.end(`<html><head><meta property="og:image" content="./cover.jpg"></head><body><div class="entry-content"><p>${prose} This observation includes new measurements.</p><img src="./image.png"><iframe src="https://www.youtube.com/embed/178AiyS7QXo"></iframe></div></body></html>`);
+  }
   if (path === "/feed.xml") {
     res.writeHead(200, { "Content-Type": "application/rss+xml; charset=utf-8" });
     return res.end(feed);

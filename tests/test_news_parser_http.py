@@ -70,6 +70,19 @@ class NewsParserHTTPTests(unittest.TestCase):
             with Image.open(Path(directory) / thumb) as image:
                 image.verify()
 
+    def test_refresh_script_fetches_source_and_stages_new_images_over_real_http(self):
+        from scripts import refresh_news
+        from services import news_images
+        old = {'article': {'id': 42, 'body': '[VIDEO:0]'}, 'images': [], 'videos': []}
+        content = NewsParser.get_article_content(SIM + '/refresh-article')
+        refresh_news.validate_content(old, content)
+        self.assertEqual(content['body_videos'], ['https://www.youtube.com/embed/178AiyS7QXo'])
+        with TemporaryDirectory() as directory, patch.object(news_images, 'DATA_NEWS_DIR', Path(directory)):
+            rows = refresh_news.stage_images(42, content, 'test-run')
+            self.assertEqual(rows[0]['source_url'], SIM + '/image.png')
+            self.assertEqual(rows[0]['full_path'], '_refresh/42/test-run/0-full.png')
+            self.assertTrue((Path(directory) / rows[0]['full_path']).exists())
+
 
 if __name__ == '__main__':
     unittest.main()
