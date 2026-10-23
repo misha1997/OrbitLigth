@@ -4,7 +4,7 @@ import asyncio
 from datetime import timedelta, date
 
 from services.nasa_api import NasaAPI
-from services.apod_source import apod_today
+from services.apod_source import apod_today, is_placeholder_apod
 from utils.i18n import DEFAULT_LANG
 from utils.translator import Translator
 from web.cache import get_or_fetch
@@ -86,6 +86,8 @@ def _apod_localize(rows: list, lang: str = DEFAULT_LANG) -> list:
     """
     out = []
     for r in rows:
+        if is_placeholder_apod(r):
+            continue
         media_type = (r.get("media_type") or "image").lower()
         if media_type == "video":
             image = r.get("full_path") or r.get("thumbnail") or None
@@ -155,7 +157,7 @@ APOD_OLDEST = "1995-06-16"
 def _covers_dates(rows, start, end):
     first, last = date.fromisoformat(start), date.fromisoformat(end)
     expected = {(first + timedelta(days=offset)).isoformat() for offset in range((last - first).days + 1)}
-    return expected <= {str(row.get('date') or '') for row in rows or []}
+    return expected <= {str(row.get('date') or '') for row in rows or [] if not is_placeholder_apod(row)}
 
 
 def _archive_ttl(end):
@@ -203,6 +205,10 @@ def _apod_archive_window(start: str, end: str, lang: str = DEFAULT_LANG) -> list
         # not discard each other's days. Live URLs cover failed local mirrors.
         merged = {str(row['date']): dict(row) for row in entries}
         for row in stored:
+            # A failed DB/media repair must not overwrite valid live data
+            # with the old logo or its incorrectly dated explanation.
+            if is_placeholder_apod(row):
+                continue
             key = str(row['date'])
             merged[key] = {**merged.get(key, {}), **row}
         rows = list(merged.values())

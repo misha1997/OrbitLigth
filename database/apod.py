@@ -13,10 +13,11 @@ def ingest_apod_entries(entries: list) -> int:
     """Mirror NASA APOD entries into the website photo archive.
 
     Idempotent by ``date`` (PK): a row that already has both ``thumb_path`` and
-    ``full_path`` is skipped entirely; a row missing its images is re-fetched
-    (retry on a previous failed download). The explanation is translated to UK
-    **once** — never retranslated on a re-ingest that already has
-    ``explanation_uk`` (DeepL quota). Image download + translation use local
+    ``full_path`` is skipped entirely unless it contains the old NASA Science
+    placeholder. Placeholder rows and missing images are re-fetched.
+    The explanation is translated to UK
+    **once**, except when repairing a placeholder's incorrectly dated text
+    (DeepL quota). Image download + translation use local
     imports to avoid coupling database.py at module load. Best-effort: image
     download failure still stores the row (without paths) so the next poll
     retries. Raises nothing on DB failure. Returns the number of new/updated
@@ -25,6 +26,7 @@ def ingest_apod_entries(entries: list) -> int:
     if not entries:
         return 0
     from services.apod_images import download_apod_media, cached_apod_media
+    from services.apod_source import is_placeholder_apod
     from utils.translator import Translator
 
     changed = 0
@@ -33,15 +35,16 @@ def ingest_apod_entries(entries: list) -> int:
     try:
         for e in entries:
             date = (e.get('date') or '').strip()
-            if not date:
+            if not date or is_placeholder_apod(e):
                 continue
             cursor.execute(
-                'SELECT thumb_path, full_path, explanation_uk FROM apod_entries WHERE date = %s',
+                'SELECT title, thumb_path, full_path, explanation_uk FROM apod_entries WHERE date = %s',
                 (date,)
             )
             existing = cursor.fetchone()
+            repair = is_placeholder_apod(existing)
             # Skip only if both image sizes are already mirrored locally.
-            if existing and cached_apod_media(existing.get('full_path'), existing.get('thumb_path')):
+            if existing and not repair and cached_apod_media(existing.get('full_path'), existing.get('thumb_path')):
                 continue
 
             media_type = (e.get('media_type') or 'image').lower()
@@ -52,9 +55,15 @@ def ingest_apod_entries(entries: list) -> int:
                 logger.error(f"APOD image download error for {date}: {ex}")
                 full_rel, thumb_rel = None, None
 
+            # Keep the old row identifiable for retry until the replacement
+            # files are ready. The gallery can use live NASA URLs meanwhile.
+            if repair and not (full_rel and thumb_rel):
+                logger.warning('APOD placeholder repair incomplete for %s; retrying later', date)
+                continue
+
             # Translate explanation once (reuse stored translation if present).
             explanation = (e.get('explanation') or '').strip()
-            if existing and existing.get('explanation_uk'):
+            if existing and not repair and existing.get('explanation_uk'):
                 explanation_uk = existing['explanation_uk']
             elif explanation:
                 try:
@@ -82,9 +91,10 @@ def ingest_apod_entries(entries: list) -> int:
                      credit = VALUES(credit),
                      thumb_path = COALESCE(VALUES(thumb_path), thumb_path),
                      full_path = COALESCE(VALUES(full_path), full_path),
-                     explanation_uk = COALESCE(explanation_uk, VALUES(explanation_uk))''',
+                     explanation_uk = IF(%s, VALUES(explanation_uk),
+                                         COALESCE(explanation_uk, VALUES(explanation_uk)))''',
                 (date, title, explanation or None, explanation_uk, media_type,
-                 thumb_rel, full_rel, video_url, credit)
+                 thumb_rel, full_rel, video_url, credit, repair)
             )
             changed += 1
         conn.commit()

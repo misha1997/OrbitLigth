@@ -1,7 +1,7 @@
 """Download + locally cache NASA APOD media in two sizes.
 
 The website gallery used to hotlink ``apod.nasa.gov`` imagery. We now mirror
-each day's APOD to ``data/apod/YYYY/MM/DD-<full|thumb>.<ext>`` so the grid loads
+each day's APOD to ``data/apod/YYYY/MM/DD-<hash>-<full|thumb>.<ext>`` so the grid loads
 from our own server (no hotlink, faster cards) and the lightbox still has the
 full-resolution original.
 
@@ -14,6 +14,7 @@ failure returns ``(None, None)`` so ingest stores the row without paths and the
 next poll retries the download.
 """
 import logging
+from hashlib import sha256
 import os
 from datetime import date as calendar_date
 from html import unescape
@@ -82,10 +83,12 @@ def download_apod_media(entry: dict):
     """Download one APOD entry's media to ``data/apod/`` in two sizes.
 
     Returns ``(full_rel, thumb_rel)`` — paths relative to ``data/apod/``
-    (e.g. ``"2026/07/14-full.jpg"``, ``"2026/07/14-thumb.jpg"``) — or
+    (e.g. ``"2026/07/14-<hash>-full.jpg"``, ``"2026/07/14-<hash>-thumb.jpg"``) — or
     ``(None, None)`` on any failure. ``full_rel`` may be set while ``thumb_rel``
     is ``None`` if the Pillow resize step fails (the thumb is optional; the
-    grid falls back to the full image).
+    grid falls back to the full image). The DB layer decides whether a mirror
+    needs downloading. Never reuse files by date alone: they may contain an
+    old placeholder. Content-specific URLs also avoid stale browser/CDN caches.
     """
     date = (entry.get("date") or "").strip()
     candidates = [entry.get('thumbnail')] if entry.get('media_type') == 'video' else [entry.get('hdurl'), entry.get('url'), entry.get('thumbnail')]
@@ -99,18 +102,17 @@ def download_apod_media(entry: dict):
         abs_dir = DATA_APOD_DIR / rel_dir
         abs_dir.mkdir(parents=True, exist_ok=True)
 
-        thumb_rel = f"{rel_dir}/{date[8:10]}-thumb.jpg"
         full_rel = None
         for src in sources:
-            candidate = f"{rel_dir}/{date[8:10]}-full.{_ext_from_url(src)}"
-            if cached_apod_media(candidate, thumb_rel):
-                return candidate, thumb_rel
             try:
                 resp = requests.get(src, timeout=_TIMEOUT, headers={"User-Agent": _UA})
                 resp.raise_for_status()
                 from PIL import Image
                 with Image.open(BytesIO(resp.content)) as image:
                     image.verify()
+                revision = sha256(resp.content).hexdigest()[:16]
+                candidate = f"{rel_dir}/{date[8:10]}-{revision}-full.{_ext_from_url(src)}"
+                thumb_rel = f"{rel_dir}/{date[8:10]}-{revision}-thumb.jpg"
                 full_abs = DATA_APOD_DIR / candidate
                 full_abs.write_bytes(resp.content)
                 full_rel = candidate

@@ -44,6 +44,11 @@ def plain_text(value):
     return re.sub(r'\n{3,}', '\n\n', ''.join(parser.text)).strip()
 
 
+def is_placeholder_apod(entry):
+    """Older HTML scraping saved NASA's site title/logo as a daily photo."""
+    return plain_text((entry or {}).get('title')).casefold() == 'nasa science'
+
+
 def _http_url(value):
     value = unescape(str(value or '')).strip()
     if not value:
@@ -69,7 +74,7 @@ def _standard_image(url):
 
 
 def normalize_apod(raw):
-    if not isinstance(raw, dict):
+    if not isinstance(raw, dict) or is_placeholder_apod(raw):
         return None
     try:
         published = date.fromisoformat(raw.get('date') or '').isoformat()

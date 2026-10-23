@@ -3,7 +3,7 @@ import asyncio
 from datetime import timedelta
 import logging
 
-from services.apod_source import apod_today
+from services.apod_source import apod_today, is_placeholder_apod
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +25,8 @@ def sync_recent_apod(days=7):
     expected = {row['date'] for row in entries}
     present = {str(row['date']) for row in stored}
     bad_media = [str(row['date']) for row in stored if str(row['date']) in expected
-                 and row.get('media_type') != 'video'
-                 and not cached_apod_media(row.get('full_path'), row.get('thumb_path'))]
+                 and (is_placeholder_apod(row) or (row.get('media_type') != 'video'
+                      and not cached_apod_media(row.get('full_path'), row.get('thumb_path'))))]
     if expected - present or bad_media:
         logger.warning('APOD archive sync incomplete: missing dates=%s invalid mirrors=%s; retrying later', sorted(expected - present), bad_media)
         return False

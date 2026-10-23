@@ -91,8 +91,45 @@ class ApodClientHTTPTests(unittest.IsolatedAsyncioTestCase):
             entry={'date':'2026-10-23','media_type':'image','hdurl':SIM+'/nasa/broken.jpg','url':SIM+'/nasa/image.png'}
             with self.assertLogs('services.apod_images',level='WARNING'):
                 full,thumb=apod_images.download_apod_media(entry)
-            self.assertEqual(full,'2026/10/23-full.png')
+            self.assertRegex(full,r'^2026/10/23-[0-9a-f]{16}-full\.png$')
             self.assertTrue(apod_images.cached_apod_media(full,thumb))
+
+    def test_repair_downloads_fresh_media_with_new_urls_despite_valid_old_logo(self):
+        from PIL import Image
+        with TemporaryDirectory() as directory, patch.object(apod_images,'DATA_APOD_DIR',Path(directory)):
+            folder=Path(directory)/'2026/10'
+            folder.mkdir(parents=True)
+            for name in ('23-full.png','23-thumb.jpg'):
+                Image.new('RGB',(100,100),'blue').save(folder/name)
+            self.assertTrue(apod_images.cached_apod_media('2026/10/23-full.png','2026/10/23-thumb.jpg'))
+            entry=NasaAPI.get_apod()
+            full,thumb=apod_images.download_apod_media(entry)
+            self.assertNotEqual(full,'2026/10/23-full.png')
+            self.assertNotEqual(thumb,'2026/10/23-thumb.jpg')
+            self.assertTrue(apod_images.cached_apod_media(full,thumb))
+            with Image.open(Path(directory)/full) as image:
+                self.assertEqual(image.size,(2,2))
+            with Image.open(folder/'23-full.png') as image:
+                self.assertEqual(image.size,(100,100))
+            # Losing the repaired files later must never resurrect the old logo.
+            (Path(directory)/full).unlink()
+            (Path(directory)/thumb).unlink()
+            restored,restored_thumb=apod_images.download_apod_media(entry)
+            self.assertEqual((restored,restored_thumb),(full,thumb))
+            with Image.open(Path(directory)/restored) as image:
+                self.assertEqual(image.size,(2,2))
+
+    def test_gallery_replaces_stored_logo_with_current_video_and_credit(self):
+        data,db,_=load_apod_data(NasaAPI)
+        db.get_apod_entries.return_value=[{'date':'2026-10-22','title':'NASA Science',
+                                          'media_type':'image','full_path':'logo.png','thumb_path':'logo.jpg'}]
+        # Model a temporarily unavailable DB write: live media must still win.
+        db.ingest_apod_entries.return_value=0
+        items=data._apod_archive_window('2026-10-22','2026-10-22','en')
+        self.assertEqual(items[0]['media_type'],'video')
+        self.assertEqual(items[0]['video_url'],'https://www.youtube.com/embed/DzrCEm1ZBRY?rel=0')
+        self.assertEqual(items[0]['image'],SIM+'/nasa/image.png')
+        self.assertEqual(items[0]['credit'],'Test Photographer')
 
     def test_archive_worker_includes_today_and_invalidates_cached_pages_without_telegram(self):
         from services.apod_jobs import sync_recent_apod
@@ -113,6 +150,14 @@ class ApodClientHTTPTests(unittest.IsolatedAsyncioTestCase):
         database.ingest_apod_entries=Mock(return_value=0)
         database.get_apod_entries=Mock(return_value=[])
         with patch.dict(sys.modules,{'database.apod':database}), patch('services.apod_jobs.apod_today',return_value=date(2026,10,23)), self.assertLogs('services.apod_jobs',level='WARNING'):
+            self.assertFalse(sync_recent_apod())
+
+    def test_archive_worker_retries_when_placeholder_files_are_valid(self):
+        from services.apod_jobs import sync_recent_apod
+        database=types.ModuleType('database.apod')
+        database.ingest_apod_entries=Mock(return_value=0)
+        database.get_apod_entries=Mock(return_value=[{'date':f'2026-10-{day}','title':'NASA Science'} for day in (23,22,21)])
+        with patch.dict(sys.modules,{'database.apod':database}), patch('services.apod_jobs.apod_today',return_value=date(2026,10,23)), patch('services.apod_images.cached_apod_media',return_value=True), self.assertLogs('services.apod_jobs',level='WARNING'):
             self.assertFalse(sync_recent_apod())
 
 

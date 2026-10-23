@@ -25,7 +25,7 @@ def main(argv=None):
         parser.error('--days must be between 1 and 60')
     os.chdir(ROOT)
     logging.basicConfig(level=logging.INFO,format='%(asctime)s %(levelname)s %(message)s')
-    from services.apod_source import apod_today
+    from services.apod_source import apod_today, is_placeholder_apod
     from services.nasa_api import NasaAPI
     end=apod_today(); start=end-timedelta(days=args.days-1)
     entries=NasaAPI.get_apod_archive(start.isoformat(),end.isoformat())
@@ -43,10 +43,11 @@ def main(argv=None):
     stored=get_apod_entries(start.isoformat(),end.isoformat())
     present={str(row['date']) for row in stored or []}
     missing={row['date'] for row in entries}-present
-    bad_media=[str(row['date']) for row in stored or [] if row.get('media_type')!='video'
-               and not cached_apod_media(row.get('full_path'),row.get('thumb_path'))]
+    bad_media=[str(row['date']) for row in stored or [] if is_placeholder_apod(row)
+               or (row.get('media_type')!='video'
+                   and not cached_apod_media(row.get('full_path'),row.get('thumb_path')))]
     print(f'Ingested/updated: {changed}; missing dates: {sorted(missing)}')
-    print(f'Image mirrors still missing/invalid: {bad_media}')
+    print(f'Image mirrors still missing/invalid/placeholders: {bad_media}')
     print('Restart neowatch to clear the running website cache. Telegram was not called.')
     return 1 if missing or bad_media else 0
 

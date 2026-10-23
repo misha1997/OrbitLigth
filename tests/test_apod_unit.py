@@ -54,6 +54,8 @@ class ApodNormalizationTests(unittest.TestCase):
         self.assertIsNone(normalize_apod({'code':500,'message':'error'}))
         self.assertIsNone(normalize_apod({'date':'not-a-date','url':'https://example.com/a.jpg'}))
         self.assertIsNone(normalize_apod({'date':'2026-10-23','url':'javascript:alert(1)'}))
+        self.assertIsNone(normalize_apod({'date':'2026-10-23','title':' NASA Science ',
+                                         'url':'https://example.com/nasa-logo.png'}))
 
     def test_legacy_image_shape_still_normalizes(self):
         result=normalize_apod({'date':'2026-10-23','url':'https://images.example/small.jpg','hdurl':'https://images.example/large.jpg'})
@@ -97,6 +99,25 @@ class ApodGalleryTests(unittest.IsolatedAsyncioTestCase):
         self.nasa.get_apod_archive.return_value=[{'date':'2026-10-23','url':'https://images.example/new.jpg'}]
         items=self.data._apod_archive_window('2026-10-23','2026-10-23','en')
         self.assertEqual(items[0]['image'],'https://images.example/new.jpg')
+
+    def test_complete_placeholder_window_fetches_live_even_if_repair_fails(self):
+        self.db.get_apod_entries.return_value=[{'date':'2026-10-23','title':'NASA Science',
+                                               'full_path':'logo.png','thumb_path':'logo-thumb.jpg',
+                                               'explanation_uk':'Помилковий опис'}]
+        self.nasa.get_apod_archive.return_value=[{'date':'2026-10-23','title':'Real stars',
+                                                 'url':'https://images.example/new.jpg','explanation':'Real description'}]
+        self.db.ingest_apod_entries.side_effect=RuntimeError('database offline')
+        with self.assertLogs('apod_data_test',level='ERROR'):
+            items=self.data._apod_archive_window('2026-10-23','2026-10-23','uk')
+        self.assertEqual(items[0]['title'],'Real stars')
+        self.assertEqual(items[0]['image'],'https://images.example/new.jpg')
+        self.assertEqual(items[0]['explanation'],'Real description')
+
+    def test_placeholder_is_not_served_or_considered_complete_during_source_outage(self):
+        self.db.get_apod_entries.return_value=[{'date':'2026-10-23','title':'NASA Science','full_path':'logo.png'}]
+        self.nasa.get_apod_archive.return_value=[]
+        self.assertFalse(self.data._covers_dates(self.db.get_apod_entries.return_value,'2026-10-23','2026-10-23'))
+        self.assertEqual(self.data._apod_archive_window('2026-10-23','2026-10-23','en'),[])
 
 
 class ApodSiteLifecycleTests(unittest.IsolatedAsyncioTestCase):
