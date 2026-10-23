@@ -256,8 +256,8 @@ async def apod_archive(
 ):
     """One page of NASA APOD entries for the photo/video gallery.
 
-    Page 0 is the most recent APODs (ending yesterday — today's isn't published
-    yet in US time); each page steps ``page_size`` days older, back to the first
+    Page 0 starts with the latest published APOD, including today when available;
+    each page steps ``page_size`` days older, back to the first
     APOD on 1995-06-16. Windows beyond the mirrored archive are fetched live
     from NASA and ingested (saved to the DB) on demand, so paging forward into
     unseen territory loads the photos and persists them in the same request.

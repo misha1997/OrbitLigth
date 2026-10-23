@@ -61,10 +61,11 @@ async def send_feedback_telegram(name: str, email: str, message: str) -> None:
     )
 
     # Imported lazily so the site can boot in site-only mode (no telegram deps).
-    from telegram import Bot
+    from telegram.ext import ExtBot
     from telegram.error import TelegramError
+    from utils.telegram_defaults import TELEGRAM_DEFAULTS
 
-    bot = Bot(token=token)
+    bot = ExtBot(token=token, defaults=TELEGRAM_DEFAULTS)
     try:
         await bot.send_message(
             chat_id=FEEDBACK_CHAT_ID,

@@ -1,0 +1,7 @@
+simulation: apod
+routing: path
+mocks:
+  - routeKey: nasa
+    path: ../mocks/apod-nasa/nasa.js
+  - routeKey: telegram
+    path: ../mocks/apod-telegram/telegram.js

@@ -4,7 +4,7 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 from typing import List, Set
 from zoneinfo import ZoneInfo
-from telegram import Bot
+from telegram.ext import ExtBot
 from telegram.constants import ParseMode
 
 KYIV_TZ = ZoneInfo('Europe/Kyiv')
@@ -23,7 +23,6 @@ from database import (
     is_neo_notified, mark_neo_notified, cleanup_old_neo_notifications,
     is_news_notified, mark_news_notified, cleanup_old_news_notifications,
     ingest_news_articles, get_news_articles,
-    ingest_apod_entries,
     ingest_galaxies, ingest_galaxy_photos,
     is_meteor_notified, mark_meteor_notified, cleanup_old_meteor_notifications,
     is_flare_notified, mark_flare_notified, cleanup_old_flare_notifications,
@@ -34,9 +33,11 @@ from database import (
 )
 from services import NasaAPI, N2YOAPI
 from services.webpush import send_web_push
+from services.apod_source import apod_today
 from services.gw_alerts import GWAlertAPI
 from utils.i18n import t, pick, compass_dir, normalize_lang, escape_html
 from utils.constants import local_hour_for_coords
+from utils.telegram_defaults import TELEGRAM_DEFAULTS
 from web.seo import SITE_URL, slug_for_name
 
 logger = logging.getLogger(__name__)
@@ -45,9 +46,12 @@ logger = logging.getLogger(__name__)
 class NotificationScheduler:
     """Handle scheduled notifications"""
 
-    def __init__(self):
-        self.bot = Bot(token=BOT_TOKEN)
+    def __init__(self, *, archive_sync=True):
+        self.bot = ExtBot(token=BOT_TOKEN, defaults=TELEGRAM_DEFAULTS)
         self._last_apod_date = None  # Track last APOD sent
+        self._last_apod_check = None
+        self._last_apod_archive_poll = None
+        self._sync_apod_archive = archive_sync
         self._notified_launches: Set[str] = set()  # Track notified launches
         self._notified_eclipses = set()  # Track notified astronomy events
 
@@ -100,21 +104,18 @@ class NotificationScheduler:
     async def send_apod_to_subscribers(self):
         """Send APOD to all subscribers - once per day"""
         try:
-            today = datetime.now().strftime('%Y-%m-%d')
-
-            # Skip if already sent today
-            if self._last_apod_date == today:
-                logger.info(f"APOD already sent today ({today})")
-                return
-
-            subscribers = get_apod_subscribers()
-            data = NasaAPI.get_apod()
+            today = apod_today().isoformat()
+            subscribers = await asyncio.to_thread(get_apod_subscribers)
+            data = await asyncio.to_thread(NasaAPI.get_apod)
 
             if not data:
                 logger.error("Failed to get APOD data")
                 return
 
             apod_date = data.get('date', today)
+            if apod_date != today:
+                logger.info('APOD %s is not published yet (latest=%s); retrying later', today, apod_date)
+                return
 
             if not subscribers:
                 logger.info("No APOD subscribers")
@@ -124,7 +125,7 @@ class NotificationScheduler:
             for user in subscribers:
                 try:
                     chat_id = user.get('chat_id')
-                    user_last_apod = user.get('last_apod_date')
+                    user_last_apod = str(user.get('last_apod_date') or '')
                     lang = normalize_lang(user.get('lang'))
 
                     # Skip if user already got today's APOD
@@ -133,7 +134,7 @@ class NotificationScheduler:
 
                     # Format APOD in the user's language (image URL is the
                     # same regardless of language; caption/text differ).
-                    formatted = NasaAPI.format_apod(data, lang)
+                    formatted = await asyncio.to_thread(NasaAPI.format_apod, data, lang)
 
                     # Send based on media type
                     media_type = data.get('media_type', 'image')
@@ -191,27 +192,33 @@ class NotificationScheduler:
                         )
                     else:
                         # Send photo
-                        await self.bot.send_photo(
-                            chat_id=chat_id,
-                            photo=formatted['image'],
-                            caption=formatted['caption'][:1024],
-                            parse_mode=ParseMode.HTML
-                        )
+                        photo_sent = False
+                        sources = list(dict.fromkeys(url for url in (formatted.get('image'), data.get('url')) if url))
+                        for photo in sources:
+                            try:
+                                await self.bot.send_photo(chat_id=chat_id, photo=photo,
+                                                          caption=formatted['caption'][:1024], parse_mode=ParseMode.HTML)
+                                photo_sent = True
+                                break
+                            except Exception as e:
+                                logger.warning('APOD photo failed for %s: %s', chat_id, e)
 
                         # Send description as separate message
                         await self.bot.send_message(
                             chat_id=chat_id,
-                            text=formatted['text'],
+                            text=formatted['text'] + (f"\n<a href='{escape_html(data.get('permalink') or data.get('url') or '')}'>NASA APOD</a>" if not photo_sent else ''),
                             parse_mode=ParseMode.HTML
                         )
 
                     # Update last sent date
-                    update_last_apod_date(user['user_id'], apod_date)
+                    await asyncio.to_thread(update_last_apod_date, user['user_id'], apod_date)
                     success_count += 1
 
                 except Exception as e:
                     logger.error(f"Failed to send APOD to {user.get('user_id')}: {e}")
 
+            # Deduplicate per subscriber in the DB, rather than marking the
+            # whole day complete when some recipients failed. Retry those users.
             self._last_apod_date = apod_date
             logger.info(f"Sent APOD to {success_count}/{len(subscribers)} subscribers")
 
@@ -522,7 +529,7 @@ class NotificationScheduler:
                             chat_id=user['chat_id'],
                             text=message,
                             parse_mode=ParseMode.HTML,
-                            disable_web_page_preview=False
+                            disable_web_page_preview=True
                         )
                     except Exception as e:
                         logger.error(f"Failed to notify {user['user_id']} about hazardous asteroid: {e}")
@@ -829,7 +836,7 @@ class NotificationScheduler:
                             chat_id=user['chat_id'],
                             text=message,
                             parse_mode=ParseMode.HTML,
-                            disable_web_page_preview=False
+                            disable_web_page_preview=True
                         )
                     except Exception as e:
                         logger.error(f"Failed to notify {user['user_id']} about GRB: {e}")
@@ -909,7 +916,7 @@ class NotificationScheduler:
                                 chat_id=user['chat_id'],
                                 text=text,
                                 parse_mode=ParseMode.HTML,
-                                disable_web_page_preview=False
+                                disable_web_page_preview=True
                             )
                         except Exception as e:
                             logger.error(f"Failed to notify {user['user_id']} about GW alert: {e}")
@@ -984,27 +991,26 @@ class NotificationScheduler:
             logger.error(f"Astronomy event check error: {e}")
 
     async def poll_apod_archive(self):
-        """Ingest the last ~7 days of APOD into the website photo archive.
+        """Legacy bot entrypoint: sync the last seven days through today.
 
-        Runs daily (called from run_scheduled_tasks right after the 09:00 APOD
-        subscriber push). Idempotent by date: existing rows with both image
-        sizes already mirrored are skipped; rows missing images are retried.
-        Fetches ending=yesterday — NASA 400s on today if it isn't published yet
-        (it appears during US daytime; 09:00 Kyiv ≈ 02:00 ET), so today's entry
-        is picked up the following day. This is the single live-fetch point for
-        the archive; the website (``/api/apod/archive``) reads from the DB.
-        Best-effort: never raises."""
+        The web app runs an independent worker, so archive updates do not
+        depend on Telegram startup or its daily notification window.
+        """
         try:
-            from datetime import date, timedelta
-            t = date.today()
-            entries = NasaAPI.get_apod_archive(
-                (t - timedelta(days=6)).isoformat(),
-                (t - timedelta(days=1)).isoformat(),
-            )
-            if entries:
-                ingest_apod_entries(entries)
+            from services.apod_jobs import sync_recent_apod
+            await asyncio.to_thread(sync_recent_apod)
         except Exception as e:
             logger.error(f"APOD archive poll error: {e}")
+
+    async def check_apod_updates(self, now=None):
+        """Catch up after restart/delayed publication, with per-user dedup."""
+        now = now or datetime.now(KYIV_TZ)
+        if now.hour >= 9 and (self._last_apod_check is None or now - self._last_apod_check >= timedelta(minutes=15)):
+            self._last_apod_check = now
+            await self.send_apod_to_subscribers()
+        if self._sync_apod_archive and (self._last_apod_archive_poll is None or now - self._last_apod_archive_poll >= timedelta(hours=1)):
+            self._last_apod_archive_poll = now
+            await self.poll_apod_archive()
 
     async def poll_galaxies(self):
         """Weekly refresh of the 12-galaxy catalog: re-fetch live NED redshift/
@@ -1398,12 +1404,9 @@ class NotificationScheduler:
             try:
                 now = datetime.now(KYIV_TZ)
 
-                # APOD at 09:00 Kyiv time (with 1-minute window)
-                if now.hour == 9 and 0 <= now.minute <= 1:
-                    await self.send_apod_to_subscribers()
-                    # Mirror the last ~7 days of APOD into the photo archive
-                    # (idempotent; retries any row missing its local images).
-                    await self.poll_apod_archive()
+                # APOD starts at 09:00 Kyiv, then retries every 15 minutes.
+                # An outage or a restart at 09:02 must not skip the entire day.
+                await self.check_apod_updates(now)
 
                 # Check ISS passes every 10 minutes
                 if now.minute % 10 == 0:

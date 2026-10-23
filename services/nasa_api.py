@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from config import NASA_API_KEY, NASA_NEO_URL, NASA_APOD_URL
 from utils.translator import Translator
 from utils.i18n import t, DEFAULT_LANG, escape_html
+from services.apod_source import normalize_apod
 
 logger = logging.getLogger(__name__)
 
@@ -111,80 +112,49 @@ class NasaAPI:
 
     @staticmethod
     def get_apod():
-        """Fetch Astronomy Picture of the Day"""
+        """Latest published APOD from NASA Science (no API key required)."""
         try:
-            params = {
-                'api_key': NASA_API_KEY,
-                'thumbs': 'True'
-            }
-            logger.info(f"Fetching APOD from {NASA_APOD_URL}")
-            response = requests.get(NASA_APOD_URL, params=params, timeout=10)
-            logger.info(f"APOD response status: {response.status_code}")
-
-            if response.status_code != 200:
-                logger.error(f"APOD API error: {response.status_code} - {response.text[:200]}")
-                return None
-
+            response = requests.get(NASA_APOD_URL, params={'per_page': 1, 'page': 1}, timeout=15)
+            response.raise_for_status()
             data = response.json()
-            logger.info(f"APOD data received: media_type={data.get('media_type')}, title={data.get('title', 'N/A')[:30]}")
-
-            return {
-                'title': data.get('title', ''),
-                'date': data.get('date', ''),
-                'explanation': data.get('explanation', ''),
-                'url': data.get('url', ''),
-                'hdurl': data.get('hdurl', ''),
-                'media_type': data.get('media_type', 'image'),
-                'thumbnail': data.get('thumbnail_url', '')
-            }
-
+            items = data if isinstance(data, list) else [data]
+            entries = [entry for raw in items if (entry := normalize_apod(raw))]
+            return max(entries, key=lambda entry: entry['date']) if entries else None
         except Exception as e:
             logger.error(f"APOD API error: {e}")
             return None
 
     @staticmethod
     def get_apod_archive(start_date: str, end_date: str):
-        """Fetch a date range of APOD entries (NASA APOD supports ``start_date``
-        + ``end_date``; with a range the API returns a JSON array).
+        """Inclusive range. NASA WordPress uses date_from/date_to in YYMMDD.
 
-        Each entry mirrors ``get_apod`` plus ``thumbnail`` and the raw
-        ``copyright`` field. Returns ``[]`` on any error so the site can render
-        an empty archive instead of crashing.
+        The old API's start_date/end_date are silently ignored by this API.
+        Paginate explicitly and filter dates defensively before persisting.
         """
         try:
-            params = {
-                'api_key': NASA_API_KEY,
-                'start_date': start_date,
-                'end_date': end_date,
-                'thumbs': 'True',
-            }
-            logger.info(f"Fetching APOD archive {start_date}..{end_date}")
-            response = requests.get(NASA_APOD_URL, params=params, timeout=15)
-            if response.status_code != 200:
-                logger.error(f"APOD archive API error: {response.status_code} - {response.text[:200]}")
+            start = datetime.strptime(start_date, '%Y-%m-%d').date()
+            end = datetime.strptime(end_date, '%Y-%m-%d').date()
+            if end < start:
                 return []
-            data = response.json()
-            if not isinstance(data, list):
-                # Single-day response is a dict — normalise to a one-item list.
-                data = [data] if isinstance(data, dict) else []
-            out = []
-            for d in data:
-                if not isinstance(d, dict):
-                    continue
-                media_type = d.get('media_type', 'image')
-                out.append({
-                    'title': d.get('title', ''),
-                    'date': d.get('date', ''),
-                    'explanation': d.get('explanation', '') or '',
-                    'url': d.get('url', ''),
-                    'hdurl': d.get('hdurl', '') or d.get('url', ''),
-                    'media_type': media_type,
-                    'thumbnail': d.get('thumbnail_url', '') or '',
-                    'copyright': d.get('copyright', '') or '',
-                })
-            # Most-recent first (NASA returns oldest→newest).
-            out.sort(key=lambda x: x['date'], reverse=True)
-            return out
+            out = {}
+            page = 1
+            while True:
+                response = requests.get(NASA_APOD_URL, params={'date_from': start.strftime('%y%m%d'),
+                                        'date_to': end.strftime('%y%m%d'), 'per_page': 60, 'page': page}, timeout=20)
+                response.raise_for_status()
+                data = response.json()
+                items = data if isinstance(data, list) else [data]
+                for raw in items:
+                    entry = normalize_apod(raw)
+                    if entry and start_date <= entry['date'] <= end_date:
+                        out[entry['date']] = entry
+                total_pages = int(response.headers.get('X-WP-TotalPages') or 0)
+                if (total_pages and page >= total_pages) or (not total_pages and len(items) < 60):
+                    break
+                page += 1
+                if page > 200:
+                    raise ValueError('APOD pagination exceeded safety limit')
+            return sorted(out.values(), key=lambda entry: entry['date'], reverse=True)
         except Exception as e:
             logger.error(f"APOD archive API error: {e}")
             return []
@@ -208,7 +178,7 @@ class NasaAPI:
         # Truncate explanation if too long
         if len(explanation_tr) > 3800:
             explanation_tr = explanation_tr[:3800] + "..."
-        full_text = f"🌌 <b>{title}</b>\n📅 {date}\n\n{explanation_tr}\n\n🌐 apod.nasa.gov"
+        full_text = f"🌌 <b>{title}</b>\n📅 {date}\n\n{explanation_tr}\n\n🌐 science.nasa.gov/apod"
 
         # For image APODs: prefer the HD url, fall back to the standard url.
         # For video APODs: `url` is either a direct file (caller can send it

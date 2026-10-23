@@ -95,6 +95,7 @@ def _build_bot_application():
 
     # Imported lazily so the site can boot without telegram deps in the env.
     from telegram.ext import Application
+    from utils.telegram_defaults import TELEGRAM_DEFAULTS
 
     from handlers import CommandHandlers, CallbackHandlers, MessageHandlers
     from telegram import Update
@@ -105,6 +106,7 @@ def _build_bot_application():
     application = (
         Application.builder()
         .token(token)
+        .defaults(TELEGRAM_DEFAULTS)
         .build()
     )
     application.add_handler(CommandHandler("start", CommandHandlers.start))
@@ -137,6 +139,10 @@ async def lifespan(app: FastAPI):
 
     ptb = None
     webhook_mode = False
+    apod_task = None
+    if db_ok:
+        from services.apod_jobs import run_apod_archive_sync
+        apod_task = asyncio.create_task(run_apod_archive_sync())
     if db_ok:
         ptb = _build_bot_application()
         if ptb is not None:
@@ -175,7 +181,8 @@ async def lifespan(app: FastAPI):
                 # (create_task tracks it via __create_task_tasks so stop() can
                 # await it). The legacy `bot.py` entrypoint uses run_polling,
                 # so its post_init path still works.
-                scheduler = NotificationScheduler()
+                # The archive has an independent worker, including site-only mode.
+                scheduler = NotificationScheduler(archive_sync=False)
                 app.state.scheduler_task = ptb.create_task(
                     scheduler.run_scheduled_tasks()
                 )
@@ -198,6 +205,12 @@ async def lifespan(app: FastAPI):
     try:
         yield
     finally:
+        if apod_task is not None:
+            apod_task.cancel()
+            try:
+                await apod_task
+            except asyncio.CancelledError:
+                pass
         # Cancel the scheduler loop first — it's an infinite `while True`, so
         # leaving it running would make ptb.stop() hang awaiting it.
         sched_task = getattr(app.state, "scheduler_task", None)

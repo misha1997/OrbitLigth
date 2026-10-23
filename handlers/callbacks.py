@@ -20,6 +20,7 @@ from utils.keyboards import (get_main_menu, get_iss_menu, get_weather_menu, get_
                              get_deep_menu, get_language_picker)
 from utils.i18n import t, normalize_lang, DEFAULT_LANG, escape_html
 import logging
+import asyncio
 
 logger = logging.getLogger(__name__)
 
@@ -280,7 +281,7 @@ class CallbackHandlers:
         """Handle APOD button"""
         lang = _lang_from(context)
         try:
-            data = NasaAPI.get_apod()
+            data = await asyncio.to_thread(NasaAPI.get_apod)
             if not data:
                 logger.error("APOD: get_apod() returned None")
                 await update.callback_query.message.reply_text(
@@ -288,7 +289,7 @@ class CallbackHandlers:
                     reply_markup=get_main_menu(lang)
                 )
                 return
-            formatted = NasaAPI.format_apod(data, lang)
+            formatted = await asyncio.to_thread(NasaAPI.format_apod, data, lang)
 
             logger.info(f"APOD data: media_type={data.get('media_type')}, url={data.get('url', '')[:50]}...")
             logger.info(f"APOD image URL: {formatted.get('image', 'N/A')[:50]}...")
@@ -326,7 +327,7 @@ class CallbackHandlers:
                             f"<a href='{escape_html(video_url)}'>{t('apod.watch', lang)}</a>\n\n"
                             f"{t('apod.full_below', lang)}",
                             parse_mode='HTML',
-                            disable_web_page_preview=False
+                            disable_web_page_preview=True
                         )
                 else:
                     # YouTube or other embedded video - send thumbnail with link
@@ -363,7 +364,7 @@ class CallbackHandlers:
                             f"<a href='{escape_html(video_url)}'>{t('apod.watch', lang)}</a>\n\n"
                             f"{t('apod.full_below', lang)}",
                             parse_mode='HTML',
-                            disable_web_page_preview=False
+                            disable_web_page_preview=True
                         )
             else:
                 # Send photo with short caption
@@ -444,7 +445,7 @@ class CallbackHandlers:
                 await CallbackHandlers._replace_message(update, context,
                     message,
                     parse_mode='HTML',
-                    disable_web_page_preview=False,
+                    disable_web_page_preview=True,
                     reply_markup=keyboard
                 )
         except Exception as e:

@@ -15,6 +15,9 @@ next poll retries the download.
 """
 import logging
 import os
+from datetime import date as calendar_date
+from html import unescape
+from io import BytesIO
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -57,6 +60,24 @@ def _source_url(entry: dict) -> str:
     return entry.get("hdurl") or entry.get("url") or entry.get("thumbnail") or ""
 
 
+def cached_apod_media(full_path, thumb_path):
+    """Paths in the DB are not proof that valid files still exist on disk."""
+    if not full_path or not thumb_path:
+        return False
+    try:
+        from PIL import Image
+        root = DATA_APOD_DIR.resolve()
+        for relative in (full_path, thumb_path):
+            path = (root / relative).resolve()
+            if not path.is_relative_to(root):
+                return False
+            with Image.open(path) as image:
+                image.verify()
+        return True
+    except (OSError, ValueError):
+        return False
+
+
 def download_apod_media(entry: dict):
     """Download one APOD entry's media to ``data/apod/`` in two sizes.
 
@@ -67,30 +88,37 @@ def download_apod_media(entry: dict):
     grid falls back to the full image).
     """
     date = (entry.get("date") or "").strip()
-    src = (_source_url(entry) or "").strip()
-    if not date or not src:
+    candidates = [entry.get('thumbnail')] if entry.get('media_type') == 'video' else [entry.get('hdurl'), entry.get('url'), entry.get('thumbnail')]
+    sources = list(dict.fromkeys(unescape(str(value)).strip() for value in candidates if value))
+    if not date or not sources:
         return None, None
 
     try:
+        date = calendar_date.fromisoformat(date).isoformat()
         rel_dir = f"{date[:4]}/{date[5:7]}"
         abs_dir = DATA_APOD_DIR / rel_dir
         abs_dir.mkdir(parents=True, exist_ok=True)
 
-        ext = _ext_from_url(src)
-        full_rel = f"{rel_dir}/{date[8:10]}-full.{ext}"
         thumb_rel = f"{rel_dir}/{date[8:10]}-thumb.jpg"
-        full_abs = DATA_APOD_DIR / full_rel
-
-        # Skip re-download if we already have the files (idempotent).
-        if full_abs.exists() and (DATA_APOD_DIR / thumb_rel).exists():
-            return full_rel, thumb_rel
-
-        resp = requests.get(src, timeout=_TIMEOUT, headers={"User-Agent": _UA})
-        if resp.status_code != 200 or not resp.content:
-            logger.warning("APOD image download failed %s -> %s", src, resp.status_code)
+        full_rel = None
+        for src in sources:
+            candidate = f"{rel_dir}/{date[8:10]}-full.{_ext_from_url(src)}"
+            if cached_apod_media(candidate, thumb_rel):
+                return candidate, thumb_rel
+            try:
+                resp = requests.get(src, timeout=_TIMEOUT, headers={"User-Agent": _UA})
+                resp.raise_for_status()
+                from PIL import Image
+                with Image.open(BytesIO(resp.content)) as image:
+                    image.verify()
+                full_abs = DATA_APOD_DIR / candidate
+                full_abs.write_bytes(resp.content)
+                full_rel = candidate
+                break
+            except Exception as e:
+                logger.warning('APOD image candidate failed %s: %s', src, e)
+        if not full_rel:
             return None, None
-
-        full_abs.write_bytes(resp.content)
 
         # Build the 480px thumbnail from the freshly-saved full file.
         try:

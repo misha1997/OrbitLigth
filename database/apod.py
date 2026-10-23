@@ -24,7 +24,7 @@ def ingest_apod_entries(entries: list) -> int:
     """
     if not entries:
         return 0
-    from services.apod_images import download_apod_media
+    from services.apod_images import download_apod_media, cached_apod_media
     from utils.translator import Translator
 
     changed = 0
@@ -41,7 +41,7 @@ def ingest_apod_entries(entries: list) -> int:
             )
             existing = cursor.fetchone()
             # Skip only if both image sizes are already mirrored locally.
-            if existing and existing.get('thumb_path') and existing.get('full_path'):
+            if existing and cached_apod_media(existing.get('full_path'), existing.get('thumb_path')):
                 continue
 
             media_type = (e.get('media_type') or 'image').lower()
@@ -58,14 +58,15 @@ def ingest_apod_entries(entries: list) -> int:
                 explanation_uk = existing['explanation_uk']
             elif explanation:
                 try:
-                    explanation_uk = Translator.translate(explanation, 'en', 'uk') or None
+                    translated = Translator.translate(explanation, 'en', 'uk')
+                    explanation_uk = translated if translated and translated != explanation else None
                 except Exception:
                     explanation_uk = None
             else:
                 explanation_uk = None
 
             video_url = (e.get('url') or '').strip() if media_type == 'video' else None
-            credit = (e.get('copyright') or '').strip() or None
+            credit = (e.get('copyright') or '').strip()[:300] or None
             title = (e.get('title') or '').strip() or ''
 
             cursor.execute(
@@ -92,6 +93,7 @@ def ingest_apod_entries(entries: list) -> int:
     except Error as e:
         logger.error(f"Error ingesting APOD entries: {e}")
         conn.rollback()
+        changed = 0
     finally:
         cursor.close()
         conn.close()
@@ -228,18 +230,19 @@ def delete_apod_entry(date: str) -> bool:
 def backfill_apod_archive(days: int = 90) -> int:
     """One-shot backfill of the last ``days`` of APOD into the archive.
 
-    Fetches ``[today - days, yesterday]`` from NASA in <=60-day chunks (NASA
+    Fetches through today from NASA in <=60-day chunks (NASA
     caps a single APOD range request) and ingests each chunk (downloading +
     translating as it goes). Run once manually after deploy; the daily poll
     keeps it fresh thereafter. Returns the total number of ingested/updated
     rows. Raises nothing — best-effort.
     """
     from services.nasa_api import NasaAPI
-    from datetime import date, timedelta
+    from datetime import timedelta
+    from services.apod_source import apod_today
 
-    today = date.today()
-    start = today - timedelta(days=days)
-    end = today - timedelta(days=1)  # NASA 400s on today if not published yet.
+    today = apod_today()
+    start = today - timedelta(days=max(1, days) - 1)
+    end = today
     total = 0
     cursor_date = start
     while cursor_date <= end:

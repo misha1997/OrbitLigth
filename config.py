@@ -65,7 +65,8 @@ ADMIN_EMAILS = {e.strip().lower() for e in os.getenv('ADMIN_EMAILS', '').split('
 
 # NASA API
 NASA_NEO_URL = "https://api.nasa.gov/neo/rest/v1/feed"
-NASA_APOD_URL = "https://api.nasa.gov/planetary/apod"
+# NASA migrated APOD to this public WordPress API in September 2026.
+NASA_APOD_URL = os.getenv("NASA_APOD_URL", "https://science.nasa.gov/wp-json/wp/v2/apod-basic").rstrip("/")
 
 # N2YO API
 N2YO_BASE_URL = "https://api.n2yo.com/rest/v1/satellite"

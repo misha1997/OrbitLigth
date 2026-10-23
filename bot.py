@@ -19,6 +19,7 @@ from handlers import CommandHandlers, CallbackHandlers, MessageHandlers
 
 # Import scheduler
 from services.scheduler import NotificationScheduler
+from utils.telegram_defaults import TELEGRAM_DEFAULTS
 
 # Setup logging
 logging.basicConfig(
@@ -44,7 +45,7 @@ def main():
     logger.info("Database initialized")
     
     # Create Application
-    application = Application.builder().token(BOT_TOKEN).build()
+    application = Application.builder().token(BOT_TOKEN).defaults(TELEGRAM_DEFAULTS).build()
     
     # Add post_init handler
     application.post_init = post_init
