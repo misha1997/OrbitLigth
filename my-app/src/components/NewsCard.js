@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useLang } from "../context/LanguageContext";
 import { pathFor } from "../lib/seo";
 import LocalizedLink from "./primitives/LocalizedLink";
+import NewsImage from "./NewsImage";
 import "../styles/news.css";
 
 export default function NewsCard({ item }) {
@@ -10,11 +11,7 @@ export default function NewsCard({ item }) {
   const category = item.category || "missions";
   const content = (
     <>
-      {item.image ? (
-        <img className="news-card-preview" src={item.image} alt="" loading="lazy" decoding="async" />
-      ) : (
-        <div className={`news-card-preview news-card-preview-ph cat-${category}`} />
-      )}
+      <NewsImage className="news-card-preview" src={item.image} />
       <div className="news-card-body">
         <div className="top-row">
           <span className={`cat-pill ${category}`}>{t(`news.cat.${category}`, { defaultValue: category })}</span>

@@ -18,6 +18,7 @@ import { TelegramShareIcon, LinkIcon, CheckIcon, XShareIcon } from "../lib/icons
 import "../styles/news.css";
 import { getNewsBootstrap } from "../lib/news";
 import NewsSkeleton from "../components/NewsSkeleton";
+import NewsImage from "../components/NewsImage";
 import { useSeo } from "../hooks/useSeo";
 
 const STOP = new Set([
@@ -218,7 +219,8 @@ export default function NewsArticle({ slug }) {
                             loading="lazy"
                             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowFullScreen
-                            referrerPolicy="no-referrer"
+                            // YouTube requires a Referer to identify the embedding site (error 153).
+                            referrerPolicy="strict-origin-when-cross-origin"
                           />
                         )}
                       </div>
@@ -307,11 +309,7 @@ export default function NewsArticle({ slug }) {
                 to={r.slug ? `${pathFor("news", lang)}/${r.slug}` : "#"}
                 className="news-card related-card"
               >
-                {r.image ? (
-                  <div className="related-thumb" style={{ backgroundImage: `url("${r.image}")` }} />
-                ) : (
-                  <div className={"related-thumb related-thumb-ph cat-" + (r.category || "missions")} />
-                )}
+                <NewsImage className="related-thumb" src={r.image} />
                 <div className="top-row">
                   <span className={"cat-pill " + (r.category || "missions")}>{catLabel(r.category)}</span>
                 </div>

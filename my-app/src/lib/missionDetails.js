@@ -3,6 +3,106 @@ const photo = (mission, file, credit, source, year) => ({ image: `/${mission}/im
 const nasaImage = (id) => `https://images.nasa.gov/details/${id}`;
 
 export const MISSION_DETAILS = {
+  spitzer: {
+    experience: "infrared-archive",
+    model: { url: "/spitzer/models/spitzer.glb", direction: [1, 0.65, 1.3], credit: { author: "NASA / VTAD", source: "https://science.nasa.gov/resource/spitzer-space-telescope-3d-model/" } },
+    accent: "#E6A17B", hero: "/spitzer/images/preview.jpg",
+    gallery: [
+      photo("spitzer", "helix", "NASA / JPL-Caltech / University of Arizona", nasaImage("PIA09178"), "2007"),
+      photo("spitzer", "orion", "NASA / ESA / JPL-Caltech / IRAM", nasaImage("PIA13959"), "2012"),
+      photo("spitzer", "trappist", "NASA / JPL-Caltech", nasaImage("PIA21422"), "2017"),
+    ],
+    sources: [
+      { label: "JPL · Spitzer", url: "https://www.jpl.nasa.gov/missions/spitzer-space-telescope/" },
+      { label: "JPL · Facts & instruments", url: "https://www.jpl.nasa.gov/news/press_kits/spitzer/quick-facts/" },
+      { label: "NASA · End of mission", url: "https://www.nasa.gov/news-release/nasas-spitzer-space-telescope-ends-mission-of-astronomical-discovery/" },
+      { label: "NASA · Exoplanet discoveries", url: "https://science.nasa.gov/missions/spitzer/10-things-spitzer-taught-us-about-exoplanets/" },
+      { label: "IRSA · Spitzer archive", url: "https://irsa.ipac.caltech.edu/Missions/spitzer.html" },
+    ],
+  },
+  kepler: {
+    experience: "exoplanet-archive",
+    model: { url: "/kepler/models/kepler.glb", direction: [1, 0.65, 1.3], credit: { author: "NASA · 3D Resources", source: "https://github.com/nasa/NASA-3D-Resources/tree/master/3D%20Models/Kepler%20(A)" } },
+    accent: "#B2A2DE", hero: "/kepler/images/preview.jpg",
+    gallery: [
+      photo("kepler", "fields", "NASA Ames / Wendy Stenzel · Science: Jeff Coughlin, Kenneth Mighell, Doug Caldwell", nasaImage("ACD20-0045-002"), "2020"),
+      photo("kepler", "kepler186f", "NASA Ames / SETI Institute / JPL-Caltech", nasaImage("PIA17999"), "2014"),
+      photo("kepler", "kepler16b", "NASA / JPL-Caltech / T. Pyle", nasaImage("PIA14724"), "2011"),
+    ],
+    sources: [
+      { label: "NASA · Kepler / K2", url: "https://science.nasa.gov/mission/kepler/" },
+      { label: "NASA · Mission history", url: "https://science.nasa.gov/mission/kepler/in-depth/" },
+      { label: "JPL · K2 mission", url: "https://science.jpl.nasa.gov/projects/k2/" },
+      { label: "NASA Exoplanet Archive · Transit depth", url: "https://exoplanetarchive.ipac.caltech.edu/docs/transit/transit_algorithms.html" },
+      { label: "MAST · Kepler archive", url: "https://archive.stsci.edu/missions-and-data/kepler" },
+    ],
+  },
+  osirisrex: {
+    experience: "sample-return",
+    model: { url: "/osirisrex/models/osirisrex.glb", direction: [1, 0.7, 1.3], credit: { author: "NASA / VTAD", source: "https://science.nasa.gov/resource/osiris-rex-3d-model/" } },
+    accent: "#C9A876", hero: "/osirisrex/images/preview.jpg",
+    gallery: [
+      { image: "/osirisrex/images/bennu.png", credit: "NASA / Goddard / University of Arizona", source: "https://www.nasa.gov/image-article/osiris-rex-debuts-new-bennu-mosaic-3d-shape-model/", year: "2018" },
+      photo("osirisrex", "return", "NASA / Keegan Barber", nasaImage("NHQ202309240006"), "2023"),
+      photo("osirisrex", "samples", "NASA / Erika Blumenfeld & Joseph Aebersold", nasaImage("jsc2024e023024"), "2023"),
+    ],
+    sources: [
+      { label: "NASA · OSIRIS-REx", url: "https://science.nasa.gov/mission/osiris-rex/" },
+      { label: "NASA · Bennu sample curation", url: "https://ares.jsc.nasa.gov/astromaterials-newsletter/vol6-no1/osirisrex-news.cfm" },
+      { label: "NASA · Sample science", url: "https://www.nasa.gov/news-release/nasas-asteroid-bennu-sample-reveals-mix-of-lifes-ingredients/" },
+      { label: "NASA · OSIRIS-APEX", url: "https://science.nasa.gov/mission/osiris-apex/" },
+    ],
+  },
+  gaia: {
+    experience: "survey-archive",
+    model: { url: "/gaia/models/gaia.glb", direction: [1, 0.75, 1.3], credit: { author: "OrbitLight · ESA reference", source: "https://www.esa.int/Science_Exploration/Space_Science/Gaia/Gaia_factsheet" } },
+    accent: "#B4A0ED", hero: "/gaia/images/gaia_telescope.jpg",
+    gallery: [
+      photo("gaia", "observing", "Spacecraft: ESA / ATG medialab; Milky Way: ESA / Gaia / DPAC · CC BY-SA 3.0 IGO · A. Moitinho", "https://www.esa.int/ESA_Multimedia/Images/2022/06/Gaia_observes_the_Milky_Way", "2022"),
+      photo("gaia", "milkyway", "ESA / Gaia / DPAC · CC BY-SA 3.0 IGO", "https://www.esa.int/ESA_Multimedia/Images/2022/06/Gaia_Exploring_the_multi-dimensional_Milky_Way", "2022"),
+      photo("gaia", "asteroids", "ESA · ESA Standard Licence", "https://www.esa.int/ESA_Multimedia/Images/2022/06/Gaia_Solar_System_observations", "2022"),
+    ],
+    sources: [
+      { label: "ESA · Gaia", url: "https://www.esa.int/Science_Exploration/Space_Science/Gaia" },
+      { label: "ESA · Gaia factsheet", url: "https://www.esa.int/Science_Exploration/Space_Science/Gaia/Gaia_factsheet" },
+      { label: "ESA · Measuring parallax", url: "https://www.esa.int/Science_Exploration/Space_Science/Gaia/Parallax" },
+      { label: "ESA · Farewell, Gaia", url: "https://www.esa.int/Enabling_Support/Operations/Farewell_Gaia!_Spacecraft_operations_come_to_an_end" },
+      { label: "ESA · Gaia Archive", url: "https://gea.esac.esa.int/archive/" },
+    ],
+  },
+  perseverance: {
+    experience: "surface",
+    model: { url: "/perseverance/models/perseverance.glb", direction: [1, 0.7, 1.3], credit: { author: "NASA / JPL-Caltech", source: "https://science.nasa.gov/resource/mars-perseverance-rover-3d-model/" } },
+    accent: "#E8A078", hero: "/perseverance/images/perseverance_rover.jpg",
+    gallery: [
+      photo("perseverance", "selfie", "NASA / JPL-Caltech / MSSS", nasaImage("PIA24542"), "2021"),
+      photo("perseverance", "kodiak", "NASA / JPL-Caltech / ASU / MSSS", nasaImage("PIA24802"), "2021"),
+      photo("perseverance", "depot", "NASA / JPL-Caltech", nasaImage("PIA25678"), "2022"),
+    ],
+    sources: [
+      { label: "NASA · Perseverance", url: "https://science.nasa.gov/mission/mars-2020-perseverance/" },
+      { label: "NASA · Science instruments", url: "https://science.nasa.gov/mission/mars-2020-perseverance/science-instruments/" },
+      { label: "NASA · Science highlights", url: "https://science.nasa.gov/mission/mars-2020-perseverance/science-highlights/" },
+      { label: "NASA · Sample caching", url: "https://science.nasa.gov/mission/mars-2020-perseverance/science-objectives/" },
+    ],
+  },
+  cassini: {
+    experience: "archive",
+    model: { url: "/cassini/models/cassini.glb", direction: [1, 0.6, 1.3], credit: { author: "NASA / VTAD", source: "https://science.nasa.gov/resource/cassini-3d-model/" } },
+    accent: "#D9C29B", hero: "/cassini/images/cassini_probe.jpg",
+    gallery: [
+      photo("cassini", "saturn", "NASA / JPL-Caltech / SSI", nasaImage("PIA17172"), "2013"),
+      photo("cassini", "enceladus", "NASA / JPL / Space Science Institute", nasaImage("PIA07758"), "2005"),
+      photo("cassini", "titan", "NASA / JPL / University of Arizona / University of Idaho", nasaImage("PIA20016"), "2015"),
+    ],
+    sources: [
+      { label: "NASA · Cassini–Huygens", url: "https://science.nasa.gov/mission/cassini/" },
+      { label: "NASA · Mission overview", url: "https://science.nasa.gov/resource/cassini-mission-overview/" },
+      { label: "NASA · Grand Finale", url: "https://science.nasa.gov/mission/cassini/grand-finale/overview/" },
+      { label: "NASA · Spacecraft", url: "https://science.nasa.gov/mission/cassini/spacecraft/" },
+      { label: "NASA · Enceladus discoveries", url: "https://science.nasa.gov/missions/cassini/cassini-at-enceladus-a-decade-plus-of-discovery/" },
+    ],
+  },
   tess: {
     model: { url: "/tess/models/tess.glb", direction: [1, 0.6, 1.3], credit: { author: "NASA · 3D Resources", source: "https://github.com/nasa/NASA-3D-Resources/tree/master/3D%20Models/Transiting%20Exoplanet%20Survey%20Satellite%20(TESS)%20(B)" } },
     accent: "#4FD1C5", hero: "/tess/images/tess_probe.jpg",

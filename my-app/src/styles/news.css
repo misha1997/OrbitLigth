@@ -608,6 +608,8 @@
 .related-thumb {
   aspect-ratio: 16 / 9;
   width: 100%;
+  object-fit: cover;
+  display: block;
   background-size: cover;
   background-position: center;
   background-color: #0d0f1c;

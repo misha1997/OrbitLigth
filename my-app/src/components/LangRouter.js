@@ -37,6 +37,12 @@ const Juno = lazy(() => import("../pages/Juno"));
 const Chandra = lazy(() => import("../pages/Chandra"));
 const Tess = lazy(() => import("../pages/Tess"));
 const EuropaClipper = lazy(() => import("../pages/EuropaClipper"));
+const Perseverance = lazy(() => import("../pages/Perseverance"));
+const Cassini = lazy(() => import("../pages/Cassini"));
+const OsirisRex = lazy(() => import("../pages/OsirisRex"));
+const Gaia = lazy(() => import("../pages/Gaia"));
+const Kepler = lazy(() => import("../pages/Kepler"));
+const Spitzer = lazy(() => import("../pages/Spitzer"));
 const Gallery = lazy(() => import("../pages/Gallery"));
 const Planetarium = lazy(() => import("../pages/Planetarium"));
 const Mars = lazy(() => import("../pages/Mars"));
@@ -82,6 +88,12 @@ const PAGES = {
   chandra: Chandra,
   tess: Tess,
   europaclipper: EuropaClipper,
+  perseverance: Perseverance,
+  cassini: Cassini,
+  osirisrex: OsirisRex,
+  gaia: Gaia,
+  kepler: Kepler,
+  spitzer: Spitzer,
   gallery: Gallery,
   planetarium: Planetarium,
   mars: Mars,

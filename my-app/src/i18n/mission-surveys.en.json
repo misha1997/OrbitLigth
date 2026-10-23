@@ -1,0 +1,150 @@
+{
+  "osirisrex": {
+    "name": "OSIRIS-REx", "tagline": "A piece of the beginning", "eyebrow": "NASA · New Frontiers · Asteroid sample return",
+    "intro": "A dark, rocky asteroid held clues to the early solar system. OSIRIS-REx mapped Bennu, touched its surprisingly loose surface and sent a sealed collection of dust and pebbles back to Earth.",
+    "heroAlt": "Illustration of the OSIRIS-REx spacecraft and its solar arrays", "heroCaption": "OSIRIS-REx · NASA",
+    "status": { "title": "Sample delivered · 24 September 2023", "body": "The OSIRIS-REx sample-return phase is complete. The main spacecraft continued as OSIRIS-APEX toward Apophis; the returned Bennu material remains an active subject of laboratory research." },
+    "stats": [
+      { "label": "Launch", "value": "8 Sep 2016", "note": "Atlas V 411 · Cape Canaveral" },
+      { "label": "Sample collection", "value": "20 Oct 2020", "note": "Touch-and-Go · Nightingale site" },
+      { "label": "Returned bulk sample", "value": "121.6 g", "note": "More than twice the 60 g mission requirement" },
+      { "label": "Delivery to Earth", "value": "24 Sep 2023", "note": "Sample capsule · Utah desert" }
+    ],
+    "exploration": {
+      "nav": "Follow the sample", "eyebrow": "From asteroid to laboratory", "title": "A journey with two endings",
+      "intro": "Choose a stage to follow the sample home and discover why the spacecraft itself kept going.",
+      "choose": "Choose an OSIRIS-REx mission stage", "description": "Conceptual journey from Earth to Bennu, returning a sample capsule to Earth while the spacecraft continues to Apophis",
+      "note": "Story diagram: trajectories, positions and sizes are illustrative. The Apophis leg belongs to OSIRIS-APEX and is a planned future encounter, not a completed result.", "detailLabel": "Mission chapter",
+      "stops": [
+        { "name": "Leaving Earth", "body": "A 2016 launch began the journey. An Earth gravity assist in September 2017 helped align the spacecraft’s trajectory with Bennu’s orbit.", "fact": "2016 → 2018", "factLabel": "Cruise from launch to Bennu arrival", "question": "Interplanetary navigation is about matching a moving target’s orbit, not pointing at where it appears in the sky today.", "source": "https://science.nasa.gov/mission/osiris-rex/" },
+        { "name": "Touching Bennu", "body": "After mapping the boulder-covered surface, the team selected Nightingale. A sampling head briefly contacted the surface and released nitrogen to mobilise loose material.", "fact": "Touch-and-Go", "factLabel": "Sampling without a permanent landing", "question": "A spacecraft can collect a sample without settling onto the ground: make contact, capture material and back away.", "source": "https://science.nasa.gov/mission/osiris-rex/" },
+        { "name": "A capsule comes home", "body": "Only the sample capsule entered Earth’s atmosphere. It descended under parachute in Utah, then the material was transferred to a dedicated curation facility.", "fact": "121.6 g", "factLabel": "Returned bulk asteroid material", "question": "Keeping samples clean preserves fragile chemical clues and lets laboratories investigate questions no onboard instrument could answer alone.", "source": "https://ares.jsc.nasa.gov/astromaterials-newsletter/vol6-no1/osirisrex-news.cfm" },
+        { "name": "Onward to Apophis", "body": "The spacecraft flew past Earth after releasing the capsule. Renamed OSIRIS-APEX, it is headed for a new asteroid investigation following Apophis’ 2029 Earth encounter.", "fact": "2029", "factLabel": "Planned Apophis investigation", "question": "This extension will investigate a different asteroid. It is not a second sample-return mission and does not carry another return capsule.", "source": "https://science.nasa.gov/mission/osiris-apex/" }
+      ]
+    },
+    "timeline": [
+      { "date": "2016-09-08", "displayDate": "8 September 2016", "title": "A collector leaves home", "body": "OSIRIS-REx launches toward an encounter with the carbon-rich asteroid Bennu." },
+      { "date": "2018-12-03", "displayDate": "3 December 2018", "title": "Meeting Bennu", "body": "Arrival begins close-range surveys; the first orbit insertion follows on 31 December." },
+      { "date": "2020-10-20", "displayDate": "20 October 2020", "title": "A brief touch", "body": "The TAGSAM mechanism collects material at Nightingale before the spacecraft retreats from the surface." },
+      { "date": "2023-09-24", "displayDate": "24 September 2023", "title": "Asteroid material on Earth", "body": "The capsule lands in Utah. The main spacecraft continues its journey under the OSIRIS-APEX mission name." }
+    ],
+    "scienceTitle": "An ancient asteroid, a modern laboratory", "scienceIntro": "The returned material connects remote observations of Bennu with measurements made using instruments on Earth.",
+    "science": [
+      { "title": "A loosely held world", "body": "Bennu’s rocky surface was less resistant than expected during sampling. The encounter revealed why the mechanical behaviour of a rubble-pile asteroid cannot be inferred from its appearance alone.", "source": "https://science.nasa.gov/mission/osiris-rex/" },
+      { "title": "Ingredients, not organisms", "body": "Analyses reported amino acids, nucleobases and minerals associated with ancient brines. These findings investigate prebiotic chemistry and water’s history; they do not demonstrate life on Bennu.", "source": "https://www.nasa.gov/news-release/nasas-asteroid-bennu-sample-reveals-mix-of-lifes-ingredients/" },
+      { "title": "A collection for future questions", "body": "Curators document, protect and allocate the material for research. Preserving part of a returned sample allows future scientists to use methods and ask questions that do not yet exist.", "source": "https://ares.jsc.nasa.gov/astromaterials-newsletter/vol6-no1/osirisrex-news.cfm" }
+    ],
+    "instrumentIntro": "Cameras, spectroscopy and laser ranging characterised Bennu before sampling. TAGSAM was the collection mechanism, not a separate remote-sensing instrument.",
+    "instruments": [
+      { "name": "OCAMS", "body": "PolyCam, MapCam and SamCam imaged the asteroid, supported navigation and documented sampling." },
+      { "name": "OVIRS + OTES", "body": "Visible/infrared and thermal-emission spectroscopy investigated minerals and surface properties." },
+      { "name": "OLA + REXIS", "body": "A laser altimeter mapped shape and topography; an X-ray imaging spectrometer investigated surface elements." },
+      { "name": "TAGSAM", "body": "The articulated sampling arm and collector gathered material during brief surface contact." }
+    ],
+    "instrumentDetails": [
+      "The three-camera suite served different scales and tasks: long-range acquisition, global mapping, and close-up documentation of the sampling event.",
+      "Spectra reveal how materials absorb, reflect or emit light at different wavelengths. Combined with images, they help connect composition with local terrain.",
+      "The Canadian-built OLA measured laser round-trip times to construct a 3D surface map. The student-built REXIS used X-ray observations to investigate elemental composition.",
+      "A burst of nitrogen stirred regolith into the collector. The mechanism then carried the sample to the return capsule for the journey to Earth."
+    ],
+    "communication": { "eyebrow": "Sampling with a time delay", "title": "A touch Earth could not control live", "body": "Signals between Earth and Bennu took many minutes. The spacecraft carried out the sampling sequence using onboard navigation rather than waiting for a human response after each manoeuvre.", "note": "The calculator uses an example interplanetary distance. It does not track OSIRIS-REx, its returned capsule or the current OSIRIS-APEX spacecraft.", "source": "https://science.nasa.gov/mission/osiris-rex/" },
+    "quiz": {
+      "nav": "Test yourself", "eyebrow": "Sample-return challenge", "title": "What came back from Bennu?", "intro": "Three questions about collecting, returning and interpreting asteroid material.", "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
+      "questions": [
+        { "question": "What landed in Utah in September 2023?", "options": ["The entire spacecraft", "A sample-return capsule", "The asteroid Bennu"], "correct": 1, "explanation": "The capsule returned the sample. The main spacecraft flew onward and became OSIRIS-APEX." },
+        { "question": "How did TAGSAM gather loose material?", "options": ["With a nitrogen gas burst", "With a deep drilling rig", "By melting the asteroid"], "correct": 0, "explanation": "The sampling head touched Bennu and released nitrogen, mobilising regolith that entered the collector." },
+        { "question": "What do amino acids in the sample establish?", "options": ["That Bennu has living organisms", "That a city once existed there", "That relevant organic chemistry occurred"], "correct": 2, "explanation": "Amino acids can form through non-biological processes. Finding molecular ingredients of life is different from detecting life." }
+      ]
+    },
+    "faq": [
+      { "question": "Did the whole spacecraft return to Earth?", "answer": "No. It released a capsule containing the sample and diverted past Earth. The spacecraft continues as OSIRIS-APEX; the Bennu sample is studied in laboratories." },
+      { "question": "Why collect a sample when we already have meteorites?", "answer": "A controlled return provides a documented source and sampling context while limiting uncontrolled exposure to Earth’s environment. Researchers can compare laboratory measurements with observations of the original site." },
+      { "question": "Will OSIRIS-APEX bring home an Apophis sample?", "answer": "No sample return is planned for the extension. Its purpose is to investigate Apophis and how the asteroid changes around its close Earth encounter in 2029." }
+    ],
+    "galleryTitle": "From a rocky world to a clean room", "galleryIntro": "Original NASA imagery follows the evidence from Bennu’s surface to the returned collection.",
+    "gallery": [
+      { "title": "Bennu in twelve frames", "alt": "Mosaic of the dark, boulder-covered asteroid Bennu", "body": "Twelve PolyCam images taken on 2 December 2018 form this mosaic, obtained from roughly 24 kilometres away." },
+      { "title": "Recovery in the Utah desert", "alt": "NASA scientists collecting data around the returned OSIRIS-REx capsule in Utah", "body": "The recovery team examines the capsule on 24 September 2023, shortly after the sample arrived back on Earth." },
+      { "title": "The collector inside its canister", "alt": "Open OSIRIS-REx sample canister containing the TAGSAM collector and asteroid dust", "body": "This curation image shows TAGSAM inside the opened canister. Fine dust and grains were also found on surfaces surrounding the collector." }
+    ],
+    "sourceNote": "Mission facts and imagery come from NASA and its partners. This page distinguishes the completed OSIRIS-REx return from the continuing OSIRIS-APEX mission; the diagrams are educational illustrations."
+  },
+  "gaia": {
+    "name": "Gaia", "tagline": "Putting the stars in their place", "eyebrow": "ESA · Astrometry · A census of our Galaxy",
+    "intro": "A point of light becomes a place in three dimensions. By repeatedly measuring stars’ positions, brightness and spectra, Gaia transformed the sky into a map of the Milky Way’s structure, motion and history.",
+    "heroAlt": "Illustration of ESA’s Gaia spacecraft with its circular sunshield", "heroCaption": "Gaia · ESA",
+    "modelNote": "Schematic 3D model by OrbitLight, based on ESA references. Shapes and details are simplified; this is not an engineering model.",
+    "status": { "title": "Spacecraft retired · 27 March 2025", "body": "Science observations ended on 15 January 2025. Gaia was then moved away from L2 into a retirement orbit around the Sun and switched off. Processing and publication of its collected data continue." },
+    "stats": [
+      { "label": "Launch", "value": "19 Dec 2013", "note": "Soyuz-Fregat · Kourou" },
+      { "label": "Observed objects", "value": "≈ 2 billion", "note": "Stars and other sources over the mission" },
+      { "label": "Camera", "value": "≈ 1 gigapixel", "note": "A focal plane shared by the science measurements" },
+      { "label": "Deployed sunshield", "value": "10 m", "note": "Protecting stable observations from sunlight" }
+    ],
+    "exploration": {
+      "nav": "Read the star map", "eyebrow": "Layers of a galactic atlas", "title": "The sky has more than two dimensions",
+      "intro": "Choose a layer to see how positions, motion and spectra turn points of light into a scientific map.",
+      "choose": "Choose a Gaia science layer", "description": "Illustrative star-map layers for distance, stellar motion, spectra and the Gaia catalogue",
+      "note": "Conceptual all-sky illustration, not a Gaia data plot. Stars, arrows and marker locations are synthetic and represent scientific topics, not specific observed sources.", "detailLabel": "Atlas layer",
+      "stops": [
+        { "name": "Distances", "body": "A nearby star appears to shift against the background as the observer travels around the Sun. Gaia used repeated measurements to separate this annual parallax from other motion.", "fact": "d = 1 / p", "factLabel": "Parsecs when parallax is in arcseconds", "question": "A small apparent shift means a large distance. Try the parallax experiment below to see this relationship yourself.", "source": "https://www.esa.int/Science_Exploration/Space_Science/Gaia/Parallax" },
+        { "name": "Stellar motion", "body": "Proper motion describes a star’s changing direction on the sky. Radial velocity measures movement toward or away from us; together with distance they reveal motion through space.", "fact": "3D motion", "factLabel": "Requires more than a position on the sky", "question": "A star can have a small sideways drift but a large speed along our line of sight. Different measurements reveal different components.", "source": "https://www.esa.int/ESA_Multimedia/Images/2022/06/Gaia_Exploring_the_multi-dimensional_Milky_Way" },
+        { "name": "Light and chemistry", "body": "Splitting starlight into wavelengths provides clues to temperature, composition and intervening dust. These properties help reconstruct where stars formed and how the Galaxy evolved.", "fact": "Beyond a photo", "factLabel": "Spectra carry physical information", "question": "A red appearance can reflect a cooler star or dust along the line of sight. Interpreting the spectrum helps untangle the possibilities.", "source": "https://www.esa.int/Science_Exploration/Space_Science/Gaia/Gaia_factsheet" },
+        { "name": "The public archive", "body": "The Gaia catalogue connects repeated observations with calibrated stellar properties. Published releases represent defined observing periods, not a live snapshot of every star.", "fact": "Open data", "factLabel": "A resource for research beyond the spacecraft’s lifetime", "question": "Ending observations does not end discovery. Processing, validation and new questions continue to extract science from the stored measurements.", "source": "https://gea.esac.esa.int/archive/" }
+      ]
+    },
+    "parallax": {
+      "nav": "Try parallax", "eyebrow": "Measure a stellar distance", "title": "Move the viewpoint. Find the distance.", "intro": "Change the model star’s distance and switch between observations six months apart. More distant stars show a smaller apparent shift.",
+      "diagram": "Simplified parallax geometry showing two observing positions around the Sun and a star projected against a distant background", "sun": "Sun", "star": "Nearby star", "background": "Distant background",
+      "note": "Illustrative geometry: distances and angular shifts are exaggerated for visibility. The two epochs span roughly 2 AU; p is the half-amplitude of the annual parallax, not the full displacement.",
+      "distance": "Model star distance", "pc": "pc", "epoch": "Choose observing epoch", "epochs": ["First observation", "Six months later"], "parallax": "Annual parallax p", "mas": "mas", "lightyears": "Distance in light-years", "ly": "ly",
+      "formula": "d (pc) = 1,000 / p (mas) · 1 parsec ≈ 3.26 light-years.", "explanation": "This ideal example assumes an exact positive parallax. Real catalogue estimates need uncertainties and calibration; simply inverting a noisy or negative parallax can give misleading distances."
+    },
+    "timeline": [
+      { "date": "2013-12-19", "displayDate": "19 December 2013", "title": "A surveyor leaves Earth", "body": "Gaia launches from French Guiana toward its observing orbit near Sun–Earth L2." },
+      { "date": "2016-09-14", "displayDate": "14 September 2016", "title": "The first catalogue", "body": "Data Release 1 opens Gaia’s first star catalogue to the scientific community." },
+      { "date": "2022-06-13", "displayDate": "13 June 2022", "title": "A richer portrait", "body": "Data Release 3 expands the archive with spectra, velocities, astrophysical properties and many kinds of variable sources." },
+      { "date": "2025-03-27", "displayDate": "27 March 2025", "title": "The spacecraft retires", "body": "After science observations ended in January, final operations place Gaia in a retirement orbit and switch it off." }
+    ],
+    "scienceTitle": "A Galaxy in motion", "scienceIntro": "Gaia observes from inside the Milky Way. Its map is assembled source by source, rather than photographed from outside the Galaxy.",
+    "science": [
+      { "title": "Reconstructing galactic history", "body": "Stellar positions, velocities and chemistry help identify populations and past interactions. The Galaxy’s history survives in the motions of its stars.", "source": "https://www.esa.int/Science_Exploration/Space_Science/Gaia" },
+      { "title": "Mapping what lies between stars", "body": "Dust dims and reddens starlight. Measurements across many sightlines reveal intervening material and help researchers distinguish it from the stars’ own properties.", "source": "https://www.esa.int/ESA_Multimedia/Images/2022/06/Gaia_Exploring_the_multi-dimensional_Milky_Way" },
+      { "title": "A survey beyond stars", "body": "Gaia DR3 also includes positions and orbits for more than 150,000 asteroids. Its repeated sky survey links stellar astronomy with the study of our own solar system.", "source": "https://www.esa.int/ESA_Multimedia/Images/2022/06/Gaia_Solar_System_observations" }
+    ],
+    "instrumentIntro": "Two telescopes fed a shared focal plane. These cards describe the optical system and its three main science functions, rather than four independent telescopes.",
+    "instruments": [
+      { "name": "Two viewing directions", "body": "Telescopes separated by a basic angle of 106.5° linked measurements across widely separated regions of the sky." },
+      { "name": "SM + AF", "body": "The sky mapper and astrometric field detected sources and measured their positions as they crossed the focal plane." },
+      { "name": "BP + RP", "body": "Blue and red photometers dispersed light to measure colour and low-resolution spectra." },
+      { "name": "RVS", "body": "The radial-velocity spectrometer measured spectral shifts for a subset of sufficiently bright sources." }
+    ],
+    "instrumentDetails": [
+      "Comparing both fields of view helped build a global network of stellar positions. Stable optics and repeated scans were essential to turning these angles into a coherent catalogue.",
+      "As Gaia rotated, source images drifted across CCD detectors. The timing and location of those crossings supported the astrometric solution for positions, parallaxes and proper motions.",
+      "Prisms spread light into blue and red wavelength ranges. Calibrated spectra help estimate physical properties and account for colour-dependent instrumental effects.",
+      "The Doppler shift of spectral features constrains velocity along the line of sight. Not every catalogue source has an RVS measurement, so the available information differs between stars."
+    ],
+    "communication": { "eyebrow": "An archive built from repeated scans", "title": "From the focal plane to a catalogue", "body": "During operations, Gaia sent its observations through ESA’s ground network. Processing combined many crossings of each source with spacecraft calibration to derive reliable positions and properties.", "note": "The signal calculator uses the approximate historical Earth–L2 distance as an example. Gaia is now switched off in a heliocentric retirement orbit; this is not its current range.", "source": "https://www.esa.int/Enabling_Support/Operations/Farewell_Gaia!_Spacecraft_operations_come_to_an_end" },
+    "quiz": {
+      "nav": "Test yourself", "eyebrow": "Galactic mapmaker challenge", "title": "Read between the stars", "intro": "Three questions about distance, motion and the life of a data archive.", "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
+      "questions": [
+        { "question": "What happens to parallax as a star gets farther away?", "options": ["It grows", "It stays the same", "It becomes smaller"], "correct": 2, "explanation": "Parallax decreases with distance. For an ideal exact measurement, a 10 mas parallax corresponds to 100 parsecs." },
+        { "question": "Which measurement gives motion toward or away from us?", "options": ["Radial velocity", "Apparent brightness alone", "The star’s position in a single image"], "correct": 0, "explanation": "Spectral Doppler shifts constrain radial velocity. Proper motion measures a different component: changing direction on the sky." },
+        { "question": "Did Gaia’s retirement end all new Gaia science?", "options": ["Yes, the archive disappeared", "No, stored data continue to be processed and studied", "Yes, every star stopped moving"], "correct": 1, "explanation": "The spacecraft no longer observes, but its measurements remain. New processing, catalogues and research continue beyond operations." }
+      ]
+    },
+    "faq": [
+      { "question": "Is Gaia still observing near L2?", "answer": "No. Science observations ended on 15 January 2025. The spacecraft left the L2 region and was switched off on 27 March 2025 in a retirement orbit around the Sun." },
+      { "question": "Is Gaia’s map a photograph of our Galaxy from outside?", "answer": "No. Gaia observed from within the Milky Way. All-sky maps combine measured sources; external views of the Galaxy are reconstructions or artist impressions and should be labelled accordingly." },
+      { "question": "Does every source have a full distance and 3D velocity?", "answer": "No. Available measurements and their precision vary by source and data release. Reliable distance and velocity studies must account for uncertainties, selection effects and which parameters were actually published." }
+    ],
+    "galleryTitle": "Many ways to see one sky", "galleryIntro": "ESA imagery distinguishes an artist’s spacecraft view, data-derived sky maps and a solar-system survey infographic.",
+    "gallery": [
+      { "title": "The surveyor and its sky", "alt": "Artist impression of Gaia in front of a sky map based on Gaia observations", "body": "The spacecraft is an artist impression. The background uses the brightness and colour of more than 1.8 billion stars in Gaia EDR3." },
+      { "title": "Four dimensions of a catalogue", "alt": "Four Gaia DR3 all-sky maps showing velocities, motion, dust and stellar chemistry", "body": "This 2022 collage presents different measured quantities. The colours encode scientific information and do not all represent the sky’s visual appearance." },
+      { "title": "Our solar system in the survey", "alt": "ESA infographic describing Gaia DR3 observations of asteroids and other solar-system objects", "body": "Gaia’s repeated survey also tracked moving targets. This infographic highlights the solar-system content of the 2022 data release." }
+    ],
+    "sourceNote": "Mission history, scientific context and gallery images are based on ESA/Gaia/DPAC materials with original credits. The 3D spacecraft is an original schematic; the star-map diagram and parallax experiment use synthetic examples."
+  }
+}

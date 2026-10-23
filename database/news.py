@@ -170,8 +170,11 @@ def ingest_news_articles(articles: list) -> int:
                  (a.get('category') or '')[:120] or None, a.get('date') or None, source)
             )
             inserted += 1
-            _mirror_news_body_images(cursor, cursor.lastrowid, slug, a.get('body_images') or [])
-            _upsert_news_body_videos(cursor, cursor.lastrowid, a.get('body_videos') or [])
+            # Mirroring inserts image rows using this same cursor and changes
+            # lastrowid. Keep the article ID before any media inserts.
+            article_id = cursor.lastrowid
+            _mirror_news_body_images(cursor, article_id, slug, a.get('body_images') or [])
+            _upsert_news_body_videos(cursor, article_id, a.get('body_videos') or [])
         conn.commit()
         if inserted:
             logger.info(f"Ingested {inserted} new news article(s) into archive")

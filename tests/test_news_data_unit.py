@@ -43,6 +43,19 @@ class StoredNewsDataTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.news._news_raw('en',allow_live=False)
 
+    def test_stored_media_urls_are_decoded_without_rewriting_the_database(self):
+        image = 'https://images.example/a&#039;s-photo.jpg?w=800&#038;h=450'
+        self.database.get_news_article_by_slug.return_value = {'id': 1, 'slug': 'moon', 'title': 'Moon', 'body': '[IMG:0]\n\n[VIDEO:0]', 'image': image}
+        self.database.get_news_article_images.return_value = [{'position': 0, 'source_url': image}]
+        self.database.get_news_article_videos.return_value = [{'position': 0, 'video_url': 'https://www.youtube.com/embed/178AiyS7QXo?rel=0&amp;start=1'}]
+        result = self.news._news_article_raw('moon', 'en', enrich=False)
+        expected = "https://images.example/a's-photo.jpg?w=800&h=450"
+        self.assertEqual(result['image'], expected)
+        self.assertEqual(result['body_images'][0]['src'], expected)
+        self.assertEqual(result['body_videos'][0]['src'], 'https://www.youtube.com/embed/178AiyS7QXo?rel=0&start=1')
+        self.assertEqual(self.news._news_localize([{'image': image}], 'en')[0]['image'], expected)
+        self.database.set_news_article_body.assert_not_called()
+
 
 class DatabaseNewsReadsTests(unittest.TestCase):
     def setUp(self):
@@ -74,6 +87,25 @@ class DatabaseNewsReadsTests(unittest.TestCase):
             with self.assertLogs('database.news_unit_module',level='ERROR'), self.assertRaises(self.error):
                 read()
         self.assertEqual(self.conn.close.call_count,3)
+
+    def test_ingest_videos_keep_article_id_after_image_inserts_change_lastrowid(self):
+        translator = types.ModuleType('utils.translator')
+        translator.Translator = Mock()
+        translator.Translator.translate_batch.side_effect = lambda texts, lang: texts
+        self.cursor.fetchone.return_value = None
+        self.cursor.lastrowid = 42
+        video = 'https://www.youtube.com/embed/178AiyS7QXo'
+        article = {'url': 'https://publisher.example/story', 'title': 'Story', 'body_images': ['https://images.example/photo.jpg'], 'body_videos': [video]}
+        def mirror(*args):
+            self.cursor.lastrowid = 9001
+        with patch.dict(sys.modules, {'utils.translator': translator}), \
+             patch.object(self.db, '_news_slug_for_url', return_value='story'), \
+             patch.object(self.db, 'is_duplicate_title', return_value=False), \
+             patch.object(self.db, '_mirror_news_body_images', side_effect=mirror) as images, \
+             patch.object(self.db, '_upsert_news_body_videos') as videos:
+            self.assertEqual(self.db.ingest_news_articles([article]), 1)
+        images.assert_called_once_with(self.cursor, 42, 'story', article['body_images'])
+        videos.assert_called_once_with(self.cursor, 42, [video])
 
 
 if __name__ == "__main__":

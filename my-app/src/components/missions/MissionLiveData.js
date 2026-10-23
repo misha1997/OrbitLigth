@@ -4,7 +4,7 @@ import { useApi } from "../../hooks/useApi";
 import SectionHead from "../primitives/SectionHead";
 
 const DSN_CODES = { newhorizons: "NHPC", juno: "JNO", chandra: "CHDR", tess: "TESS", europaclipper: "EURC" };
-const DEFAULT_RANGE = { newhorizons: 9.8e9, juno: 8e8, chandra: 100000, tess: 250000, europaclipper: 1e8 };
+const DEFAULT_RANGE = { newhorizons: 9.8e9, juno: 8e8, chandra: 100000, tess: 250000, europaclipper: 1e8, perseverance: 225e6, cassini: 1.4e9, osirisrex: 300e6, gaia: 1.5e6, kepler: 150e6, spitzer: 200e6 };
 
 export function MissionTelemetry({ mission, data, loading, error, refetch }) {
   const { t, i18n } = useTranslation();
@@ -70,7 +70,7 @@ export function SignalCalculator({ mission, data }) {
   return <article className="card mission-signal">
     <div className="eyebrow">{ui.eyebrow}</div><h3>{ui.title}</h3><p>{ui.intro}</p>
     <label htmlFor={`${mission}-signal`}>{ui.distance}: <strong>{distance.toLocaleString(locale, { maximumFractionDigits: 0 })} {ui.km}</strong></label>
-    <input id={`${mission}-signal`} type="range" min="0" max={max} step={mission === "chandra" || mission === "tess" ? 100 : 1000000} value={distance} onChange={event => setManualDistance(Number(event.target.value))} />
+    <input id={`${mission}-signal`} type="range" min="0" max={max} step={mission === "gaia" ? 10000 : mission === "chandra" || mission === "tess" ? 100 : 1000000} value={distance} onChange={event => setManualDistance(Number(event.target.value))} />
     <div className="mission-signal-results"><div><span>{ui.oneway}</span><strong>{duration(distance / 299792.458)}</strong></div><div><span>{ui.return}</span><strong>{duration(2 * distance / 299792.458)}</strong></div></div>
     <p className="mission-orbit-note">{manualDistance === null && measured ? ui.fromApi : ui.example} {ui.note}</p>
     <button type="button" className="btn ghost" onClick={() => setManualDistance(null)}>{measured ? ui.useCurrent : ui.reset}</button>

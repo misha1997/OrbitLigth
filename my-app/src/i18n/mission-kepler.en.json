@@ -1,0 +1,81 @@
+{
+  "kepler": {
+    "name": "Kepler", "tagline": "Worlds hidden in starlight", "eyebrow": "NASA · Discovery · Kepler / K2 · 2009–2018",
+    "intro": "A planet can reveal itself without ever appearing in a photograph. Kepler watched for tiny, repeating dips in starlight and turned them into evidence that our Galaxy is filled with other worlds.",
+    "heroAlt": "NASA model of the Kepler space telescope", "heroCaption": "Kepler · NASA",
+    "status": { "title": "Retired · 30 October 2018", "body": "NASA announced Kepler’s retirement after its fuel ran out. The telescope no longer observes; its Kepler and K2 measurements remain available for research and new discoveries." },
+    "stats": [
+      { "label": "Launch", "value": "7 Mar 2009", "note": "UTC · 6 March in Florida · Delta II" },
+      { "label": "Telescope aperture", "value": "0.95 m", "note": "A Schmidt photometer, with a 1.4 m primary mirror" },
+      { "label": "Science detectors", "value": "42 CCDs", "note": "About 95 million pixels at launch" },
+      { "label": "Original survey", "value": "> 150,000 stars", "note": "Repeated measurements in one star-rich field" }
+    ],
+    "exploration": {
+      "nav": "From light to worlds", "eyebrow": "How a planet search works", "title": "A discovery begins with a shadow",
+      "intro": "Choose a chapter to connect the observing field, a transit signal, the K2 reinvention and the archive that outlived the spacecraft.",
+      "choose": "Choose a Kepler science chapter", "description": "Conceptual diagram linking Kepler’s observing field, a planet crossing its star, the K2 mission and repeated dips in a light curve",
+      "note": "Illustrative diagram: stars, planet, detector tiles and orbital path are not to scale or a reproduction of a specific observation.", "detailLabel": "Science chapter",
+      "stops": [
+        { "name": "Keep watching", "body": "The original mission repeatedly measured a field in Cygnus and Lyra. Long, nearly continuous observations made it possible to spot recurring dimmings among more than 150,000 stars.", "fact": "One field", "factLabel": "Many stars, measured again and again", "question": "A short visit can miss a planet with a long orbit. Watching for years increases the chance of seeing repeated events.", "source": "https://science.nasa.gov/mission/kepler/" },
+        { "name": "Read the dip", "body": "When an orbit is aligned with our view, a planet blocks a fraction of its star’s light. The depth constrains relative size, and the interval between transits reveals orbital period.", "fact": "δ ≈ (Rp / R★)²", "factLabel": "Ideal full-transit depth for a uniformly bright star", "question": "Try the transit laboratory below. Doubling the planet’s radius makes the ideal depth four times larger.", "source": "https://exoplanetarchive.ipac.caltech.edu/docs/transit/transit_algorithms.html" },
+        { "name": "A second life: K2", "body": "Two failed reaction wheels ended the original pointing strategy. K2 used the remaining two wheels, thrusters and balanced sunlight pressure to observe successive fields near the ecliptic.", "fact": "2014–2018", "factLabel": "A new observing strategy for the same spacecraft", "question": "The telescope was not physically repaired. Engineers changed how it pointed and which parts of the sky it could study.", "source": "https://science.jpl.nasa.gov/projects/k2/" },
+        { "name": "Test and archive", "body": "A dip becomes a candidate, not an instant confirmed planet. Researchers examine repeated signals, stellar companions, instrument effects and other observations before interpreting a system.", "fact": "Open light curves", "factLabel": "Kepler and K2 data in the MAST archive", "question": "The archive keeps the evidence available. New analysis can reveal signals that were missed while the spacecraft was still operating.", "source": "https://archive.stsci.edu/missions-and-data/kepler" }
+      ]
+    },
+    "transit": {
+      "nav": "Try a transit", "eyebrow": "Build a planet signal", "title": "Change the planet. Read the starlight.",
+      "intro": "Choose a planet size and orbital period, then move it across the star. The diagram and light curve show how a transit changes the measured brightness.",
+      "diagram": "Synthetic transit experiment with a planet crossing a star and a forty-day light curve showing repeated brightness dips", "star": "A model star with the Sun’s radius", "daysAxis": "Time · days",
+      "radius": "Planet radius", "earthRadii": "Earth radii", "period": "Orbital period", "days": "days", "phase": "Position through the first transit", "before": "Before", "middle": "Mid-transit", "after": "After",
+      "depth": "Maximum transit depth", "brightness": "Brightness at this position", "formula": "Depth ≈ (planet radius / star radius)² · 1 ppm = one part per million.",
+      "explanation": "The interval between dips gives the period; the depth measures relative size. Real data include noise, stellar activity and false positives, so this clean example is not a planet-confirmation tool.",
+      "note": "Synthetic, central transit of an opaque planet across a uniformly bright Sun-sized star. Planet size is enlarged for visibility. The vertical scale adapts and shows relative flux; crossing speed is illustrative and held fixed as the period changes. Limb darkening, orbital dynamics, noise and other stars are omitted.", "reset": "Reset experiment"
+    },
+    "timeline": [
+      { "date": "2009-03-07", "displayDate": "7 March 2009 · UTC", "title": "A surveyor of starlight", "body": "Kepler launches into an Earth-trailing orbit around the Sun. The Florida launch date is 6 March." },
+      { "date": "2013-05", "displayDate": "May 2013", "title": "A pointing challenge", "body": "A second reaction-wheel failure prevents the original steady pointing strategy from continuing." },
+      { "date": "2014-05-30", "displayDate": "30 May 2014", "title": "Second light", "body": "K2 begins science observations with a new strategy: successive campaigns along the ecliptic." },
+      { "date": "2018-10-30", "displayDate": "30 October 2018", "title": "The spacecraft retires", "body": "NASA announces the end of operations after fuel exhaustion. The data continue their scientific life." }
+    ],
+    "scienceTitle": "A Galaxy with more possibilities", "scienceIntro": "Kepler revealed a remarkable diversity of planets. These examples describe scientific results; the gallery’s distant worlds are artist impressions.",
+    "science": [
+      { "title": "Two stars, one planet", "body": "Kepler-16 b, announced in 2011, orbits a pair of stars. It is a gas giant, demonstrating a planetary arrangement quite different from the one around our Sun.", "source": "https://science.nasa.gov/exoplanet-catalog/kepler-16b/" },
+      { "title": "Earth-size does not mean Earth-like", "body": "Kepler-186 f was announced in 2014 as an Earth-size planet in its star’s habitable zone. That location does not establish an ocean, a breathable atmosphere or life.", "source": "https://science.nasa.gov/resource/nasas-kepler-discovers-first-earth-size-planet-in-the-habitable-zone/" },
+      { "title": "From individual worlds to a census", "body": "A large, consistently observed sample helped astronomers investigate how common different kinds of planets are. They must account for missed transits, viewing geometry and detection limits.", "source": "https://science.nasa.gov/universe/exoplanets/what-did-kepler-teach-us-celebrating-the-space-telescope-10-years-after-launch/" }
+    ],
+    "instrumentIntro": "Kepler carried one main science instrument, a photometer. These cards describe its optics, detectors, pointing and measurement chain, not four separate telescopes.",
+    "instruments": [
+      { "name": "Schmidt optics", "body": "A 0.95 m aperture and 1.4 m primary mirror collected light from a wide field of stars." },
+      { "name": "CCD focal plane", "body": "Forty-two science CCDs recorded stellar light so the same targets could be compared over time." },
+      { "name": "Pointing control", "body": "Reaction wheels and thrusters kept images stable; K2 added a different strategy for balancing solar pressure." },
+      { "name": "Photometry + processing", "body": "Pixel measurements became calibrated light curves and candidate transit signals through data processing." }
+    ],
+    "instrumentDetails": [
+      "The telescope gathered light from many targets at once. Its aperture and primary mirror have different diameters: they should not be confused when describing the instrument.",
+      "Science measurements summed light from selected pixels around each target. Changes in the instrument and background had to be corrected before comparing brightness over time.",
+      "Stable pointing reduced apparent brightness changes caused by image motion. After two wheel failures, observing near the ecliptic helped K2 manage solar-pressure torques with the remaining hardware.",
+      "Ground processing corrected systematic effects and searched for repeatable patterns. Follow-up work was needed to distinguish planets from eclipsing stars and other sources of dimming."
+    ],
+    "communication": { "eyebrow": "A telescope beyond Earth orbit", "title": "Light curves travelled home in batches", "body": "Kepler followed the Earth around the Sun rather than orbiting our planet. It stored observations onboard and transmitted data through NASA’s Deep Space Network during scheduled contacts.", "note": "The calculator uses an illustrative Earth–spacecraft distance. Kepler is retired; the example is not a current position, a live contact or the time taken by light from an exoplanet to reach us.", "source": "https://science.nasa.gov/resource/kepler-spacecraft/" },
+    "quiz": {
+      "nav": "Test yourself", "eyebrow": "Planet-hunter challenge", "title": "Would you recognise the signal?", "intro": "Three questions about what a transit can tell us and what it cannot.", "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
+      "questions": [
+        { "question": "For the same star, what happens when a planet’s radius doubles?", "options": ["The ideal transit depth becomes four times larger", "The orbital period must double", "The star disappears completely"], "correct": 0, "explanation": "The blocked area scales with radius squared. For a full transit of a uniformly bright star, doubling radius multiplies the depth by four." },
+        { "question": "What does the spacing between repeated transits measure?", "options": ["The planet’s surface temperature directly", "The orbital period", "The number of living organisms"], "correct": 1, "explanation": "The interval gives the time between successive passages in front of the star. Temperature and habitability need additional information." },
+        { "question": "Does one dip prove that a planet exists?", "options": ["Yes, no other process dims a star", "Yes, if the dip looks symmetrical", "No, alternative explanations need to be checked"], "correct": 2, "explanation": "Eclipsing stars, blended sources, stellar variability and instrument effects can mimic parts of a planet signal. Candidates require careful validation or confirmation." }
+      ]
+    },
+    "faq": [
+      { "question": "Is Kepler still finding planets?", "answer": "The spacecraft stopped observing in 2018. Researchers can still identify and validate planets using its archived measurements, so new scientific results can appear after retirement." },
+      { "question": "Was K2 a different spacecraft?", "answer": "No. K2 used the same Kepler telescope with a new observing strategy after reaction-wheel failures. It observed a succession of fields rather than maintaining the original long stare." },
+      { "question": "Does a planet in the habitable zone have life?", "answer": "Not necessarily. The habitable zone describes a range where surface liquid water may be possible under suitable atmospheric conditions. It does not establish a planet’s actual surface conditions or biology." }
+    ],
+    "galleryTitle": "Fields of stars, worlds of possibility", "galleryIntro": "A survey-field map and two artist impressions. These are not close-up photographs of the exoplanets.",
+    "gallery": [
+      { "title": "Where Kepler and K2 looked", "alt": "NASA chart of the observing fields surveyed by Kepler and K2", "body": "This 2020 illustration brings together the mission’s observing fields and the regions surveyed during K2." },
+      { "title": "Kepler-186 f: an artist’s view", "alt": "Artist impression of Kepler-186 f with its star and other planets in the distance", "body": "Artwork illustrates an Earth-size world in a red dwarf’s habitable zone. The depicted landscape, surface and atmosphere are not measured details." },
+      { "title": "A sky with two suns", "alt": "Artist impression of the gas giant Kepler-16 b illuminated by two stars", "body": "This illustration imagines the circumbinary system announced in 2011. Kepler-16 b is a gas giant, not a rocky world with a surface to stand on." }
+    ],
+    "sourceNote": "Mission facts, instrument descriptions, the 3D model and gallery are based on NASA and archive materials with original credits. The diagrams and transit experiment are synthetic educational examples, not observations of a particular planet."
+  }
+}

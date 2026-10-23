@@ -10,6 +10,8 @@ sites it came from. Same pattern as ``services/apod_images.py`` /
 ``services/galaxy_images.py``.
 """
 import logging
+from html import unescape
+from io import BytesIO
 from pathlib import Path
 
 import requests
@@ -46,7 +48,7 @@ def download_news_image(slug: str, index: int, url: str):
     optional; the page falls back to the full image).
     """
     slug = (slug or "").strip()
-    src = (url or "").strip()
+    src = unescape((url or "").strip())
     if not slug or src == "" or index is None:
         return None, None
 
@@ -61,17 +63,33 @@ def download_news_image(slug: str, index: int, url: str):
 
         # Skip re-download if we already have both files (idempotent).
         if full_abs.exists() and (DATA_NEWS_DIR / thumb_rel).exists():
-            return full_rel, thumb_rel
+            try:
+                from PIL import Image
+                with Image.open(full_abs) as cached:
+                    cached.verify()
+                with Image.open(DATA_NEWS_DIR / thumb_rel) as cached_thumb:
+                    cached_thumb.verify()
+                return full_rel, thumb_rel
+            except (OSError, ValueError):
+                logger.warning("Invalid cached news image, retrying %s/%s", slug, index)
 
         resp = requests.get(src, timeout=_TIMEOUT, headers={"User-Agent": _UA})
         if resp.status_code != 200 or not resp.content:
             logger.warning("news image download failed %s -> %s", src, resp.status_code)
             return None, None
 
+        # A publisher can return an HTML error page (or SVG icon) with 200.
+        # Do not save those bytes as a .jpg and advertise a broken local file.
+        from PIL import Image
+        try:
+            with Image.open(BytesIO(resp.content)) as downloaded:
+                downloaded.verify()
+        except (OSError, ValueError) as e:
+            logger.warning("news image response is not a supported image %s: %s", src, e)
+            return None, None
         full_abs.write_bytes(resp.content)
 
         try:
-            from PIL import Image
             with Image.open(full_abs) as im:
                 im = im.convert("RGB")
                 im.thumbnail((_THUMB_MAX, _THUMB_MAX))

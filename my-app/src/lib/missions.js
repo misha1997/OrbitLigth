@@ -67,20 +67,20 @@ export const MISSIONS = [
     blurbKey: "missions.blurbs.europaclipper",
   },
   {
-    key: "perseverance", labelKey: "missions.names.perseverance",
-    disabled: true, type: "rover", status: "active", year: "2020",
+    key: "perseverance", labelKey: "missions.names.perseverance", to: "perseverance",
+    disabled: false, type: "rover", status: "active", year: "2020",
     icon: "🚙", accent: "#E25C5C", img: "/perseverance/images/perseverance_rover.jpg",
     blurbKey: "missions.blurbs.perseverance",
   },
   {
-    key: "cassini", labelKey: "missions.names.cassini",
-    disabled: true, type: "probe", status: "ended", year: "1997–2017",
+    key: "cassini", labelKey: "missions.names.cassini", to: "cassini",
+    disabled: false, type: "probe", status: "ended", year: "1997–2017",
     icon: "🛰️", accent: "#D9C29B", img: "/cassini/images/cassini_probe.jpg",
     blurbKey: "missions.blurbs.cassini",
   },
   {
-    key: "osirisrex", labelKey: "missions.names.osirisrex",
-    disabled: true, type: "probe", status: "ended", year: "2016–2023",
+    key: "osirisrex", labelKey: "missions.names.osirisrex", to: "osirisrex",
+    disabled: false, type: "probe", status: "ended", year: "2016–2023",
     icon: "🛰️", accent: "#C9A876", img: "/osirisrex/images/preview.jpg",
     blurbKey: "missions.blurbs.osirisrex",
   },
@@ -88,20 +88,20 @@ export const MISSIONS = [
     // No `img` — Gaia is ESA, not NASA, so it isn't in images-api.nasa.gov
     // (the source every other entry's photo is mirrored from). Falls back
     // to the icon tile until an admin sets one via /admin/missions.
-    key: "gaia", labelKey: "missions.names.gaia",
-    disabled: true, type: "telescope", status: "ended", year: "2013–2025",
+    key: "gaia", labelKey: "missions.names.gaia", to: "gaia",
+    disabled: false, type: "telescope", status: "ended", year: "2013–2025",
     icon: "🔭", accent: "#B08FE0", img: "/gaia/images/gaia_telescope.jpg",
     blurbKey: "missions.blurbs.gaia",
   },
   {
-    key: "kepler", labelKey: "missions.names.kepler",
-    disabled: true, type: "telescope", status: "ended", year: "2009–2018",
+    key: "kepler", labelKey: "missions.names.kepler", to: "kepler",
+    disabled: false, type: "telescope", status: "ended", year: "2009–2018",
     icon: "🔭", accent: "#8A7DB0", img: "/kepler/images/preview.jpg",
     blurbKey: "missions.blurbs.kepler",
   },
   {
-    key: "spitzer", labelKey: "missions.names.spitzer",
-    disabled: true, type: "telescope", status: "ended", year: "2003–2020",
+    key: "spitzer", labelKey: "missions.names.spitzer", to: "spitzer",
+    disabled: false, type: "telescope", status: "ended", year: "2003–2020",
     icon: "🔭", accent: "#C46B4D", img: "/spitzer/images/preview.jpg",
     blurbKey: "missions.blurbs.spitzer",
   },

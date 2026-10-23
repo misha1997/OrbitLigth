@@ -2,18 +2,18 @@
 import requests
 import re
 import logging
+import html as html_lib
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from typing import List, Dict, Optional
-from urllib.parse import urljoin, urlparse
-from utils.i18n import t, DEFAULT_LANG
+from urllib.parse import urlparse
+from .news_html import media_url, prepare_news_html, limit_body_media
 
 logger = logging.getLogger(__name__)
 
 _IMG_PLACEHOLDER_RE = re.compile(r'^\[IMG:\d+\]$')
 _VIDEO_PLACEHOLDER_RE = re.compile(r'^\[VIDEO:\d+\]$')
-_MEDIA_TAIL_RE = re.compile(r'\[(?:IMG|VIDEO):\d*$')
 # Safety valve against photo-gallery/"related articles" widgets that a page
 # scrape can sweep in alongside the real prose (seen on esa.int: an 11-card
 # related-links strip and a 20+ photo eclipse gallery, both harvested as if
@@ -100,7 +100,7 @@ _VIDEO_IFRAME_RE = re.compile(
 # view this video" vjs-no-js fallback text inside it doesn't leak into the
 # body as if it were a real paragraph.
 _VIDEO_TAG_RE = re.compile(
-    r'<video[^>]*>.*?<source[^>]+src="([^"]+\.(?:mp4|webm|ogv|ogg))"[^>]*>.*?</video>',
+    r'<video\b[^>]*>.*?<source\b[^>]+src="([^"]+\.(?:mp4|webm|ogv|ogg)(?:[?#][^"]*)?)"[^>]*>.*?</video>',
     re.IGNORECASE | re.DOTALL
 )
 # esa.int mission/topic dossier pages (e.g. .../Meteosat_Third_Generation,
@@ -246,9 +246,9 @@ class NewsParser:
                             body, body_images, body_videos = '', [], []
 
                         def _first_real_image(html_src, base):
-                            for img_match in re.finditer(r'<img[^>]+src="([^"]+)"[^>]*>', html_src, re.IGNORECASE):
-                                candidate = urljoin(base, img_match.group(1))
-                                if not _is_junk_image(candidate, img_match.group(0)):
+                            for img_match in re.finditer(r'<img[^>]+src="([^"]+)"[^>]*>', prepare_news_html(html_src), re.IGNORECASE):
+                                candidate = media_url(img_match.group(1), base)
+                                if candidate and not _is_junk_image(candidate, img_match.group(0)):
                                     return candidate
                             return ''
 
@@ -256,6 +256,16 @@ class NewsParser:
                         # Fallback for hero image search if empty
                         if not image and desc:
                             image = _first_real_image(desc, link)
+                        if not image:
+                            for element in item.iter():
+                                name = localname(element)
+                                src = element.get('url') or ''
+                                mime = element.get('type') or ''
+                                if name == 'thumbnail' or (name in ('content', 'enclosure') and (mime.startswith('image/') or element.get('medium') == 'image')):
+                                    candidate = media_url(src, link)
+                                    if candidate and not _is_junk_image(candidate):
+                                        image = candidate
+                                        break
 
                         bucket = NewsParser._classify(raw_category, title + " " + excerpt)
 
@@ -328,13 +338,29 @@ class NewsParser:
             # real to go on.
             if response.encoding is None or response.encoding.lower() == 'iso-8859-1':
                 response.encoding = response.apparent_encoding
-            html = response.text
+            return NewsParser._parse_article_html(response.text, url)
+        except Exception as e:
+            logger.warning(f"Generic content parse failed for {url}: {e}")
+            return {"body": "", "image": "", "body_images": [], "body_videos": []}
+
+    @staticmethod
+    def _parse_article_html(source: str, url: str) -> Dict:
+        """Parse a stored HTML snapshot using the same path as a live fetch."""
+        try:
+            html = prepare_news_html(source)
+            # ESA can return its 404 template with HTTP 200. Never persist the
+            # template's "Go back to Earth" message as the full article body.
+            if re.search(r'class="[^"]*\b(?:error-404|page-not-found)\b', html, re.IGNORECASE):
+                return {"body": "", "image": "", "body_images": [], "body_videos": []}
             
             # Domain-specific selectors
             content_html = ""
             img = ""
+            open_match = re.search(r'<div[^>]*class="[^"]*\b(?:article-content|entry-content|nasa-content|post-content)\b[^"]*"[^>]*>', html, re.IGNORECASE)
+            if open_match:
+                content_html = NewsParser._extract_balanced_div(html[open_match.end():])
             
-            if "spaceflightnow.com" in url:
+            if not content_html and "spaceflightnow.com" in url:
                 # Reuse entry-content selector
                 open_match = re.search(r'<div[^>]*class="[^"]*\bentry-content\b[^"]*"[^>]*>', html, re.IGNORECASE)
                 if open_match:
@@ -346,7 +372,7 @@ class NewsParser:
                         if term_match and term_match.start() < end_idx:
                             end_idx = term_match.start()
                     content_html = rest[:end_idx]
-            elif "nasa.gov" in url:
+            elif not content_html and "nasa.gov" in url:
                 # NASA uses entry-content or specific containers
                 article_match = re.search(r'<article[^>]*>.*?</article>', html, re.DOTALL | re.IGNORECASE)
                 if article_match:
@@ -355,7 +381,7 @@ class NewsParser:
                     open_match = re.search(r'<div[^>]*class="[^"]*\b(?:entry-content|nasa-content|post-content)\b[^"]*"[^>]*>', html, re.IGNORECASE)
                     if open_match:
                         content_html = NewsParser._extract_balanced_div(html[open_match.end():])
-            elif "spacenews.com" in url:
+            elif not content_html and "spacenews.com" in url:
                 open_match = re.search(r'<div[^>]*class="[^"]*\b(?:post-content|entry-content)\b[^"]*"[^>]*>', html, re.IGNORECASE)
                 if open_match:
                     content_html = NewsParser._extract_balanced_div(html[open_match.end():])
@@ -382,11 +408,18 @@ class NewsParser:
             if content_html:
                 content_html = NewsParser._strip_nasa_promo_blocks(content_html)
 
-            # Extract first (non-icon) image inside content_html
-            if content_html:
+            # Publisher metadata identifies the cover; the first inline photo
+            # can be a different figure and should remain in the article body.
+            for meta in re.finditer(r'<meta\b[^>]*(?:property|name)="(?:og:image|twitter:image)"[^>]*>', html, re.IGNORECASE):
+                value = re.search(r'\bcontent="([^"]+)"', meta.group(0), re.IGNORECASE)
+                candidate = media_url(value[1], url) if value else ''
+                if candidate and not _is_junk_image(candidate):
+                    img = candidate
+                    break
+            if content_html and not img:
                 for img_match in re.finditer(r'<img[^>]+src="([^"]+)"[^>]*>', content_html, re.IGNORECASE):
-                    candidate = urljoin(url, img_match.group(1))
-                    if not _is_junk_image(candidate, img_match.group(0)):
+                    candidate = media_url(img_match.group(1), url)
+                    if candidate and not _is_junk_image(candidate, img_match.group(0)):
                         img = candidate
                         break
 
@@ -406,12 +439,12 @@ class NewsParser:
             body_images = []
 
             def _capture_inline_img(m):
-                candidate = urljoin(url, m.group(1))
+                candidate = media_url(m.group(1), url)
                 # Skip a repeat of the hero image: sites that put the
                 # featured-image <figure> inside <article> (not wrapped in a
                 # <p>) otherwise get it twice — once as the hero, once again
                 # as the first inline photo.
-                if candidate == img or _is_junk_image(candidate, m.group(0)) or len(body_images) >= _MAX_BODY_IMAGES:
+                if not candidate or candidate == img or _is_junk_image(candidate, m.group(0)) or len(body_images) >= _MAX_BODY_IMAGES:
                     return ''
                 body_images.append(candidate)
                 return f'</p><p>[IMG:{len(body_images) - 1}]</p><p>'
@@ -419,9 +452,10 @@ class NewsParser:
             body_videos = []
 
             def _capture_video(m):
-                if len(body_videos) >= _MAX_BODY_VIDEOS:
+                candidate = media_url(m.group(1), url)
+                if not candidate or len(body_videos) >= _MAX_BODY_VIDEOS:
                     return ''
-                body_videos.append(urljoin(url, m.group(1)))
+                body_videos.append(candidate)
                 return f'</p><p>[VIDEO:{len(body_videos) - 1}]</p><p>'
 
             if content_html:
@@ -447,20 +481,7 @@ class NewsParser:
                         paragraphs.append(p_text)
 
             body_text = "\n\n".join(paragraphs)
-            if len(body_text) > 6000:
-                body_text = _MEDIA_TAIL_RE.sub('', body_text[:6000]) + "..."
-
-            # Placeholders dropped by the widget break above leave
-            # body_images/body_videos holding entries nothing in body_text
-            # points at any more — trim them back to what's still referenced
-            # (placeholder numbering is contiguous from 0, so the highest
-            # surviving index is also the new length).
-            kept_img = [int(n) for n in re.findall(r'\[IMG:(\d+)\]', body_text)]
-            if len(kept_img) < len(body_images):
-                body_images = body_images[:max(kept_img) + 1] if kept_img else []
-            kept_vid = [int(n) for n in re.findall(r'\[VIDEO:(\d+)\]', body_text)]
-            if len(kept_vid) < len(body_videos):
-                body_videos = body_videos[:max(kept_vid) + 1] if kept_vid else []
+            body_text, body_images, body_videos = limit_body_media(body_text, body_images, body_videos)
 
             return {"body": body_text, "image": img, "body_images": body_images, "body_videos": body_videos}
         except Exception as e:
@@ -570,6 +591,7 @@ class NewsParser:
         our own site's origin and gets a 404."""
         if not html:
             return "", [], []
+        html = prepare_news_html(html)
         # Drop entry tags / metadata
         html = re.sub(r'<div[^>]*class="[^"]*\bentry-tags\b[^"]*"[^>]*>.*?</div>', '', html, flags=re.DOTALL | re.IGNORECASE)
         html = re.sub(r'<footer[^>]*class="[^"]*\bentry-(?:meta|footer)\b[^"]*"[^>]*>.*?</footer>', '', html, flags=re.DOTALL | re.IGNORECASE)
@@ -581,8 +603,8 @@ class NewsParser:
         image_urls = []
 
         def _capture_img(m):
-            candidate = urljoin(base_url, m.group(1)) if base_url else m.group(1)
-            if _is_junk_image(candidate, m.group(0)) or len(image_urls) >= _MAX_BODY_IMAGES:
+            candidate = media_url(m.group(1), base_url)
+            if not candidate or _is_junk_image(candidate, m.group(0)) or len(image_urls) >= _MAX_BODY_IMAGES:
                 return ''
             image_urls.append(candidate)
             return f'\n[IMG:{len(image_urls) - 1}]\n'
@@ -593,9 +615,10 @@ class NewsParser:
         video_urls = []
 
         def _capture_video(m):
-            if len(video_urls) >= _MAX_BODY_VIDEOS:
+            candidate = media_url(m.group(1), base_url)
+            if not candidate or len(video_urls) >= _MAX_BODY_VIDEOS:
                 return ''
-            video_urls.append(urljoin(base_url, m.group(1)) if base_url else m.group(1))
+            video_urls.append(candidate)
             return f'\n[VIDEO:{len(video_urls) - 1}]\n'
 
         html = _VIDEO_IFRAME_RE.sub(_capture_video, html)
@@ -616,26 +639,9 @@ class NewsParser:
         ]
         body = "\n\n".join(paragraphs)
 
-        if len(body) > 6000:
-            # Don't cut mid-placeholder — drop a dangling "[IMG:"/"[VIDEO:" tail.
-            body = _MEDIA_TAIL_RE.sub('', body[:6000]) + "..."
-        return body, image_urls, video_urls
+        return limit_body_media(body, image_urls, video_urls)
 
     @staticmethod
     def _clean_html_entities(text: str) -> str:
-        """Perform simple replacements of common HTML entities."""
-        if not text:
-            return ""
-        repl = {
-            '&nbsp;': ' ', '&amp;': '&', '&lt;': '<', '&gt;': '>',
-            '&quot;': '"', '&#39;': "'", '&rsquo;': "'", '&lsquo;': "'",
-            '&ldquo;': '"', '&rdquo;': '"', '&ndash;': '–', '&mdash;': '—',
-            '&#8217;': "'", '&#8216;': "'", '&#8220;': '"', '&#8221;': '"',
-            '&#8211;': '–', '&#8212;': '—'
-        }
-        for ent, val in repl.items():
-            text = text.replace(ent, val)
-        # Regex for numeric HTML entities (e.g. &#1234;)
-        text = re.sub(r'&#(\d+);', lambda m: chr(int(m.group(1))), text)
-        text = re.sub(r'&#x([a-fA-F0-9]+);', lambda m: chr(int(m.group(1), 16)), text)
-        return text
+        """Decode HTML5 entities, including invalid numeric references safely."""
+        return html_lib.unescape(text or '')

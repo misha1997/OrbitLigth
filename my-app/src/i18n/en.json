@@ -235,7 +235,13 @@
     "login": "Log in — OrbitLight",
     "register": "Sign up — OrbitLight",
     "account": "My account — OrbitLight",
-    "parker": "Parker Solar Probe — Orbit & Data"
+    "parker": "Parker Solar Probe — Orbit & Data",
+    "perseverance": "Perseverance — Exploring Mars | OrbitLight",
+    "cassini": "Cassini–Huygens — Worlds of Saturn | OrbitLight",
+    "osirisrex": "OSIRIS-REx — Samples of Asteroid Bennu | OrbitLight",
+    "gaia": "Gaia — Mapping the Milky Way in 3D | OrbitLight",
+    "kepler": "Kepler / K2 — Worlds Hidden in Starlight | OrbitLight",
+    "spitzer": "Spitzer — The Infrared Universe | OrbitLight"
   },
   "seo": {
     "desc": {
@@ -282,7 +288,13 @@
       "login": "Log in to your OrbitLight account with email, Google or Telegram.",
       "register": "Create an OrbitLight account to manage site and bot notifications in one place.",
       "account": "Your OrbitLight profile: personal details, Telegram connection and notification settings.",
-      "parker": "Track the Parker Solar Probe: current orbit, record-breaking speed, and closest solar approaches."
+      "parker": "Track the Parker Solar Probe: current orbit, record-breaking speed, and closest solar approaches.",
+      "perseverance": "Explore Perseverance with a 3D rover, interactive Jezero diagram, science instruments, Mars samples, NASA images and a mission quiz.",
+      "cassini": "Explore the legacy of Cassini–Huygens: a 3D spacecraft, interactive Saturn system, Titan, Enceladus, the Grand Finale, NASA images and a quiz.",
+      "osirisrex": "Explore OSIRIS-REx with a 3D spacecraft, interactive sample journey, Bennu science, capsule return, NASA imagery and the OSIRIS-APEX extension.",
+      "gaia": "Explore Gaia with an interactive parallax experiment, star-map layers, a schematic 3D spacecraft, instruments, ESA images and a mission quiz.",
+      "kepler": "Explore Kepler and K2 with a 3D telescope, interactive transits and light curves, exoplanet discoveries, instruments, NASA images and a mission quiz.",
+      "spitzer": "Explore Spitzer with a 3D telescope, interactive thermal spectra, cold and warm mission phases, TRAPPIST-1, NASA nebula images and a quiz."
     }
   },
   "lang": {

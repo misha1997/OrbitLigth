@@ -1,0 +1,5 @@
+simulation: news-parser
+routing: path
+mocks:
+  - routeKey: publishers
+    path: ../mocks/news-publishers/default.js

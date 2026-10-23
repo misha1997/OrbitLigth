@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="960" y2="540" gradientUnits="userSpaceOnUse"><stop stop-color="#171f38"/><stop offset="1" stop-color="#090d19"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#50c9bc" stop-opacity=".18"/><stop offset="1" stop-color="#50c9bc" stop-opacity="0"/></radialGradient>
+    <linearGradient id="planet" x1="360" y1="160" x2="570" y2="390" gradientUnits="userSpaceOnUse"><stop stop-color="#428d94"/><stop offset=".5" stop-color="#1c435b"/><stop offset="1" stop-color="#11172c"/></linearGradient>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h960v540H0z"/>
+  <ellipse cx="480" cy="270" rx="360" ry="260" fill="url(#glow)"/>
+  <g fill="#d6e0ee" opacity=".65"><circle cx="104" cy="102" r="2"/><circle cx="230" cy="194" r="1.5"/><circle cx="317" cy="83" r="2"/><circle cx="670" cy="116" r="2"/><circle cx="815" cy="212" r="1.5"/><circle cx="859" cy="93" r="2"/><circle cx="130" cy="367" r="2"/><circle cx="287" cy="454" r="1.5"/><circle cx="708" cy="432" r="2"/><circle cx="841" cy="383" r="1.5"/></g>
+  <ellipse cx="480" cy="270" rx="259" ry="75" transform="rotate(-24 480 270)" stroke="#6fcfc4" stroke-opacity=".24"/>
+  <circle cx="480" cy="270" r="116" fill="url(#planet)"/>
+  <path d="M400 186a116 116 0 0 1 143-14" stroke="#7dd8cd" stroke-width="2" stroke-linecap="round" opacity=".65"/>
+  <path d="M241 355c29 35 161 11 294-48 131-59 219-134 195-171" stroke="#e8b94d" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="708" cy="174" r="10" fill="#e8b94d"/>
+  <path d="M750 300v18m-9-9h18M203 279v12m-6-6h12" stroke="#89d7cf" stroke-width="2" stroke-linecap="round"/>
+  <text x="480" y="478" text-anchor="middle" fill="#9aadc5" font-family="Arial, sans-serif" font-size="16" letter-spacing="6">ORBITLIGHT</text>
+</svg>

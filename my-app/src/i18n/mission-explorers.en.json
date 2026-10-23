@@ -1,0 +1,148 @@
+{
+  "perseverance": {
+    "name": "Perseverance",
+    "tagline": "Reading the rocks of Mars",
+    "eyebrow": "NASA · Mars 2020 · Robotic astrobiologist",
+    "intro": "An ancient lake. A vanished river. Rocks that may preserve a world we have never known. In Jezero Crater, a six-wheeled laboratory investigates Mars’ past and collects samples for possible study on Earth.",
+    "heroAlt": "NASA’s Perseverance rover on the surface of Mars",
+    "heroCaption": "Perseverance · NASA / JPL-Caltech",
+    "status": { "title": "On the surface of Mars", "body": "Landed on 18 February 2021. This page explores the mission’s science and landmark sites; the map is an illustration, not the rover’s current position." },
+    "stats": [
+      { "label": "Launch", "value": "30 Jul 2020", "note": "Atlas V 541 · Cape Canaveral" },
+      { "label": "Touchdown", "value": "18 Feb 2021", "note": "Jezero Crater · Mars" },
+      { "label": "Rover mass", "value": "1,025 kg", "note": "About the size of a small car" },
+      { "label": "Science payload", "value": "7 instruments", "note": "Cameras, chemistry, weather and radar" }
+    ],
+    "exploration": {
+      "nav": "Explore Jezero", "eyebrow": "Field notebook / Mars", "title": "Four clues to an ancient world",
+      "intro": "Choose a numbered location to explore the questions behind the mission. Follow the story from the crater floor to the rocks along its rim.",
+      "choose": "Choose a Jezero exploration site", "description": "Illustrative map of Jezero Crater with its river delta, landing area, sample depot and crater rim",
+      "note": "Conceptual map: positions, route, relief and distances are simplified. These are selected scientific landmarks, not a live traverse map.",
+      "detailLabel": "Science stop",
+      "stops": [
+        { "name": "Crater floor", "body": "The rover landed inside a 45-kilometre-wide impact crater. Some floor rocks formed from magma, then interacted with water: a record of both volcanic and aqueous history.", "fact": "45 km", "factLabel": "Diameter of Jezero Crater", "question": "Why sample igneous rocks? Their minerals can help date events and place the surrounding landscape in time.", "source": "https://science.nasa.gov/mission/mars-2020-perseverance/science-highlights/" },
+        { "name": "River delta", "body": "A river once delivered sediment into a lake here. Layered outcrops such as Kodiak preserve a history that can be reconstructed from the arrangement of rock beds.", "fact": "> 3.5 billion", "factLabel": "Years back into Mars’ watery past", "question": "Fine sediment can bury and protect delicate chemical traces. That makes ancient lake deposits compelling places to investigate.", "source": "https://science.nasa.gov/mission/mars-2020-perseverance/" },
+        { "name": "Three Forks depot", "body": "Perseverance placed ten sealed tubes on the surface as a backup sample depot. Other samples remain aboard the rover for potential future recovery.", "fact": "10 tubes", "factLabel": "Backup depot completed in January 2023", "question": "Collecting is only the first step: bringing samples to Earth requires a separate mission. A future return is not guaranteed.", "source": "https://science.nasa.gov/mission/mars-2020-perseverance/science-objectives/" },
+        { "name": "Crater rim", "body": "Climbing to the rim opens another chapter: rocks shaped by the impact and material that may predate the crater itself. Geology becomes a journey backward through time.", "fact": "Beyond the lake", "factLabel": "A wider window into the ancient crust", "question": "Compare a rock’s chemistry with where it lies. A sample without its geological context tells only part of the story.", "source": "https://science.nasa.gov/mission/mars-2020-perseverance/" }
+      ]
+    },
+    "timeline": [
+      { "date": "2020-07-30", "displayDate": "30 July 2020", "title": "Next stop: Mars", "body": "An Atlas V launches the Mars 2020 spacecraft on its interplanetary journey." },
+      { "date": "2021-02-18", "displayDate": "18 February 2021", "title": "Seven minutes of descent", "body": "A heat shield, parachute and rocket-powered sky crane deliver the rover to Jezero." },
+      { "date": "2021-04-19", "displayDate": "19 April 2021", "title": "A companion takes flight", "body": "Ingenuity makes the first powered, controlled flight on another planet. It ultimately completes 72 flights, ending in January 2024." },
+      { "date": "2023-01-29", "displayDate": "29 January 2023", "title": "A cache for the future", "body": "The tenth tube completes the Three Forks backup depot, preserving an option for possible sample recovery." }
+    ],
+    "scienceTitle": "What can a rock tell us?",
+    "scienceIntro": "The mission connects landscapes, microscopic textures and chemistry. No single observation tells the whole story.",
+    "science": [
+      { "title": "A lake written in stone", "body": "Layered sediments reveal deposition by water; igneous rocks record a different part of the crater’s history. Comparing them helps reconstruct how this environment changed.", "source": "https://science.nasa.gov/mission/mars-2020-perseverance/science-highlights/" },
+      { "title": "A question, not a verdict", "body": "Organic compounds and intriguing mineral patterns can have biological or non-biological origins. Potential biosignatures need multiple lines of evidence and careful testing before they can establish ancient life.", "source": "https://science.nasa.gov/mission/mars-2020-perseverance/science-objectives/" },
+      { "title": "Making oxygen on Mars", "body": "The MOXIE technology experiment extracted oxygen from the carbon-dioxide-rich atmosphere. Its 16 runs produced 122 grams in total, demonstrating a step toward making resources locally.", "source": "https://science.nasa.gov/mission/mars-2020-perseverance/science-highlights/" }
+    ],
+    "instrumentIntro": "Seven primary instruments work alongside the drill and sample-handling system. Open each group to see how the measurements complement one another.",
+    "instruments": [
+      { "name": "Mastcam-Z + SuperCam", "body": "Stereo zoom cameras survey the landscape; remote spectroscopy investigates rock chemistry." },
+      { "name": "PIXL + SHERLOC", "body": "A pair of arm-mounted instruments maps elements, minerals and organic compounds at small scales." },
+      { "name": "RIMFAX + MEDA", "body": "Ground-penetrating radar probes below the wheels while weather sensors study conditions above them." },
+      { "name": "MOXIE", "body": "A completed technology demonstration tested oxygen production from the Martian atmosphere." }
+    ],
+    "instrumentDetails": [
+      "Mastcam-Z provides colour stereo views and zoom. SuperCam uses a laser and several spectroscopic techniques to examine targets from a distance, helping the team choose where to investigate next.",
+      "PIXL uses X-ray fluorescence to map chemical elements. SHERLOC uses ultraviolet Raman and fluorescence spectroscopy to investigate minerals and organics; WATSON adds close-up images for context.",
+      "RIMFAX sends radar pulses into the ground and measures reflections from subsurface structures. MEDA records temperature, wind, pressure, dust and other environmental conditions.",
+      "MOXIE used high-temperature electrochemistry to separate oxygen from carbon dioxide. It completed its demonstration in 2023; it was an experiment, not an astronaut life-support system."
+    ],
+    "communication": { "eyebrow": "Operating across worlds", "title": "Why you cannot joystick a Mars rover", "body": "Radio signals take minutes to cross the distance between Earth and Mars. Teams send plans; the rover executes sequences and uses onboard autonomy to help navigate. Much of its science data is relayed through Mars orbiters.", "note": "Try an example distance in the calculator. The result is a light-time estimate, not a current measurement or a complete command-response schedule.", "source": "https://www.jpl.nasa.gov/news/press_kits/mars_2020/landing/quick_facts/" },
+    "quiz": {
+      "nav": "Test yourself", "eyebrow": "Think like a scientist", "title": "Your turn to investigate", "intro": "Three questions about the choices behind the exploration.",
+      "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
+      "questions": [
+        { "question": "Why explore an ancient river delta?", "options": ["To find a working river today", "Sediments may preserve traces of past environments", "To charge the rover’s solar panels"], "correct": 1, "explanation": "A delta accumulates transported sediment. Its layers can preserve environmental history and potentially protect chemical traces. Perseverance uses radioisotope power." },
+        { "question": "Does finding an organic compound prove life existed?", "options": ["Yes, all organics come from organisms", "No, organic compounds can also form without life", "Only if the rock is red"], "correct": 1, "explanation": "Organic chemistry includes non-biological processes. Scientists need context, independent measurements and tests of alternative explanations." },
+        { "question": "What did MOXIE demonstrate?", "options": ["Making liquid water from sand", "Growing plants in Martian soil", "Extracting oxygen from atmospheric carbon dioxide"], "correct": 2, "explanation": "MOXIE demonstrated oxygen production on Mars. A system supporting future explorers would need to operate at a much larger scale." }
+      ]
+    },
+    "faq": [
+      { "question": "Has Perseverance discovered life on Mars?", "answer": "No confirmed discovery of Martian life is established by the evidence described here. The rover investigates ancient habitability and potential biosignatures; promising chemistry is a reason for further study." },
+      { "question": "Will the samples definitely reach Earth?", "answer": "They are collected for possible future return. Recovery, launch from Mars and delivery to Earth require additional spacecraft and an approved mission plan; Perseverance cannot bring them back itself." },
+      { "question": "Is Ingenuity still flying?", "answer": "No. Its final flight was on 18 January 2024. Across 72 flights it demonstrated powered flight in Mars’ thin atmosphere and helped scout terrain for the rover." }
+    ],
+    "galleryTitle": "Postcards from Jezero", "galleryIntro": "Real mission imagery, with the original NASA records and credits available in the full-screen gallery.",
+    "gallery": [
+      { "title": "Two explorers, one selfie", "alt": "Perseverance on Mars with the small Ingenuity helicopter nearby", "body": "WATSON images from 6 April 2021 are stitched into this portrait. The camera rides on the robotic arm, which moves between exposures." },
+      { "title": "Kodiak: layers of a lost delta", "alt": "Enhanced-colour image of the layered, flat-topped Kodiak hill in Jezero Crater", "body": "Mastcam-Z captured this view on 18 April 2021. Enhanced colour and exposed layers help scientists read the history of sediment deposition." },
+      { "title": "A depot mapped for the future", "alt": "Annotated overhead map of ten sample-tube placement sites at Three Forks", "body": "This 2022 planning map records the layout of the backup depot. The recovery concepts pictured belong to that historical plan; they do not guarantee a future return mission." }
+    ],
+    "sourceNote": "Science, milestone dates, imagery and the 3D model are based on NASA/JPL materials. Follow the official mission site for current operations and sample-return plans."
+  },
+  "cassini": {
+    "name": "Cassini–Huygens", "tagline": "A whole system of wonders", "eyebrow": "NASA / ESA / ASI · Saturn explorer · 1997–2017",
+    "intro": "Saturn became a place with weather, changing rings, methane seas and a moon that sprays its hidden ocean into space. Cassini orbited the planet for 13 years; Huygens carried the adventure down to Titan’s surface.",
+    "heroAlt": "Illustration of the Cassini spacecraft", "heroCaption": "Cassini · NASA",
+    "status": { "title": "Mission completed · 15 September 2017", "body": "Cassini ended with a planned plunge into Saturn. This is an exploration of its scientific legacy; the spacecraft no longer transmits data." },
+    "stats": [
+      { "label": "Launch", "value": "15 Oct 1997", "note": "Titan IVB / Centaur · Cape Canaveral" },
+      { "label": "Saturn orbit insertion", "value": "1 Jul 2004", "note": "UTC · 30 June in California" },
+      { "label": "Orbits of Saturn", "value": "294", "note": "Across 13 years of exploration" },
+      { "label": "Grand Finale", "value": "22 dives", "note": "Between Saturn and its inner rings" }
+    ],
+    "exploration": {
+      "nav": "Explore Saturn", "eyebrow": "Mission archive / Saturn", "title": "One mission. Many worlds.",
+      "intro": "Choose a destination to uncover a different part of Cassini’s story: a giant atmosphere, a disk of ice, a hazy moon or a hidden ocean.",
+      "choose": "Choose a Saturn-system destination", "description": "Illustrative view of Saturn, its rings, Titan and the plumes of Enceladus",
+      "note": "Illustration, not an orbital reconstruction: sizes, distances, positions and the dotted path are not to scale or tied to a date.", "detailLabel": "Destination",
+      "stops": [
+        { "name": "Saturn", "body": "From seasonal change to enormous storms, the planet’s atmosphere became a long-term laboratory. Close final passes also probed its gravity and magnetic environment.", "fact": "13 years", "factLabel": "Observing Saturn from orbit · 2004–2017", "question": "A long mission sees what a flyby misses: how a planetary system changes with time.", "source": "https://science.nasa.gov/mission/cassini/" },
+        { "name": "The rings", "body": "The rings are countless orbiting particles, mostly water ice. Waves, gaps and small moonlets reveal gravity sculpting a disk in motion.", "fact": "22 passes", "factLabel": "Through the planet–ring gap in 2017", "question": "During the Grand Finale, flying inside the rings let the team investigate Saturn and the ring system from a new vantage point.", "source": "https://science.nasa.gov/mission/cassini/grand-finale/overview/" },
+        { "name": "Titan", "body": "Radar and infrared observations pierced the haze to reveal dunes, lakes and seas. Here the surface liquid cycle uses methane and ethane rather than water.", "fact": "127 flybys", "factLabel": "Cassini’s final Titan flyby tally", "question": "Huygens landed here on 14 January 2005: the first landing on a world in the outer solar system.", "source": "https://science.nasa.gov/mission/cassini/" },
+        { "name": "Enceladus", "body": "Jets of water vapour and ice erupt near the south pole. Cassini sampled their chemistry and gathered evidence for a global ocean under the icy shell.", "fact": "23 flybys", "factLabel": "Encounters with an ocean-bearing moon", "question": "Water, organic chemistry and possible chemical energy make habitability a compelling question. They do not establish that life exists.", "source": "https://science.nasa.gov/missions/cassini/cassini-at-enceladus-a-decade-plus-of-discovery/" }
+      ]
+    },
+    "timeline": [
+      { "date": "1997-10-15", "displayDate": "15 October 1997", "title": "The long way to Saturn", "body": "Launch begins a journey using gravity assists at Venus, Earth and Jupiter before Saturn arrival." },
+      { "date": "2004-07-01", "displayDate": "1 July 2004 · UTC", "title": "A new resident of Saturn", "body": "A braking burn makes Cassini the first spacecraft to orbit Saturn." },
+      { "date": "2005-01-14", "displayDate": "14 January 2005", "title": "Huygens reaches Titan", "body": "ESA’s probe descends through the haze and sends measurements and surface images back via Cassini." },
+      { "date": "2017-09-15", "displayDate": "15 September 2017", "title": "A purposeful finale", "body": "After 22 planet–ring dives, Cassini enters Saturn’s atmosphere, protecting the moons from a possible future collision." }
+    ],
+    "scienceTitle": "Discoveries that outlived the spacecraft", "scienceIntro": "Cassini’s measurements continue to be studied. These three themes transformed our understanding of the Saturn system.",
+    "science": [
+      { "title": "An ocean beneath the ice", "body": "Enceladus’ wobble and plume measurements support a global subsurface ocean. Hydrogen in the plume suggests water–rock reactions that could supply chemical energy.", "source": "https://science.nasa.gov/missions/cassini/cassini-at-enceladus-a-decade-plus-of-discovery/" },
+      { "title": "Titan’s familiar, alien cycle", "body": "Liquids collect in lakes and seas on Titan, with methane playing a role analogous to water on Earth. Huygens and Cassini connected the surface landscape with its dense atmosphere.", "source": "https://science.nasa.gov/mission/cassini/" },
+      { "title": "A final experiment", "body": "Repeated dives through the ring gap brought measurements closer to Saturn than ever before. The finale traded the last of the spacecraft’s lifetime for a unique scientific perspective.", "source": "https://science.nasa.gov/mission/cassini/grand-finale/overview/" }
+    ],
+    "instrumentIntro": "Cassini carried 12 science instruments; Huygens carried six. These groups highlight complementary ways the orbiter explored the system.",
+    "instruments": [
+      { "name": "ISS · VIMS · CIRS · UVIS", "body": "Cameras and spectrometers studied appearance, composition and temperature across several wavelength ranges." },
+      { "name": "RADAR", "body": "Microwave observations revealed Titan’s surface beneath its thick atmospheric haze." },
+      { "name": "INMS + CDA", "body": "Gas and dust analysers sampled material encountered along the spacecraft’s path." },
+      { "name": "MAG · CAPS · MIMI · RPWS · RSS", "body": "Fields, particles, plasma waves and radio tracking connected the environment to the worlds within it." }
+    ],
+    "instrumentDetails": [
+      "ISS used narrow- and wide-angle cameras. VIMS mapped visible and infrared light; CIRS measured thermal infrared spectra; UVIS examined ultraviolet signatures, including changes during occultations.",
+      "RADAR transmitted microwaves and measured their echoes. It mapped terrain, measured heights and investigated how the surface reflected and emitted radiation.",
+      "INMS analysed neutral gas and ions, including material from Enceladus. The Cosmic Dust Analyzer investigated the composition and properties of individual dust and ice particles.",
+      "MAG measured magnetic fields; CAPS and MIMI studied charged particles; RPWS measured radio and plasma waves. RSS used radio signals to investigate gravity, atmospheres and rings."
+    ],
+    "communication": { "eyebrow": "A signal from the past", "title": "The last data crossed the void", "body": "Cassini communicated through NASA’s Deep Space Network. Its final measurements travelled to Earth while the spacecraft was already gone: radio waves, like light, take time to cover interplanetary distances.", "note": "There is no current Cassini link. The calculator uses an illustrative Earth–Saturn distance to show the delay a signal would experience.", "source": "https://science.nasa.gov/mission/cassini/grand-finale/overview/" },
+    "quiz": {
+      "nav": "Test yourself", "eyebrow": "A Saturn field test", "title": "What would you investigate?", "intro": "Three questions to connect the sights with the science.", "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
+      "questions": [
+        { "question": "What fills Titan’s surface lakes and seas?", "options": ["Liquid water", "Liquid methane and ethane", "Molten rock"], "correct": 1, "explanation": "Titan’s surface is cold enough for methane and ethane to be liquid. Water ice there behaves more like a solid building material." },
+        { "question": "How did Cassini investigate Enceladus’ ocean chemistry?", "options": ["By drilling through the ice", "By landing a submarine", "By sampling material in its plumes"], "correct": 2, "explanation": "Enceladus ejects gas and ice into space. Flying through that material gave Cassini access to clues about conditions beneath the surface." },
+        { "question": "Why end the mission inside Saturn?", "options": ["To reduce the risk of contaminating its moons", "To recharge the batteries", "To land on Saturn’s solid surface"], "correct": 0, "explanation": "A controlled atmospheric entry prevented a future uncontrolled collision with a potentially habitable moon. Saturn has no solid surface on which Cassini could land." }
+      ]
+    },
+    "faq": [
+      { "question": "Where is Cassini now?", "answer": "The spacecraft was destroyed in Saturn’s atmosphere on 15 September 2017. It is no longer in orbit and sends no telemetry. Its archived observations remain available for research." },
+      { "question": "Were Cassini and Huygens the same spacecraft?", "answer": "They travelled together but had different roles. The NASA-led Cassini orbiter explored the Saturn system; ESA’s Huygens probe separated and descended to Titan. ASI was a major mission partner." },
+      { "question": "Did the mission find life on Enceladus?", "answer": "No. It found evidence of an ocean and chemistry relevant to habitability. Finding an environment that could support life is different from detecting organisms." }
+    ],
+    "galleryTitle": "A view worth the journey", "galleryIntro": "Visible-light mosaics, backlit plumes and infrared mapping each reveal a different aspect of the Saturn system.",
+    "gallery": [
+      { "title": "The day Earth smiled", "alt": "Saturn backlit by the Sun, with its rings spread across a wide mosaic", "body": "On 19 July 2013, Cassini looked back from Saturn’s shadow. Earth appears as a tiny point in the larger original mosaic." },
+      { "title": "Fountains of Enceladus", "alt": "Backlit jets rising above the south polar limb of Enceladus", "body": "This 27 November 2005 image reveals fine material escaping from the moon. Backlighting makes the plume stand out against space." },
+      { "title": "Beneath Titan’s haze", "alt": "False-colour infrared view of Titan with surface regions visible through the haze", "body": "VIMS observations from 13 November 2015 map infrared wavelengths into visible colours. This is not how Titan would look to human eyes." }
+    ],
+    "sourceNote": "Mission history, scientific results, imagery and the 3D model are drawn from NASA and its mission partners. This page presents historical observations, not live spacecraft activity."
+  }
+}

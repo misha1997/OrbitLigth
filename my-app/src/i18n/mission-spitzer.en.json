@@ -1,0 +1,85 @@
+{
+  "spitzer": {
+    "name": "Spitzer", "tagline": "The Universe beyond visible light", "eyebrow": "NASA · Great Observatories · Infrared astronomy · 2003–2020",
+    "intro": "Dust clouds can hide a stellar nursery from our eyes while glowing in infrared light. Spitzer explored this other view of the cosmos, from forming stars and planetary systems to distant galaxies and the heat of alien worlds.",
+    "heroAlt": "NASA model of the Spitzer Space Telescope", "heroCaption": "Spitzer · NASA / JPL-Caltech",
+    "status": { "title": "Mission completed · 30 January 2020", "body": "Spitzer was decommissioned after more than 16 years of observations. It no longer collects data; its archive continues to support research and new images assembled from historical measurements." },
+    "stats": [
+      { "label": "Launch", "value": "25 Aug 2003", "note": "Delta II · Cape Canaveral" },
+      { "label": "Primary mirror", "value": "0.85 m", "note": "Beryllium optics designed for low temperatures" },
+      { "label": "Science instruments", "value": "3", "note": "IRAC · IRS · MIPS" },
+      { "label": "Cold-phase coverage", "value": "3.6–160 µm", "note": "Across the instruments’ imaging and spectral capabilities" }
+    ],
+    "exploration": {
+      "nav": "Explore the infrared", "eyebrow": "Four windows on Spitzer’s science", "title": "What does invisible light reveal?",
+      "intro": "Choose a chapter to explore dust, stellar birth, exoplanets and the engineering that made this cold observatory possible.",
+      "choose": "Choose a Spitzer science chapter", "description": "Conceptual diagram of a dust cloud, a forming star, an exoplanet system and thermal spectra",
+      "note": "Illustration, not a Spitzer observation: objects, spectra, sizes and positions are synthetic. The markers represent science topics, not coordinates in the sky.", "detailLabel": "Infrared chapter",
+      "stops": [
+        { "name": "Glowing dust", "body": "Dust both changes the light passing through it and emits infrared radiation of its own. Different wavelengths reveal different material and temperatures.", "fact": "Beyond red", "factLabel": "Infrared wavelengths extend beyond human vision", "question": "An infrared image is not simply a visible photograph with a red filter. It records light our eyes do not detect.", "source": "https://www.jpl.nasa.gov/news/press_kits/spitzer/" },
+        { "name": "Stellar nurseries", "body": "Young stars form in dusty environments. Infrared observations can reveal embedded objects and the surrounding material from which stars and planetary systems grow.", "fact": "A hidden beginning", "factLabel": "Star formation inside dusty clouds", "question": "Infrared does not pass through every cloud equally. How much we can see depends on wavelength and the properties of the dust.", "source": "https://science.jpl.nasa.gov/projects/spitzer/" },
+        { "name": "Other worlds", "body": "Spitzer helped reveal the seven-planet TRAPPIST-1 system and studied the infrared light of exoplanets. Repeated transits and eclipses connected tiny brightness changes with planetary properties.", "fact": "7 Earth-size planets", "factLabel": "The TRAPPIST-1 system announced in 2017", "question": "Earth-size describes a radius. It does not establish an Earth-like atmosphere, a surface ocean or the presence of life.", "source": "https://science.nasa.gov/missions/spitzer/10-things-spitzer-taught-us-about-exoplanets/" },
+        { "name": "Cold, then warm", "body": "Liquid helium supported the cold mission until May 2009. After it ran out, passive cooling allowed two shorter-wavelength IRAC channels to continue observing for another decade.", "fact": "3.6 + 4.5 µm", "factLabel": "IRAC channels retained in the warm mission", "question": "A warm telescope emits its own infrared light. Cooling helps prevent the observatory’s glow from overwhelming faint astronomical signals.", "source": "https://www.jpl.nasa.gov/news/press_kits/spitzer/quick-facts/" }
+      ]
+    },
+    "infrared": {
+      "nav": "Try infrared science", "eyebrow": "Experiment with invisible light", "title": "Change the heat. Shift the spectrum.",
+      "intro": "Change an ideal object’s temperature to move its thermal peak. Then compare the imaging channels available during Spitzer’s cold and warm mission phases.",
+      "diagram": "Normalised blackbody spectrum on a logarithmic wavelength axis, with the visible-light region and Spitzer imaging-channel markers",
+      "radiance": "Relative spectral radiance Bλ", "wavelength": "Wavelength · micrometres · logarithmic scale", "visible": "Visible", "infrared": "Infrared",
+      "temperature": "Model object temperature", "peak": "Thermal peak wavelength", "microns": "µm", "mode": "Choose a Spitzer mission phase", "cold": "Cold mission · 2003–2009", "warm": "Warm mission · 2009–2020",
+      "coldAvailability": "IRAC’s four imaging channels and MIPS’s three imaging bands were available. IRS also provided infrared spectra; its spectral coverage is not drawn here.",
+      "warmAvailability": "Only IRAC’s 3.6 and 4.5 µm channels remained available. The other IRAC channels, IRS and MIPS could no longer operate as during the cold phase.",
+      "channels": "Availability of nominal imaging channels", "available": "Available", "unavailable": "Unavailable",
+      "formula": "Wien’s law: peak wavelength (µm) ≈ 2,898 / temperature (K). Cooler objects peak at longer wavelengths.",
+      "explanation": "The slider changes the astronomical object, not the telescope’s temperature. An object emits over a range of wavelengths, so a peak outside a channel does not mean zero light in that channel.",
+      "note": "Synthetic blackbody spectrum per unit wavelength, normalised separately at each temperature. Heights do not compare absolute brightness. Markers show nominal imaging-channel centres, not filter widths or sensitivity. Real sources can include spectral lines, dust features, absorption and redshift.", "reset": "Reset experiment"
+    },
+    "timeline": [
+      { "date": "2003-08-25", "displayDate": "25 August 2003", "title": "An infrared eye opens", "body": "Spitzer launches into an Earth-trailing orbit around the Sun, away from much of Earth’s infrared background." },
+      { "date": "2009-05", "displayDate": "May 2009", "title": "A new thermal chapter", "body": "The liquid helium is exhausted. After reconfiguration, the warm mission continues with two IRAC channels." },
+      { "date": "2017-02-22", "displayDate": "22 February 2017", "title": "Seven worlds around one star", "body": "Spitzer and ground-based observations establish the remarkable seven-planet TRAPPIST-1 system." },
+      { "date": "2020-01-30", "displayDate": "30 January 2020", "title": "Observations end, science continues", "body": "Engineers decommission Spitzer. Its measurements remain available through the infrared science archive." }
+    ],
+    "scienceTitle": "A different light on the cosmos", "scienceIntro": "Images, spectra and precision brightness measurements let the same observatory investigate very different questions.",
+    "science": [
+      { "title": "Following star and planet formation", "body": "Spitzer investigated young stars and dusty disks. Infrared observations connect embedded stellar nurseries with the material that can participate in building planetary systems.", "source": "https://science.jpl.nasa.gov/projects/spitzer/" },
+      { "title": "Measuring alien worlds", "body": "Watching planets transit or disappear behind their stars helped separate tiny planetary signals from starlight. Spitzer’s long observations were important in establishing the TRAPPIST-1 system.", "source": "https://science.nasa.gov/missions/spitzer/10-things-spitzer-taught-us-about-exoplanets/" },
+      { "title": "A rich afterlife for stellar material", "body": "In the Helix Nebula, infrared images reveal gas and dust associated with a dying star. Assigned image colours distinguish wavelength bands and physical components that our eyes cannot see directly.", "source": "https://science.nasa.gov/photojournal/comets-kick-up-dust-in-helix-nebula/" }
+    ],
+    "instrumentIntro": "Spitzer had three science instruments. The fourth card describes the cooling system that supported them, rather than another science payload.",
+    "instruments": [
+      { "name": "IRAC", "body": "The Infrared Array Camera imaged at 3.6, 4.5, 5.8 and 8 µm during the cold mission." },
+      { "name": "IRS", "body": "The Infrared Spectrograph separated mid-infrared light into spectra to investigate physical conditions and composition." },
+      { "name": "MIPS", "body": "The Multiband Imaging Photometer observed longer-wavelength emission, including imaging at 24, 70 and 160 µm." },
+      { "name": "Cryogenic + passive cooling", "body": "Liquid helium and heat-radiating surfaces kept the observatory cold enough for sensitive infrared measurements." }
+    ],
+    "instrumentDetails": [
+      "The four channels sampled different infrared wavelengths. Only 3.6 and 4.5 µm remained useful after the helium was exhausted, supporting the long warm mission.",
+      "IRS offered low- and high-resolution spectroscopy over roughly 5–40 µm. Spectral features can reveal molecules and dust properties that a single broad-band image cannot separate.",
+      "MIPS combined imaging and a spectroscopic mode to study cooler material. It required the cold phase; its detectors could not continue operating like the two shorter-wavelength IRAC channels.",
+      "The telescope operated near 5.5 K in its cold phase and around 28.6 K in the warm mission. Even the warm phase remained extremely cold by everyday standards."
+    ],
+    "communication": { "eyebrow": "An observatory moving away from Earth", "title": "Infrared measurements, radio messages", "body": "Spitzer orbited the Sun in an Earth-trailing orbit. It returned observations through NASA’s Deep Space Network; distance and spacecraft orientation increasingly constrained operations near the mission’s end.", "note": "The calculator uses an example Earth–spacecraft distance. Spitzer is decommissioned; this is not a live location, contact or infrared observing measurement.", "source": "https://www.nasa.gov/news-release/nasas-spitzer-space-telescope-ends-mission-of-astronomical-discovery/" },
+    "quiz": {
+      "nav": "Test yourself", "eyebrow": "Infrared explorer challenge", "title": "What would Spitzer see?", "intro": "Three questions about thermal light, cold instruments and interpreting an image.", "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
+      "questions": [
+        { "question": "What happens to a blackbody’s peak as it cools?", "options": ["It shifts to longer wavelengths", "It always moves into visible light", "Its wavelength stays fixed"], "correct": 0, "explanation": "Wien’s law relates peak wavelength inversely to temperature. The peak moves to longer wavelengths when the object cools." },
+        { "question": "Which imaging channels survived into Spitzer’s warm mission?", "options": ["All three MIPS bands", "IRAC at 3.6 and 4.5 µm", "Only visible-light cameras"], "correct": 1, "explanation": "Passive cooling kept two IRAC channels useful after liquid helium ran out. The other cold-phase capabilities could not continue in the same way." },
+        { "question": "Are the colours in an infrared nebula image what human eyes would see?", "options": ["Yes, infrared is ordinary red light", "Yes, a camera records only visible colours", "No, infrared bands are assigned visible colours"], "correct": 2, "explanation": "Our eyes do not detect infrared wavelengths. Visible colours in a processed image communicate measured bands and structure." }
+      ]
+    },
+    "faq": [
+      { "question": "Is Spitzer still observing?", "answer": "No. The mission ended on 30 January 2020. Later publications and images can use its stored measurements, so a new release date does not imply new spacecraft observations." },
+      { "question": "Was the warm mission at room temperature?", "answer": "No. Warm refers to a change from the colder helium-cooled phase. The telescope was still around 28.6 K, approximately −245 °C, kept cold through passive cooling." },
+      { "question": "Does infrared see through every dust cloud?", "answer": "No. Dust absorption depends on wavelength and the material along the line of sight. Infrared can reveal structures hidden in visible light, while dust can also absorb and emit infrared radiation." }
+    ],
+    "galleryTitle": "An invisible Universe, made visible", "galleryIntro": "Two infrared views and an artist’s concept. The image captions identify combined observatories and distinguish artwork from measured surface details.",
+    "gallery": [
+      { "title": "The Helix in infrared", "alt": "Spitzer infrared image of the Helix Nebula with a blue-green shell and red central region", "body": "This 2007 release combines IRAC and MIPS data. Visible colours represent infrared bands, revealing gas and dust around a dying star." },
+      { "title": "Orion: a shared infrared view", "alt": "Combined Spitzer and Herschel infrared view of star-forming clouds in Orion", "body": "Released in 2012, this image combines Spitzer and ESA’s Herschel observations. Different infrared bands reveal young stars and their dusty surroundings." },
+      { "title": "TRAPPIST-1: seven imagined worlds", "alt": "Artist’s lineup of the seven Earth-size planets of TRAPPIST-1", "body": "This 2017 artist’s concept is based on knowledge available at the time. The depicted oceans, clouds and surface appearances are imagined, not resolved observations." }
+    ],
+    "sourceNote": "Mission history, instrument facts, the 3D model and imagery are based on NASA/JPL and archive materials with original credits. The chapter diagram and blackbody experiment use synthetic examples, not a fit to a Spitzer observation."
+  }
+}

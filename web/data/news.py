@@ -1,5 +1,6 @@
 """Space news archive (DB-first, live-parser fallback) + trending keywords + article pages."""
 import logging
+from html import unescape
 import asyncio
 import re
 from typing import Any
@@ -48,7 +49,7 @@ def _news_localize(items: list[dict[str, Any]], lang: str) -> list[dict[str, Any
             "category": it.get("category") or "missions",
             "date": it.get("published_date") or "",
             "source": it.get("source") or "SpaceflightNow",
-            "image": it.get("image") or "",
+            "image": unescape(it.get("image") or ""),
         })
     return out
 
@@ -249,13 +250,13 @@ def _news_article_raw(slug: str, lang: str, *, enrich: bool = True) -> dict[str,
         for row in get_news_article_images(article_id):
             full_rel = row.get("full_path")
             thumb_rel = row.get("thumb_path")
-            src = f"/news-img/{full_rel}" if full_rel else row.get("source_url") or ""
+            src = f"/news-img/{full_rel}" if full_rel else unescape(row.get("source_url") or "")
             thumb = f"/news-img/{thumb_rel}" if thumb_rel else src
             body_images.append({"position": row.get("position"), "src": src, "thumb": thumb})
     body_videos = []
     if "[VIDEO:" in body:
         for row in get_news_article_videos(article_id):
-            body_videos.append({"position": row.get("position"), "src": row.get("video_url") or ""})
+            body_videos.append({"position": row.get("position"), "src": unescape(row.get("video_url") or "")})
     return {
         "available": True,
         "needs_enrichment": not bool(it.get("body")) or (lang == "uk" and not bool(it.get("body_uk"))),
@@ -267,7 +268,7 @@ def _news_article_raw(slug: str, lang: str, *, enrich: bool = True) -> dict[str,
         "excerpt": (it.get("excerpt_uk") if lang == "uk" else "") or it.get("excerpt") or "",
         "body_images": body_images,
         "body_videos": body_videos,
-        "image": it.get("image") or "",
+        "image": unescape(it.get("image") or ""),
         "category": it.get("category") or "missions",
         "date": it.get("published_date") or "",
         "source": it.get("source") or "SpaceflightNow",

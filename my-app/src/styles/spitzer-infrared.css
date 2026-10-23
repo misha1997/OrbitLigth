@@ -1,0 +1,12 @@
+.spitzer-spectrum-figure { margin: 0; align-self: start; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; background: radial-gradient(ellipse at 70% 35%, #30221f, #11101c 75%); }
+.spitzer-spectrum-figure svg { display: block; width: 100%; height: auto; }
+.spitzer-spectrum-figure figcaption { color: var(--text-dim); font-size: 12px; line-height: 1.7; padding: 16px 22px; }
+.spitzer-spectrum-controls { min-width: 0; }
+.spitzer-spectrum-controls label { display: block; font-size: 14px; line-height: 1.7; }
+.spitzer-spectrum-results { margin-top: 24px; padding: 20px 0; border-block: 1px solid var(--border); }
+.spitzer-spectrum-results span { color: var(--text-dim); font-size: 12px; }
+.spitzer-spectrum-results strong { display: block; margin-top: 10px; color: var(--mission-accent); font-size: 30px; }
+.spitzer-spectrum-availability { padding: 12px 15px; border-left: 2px solid var(--mission-accent); background: #e6a17b08; }
+.spitzer-spectrum-channels { list-style: none; margin: 16px 0; padding: 0; }
+.spitzer-spectrum-channels li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; color: var(--text-dim); font-size: 12px; border-bottom: 1px solid var(--border); }
+.spitzer-spectrum-channels .is-available { color: var(--mission-accent); }

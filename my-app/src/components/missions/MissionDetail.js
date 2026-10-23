@@ -8,18 +8,32 @@ import { useApi } from "../../hooks/useApi";
 import MissionOrbitExplorer from "./MissionOrbitExplorer";
 import { MissionTelemetry, MissionContact, SignalCalculator } from "./MissionLiveData";
 import MissionNews from "./MissionNews";
+import MissionDiscovery, { MissionQuiz } from "./MissionDiscovery";
+import GaiaParallaxLab from "./GaiaParallaxLab";
+import KeplerTransitLab from "./KeplerTransitLab";
+import SpitzerInfraredLab from "./SpitzerInfraredLab";
 import "../../styles/mission-detail.css";
 import "../../styles/telescope3d.css";
 
 const MissionModelViewer = lazy(() => import("./MissionModelViewer"));
 
 export default function MissionDetail({ mission }) {
+  return MISSION_DETAILS[mission].experience
+    ? <MissionDetailContent key={mission} mission={mission} ephemeris={{ data: null }} />
+    : <TrackedMissionDetail key={mission} mission={mission} />;
+}
+
+function TrackedMissionDetail({ mission }) {
+  const ephemeris = useApi(`/api/missions/${mission}/ephemeris`, { deps: [mission], interval: 3600000 });
+  return <MissionDetailContent mission={mission} ephemeris={ephemeris} />;
+}
+
+function MissionDetailContent({ mission, ephemeris }) {
   const { t } = useTranslation();
   useSeo();
   const data = MISSION_DETAILS[mission];
   const content = t(`missionDetail.${mission}`, { returnObjects: true });
   const ui = t("missionDetail.ui", { returnObjects: true });
-  const ephemeris = useApi(`/api/missions/${mission}/ephemeris`, { deps: [mission], interval: 3600000 });
   const [photoIndex, setPhotoIndex] = useState(null);
   const dialog = useRef(null);
   const isPhotoOpen = photoIndex !== null;
@@ -50,20 +64,31 @@ export default function MissionDetail({ mission }) {
               <div className="eyebrow">{content.eyebrow}</div>
               <h1 className="hero-title">{content.name}<br /><span className="accent">{content.tagline}</span></h1>
               <p className="hero-sub">{content.intro}</p>
+              {content.status && <p className="mission-status-note"><strong>{content.status.title}</strong>{content.status.body}</p>}
               <div className="hero-actions">
                 <a href="#facts" className="btn primary">{ui.facts}</a>
                 <a href="#gallery" className="btn ghost">{ui.gallery}</a>
               </div>
             </div>
             <Suspense fallback={<div className="tele3d-hero-placeholder" role="status" aria-label={ui.model.loading}><span className="tele3d-spinner" /></div>}>
-              <MissionModelViewer key={mission} model={data.model} name={content.name} stats={content.stats} ui={ui.model} fallbackImage={data.hero} fallbackAlt={content.heroAlt} />
+              <div><MissionModelViewer key={mission} model={data.model} name={content.name} stats={content.stats} ui={content.modelNote ? { ...ui.model, subtitle: content.modelNote } : ui.model} fallbackImage={data.hero} fallbackAlt={content.heroAlt} />
+              {content.modelNote && <p className="mission-orbit-note">{content.modelNote}</p>}</div>
             </Suspense>
           </div>
         </div>
       </section>
 
       <nav className="wrap mission-section-nav" aria-label={ui.sections}>
-        {[["live", ui.live.title], ["trajectory", ui.trajectory], ["science", content.scienceTitle || ui.science], ["instruments", ui.instruments], ["communication", ui.communication], ["news", ui.news.title]].map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
+        {[
+          ...(!data.experience ? [["live", ui.live.title]] : []),
+          ["trajectory", content.exploration?.nav || ui.trajectory],
+          ...(content.parallax ? [["parallax", content.parallax.nav]] : []),
+          ...(content.transit ? [["transit", content.transit.nav]] : []),
+          ...(content.infrared ? [["infrared", content.infrared.nav]] : []),
+          ["timeline", ui.timeline], ["science", content.scienceTitle || ui.science],
+          ["instruments", ui.instruments], ["communication", ui.communication],
+          ...(content.quiz ? [["quiz", content.quiz.nav]] : [["news", ui.news.title]]),
+        ].map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
       </nav>
 
       <section className="section" id="facts">
@@ -81,14 +106,18 @@ export default function MissionDetail({ mission }) {
         </div>
       </section>
 
-      <MissionTelemetry mission={mission} {...ephemeris} />
+      {!data.experience && <MissionTelemetry mission={mission} {...ephemeris} />}
 
-      <section className="section" id="trajectory">
+      {content.exploration ? <MissionDiscovery mission={mission} content={content.exploration} /> : <section className="section" id="trajectory">
         <div className="wrap">
           <SectionHead eyebrow={ui.trajectory} title={content.orbit.title} sub={content.orbit.body} />
           <MissionOrbitExplorer mission={mission} {...ephemeris} content={content} accent={data.accent} />
         </div>
-      </section>
+      </section>}
+
+      {content.parallax && <GaiaParallaxLab content={content.parallax} />}
+      {content.transit && <KeplerTransitLab content={content.transit} />}
+      {content.infrared && <SpitzerInfraredLab content={content.infrared} />}
 
       <section className="section" id="timeline">
         <div className="wrap">
@@ -127,8 +156,13 @@ export default function MissionDetail({ mission }) {
 
       <section className="section" id="communication"><div className="wrap">
         <SectionHead eyebrow={ui.contact.eyebrow} title={ui.communication} />
-        <div className="mission-two-columns"><MissionContact mission={mission} /><SignalCalculator mission={mission} data={ephemeris.data} /></div>
+        <div className="mission-two-columns">
+          {content.communication ? <article className="card"><div className="eyebrow">{content.communication.eyebrow}</div><h3>{content.communication.title}</h3><p>{content.communication.body}</p><p>{content.communication.note}</p><a className="section-link" href={content.communication.source} target="_blank" rel="noopener noreferrer">{ui.readResearch} ↗</a></article> : <MissionContact mission={mission} />}
+          <SignalCalculator key={mission} mission={mission} data={ephemeris.data} />
+        </div>
       </div></section>
+
+      {content.quiz && <MissionQuiz mission={mission} content={content.quiz} />}
 
       <section className="section" id="questions"><div className="wrap">
         <SectionHead title={ui.questions} />
@@ -155,11 +189,11 @@ export default function MissionDetail({ mission }) {
         </div>
       </section>
 
-      <MissionNews mission={mission} />
+      {!data.experience && <MissionNews mission={mission} />}
 
       <section className="section mission-sources" id="sources">
         <div className="wrap">
-          <SectionHead title={ui.sources} sub={ui.sourceNote} />
+          <SectionHead title={ui.sources} sub={content.sourceNote || ui.sourceNote} />
           <ul>
             {data.sources.map((source) => <li key={source.url}><a className="section-link" href={source.url} target="_blank" rel="noopener noreferrer">{source.label} ↗</a></li>)}
           </ul>
