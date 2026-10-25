@@ -614,9 +614,9 @@ TRANSLATIONS = {
 
         # --- Space debris ---
         'debris.title': '🗑️ <b>Космічний сміття навколо Землі</b>\n\n',
-        'debris.tracked': '📡 Відстежуваних об\'єктів (&gt;10 см): <b>{v}</b>\n',
-        'debris.cm1': '🔧 Оцінених об\'єктів (&gt;1 см): <b>{v}</b>\n',
-        'debris.cm01': '⚛️ Оцінених об\'єктів (&gt;1 мм): <b>{v}</b>\n',
+        'debris.tracked': '📡 Відстежуваних об\'єктів: <b>≈ {v}</b>\n',
+        'debris.cm1': '🔧 Уламків 1–10 см (оцінка): <b>≈ {v}</b>\n',
+        'debris.cm01': '⚛️ Уламків 1 мм–1 см (оцінка): <b>≈ {v}</b>\n',
         'debris.mass': '⚖️ Загальна маса на орбіті: <b>{v} т</b>\n',
         'debris.breakups': '💥 Зафіксованих розривів/вибухів: <b>{v}</b>\n',
         'debris.note': "\n<i>Цифри — оцінки ESA станом на {year}.</i>",
@@ -1266,9 +1266,9 @@ TRANSLATIONS = {
 
         # --- Space debris ---
         'debris.title': '🗑️ <b>Space debris around Earth</b>\n\n',
-        'debris.tracked': '📡 Tracked objects (&gt;10 cm): <b>{v}</b>\n',
-        'debris.cm1': '🔧 Estimated objects (&gt;1 cm): <b>{v}</b>\n',
-        'debris.cm01': '⚛️ Estimated objects (&gt;1 mm): <b>{v}</b>\n',
+        'debris.tracked': '📡 Tracked objects: <b>≈ {v}</b>\n',
+        'debris.cm1': '🔧 Debris 1–10 cm (estimate): <b>≈ {v}</b>\n',
+        'debris.cm01': '⚛️ Debris 1 mm–1 cm (estimate): <b>≈ {v}</b>\n',
         'debris.mass': '⚖️ Total mass on orbit: <b>{v} t</b>\n',
         'debris.breakups': '💥 Recorded breakups/explosions: <b>{v}</b>\n',
         'debris.note': "\n<i>Figures are ESA estimates as of {year}.</i>",

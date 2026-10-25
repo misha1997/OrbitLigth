@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: NEOwatch orbital catalog and CelesTrak GP dependency
+  version: 1.0.0
+  description: >-
+    CelesTrak GP query and OMM fields verified against
+    https://celestrak.org/NORAD/documentation/gp-data-formats.php on 2026-10-25.
+    /api/orbits is the NEOwatch adapter; /gp.php is the upstream dependency.
+paths:
+  /gp.php:
+    get:
+      parameters:
+        - { name: FORMAT, in: query, required: true, schema: { type: string, enum: [JSON] } }
+        - { name: GROUP, in: query, schema: { type: string }, description: Exactly one of GROUP, NAME or CATNR. }
+        - { name: NAME, in: query, schema: { type: string } }
+        - { name: CATNR, in: query, schema: { type: integer } }
+      responses:
+        '200':
+          description: Full OMM array; catalog IDs may exceed 99999.
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/OMM' } }
+        '403': { description: Upstream refusal; never assumed to mean data is unchanged. }
+        '429': { description: Rate limited. }
+  /api/orbits:
+    get:
+      parameters:
+        - { name: group, in: query, schema: { type: string, default: active } }
+        - { name: lang, in: query, schema: { type: string, enum: [uk, en] } }
+      responses:
+        '200':
+          description: Full group, cached for two hours. Unavailable sources return available=false, stale=true; cached fallbacks retain fetched_at.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [group, items, total, available, stale, fetched_at, source, format]
+                properties:
+                  group: { type: string }
+                  total: { type: integer }
+                  available: { type: boolean }
+                  stale: { type: boolean }
+                  fetched_at: { type: string, nullable: true }
+                  source: { type: string, enum: [CelesTrak] }
+                  format: { type: string, enum: [OMM] }
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      required: [name, norad_id, category, omm]
+                      properties:
+                        name: { type: string }
+                        norad_id: { type: integer }
+                        category: { type: string, enum: [satellite, station, debris, rocket, unknown] }
+                        omm: { $ref: '#/components/schemas/OMM' }
+        '404': { description: Unknown group. }
+  /api/tle/groups:
+    get:
+      responses:
+        '200':
+          description: Localized public catalog registry, with key, label, category, color and icon.
+components:
+  schemas:
+    OMM:
+      type: object
+      required: [NORAD_CAT_ID, EPOCH, MEAN_MOTION, ECCENTRICITY, INCLINATION, RA_OF_ASC_NODE, ARG_OF_PERICENTER, MEAN_ANOMALY]
+      properties:
+        NORAD_CAT_ID: { type: integer }
+        OBJECT_NAME: { type: string }
+        OBJECT_ID: { type: string }
+        EPOCH: { type: string, description: UTC, including fractional seconds; Z may be omitted. }
+        MEAN_MOTION: { type: number, description: Revolutions per day. }
+        ECCENTRICITY: { type: number }
+        INCLINATION: { type: number, description: Degrees. }
+        RA_OF_ASC_NODE: { type: number, description: Degrees. }
+        ARG_OF_PERICENTER: { type: number, description: Degrees. }
+        MEAN_ANOMALY: { type: number, description: Degrees. }
+        BSTAR: { type: number }
+        MEAN_MOTION_DOT: { type: number }
+        MEAN_MOTION_DDOT: { type: number }

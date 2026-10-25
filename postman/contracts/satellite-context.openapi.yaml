@@ -1,0 +1,62 @@
+openapi: 3.0.3
+info:
+  title: NEOwatch satellite context
+  version: 1.1.0
+  description: Dated ESA figures and retrospective SATCAT orbital decays. No predicted impact locations.
+paths:
+  /api/debris:
+    get:
+      responses:
+        '200':
+          description: Curated ESA snapshot. Mass and fragmentation counts are lower bounds; population counts are approximate.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [reference_date, model_ref, tracked, debris_1_to_10_cm, debris_1mm_to_1cm, total_mass_t, breakups, source_url]
+                properties:
+                  reference_date: {type: string, format: date}
+                  year_ref: {type: string}
+                  model_ref: {type: string, example: '2026-02'}
+                  tracked: {type: integer, description: All routinely tracked space objects, including payloads.}
+                  debris_1_to_10_cm: {type: integer, description: Modeled debris greater than 1 cm through 10 cm.}
+                  debris_1mm_to_1cm: {type: integer, description: Modeled debris greater than 1 mm through 1 cm.}
+                  cm1: {type: integer, deprecated: true, description: Alias of debris_1_to_10_cm; not a cumulative threshold count.}
+                  cm01: {type: integer, deprecated: true, description: Alias of debris_1mm_to_1cm; not a cumulative threshold count.}
+                  total_mass_t: {type: integer, description: Lower bound for mass of ALL space objects in tonnes.}
+                  breakups: {type: integer, description: Lower bound for fragmentation events.}
+                  source_url: {type: string, format: uri}
+  /api/reentries:
+    get:
+      parameters:
+        - {name: days, in: query, schema: {type: integer, minimum: 1, maximum: 365, default: 60}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 30}}
+      responses:
+        '200':
+          description: Newest first, cached six hours per days/limit pair on success. Unavailable sources return available=false and updated_at=null; a successful empty window returns available=true. Failures are not cached.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, count, available, window_days, updated_at, source_url]
+                properties:
+                  available: {type: boolean}
+                  count: {type: integer, minimum: 0, description: Returned count after applying the limit.}
+                  window_days: {type: integer}
+                  updated_at: {type: string, format: date-time, nullable: true}
+                  source_url: {type: string, format: uri}
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      required: [name, norad_id, object_type, decay_date]
+                      properties:
+                        name: {type: string}
+                        norad_id: {type: string, nullable: true}
+                        object_type: {type: string, description: SATCAT type; R B is normalized to R/B.}
+                        owner: {type: string, nullable: true}
+                        launch_date: {type: string, format: date, nullable: true}
+                        decay_date: {type: string, format: date}
+                        rcs_m2: {type: number, nullable: true}
+        '422':
+          description: days or limit is outside its allowed range.

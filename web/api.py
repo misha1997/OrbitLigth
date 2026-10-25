@@ -10,7 +10,7 @@ from __future__ import annotations
 import asyncio
 import logging
 
-from fastapi import APIRouter, Query, Request, HTTPException
+from fastapi import APIRouter, Query, Request, HTTPException, Path
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -58,6 +58,13 @@ async def weather_series():
 async def launches():
     """Upcoming rocket launches (Launch Library 2)."""
     return await data.get_launches()
+
+
+@router.get("/satellites/{norad_id}/launch")
+async def satellite_launch(norad_id: int = Path(..., ge=1, le=999999999),
+                           cospar: str = Query("", max_length=32)):
+    """GCAT launch organization, vehicle and date, distinct from payload owner."""
+    return await data.get_satellite_launch(norad_id, cospar)
 
 
 @router.get("/iss/passes")
@@ -480,6 +487,15 @@ async def tle(
 async def tle_groups(lang: str = LANG_Q):
     """Registry of available satellite groups for the map UI."""
     return data.tle_groups(lang)
+
+
+@router.get("/orbits")
+async def orbits(group: str = Query("active"), lang: str = LANG_Q):
+    """Full public OMM group, without a display cap. Supports 6+ digit NORAD IDs."""
+    from web.data.tle import TLE_GROUPS
+    if group not in TLE_GROUPS:
+        raise HTTPException(status_code=404, detail="Unknown orbital group")
+    return await data.get_orbits(group, lang)
 
 
 class FeedbackPayload(BaseModel):

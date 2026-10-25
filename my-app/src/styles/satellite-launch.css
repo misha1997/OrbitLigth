@@ -1,0 +1,15 @@
+.sat-launch-info { margin: 14px 0; padding: 14px 0; border-block: 1px solid var(--border); font-size: 11px; line-height: 1.6; }
+.sat-launch-info h4 { margin: 0 0 12px; color: var(--gold); font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+.sat-launch-info p { margin: 6px 0; color: var(--text-dim); }
+.sat-launch-info dl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin: 0; }
+.sat-launch-info dt { color: var(--text-dim); font-size: 10px; margin-bottom: 4px; }
+.sat-launch-info dd { margin: 0; color: var(--text); overflow-wrap: anywhere; }
+.sat-launch-info dd small { color: var(--text-dim); font-size: 9px; }
+.sat-launch-provider, .sat-launch-owner { grid-column: 1 / -1; }
+.sat-launch-organization { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.sat-launch-organization img { flex: none; width: 64px; height: 32px; object-fit: contain; box-sizing: content-box; padding: 6px; background: #fff; border-radius: 5px; }
+.sat-launch-organization span { min-width: 0; }
+.sat-launch-info .sat-launch-note { margin-top: 10px; font-size: 10px; }
+.sat-launch-source, .sat-launch-info button { color: var(--teal); font: 10px var(--font-mono); }
+.sat-launch-source { display: inline-block; margin-top: 10px; }
+.sat-launch-info button { background: none; border: 1px solid var(--border); border-radius: 5px; padding: 7px 10px; cursor: pointer; }

@@ -6,6 +6,8 @@ import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import uk from "./i18n/uk.json";
 import en from "./i18n/en.json";
+import orbitalUk from "./i18n/orbital.uk.json";
+import orbitalEn from "./i18n/orbital.en.json";
 import missionDetailUk from "./i18n/mission-detail.uk.json";
 import missionDetailEn from "./i18n/mission-detail.en.json";
 import missionEnrichmentUk from "./i18n/mission-enrichment.uk.json";
@@ -64,8 +66,8 @@ export function initI18n(initialLang) {
   if (initialised) return i18next;
   i18next.use(initReactI18next).init({
     resources: {
-      uk: { translation: { ...uk, missionDetail: missionTranslations({ ...missionDetailUk, ...missionAdditionsUk, ...missionExplorersUk, ...missionSurveysUk, ...missionKeplerUk, ...missionSpitzerUk }, missionEnrichmentUk) } },
-      en: { translation: { ...en, missionDetail: missionTranslations({ ...missionDetailEn, ...missionAdditionsEn, ...missionExplorersEn, ...missionSurveysEn, ...missionKeplerEn, ...missionSpitzerEn }, missionEnrichmentEn) } },
+      uk: { translation: { ...uk, orbital: orbitalUk, missionDetail: missionTranslations({ ...missionDetailUk, ...missionAdditionsUk, ...missionExplorersUk, ...missionSurveysUk, ...missionKeplerUk, ...missionSpitzerUk }, missionEnrichmentUk) } },
+      en: { translation: { ...en, orbital: orbitalEn, missionDetail: missionTranslations({ ...missionDetailEn, ...missionAdditionsEn, ...missionExplorersEn, ...missionSurveysEn, ...missionKeplerEn, ...missionSpitzerEn }, missionEnrichmentEn) } },
     },
     lng: initialLang || readLang(),
     fallbackLng: DEFAULT_LANG,

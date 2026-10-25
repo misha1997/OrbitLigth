@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: Satellite launch provenance and GCAT dependency
+  version: 1.0.0
+  description: GCAT launchlog and organizations TSV schemas verified 2026-10-25. Exact NORAD payload match takes priority; COSPAR launch prefix supplies launch-level data for stages/debris, never their owner.
+paths:
+  /api/satellites/{norad_id}/launch:
+    get:
+      parameters:
+        - {name: norad_id, in: path, required: true, schema: {type: integer, minimum: 1, maximum: 999999999}}
+        - {name: cospar, in: query, schema: {type: string, maxLength: 32}, description: Optional international designator from the object's OMM. Only canonical orbital designators support launch-level fallback.}
+      responses:
+        '200':
+          description: Lazy enrichment, cached globally for 24 hours with a 5-minute error cooldown and last good snapshot fallback. available=false means upstream failure; found=false with available=true means no match. Null fields are unknown, not inferred from name/rocket family. Historical organization names are preserved.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [available, found, stale, norad_id, source_url, fetched_at]
+                properties:
+                  available: {type: boolean}
+                  found: {type: boolean}
+                  stale: {type: boolean}
+                  norad_id: {type: integer}
+                  match: {type: string, nullable: true, enum: [norad, launch, null]}
+                  launch_tag: {type: string, nullable: true}
+                  launch_date: {type: string, format: date, nullable: true, description: Calendar date in UTC only when GCAT provides an unambiguous exact day.}
+                  launch_date_text: {type: string, nullable: true, description: Original vague date retained when day is uncertain.}
+                  rocket: {type: string, nullable: true}
+                  flight: {type: string, nullable: true}
+                  providers: {type: array, items: {$ref: '#/components/schemas/Organization'}}
+                  owners: {type: array, items: {$ref: '#/components/schemas/Organization'}, description: GCAT SatOwner only for an exact payload match. Not asserted to be the operator.}
+                  source_url: {type: string, format: uri}
+                  fetched_at: {type: string, format: date-time, nullable: true}
+                  source_updated: {type: string, nullable: true}
+        '422': {description: Invalid NORAD ID or overlong COSPAR input.}
+  /derived/launchlog.tsv:
+    get:
+      responses:
+        '200':
+          description: UTF-8 TSV with '#Launch_Tag' header and '# Updated' comment; columns Launch_Date, Piece, Type, JCAT, SatOwner, LV_Type, Flight_ID, Agency. S-prefixed numeric JCATs are NORAD payload IDs. Dates use GCAT vague UTC notation.
+          content: {text/tab-separated-values: {schema: {type: string}}}
+        '503': {description: Dependency temporarily unavailable.}
+  /tables/orgs.tsv:
+    get:
+      responses:
+        '200':
+          description: UTF-8 TSV with '#Code' header, update comment, Code, Name, EName, ShortName and ShortEName. Missing values are '-' or '?'. Agency/owner codes can be slash-separated.
+          content: {text/tab-separated-values: {schema: {type: string}}}
+        '503': {description: Dependency temporarily unavailable.}
+components:
+  schemas:
+    Organization:
+      type: object
+      required: [code, name]
+      properties:
+        code: {type: string}
+        name: {type: string, description: GCAT English name preferred; unresolved codes remain explicit.}
+        logo_url: {type: string, nullable: true, description: Optional locally hosted verified identity asset; absent for organizations without a curated logo.}

@@ -19,13 +19,14 @@ from __future__ import annotations
 import csv
 import io
 import logging
+import os
 from datetime import date, timedelta
 
 import requests
 
 logger = logging.getLogger(__name__)
 
-SATCAT_CSV_URL = "https://celestrak.org/pub/satcat.csv"
+SATCAT_CSV_URL = os.getenv("CELESTRAK_SATCAT_URL", "https://celestrak.org/pub/satcat.csv")
 
 
 def _to_float(v) -> float | None:
@@ -46,19 +47,26 @@ class ReentryAPI:
             text = resp.text
         except Exception as e:
             logger.error("SATCAT fetch error: %s", e)
-            return []
+            raise
 
         cutoff = (date.today() - timedelta(days=days)).isoformat()
         rows = []
         try:
             reader = csv.DictReader(io.StringIO(text))
+            if not {"OBJECT_NAME", "NORAD_CAT_ID", "DECAY_DATE", "OBJECT_TYPE"}.issubset(reader.fieldnames or []):
+                raise ValueError("Missing SATCAT CSV columns")
             for row in reader:
                 decay = (row.get("DECAY_DATE") or "").strip()
-                if decay and decay >= cutoff:
+                try:
+                    decay = date.fromisoformat(decay).isoformat()
+                except ValueError:
+                    continue
+                if cutoff <= decay <= date.today().isoformat():
+                    row["DECAY_DATE"] = decay
                     rows.append(row)
         except Exception as e:
             logger.error("SATCAT parse error: %s", e)
-            return []
+            raise
 
         rows.sort(key=lambda r: r["DECAY_DATE"], reverse=True)
 
@@ -68,7 +76,7 @@ class ReentryAPI:
                 "name": (row.get("OBJECT_NAME") or "").strip(),
                 "norad_id": row.get("NORAD_CAT_ID"),
                 # Raw CelesTrak codes (PAY/R B/DEB/UNK) — frontend localizes.
-                "object_type": row.get("OBJECT_TYPE"),
+                "object_type": (row.get("OBJECT_TYPE") or "UNK").strip().replace("R B", "R/B"),
                 "owner": row.get("OWNER"),
                 "launch_date": row.get("LAUNCH_DATE") or None,
                 "decay_date": row.get("DECAY_DATE"),

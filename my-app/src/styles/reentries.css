@@ -1,0 +1,10 @@
+.sat-reentries { margin-top: 14px; color: var(--text-dim); font-size: 13px; }
+.sat-reentries .event > :last-child { min-width: 0; width: 100%; }
+.sat-reentries .event .top { flex-wrap: wrap; gap: 6px 16px; }
+.sat-reentries .event h4 { overflow-wrap: anywhere; }
+.sat-reentries .event time { white-space: nowrap; }
+.sat-reentries .event p { overflow-wrap: anywhere; }
+.sat-reentries a { color: var(--teal); }
+.sat-reentries-state { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 20px; border: 1px solid var(--border); border-radius: 10px; }
+.sat-reentries-more { margin-top: 16px; }
+.sat-source-note { display: flex; flex-wrap: wrap; gap: 6px 12px; color: var(--text-dim); font: 11px/1.7 var(--font-mono); }

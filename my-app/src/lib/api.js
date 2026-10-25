@@ -32,6 +32,8 @@ function withLang(base, lang) {
 export const getWeather = (loc) => fetchJSON(API + "/weather" + locParams(loc));
 export const getWeatherSeries = () => fetchJSON(API + "/weather/series");
 export const getLaunches = () => fetchJSON(API + "/launches");
+export const getSatelliteLaunch = (norad, cospar = "") =>
+  fetchJSON(API + "/satellites/" + encodeURIComponent(norad) + "/launch?cospar=" + encodeURIComponent(cospar));
 export const getIssCrew = (lang) => fetchJSON(API + "/iss/crew" + withLang("", lang));
 export const getMars = () => fetchJSON(API + "/mars");
 // Latest Perseverance / Curiosity photos (Mars Vista API). {configured, perseverance[], curiosity[]}.
@@ -144,6 +146,7 @@ export const getExoplanets = () => fetchJSON(API + "/exoplanets");
 export const getTle = (group, limit = 300, lang) =>
   fetchJSON(API + "/tle?group=" + group + "&limit=" + limit + (lang ? "&lang=" + lang : ""));
 export const getTleGroups = (lang) => fetchJSON(API + "/tle/groups" + withLang("", lang));
+export const getOrbits = (group) => fetchJSON(API + "/orbits?group=" + encodeURIComponent(group));
 
 // MAST Archive endpoints
 export const getMastLightcurve = (target) =>

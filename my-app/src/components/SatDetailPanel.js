@@ -1,10 +1,9 @@
-// Detail panel shown when a satellite marker on SatMap is clicked — orbital
-// elements come straight from the TLE via satrec (see lib/satOrbit.js);
-// operator name and radar cross-section aren't derivable from a bare TLE, so
-// unlike orbitalradar.com's panel this shows the Celestrak group instead of a
-// named operator and omits RCS entirely rather than guessing.
+// Orbital calculations and lazily loaded GCAT launch provenance remain
+// separate: launch organizations and payload owners cannot be inferred from OMM.
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import i18next from "../i18n";
+import SatelliteLaunchInfo from "./SatelliteLaunchInfo";
 
 function fmtDuration(minutes) {
   if (minutes == null || !isFinite(minutes) || minutes < 0) return "—";
@@ -31,11 +30,14 @@ function Stat({ label, value, unit }) {
 
 export default function SatDetailPanel({ data, onClose }) {
   const { t } = useTranslation();
+  const [launch, setLaunch] = useState(null);
   if (!data) return null;
 
   const km = t("common.units.km");
   const kms = t("common.units.km_s");
   const locale = i18next.language === "en" ? "en-US" : "uk-UA";
+  const launchDate = launch?.norad_id === Number(data.norad) && launch.launch_date;
+  const years = launchDate ? Math.max(0, (data.updatedAt - new Date(launchDate + "T00:00:00Z")) / (365.25 * 86400000)) : data.yearsInOrbit;
 
   const eclipseKnown = data.eclipseShadowedNow != null;
   const eclipseText = eclipseKnown
@@ -61,6 +63,7 @@ export default function SatDetailPanel({ data, onClose }) {
           {data.orbitClass ? t(`sat.panel.orbitClass.${data.orbitClass}`) : t("sat.panel.unknown")}
         </span>
         <span className="sat-detail-badge">{data.groupLabel}</span>
+        {data.category && <span className="sat-detail-badge">{t(`orbital.types.${data.category}`)}</span>}
       </div>
 
       {eclipseText && (
@@ -69,6 +72,8 @@ export default function SatDetailPanel({ data, onClose }) {
           <span>{eclipseText}{eclipseSubText ? ` — ${eclipseSubText}` : ""}</span>
         </div>
       )}
+
+      <SatelliteLaunchInfo norad={data.norad} cospar={data.intlDesignator || ""} category={data.category} onLoaded={setLaunch} />
 
       <div className="sat-detail-panel-grid">
         <Stat label={t("sat.panel.latitude")} value={fmtDeg(data.lat, "common.compass.N", "common.compass.S", t)} />
@@ -82,8 +87,24 @@ export default function SatDetailPanel({ data, onClose }) {
         <Stat label={t("sat.panel.period")} value={fmtDuration(data.periodMin)} />
         <Stat label={t("sat.panel.completesIn")} value={fmtDuration(data.minutesToOrbitComplete)} />
         <Stat label={t("sat.panel.intlDesignator")} value={data.intlDesignator || t("sat.panel.unknown")} />
-        <Stat label={t("sat.panel.yearsInOrbit")} value={data.yearsInOrbit != null ? data.yearsInOrbit.toFixed(1) : t("sat.panel.unknown")} />
+        <Stat label={t("sat.panel.yearsInOrbit")} value={years != null ? `${launchDate ? "" : "≈ "}${years.toFixed(1)}` : t("sat.panel.unknown")} />
       </div>
+
+      {data.epoch && <div className="sat-orbit-metadata">
+        {data.stale && <p className="sat-warning">{t("orbital.stale")}</p>}
+        <dl>
+          <dt>{t("orbital.epoch")}</dt><dd>{data.epoch} UTC</dd>
+          <dt>{t("orbital.raan")}</dt><dd>{data.raan.toFixed(4)}°</dd>
+          <dt>{t("orbital.argumentPerigee")}</dt><dd>{data.argumentPerigee.toFixed(4)}°</dd>
+          <dt>{t("orbital.meanAnomaly")}</dt><dd>{data.meanAnomaly.toFixed(4)}°</dd>
+          <dt>{t("orbital.meanMotion")}</dt><dd>{data.meanMotion.toFixed(8)} {t("orbital.revDay")}</dd>
+          <dt>B*</dt><dd>{Number.isFinite(data.bstar) ? data.bstar.toExponential(4) : "—"}</dd>
+          <dt>{t("orbital.groups")}</dt><dd>{data.groupLabels?.join(", ")}</dd>
+          <dt>{t("orbital.fetched")}</dt><dd>{data.fetchedAt ? new Date(data.fetchedAt).toLocaleString(locale) : "—"}</dd>
+        </dl>
+        <details><summary>{t("orbital.rawElements")}</summary><pre>{JSON.stringify(data.omm, null, 2)}</pre></details>
+        <a href={`https://celestrak.org/satcat/table-satcat.php?CATNR=${data.norad}`} target="_blank" rel="noopener noreferrer">CelesTrak / SATCAT ↗</a>
+      </div>}
 
       <div className="sat-detail-panel-updated">
         {t("sat.panel.updated", { time: data.updatedAt.toLocaleTimeString(locale) })}

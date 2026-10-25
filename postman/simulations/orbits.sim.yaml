@@ -1,0 +1,11 @@
+simulation: orbits
+routing: path
+mocks:
+  - name: celestrak
+    routeKey: celestrak
+    origin: [celestrak.org]
+    path: ../mocks/celestrak/default.js
+  - name: gcat
+    routeKey: gcat
+    origin: [planet4589.org]
+    path: ../mocks/gcat/default.js

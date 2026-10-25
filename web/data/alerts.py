@@ -1,6 +1,7 @@
 """GRB, gravitational-wave, Sentry, reentry, and solar-flare alert feeds."""
 import logging
 import asyncio
+from datetime import datetime, timezone
 
 from services.grb_alerts import GRBAlertAPI
 from services.gw_alerts import GWAlertAPI
@@ -98,17 +99,20 @@ async def get_sentry(limit: int = 25) -> dict:
 # ---------------------------------------------------------------------------
 
 def _reentries_raw(days: int = 60, limit: int = 30) -> dict:
+    meta = {"window_days": days, "source_url": "https://celestrak.org/pub/satcat.csv"}
     try:
         items = ReentryAPI.get_recent_reentries(days, limit)
     except Exception as e:
         logger.error("reentries: %s", e)
-        items = []
-    return {"items": items, "count": len(items)}
+        return {**meta, "items": [], "count": 0, "available": False, "updated_at": None}
+    return {**meta, "items": items, "count": len(items), "available": True,
+            "updated_at": datetime.now(timezone.utc).isoformat()}
 
 
 async def get_reentries(days: int = 60, limit: int = 30) -> dict:
     return await asyncio.to_thread(
-        get_or_fetch, "reentries", REENTRY_TTL, lambda: _reentries_raw(days, limit)
+        get_or_fetch, f"reentries:{days}:{limit}", REENTRY_TTL, lambda: _reentries_raw(days, limit),
+        lambda result: result["available"]
     )
 
 

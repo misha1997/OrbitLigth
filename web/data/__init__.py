@@ -22,7 +22,8 @@ from .dsn import get_dsn_now
 from .planets_table import get_planets, get_moon
 from .observing import get_observing_conditions, get_observing_forecast
 from .geocode import geocode, reverse_geocode, ip_geocode
-from .tle import get_tle, tle_groups
+from .tle import get_tle, tle_groups, get_orbits
+from .satellite_launch import get_satellite_launch
 from .meteors import get_meteors
 from .events import get_events
 from .mars import get_mars, get_mars_rovers
@@ -42,6 +43,7 @@ from .history import get_history_today
 from .missions import get_mission_previews_api
 
 __all__ = [
+    "get_satellite_launch",
     "get_space_weather", "get_weather_series",
     "get_launches",
     "get_iss_passes", "get_elevation", "get_iss_now", "get_iss_crew",
