@@ -1,5 +1,5 @@
 /* eslint-disable testing-library/no-node-access -- Inspect the mocked Pixi scene graph to verify culling and resource disposal. */
-import { act, fireEvent, render, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import ConstellationMapFullscreenPixi from "./ConstellationMapFullscreenPixi";
 
 const mockT = key => key;
@@ -21,11 +21,15 @@ jest.mock("pixi.js", () => {
     addChild(child) { this.children.push(child); child.parent = this; return child; }
     removeChild(child) { this.children = this.children.filter(c => c !== child); }
     removeChildren() { const children = this.children; this.children = []; return children; }
-    on() { return this; }
+    on(event, handler) { this.handlers ||= {}; this.handlers[event] = handler; return this; }
     destroy(options) { this.destroyed = true; if (options?.children) this.children.forEach(c => c.destroy(options)); }
   }
   class Graphics extends Container {
-    clear() {} lineStyle() {} beginFill() {} endFill() {} drawCircle() {} drawEllipse() {} moveTo() {} lineTo() {}
+    constructor() { super(); this.circles = []; this.strokes = []; }
+    clear() { this.circles = []; this.strokes = []; }
+    lineStyle(style) { this.strokes.push(style); }
+    drawCircle(x, y, radius) { this.circles.push({ x, y, radius }); }
+    beginFill() {} endFill() {} drawEllipse() {} moveTo() {} lineTo() {}
   }
   class Sprite extends Container { constructor() { super(); mockSprites.push(this); } }
   class Text extends Container { constructor(text, style) { super(); this.text = text; this.style = { ...style }; mockTexts.push(this); } }
@@ -77,6 +81,31 @@ test("fullscreen only materializes visible stars and selection preserves the sce
   expect(mockSprites.filter(s => !s.destroyed).every(s => s.tint === 0xffffff)).toBe(true);
 
   const world = mockApps[0].stage.children[0];
+  const star = mockSprites.find(sprite => !sprite.destroyed);
+  act(() => star.handlers.pointertap({ stopPropagation() {} }));
+  const details = screen.getByRole("region", { name: "Object details" });
+  expect(details).toHaveTextContent("Illustration · not a photograph");
+  expect(details).toHaveTextContent("HYG 1001");
+  expect(details).not.toHaveTextContent("HIP 1001");
+  expect(details).not.toHaveTextContent("Blue-white");
+  const zoomControls = screen.getByRole("group", { name: "Map zoom" });
+  expect(details.contains(zoomControls)).toBe(false);
+  expect(zoomControls.closest(".cfm-top-bar")).not.toBeNull();
+  expect(screen.getByRole("dialog")).toHaveClass("cfm-has-details");
+  const ring = world.children[world.children.length - 1];
+  const expectedCircles = [{ x: 0, y: 0, radius: 25.5 }, { x: 0, y: 0, radius: 15 }];
+  expect(ring.circles).toEqual(expectedCircles);
+  expect(ring.position).toMatchObject({ x: star.x, y: star.y });
+  // Even at deep zoom, the geometry retains enough vertices for smooth circles.
+  for (let i = 0; i < 24; i++) fireEvent.click(screen.getByRole("button", { name: "Zoom In" }));
+  expect(world.scale.x).toBeGreaterThan(1000);
+  expect(ring.circles).toEqual(expectedCircles);
+  expect(world.scale.x * ring.scale.x).toBeCloseTo(1);
+  expect(ring.strokes.map(style => style.width)).toEqual([1.5, 2]);
+  fireEvent.click(screen.getByRole("button", { name: "Close object details" }));
+  expect(ring.circles).toHaveLength(0);
+  expect(screen.getByRole("dialog")).not.toHaveClass("cfm-has-details");
+  fireEvent.click(screen.getByRole("button", { name: "Reset View" }));
   // Move the offscreen group into the viewport; the index must materialize it.
   act(() => { world.position.set(world.x - 700, world.y); mockApps[0].tick(); });
   expect(mockSprites.filter(s => !s.destroyed).length).toBeGreaterThan(10);

@@ -819,6 +819,89 @@
   transform: scale(1.05);
 }
 
+/* Sky explorer owns its toolbar/card layout; other fullscreen maps share the
+   base cfm styles, so keep these changes scoped to this map. */
+.cfm-sky-explorer {
+  --cfm-card-width: 340px;
+}
+.cfm-sky-explorer .cfm-top-bar {
+  align-items: center;
+  padding: 16px 20px;
+}
+.cfm-heading { min-width: 0; }
+.cfm-sky-explorer .cfm-sub { max-width: 660px; }
+.cfm-top-actions,
+.cfm-map-zoom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.cfm-sky-explorer .cfm-fs-card {
+  top: 96px;
+  width: var(--cfm-card-width);
+  z-index: 1600;
+}
+.cfm-sky-explorer .cfm-fs-card-header {
+  padding-right: 60px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+.cfm-sky-explorer .cfm-fs-card-header > div { min-width: 0; }
+.cfm-sky-explorer .cfm-fs-card-title { overflow-wrap: anywhere; }
+.cfm-sky-explorer .cfm-fs-card-close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+}
+.cfm-sky-explorer .cfm-fs-card-body { min-height: 0; }
+.cfm-sky-explorer .cfm-fs-card-media,
+.cfm-sky-explorer .cfm-fs-card-star-glow { flex-shrink: 0; }
+.cfm-sky-explorer .cfm-card-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 12px;
+  align-items: start;
+}
+.cfm-sky-explorer .cfm-card-row b { overflow-wrap: anywhere; }
+.cfm-sky-explorer .cfm-card-row b .cfm-coordinate {
+  display: block;
+  color: inherit;
+  white-space: nowrap;
+}
+.cfm-sky-explorer.cfm-has-details .cfm-bottom-bar {
+  left: calc((100% - var(--cfm-card-width) - 40px) / 2);
+  max-width: calc(100% - var(--cfm-card-width) - 64px);
+  min-width: 0;
+}
+@media (max-width: 720px) {
+  .cfm-sky-explorer .cfm-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px;
+    padding-top: max(12px, env(safe-area-inset-top));
+  }
+  .cfm-top-actions { justify-content: flex-end; }
+  .cfm-sky-explorer .cfm-fs-card {
+    top: auto;
+    width: auto;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    max-height: min(60dvh, calc(100dvh - 132px));
+  }
+  .cfm-sky-explorer.cfm-has-details .cfm-bottom-bar { display: none; }
+  .cfm-sky-explorer .cfm-fs-card-star-glow,
+  .cfm-sky-explorer .cfm-fs-card-media { height: 100px; }
+}
+@media (max-height: 520px) {
+  .cfm-sky-explorer .cfm-fs-card-star-glow,
+  .cfm-sky-explorer .cfm-fs-card-media { display: none; }
+}
+
 .cfm-fs-card-star-glow {
   width: 100%;
   height: 140px;

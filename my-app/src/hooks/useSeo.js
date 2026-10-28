@@ -94,6 +94,24 @@ export function useSeo(article = null, noindex = false) {
         document.head.appendChild(el);
       }
     }
+    if (name === "constellations") {
+      // A direct request has server markup; SPA navigation may still carry
+      // another page's schema. Keep both entry paths consistent.
+      document.head.querySelectorAll('script[type="application/ld+json"]').forEach(el => el.remove());
+      const el = document.createElement("script");
+      el.type = "application/ld+json";
+      el.textContent = JSON.stringify({
+        "@context": "https://schema.org", "@type": "WebPage",
+        name: title, description: desc, url: canonical, inLanguage: lang,
+        isPartOf: { "@type": "WebSite", url: locFor("home", lang), name: "OrbitLight" },
+        breadcrumb: { "@type": "BreadcrumbList", itemListElement: [
+          { "@type": "ListItem", position: 1, name: "OrbitLight", item: locFor("home", lang) },
+          { "@type": "ListItem", position: 2, name: t("nav.constellations"), item: canonical },
+        ] },
+      });
+      el.dataset.routeSeo = "true";
+      document.head.appendChild(el);
+    }
     if (title) document.title = title;
     if (desc) upsertMeta('meta[name="description"]', "name", "description", desc);
     upsertLink("canonical", canonical);
@@ -106,6 +124,6 @@ export function useSeo(article = null, noindex = false) {
     upsertMeta('meta[name="twitter:title"]', "name", "twitter:title", title || "");
     upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", desc || "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    return () => document.head.querySelectorAll('script[data-news-seo]').forEach(el => el.remove());
+    return () => document.head.querySelectorAll('script[data-news-seo], script[data-route-seo]').forEach(el => el.remove());
   }, [pathname, search, name, lang, t, article, resolved.articleSlug, noindex]);
 }

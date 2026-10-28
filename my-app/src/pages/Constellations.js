@@ -1,17 +1,13 @@
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useLang } from "../context/LanguageContext";
+import { useSeo } from "../hooks/useSeo";
 import ConstellationMap from "../components/ConstellationMap";
 import "../styles/constellations.css";
 
 export default function Constellations() {
   const { t } = useTranslation();
   const { lang } = useLang();
-
-  // Set document title.
-  useEffect(() => {
-    document.title = t("title.constellations") || "Сузір'я — OrbitLight";
-  }, [t]);
+  useSeo();
 
   return (
     <>
@@ -30,8 +26,8 @@ export default function Constellations() {
           </h1>
           <p className="hero-sub" style={{ maxWidth: 640 }}>
             {lang === "en"
-              ? "The eight most famous constellations of the northern sky — with their shape, brightest star, and origin myth. Click on a figure or button below to select."
-              : "Вісім найвідоміших сузір'їв північного неба — з їхньою формою, головною зорею та міфом походження. Клікай на фігуру або на назву внизу, щоб дізнатись більше."}
+              ? "Explore 88 constellations on an interactive star map. Choose your observing location and season, zoom in to discover stars, or start with one of the eight popular constellations below."
+              : "Досліджуй 88 сузір'їв на інтерактивній карті зоряного неба. Обери місце спостереження й сезон, наближай карту для перегляду зір або почни з восьми популярних сузір'їв унизу."}
           </p>
         </div>
       </section>

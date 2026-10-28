@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { useTranslation } from "react-i18next";
 import * as PIXI from "pixi.js";
 import { useLang } from "../context/LanguageContext";
 import { getConstellationDetails } from "../lib/constellation_details";
@@ -210,7 +209,6 @@ export default function ConstellationMapFullscreenPixi({
   geoControlsCompact,
   pillsInner
 }) {
-  const { t } = useTranslation();
   const { lang } = useLang();
 
   // Canvas Refs
@@ -311,17 +309,6 @@ export default function ConstellationMapFullscreenPixi({
     };
   }, [lang]);
 
-  const getStarColorInfo = (id) => {
-    const classes = [
-      { name: "O / B (Blue-white)", color: "#38bdf8" },
-      { name: "A / F (White/Yellow-white)", color: "#f1f5f9" },
-      { name: "G (Yellow like Sun)", color: "#eab308" },
-      { name: "K / M (Orange-red Giant)", color: "#f43f5e" }
-    ];
-    const index = (id || 0) % classes.length;
-    return classes[index];
-  };
-
   // Get current viewport parameters dynamically
   const getViewportParams = () => {
     const app = appRef.current;
@@ -416,11 +403,14 @@ export default function ConstellationMapFullscreenPixi({
     const xy = projectWithBoresight(pos.alt, pos.az, boresight, cx, cy, rHor);
     if (!xy) return; // selected object is currently outside the gyro FOV
 
-    const r = 15 / z;
-    ring.lineStyle({ width: 1.5 / z, color: 0x4fd1c5, alpha: 0.4 });
-    ring.drawCircle(xy.x, xy.y, r * 1.7);
-    ring.lineStyle({ width: 2 / z, color: 0x4fd1c5, alpha: 0.95 });
-    ring.drawCircle(xy.x, xy.y, r);
+    // Tessellate at the actual display size. Shrinking the circle geometry to
+    // 15 / z made Pixi generate only a few vertices at high zoom levels.
+    ring.position.set(xy.x, xy.y);
+    ring.scale.set(1 / z);
+    ring.lineStyle({ width: 1.5, color: 0x4fd1c5, alpha: 0.4 });
+    ring.drawCircle(0, 0, 25.5);
+    ring.lineStyle({ width: 2, color: 0x4fd1c5, alpha: 0.95 });
+    ring.drawCircle(0, 0, 15);
   };
 
   // Helper to dynamically update elements' scale on zoom to prevent them from growing large
@@ -667,6 +657,7 @@ export default function ConstellationMapFullscreenPixi({
 
     // Added last so the selection ring always draws on top of stars/planets/galaxies.
     const selectionRing = new PIXI.Graphics();
+    selectionRing.eventMode = "none";
     world.addChild(selectionRing);
     selectionRingRef.current = selectionRing;
 
@@ -997,8 +988,9 @@ export default function ConstellationMapFullscreenPixi({
       
       const starObj = {
         type: "star",
+        // This compact catalog stores HYG's internal ID, not its HIP column.
         id: s[0],
-        name: s[4] || s[5] || `HIP ${s[0]}`,
+        name: s[4] || s[5] || `HYG ${s[0]}`,
         bayer: s[5] || "",
         mag: s[3],
         ra: s[1],
@@ -1563,8 +1555,8 @@ export default function ConstellationMapFullscreenPixi({
 
   // Sidebar detail panel render fragment
   const renderDetailCard = selectedObj && (
-    <div className="cfm-fs-card open">
-      <button className="cfm-fs-card-close" onClick={() => setSelectedObj(null)} aria-label={t("jupiter.system.close")}>
+    <div className="cfm-fs-card open" role="region" aria-label={lang === "en" ? "Object details" : "Дані об’єкта"}>
+      <button className="cfm-fs-card-close" onClick={() => setSelectedObj(null)} aria-label={lang === "en" ? "Close object details" : "Закрити дані об’єкта"}>
         ✕
       </button>
       <div className="cfm-fs-card-header">
@@ -1588,22 +1580,17 @@ export default function ConstellationMapFullscreenPixi({
       )}
 
       {selectedObj.type === "star" && (
-        <div className="cfm-fs-card-star-glow">
-          <div className="airy-disk" style={{ "--glow-color": getStarColorInfo(selectedObj.id).color }} />
+        <div className="cfm-fs-card-star-glow" style={{ "--glow-color": "#f1f5f9" }}>
+          <div className="airy-disk" />
           <div className="star-spikes">
-            <div className="star-spike-h" style={{ "--glow-color": getStarColorInfo(selectedObj.id).color }} />
-            <div className="star-spike-v" style={{ "--glow-color": getStarColorInfo(selectedObj.id).color }} />
-            <div className="star-spike-d1" style={{ "--glow-color": getStarColorInfo(selectedObj.id).color }} />
-            <div className="star-spike-d2" style={{ "--glow-color": getStarColorInfo(selectedObj.id).color }} />
+            <div className="star-spike-h" />
+            <div className="star-spike-v" />
+            <div className="star-spike-d1" />
+            <div className="star-spike-d2" />
           </div>
-          <div
-            className="star-sphere"
-            style={{
-              "--glow-color": getStarColorInfo(selectedObj.id).color
-            }}
-          />
+          <div className="star-sphere" />
           <span style={{ position: "absolute", bottom: 8, right: 12, fontSize: "9px", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
-            {getStarColorInfo(selectedObj.id).name}
+            {lang === "en" ? "Illustration · not a photograph" : "Ілюстрація · не фотографія"}
           </span>
         </div>
       )}
@@ -1612,9 +1599,9 @@ export default function ConstellationMapFullscreenPixi({
         {selectedObj.type === "star" && (
           <div className="cfm-card-rows">
             <div className="cfm-card-row"><span>{hudLabels.bayer}</span><b>{selectedObj.bayer || "—"}</b></div>
-            <div className="cfm-card-row"><span>{hudLabels.catalog}</span><b>HIP {selectedObj.id}</b></div>
+            <div className="cfm-card-row"><span>{hudLabels.catalog}</span><b>HYG {selectedObj.id}</b></div>
             <div className="cfm-card-row"><span>{hudLabels.mag}</span><b>{selectedObj.mag.toFixed(2)}m</b></div>
-            <div className="cfm-card-row"><span>{hudLabels.radec}</span><b>{formatRA(selectedObj.ra)} / {formatDec(selectedObj.dec)}</b></div>
+            <div className="cfm-card-row"><span>{hudLabels.radec}</span><b><span className="cfm-coordinate">{formatRA(selectedObj.ra)}</span><span className="cfm-coordinate">{formatDec(selectedObj.dec)}</span></b></div>
             <div className="cfm-card-row"><span>{hudLabels.altaz}</span><b>{selectedObj.alt.toFixed(1)}° / {selectedObj.az.toFixed(1)}°</b></div>
             {selectedObj.const && (
               <div className="cfm-card-row"><span>{hudLabels.constellation}</span><b>{selectedObj.const}</b></div>
@@ -1670,20 +1657,13 @@ export default function ConstellationMapFullscreenPixi({
   );
 
   return createPortal(
-    <div className="cfm-fullscreen-wrap" role="dialog" aria-modal="true" aria-label={lang === "en" ? "Constellations map" : "Карта сузір'їв"}>
+    <div className={`cfm-fullscreen-wrap cfm-sky-explorer${selectedObj ? " cfm-has-details" : ""}`} role="dialog" aria-modal="true" aria-label={lang === "en" ? "Constellations map" : "Карта сузір'їв"}>
       {/* Pixi Canvas Layer */}
       <div ref={canvasWrapRef} className="cfm-map-layer" style={{ cursor: isDraggingRef.current ? "grabbing" : "grab" }} />
 
-      {/* Floating zoom buttons */}
-      <div className="const-zoom-col">
-        <button className="btn ghost const-zoom-btn" onClick={() => handleUiZoom(true)} title={lang === "en" ? "Zoom In" : "Збільшити"}>+</button>
-        <button className="btn ghost const-zoom-btn" onClick={() => handleUiZoom(false)} title={lang === "en" ? "Zoom Out" : "Зменшити"}>−</button>
-        <button className="btn ghost const-zoom-btn" onClick={handleUiReset} title={lang === "en" ? "Reset View" : "Скинути вигляд"}>↺</button>
-      </div>
-
       {/* Top-left title bar */}
       <div className="cfm-top-bar">
-        <div>
+        <div className="cfm-heading">
           <div className="cfm-title">{lang === "en" ? "Space explorer" : "Дослідник космосу"}</div>
           <div className="cfm-sub">
             {lang === "en"
@@ -1691,7 +1671,12 @@ export default function ConstellationMapFullscreenPixi({
               : "Повноекранна WebGL-карта — наближуй, щоб вивчати 60 000+ реальних зірок, планет та галактик."}
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+        <div className="cfm-top-actions">
+          <div className="cfm-map-zoom" role="group" aria-label={lang === "en" ? "Map zoom" : "Масштаб карти"}>
+            <button className="btn ghost const-zoom-btn" onClick={() => handleUiZoom(true)} title={lang === "en" ? "Zoom In" : "Збільшити"} aria-label={lang === "en" ? "Zoom In" : "Збільшити"}>+</button>
+            <button className="btn ghost const-zoom-btn" onClick={() => handleUiZoom(false)} title={lang === "en" ? "Zoom Out" : "Зменшити"} aria-label={lang === "en" ? "Zoom Out" : "Зменшити"}>−</button>
+            <button className="btn ghost const-zoom-btn" onClick={handleUiReset} title={lang === "en" ? "Reset View" : "Скинути вигляд"} aria-label={lang === "en" ? "Reset View" : "Скинути вигляд"}>↺</button>
+          </div>
           {gyroSupported && (
             <div className="cfm-gyro-group">
               <button
@@ -1746,7 +1731,7 @@ export default function ConstellationMapFullscreenPixi({
             {hoveredObj.type === "star" && (
               <>
                 <span style={{ color: "var(--text-dim)" }}>{lang === "en" ? "Catalog number" : "Номер каталогу"}:</span>
-                <span>HIP {hoveredObj.id}</span>
+                <span>HYG {hoveredObj.id}</span>
                 <span style={{ color: "var(--text-dim)" }}>{lang === "en" ? "Magnitude" : "Зоряна величина"}:</span>
                 <span style={{ color: "#FFC873", fontWeight: "bold" }}>{hoveredObj.mag.toFixed(2)}m</span>
                 <span style={{ color: "var(--text-dim)" }}>{lang === "en" ? "Alt / Az" : "Висота / Азимут"}:</span>
