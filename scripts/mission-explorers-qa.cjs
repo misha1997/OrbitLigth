@@ -6,9 +6,9 @@ const path = require('node:path');
 const os = require('node:os');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
-const root = path.resolve(__dirname, '../my-app/build');
+const root = process.env.MISSION_QA_BUILD_ROOT ? path.resolve(process.env.MISSION_QA_BUILD_ROOT) : path.resolve(__dirname, '../my-app/build');
 const shots = process.argv[2];
-const missions = (process.env.MISSION_QA_MISSIONS || 'perseverance,cassini,osirisrex,gaia,kepler,spitzer').split(',');
+const missions = (process.env.MISSION_QA_MISSIONS || 'perseverance,cassini,osirisrex,gaia,kepler,spitzer,pioneer10,pioneer11').split(',');
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml', '.glb': 'model/gltf-binary', '.wasm': 'application/wasm', '.json': 'application/json' };
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
@@ -17,7 +17,9 @@ const server = http.createServer((req, res) => {
   if (!file.startsWith(root + path.sep)) { res.writeHead(403); res.end(); return; }
   const target = fs.existsSync(file) && fs.statSync(file).isFile() ? file : path.join(root, 'index.html');
   res.writeHead(200, { 'Content-Type': mime[path.extname(target)] || 'application/octet-stream' });
-  fs.createReadStream(target).pipe(res);
+  const stream = fs.createReadStream(target);
+  stream.on('error', () => res.destroy());
+  stream.pipe(res);
 });
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 let browser, ws;
@@ -53,7 +55,7 @@ async function main() {
   for (const width of [1440, 390]) {
     await cdp('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: width < 600 });
     for (const lang of ['ua', 'en']) for (const mission of missions) {
-      const slug = mission === 'osirisrex' ? 'osiris-rex' : mission;
+      const slug = ({ osirisrex: 'osiris-rex', pioneer10: 'pioneer-10', pioneer11: 'pioneer-11' })[mission] || mission;
       await cdp('Page.navigate', { url: `${origin}/${lang}/${slug}` });
       await until('!!document.querySelector(".tele3d-hero-wrap canvas") && !document.querySelector(".tele3d-hero-loading")');
       await evaluate('document.documentElement.style.scrollBehavior = "auto"');
@@ -77,6 +79,19 @@ async function main() {
         await evaluate('{const input = document.querySelector("#kepler-phase");Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set.call(input,"0");input.dispatchEvent(new Event("input",{bubbles:true}));input.dispatchEvent(new Event("change",{bubbles:true}));}');
         await until('document.querySelectorAll(".kepler-transit-results strong")[1].textContent === "100%"');
         await capture(`${mission}-${lang}-${width}-transit`);
+      }
+      if (mission.startsWith('pioneer')) {
+        await evaluate('document.querySelector("#flyby").scrollIntoView({block:"start",behavior:"instant"})');
+        const initial = await evaluate('document.querySelectorAll(".pioneer-flyby-results strong")[1].textContent');
+        await evaluate(`{const input = document.querySelector("#${mission}-turn");Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set.call(input,"140");input.dispatchEvent(new Event("input",{bubbles:true}));input.dispatchEvent(new Event("change",{bubbles:true}));}`);
+        await until(`document.querySelectorAll('.pioneer-flyby-results strong')[1].textContent !== ${JSON.stringify(initial)}`);
+        await capture(`${mission}-${lang}-${width}-flyby`);
+        await evaluate('document.querySelectorAll(".pioneer-flyby-controls .mission-destination-buttons button")[1].click()');
+        await until('Array.from(document.querySelectorAll(".pioneer-flyby-results strong")).every(node => node.textContent.startsWith("10 "))');
+        await evaluate('document.querySelector(".pioneer-flyby-controls").scrollIntoView({block:"start",behavior:"instant"})');
+        await capture(`${mission}-${lang}-${width}-controls`);
+        await evaluate('document.querySelector(".pioneer-flyby-controls .btn").click()');
+        await until(`document.querySelectorAll('.pioneer-flyby-results strong')[1].textContent === ${JSON.stringify(initial)}`);
       }
       if (mission === 'spitzer') {
         await evaluate('document.querySelector("#infrared").scrollIntoView({block:"start",behavior:"instant"})');
@@ -121,7 +136,7 @@ async function main() {
     }
   }
   assert.equal(errors.length, 0, JSON.stringify(errors));
-  assert.equal(requests.filter(url => /\/api\/missions\/(cassini|perseverance|osirisrex|gaia|kepler|spitzer)|\/api\/dsn/.test(url)).length, 0, 'No unsupported mission data requests');
+  assert.equal(requests.filter(url => /\/api\/missions\/(cassini|perseverance|osirisrex|gaia|kepler|spitzer|pioneer10|pioneer11)|\/api\/dsn/.test(url)).length, 0, 'No unsupported mission data requests');
   console.log(JSON.stringify({ passed: results.length, runtimeErrors: errors.length }));
   await cdp('Browser.close'); ws.close(); server.close();
 }

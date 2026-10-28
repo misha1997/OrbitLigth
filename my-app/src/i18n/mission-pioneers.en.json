@@ -1,0 +1,515 @@
+{
+  "pioneer10": {
+    "name": "Pioneer 10",
+    "tagline": "The first path to Jupiter",
+    "eyebrow": "NASA · Ames Research Center · Outer-planet exploration · 1972–2003",
+    "intro": "Before Voyager, a small spinning spacecraft crossed the asteroid belt and entered Jupiter’s radiation environment. Pioneer 10 turned an unknown route into a path other missions could follow, then continued far beyond the planets.",
+    "heroAlt": "Pioneer 10 spacecraft with its large dish antenna and instrument booms",
+    "status": {
+      "title": "Last signal received · 23 January 2003",
+      "body": "Routine science operations ended in 1997. The last telemetry arrived in April 2002, followed by a final faint radio signal in January 2003. There is no current spacecraft contact or live telemetry on this page."
+    },
+    "stats": [
+      {
+        "label": "Launch",
+        "value": "3 Mar 1972",
+        "note": "01:49 UTC · 2 March in Florida"
+      },
+      {
+        "label": "Jupiter closest approach",
+        "value": "≈130,000 km",
+        "note": "Above the cloud tops · December 1973"
+      },
+      {
+        "label": "High-gain antenna",
+        "value": "2.74 m",
+        "note": "A dish aimed toward Earth for radio communication"
+      },
+      {
+        "label": "Final detected signal",
+        "value": "2003",
+        "note": "More than 30 years after launch"
+      }
+    ],
+    "exploration": {
+      "nav": "Explore the journey",
+      "eyebrow": "A route into the unknown",
+      "title": "Four steps beyond familiar space",
+      "intro": "Choose a waypoint to follow the mission from Earth through the asteroid belt to Jupiter and the outer Solar System.",
+      "choose": "Choose a Pioneer 10 chapter",
+      "description": "Schematic Pioneer 10 route linking Earth, the asteroid belt, Jupiter and an outward escape trajectory",
+      "note": "Illustrative route: distances, angles, planet positions and timing are not to scale. This is a chapter map, not an ephemeris or a current spacecraft position.",
+      "detailLabel": "Journey chapter",
+      "stops": [
+        {
+          "name": "Leaving Earth",
+          "body": "An Atlas-Centaur launch began a roughly 21-month journey to Jupiter. The large antenna and spin-stabilised design supported a mission far beyond the orbit of Mars.",
+          "fact": "1972",
+          "factLabel": "The first Pioneer sent to an outer planet",
+          "question": "The launch is often dated 2 March in US histories; it was already 3 March in UTC.",
+          "source": "https://www.nasa.gov/history/50-years-ago-pioneer-10-launches-to-explore-jupiter/"
+        },
+        {
+          "name": "The asteroid belt",
+          "body": "Pioneer 10 became the first spacecraft to cross the main asteroid belt. Dust and meteoroid experiments helped assess a region no spacecraft had traversed before.",
+          "fact": "First crossing",
+          "factLabel": "Completed in February 1973",
+          "question": "The belt is not a wall of rocks. Its objects are widely separated, while small-particle impacts still matter to spacecraft design.",
+          "source": "https://www.nasa.gov/image-article/45-years-ago-pioneer-10-became-first-spacecraft-pass-through-asteroid-belt/"
+        },
+        {
+          "name": "Jupiter up close",
+          "body": "The December 1973 flyby measured Jupiter’s magnetic field, charged particles and radiation, while returning close views of its clouds and several moons.",
+          "fact": "≈130,000 km",
+          "factLabel": "Closest height above Jupiter’s cloud tops",
+          "question": "A flyby is a brief passage. Pioneer 10 did not enter orbit around Jupiter or land on the planet.",
+          "source": "https://science.nasa.gov/mission/pioneer-10/"
+        },
+        {
+          "name": "Beyond the planets",
+          "body": "Jupiter’s gravity put the spacecraft on an outward escape trajectory. It crossed Neptune’s orbital distance in 1983 and continued returning information from the outer heliosphere.",
+          "fact": "13 June 1983",
+          "factLabel": "Passed beyond Neptune’s orbit",
+          "question": "Crossing a planet’s orbit is different from visiting the planet, and different again from crossing the heliopause.",
+          "source": "https://www.nasa.gov/history/50-years-ago-pioneer-10-launches-to-explore-jupiter/"
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "date": "1972-03-03",
+        "displayDate": "3 March 1972 · UTC",
+        "title": "The journey begins",
+        "body": "Pioneer 10 launches from Cape Canaveral. It is still the evening of 2 March at the launch site."
+      },
+      {
+        "date": "1973-12-04",
+        "displayDate": "4 December 1973 · UTC",
+        "title": "The first Jupiter flyby",
+        "body": "The spacecraft survives Jupiter’s intense radiation environment and returns a new close view of the giant planet."
+      },
+      {
+        "date": "1983-06-13",
+        "displayDate": "13 June 1983",
+        "title": "Beyond Neptune’s orbital distance",
+        "body": "Pioneer 10 passes the outermost planet’s orbit, continuing on an escape trajectory rather than making another planetary encounter."
+      },
+      {
+        "date": "2003-01-23",
+        "displayDate": "23 January 2003",
+        "title": "A final faint signal",
+        "body": "Earth receives the last detected carrier signal. The last useful telemetry had arrived on 27 April 2002."
+      }
+    ],
+    "scienceTitle": "A pathfinder’s scientific legacy",
+    "scienceIntro": "The mission tested a route, measured a giant planet’s environment and left a radio record that scientists could revisit decades later.",
+    "science": [
+      {
+        "title": "Testing the asteroid-belt crossing",
+        "body": "Particle and dust measurements helped replace uncertainty about the belt with flight experience, supporting later exploration of the outer planets.",
+        "source": "https://www.nasa.gov/image-article/45-years-ago-pioneer-10-became-first-spacecraft-pass-through-asteroid-belt/"
+      },
+      {
+        "title": "Inside Jupiter’s magnetic environment",
+        "body": "The encounter measured fields and energetic particles in situ. These data helped engineers understand the radiation conditions later Jupiter missions would face.",
+        "source": "https://www.nasa.gov/image-article/forty-years-ago-pioneer-10s-closest-approach-jupiter/"
+      },
+      {
+        "title": "The Pioneer anomaly",
+        "body": "Radio tracking revealed a small unexplained acceleration. A later analysis of Pioneer data showed that uneven heat emission could account for it through photon recoil.",
+        "source": "https://www.jpl.nasa.gov/news/study-finds-heat-is-source-of-pioneer-anomaly/"
+      }
+    ],
+    "instrumentIntro": "Four groups highlight the payload’s different jobs. They are not a complete list of individual experiments.",
+    "instruments": [
+      {
+        "name": "Imaging photopolarimeter",
+        "body": "Measured brightness and polarisation, scanning Jupiter in strips that could be assembled into images."
+      },
+      {
+        "name": "Magnetic-field measurements",
+        "body": "A helium vector magnetometer sampled the interplanetary field and Jupiter’s magnetic environment."
+      },
+      {
+        "name": "Particles and plasma",
+        "body": "Several detectors studied solar-wind plasma, cosmic rays and particles trapped around Jupiter."
+      },
+      {
+        "name": "Infrared and ultraviolet",
+        "body": "A radiometer and photometer investigated radiation beyond visible light, including atmospheric properties."
+      }
+    ],
+    "instrumentDetails": [
+      "The spacecraft’s rotation swept a small telescope across the scene. Red- and blue-light scans were processed on Earth; this was not an ordinary frame camera.",
+      "Magnetic-field measurements helped locate boundaries where the solar wind interacted with Jupiter’s magnetosphere.",
+      "The payload included a plasma analyser, charged-particle and cosmic-ray instruments, a Geiger tube telescope and radiation detectors. They sampled different energies and populations.",
+      "Infrared measurements added thermal information, while ultraviolet observations probed emission and absorption. Different wavelengths answered different questions."
+    ],
+    "communication": {
+      "eyebrow": "A long-distance radio pioneer",
+      "title": "A faint signal is not a data stream",
+      "body": "NASA’s Deep Space Network detected the final signal on 23 January 2003 at a reported Earth distance of about 12.23 billion kilometres. It was too weak to return telemetry; the last telemetry was received in April 2002.",
+      "note": "The calculator starts with that historical example distance. It does not show Pioneer 10’s current position or an active radio link.",
+      "source": "https://science.nasa.gov/missions/pioneer/pioneer-10-sends-last-signal/"
+    },
+    "quiz": {
+      "nav": "Test yourself",
+      "eyebrow": "Pioneer 10 challenge",
+      "title": "Could you follow the first pathfinder?",
+      "intro": "Three questions about the route, the spacecraft and its last message.",
+      "correct": "Exactly.",
+      "incorrect": "Here is what the mission tells us.",
+      "next": "Next question",
+      "restart": "Try again",
+      "questions": [
+        {
+          "question": "Which planet did Pioneer 10 fly past?",
+          "options": [
+            "Jupiter",
+            "Saturn",
+            "Neptune"
+          ],
+          "correct": 0,
+          "explanation": "Pioneer 10 made the first Jupiter flyby. Passing Neptune’s orbital distance later did not mean it visited Neptune."
+        },
+        {
+          "question": "What supplied electricity far from the Sun?",
+          "options": [
+            "Solar panels alone",
+            "Radioisotope thermoelectric generators",
+            "Jupiter’s magnetic field"
+          ],
+          "correct": 1,
+          "explanation": "RTGs converted heat from radioactive decay into electricity. They were not solar panels or a fission reactor."
+        },
+        {
+          "question": "Did the final detected signal in 2003 contain usable telemetry?",
+          "options": [
+            "Yes, including fresh Jupiter images",
+            "Yes, a complete instrument data set",
+            "No, it was a very faint radio signal"
+          ],
+          "correct": 2,
+          "explanation": "The final carrier signal was detected in January 2003; the last telemetry had been received in April 2002."
+        }
+      ]
+    },
+    "faq": [
+      {
+        "question": "Did Pioneer 10 confirm that it crossed the heliopause?",
+        "answer": "No confirmed crossing was measured by the spacecraft. An outward escape trajectory, passing beyond planetary orbits and crossing the heliopause are different events."
+      },
+      {
+        "question": "How did it work without large solar panels?",
+        "answer": "Radioisotope thermoelectric generators used heat from radioactive decay to produce electricity. Declining available power eventually limited communication."
+      },
+      {
+        "question": "Is the Pioneer plaque a radio transmitter?",
+        "answer": "No. It is a passive engraved metal message with human figures, a spacecraft outline and astronomical reference diagrams. It could only be read if something physically encountered the spacecraft."
+      }
+    ],
+    "galleryTitle": "The first journey, in archival images",
+    "galleryIntro": "A launch photograph, a composite of actual observations and the engraved message carried aboard.",
+    "gallery": [
+      {
+        "title": "An Atlas-Centaur departure",
+        "alt": "Pioneer 10 launching on an Atlas-Centaur rocket at night in 1972",
+        "body": "The launch began on the evening of 2 March in Florida, already 3 March in UTC. This is a ground photograph, not an image from the spacecraft."
+      },
+      {
+        "title": "Jupiter and its moons",
+        "alt": "Composite of Pioneer 10 views of Jupiter, Europa and Ganymede",
+        "body": "Archival views from the 1973 encounter are arranged as a composite. Their placement and relative sizes do not represent a single simultaneous scene."
+      },
+      {
+        "title": "A message engraved in metal",
+        "alt": "Pioneer plaque diagram with human figures, a spacecraft outline and astronomical symbols",
+        "body": "The plaque combines symbols intended to describe the spacecraft’s makers and origin. It is a physical artefact carried by both Pioneer 10 and Pioneer 11."
+      }
+    ],
+    "sourceNote": "Mission history and archival imagery follow NASA and JPL sources. The route map and flyby experiment are educational diagrams, not reconstructed trajectories or current telemetry.",
+    "flyby": {
+      "nav": "Try a gravity assist",
+      "eyebrow": "Experiment with orbital mechanics",
+      "title": "A turn can change your speed",
+      "intro": "Rotate an idealised outgoing velocity vector. Compare a moving planet with a hypothetical stationary one to see why the reference frame matters.",
+      "diagram": "Incoming and outgoing velocity-vector diagrams, adding planet motion to the spacecraft velocity relative to the planet",
+      "before": "Before the flyby",
+      "after": "After the flyby",
+      "vectorRule": "Sun-relative velocity = planet velocity + planet-relative velocity",
+      "planetVector": "Planet motion relative to the Sun",
+      "relativeVector": "Spacecraft relative to the planet",
+      "sunVector": "Spacecraft relative to the Sun (dashed)",
+      "angle": "Planet-relative turn angle",
+      "scenario": "Choose the idealised planet motion",
+      "moving": "Moving planet",
+      "stationary": "Stationary planet (hypothetical)",
+      "sunBefore": "Sun-relative speed before",
+      "sunAfter": "Sun-relative speed after",
+      "planetBoth": "Planet-relative speed before AND after",
+      "kms": "km/s",
+      "movingExplanation": "The far-field speed relative to the planet stays at 10 km/s. Adding a moving planet’s velocity can change the speed relative to the Sun. Energy is exchanged with the planet; it is not created.",
+      "stationaryExplanation": "With planet motion set to zero, the incoming and outgoing speeds are both 10 km/s in this model. The direction changes, but there is no lasting speed gain.",
+      "note": "Synthetic velocity-vector experiment: planet speed 13 km/s or 0, spacecraft far-field planet-relative speed 10 km/s. Vectors share a linear scale. No encounter orbit, altitude or travel time is calculated. These are not measured Pioneer speeds. The temporary acceleration near closest approach is not shown.",
+      "reset": "Reset experiment",
+      "context": "For Pioneer 10, the Jupiter encounter helped establish an outward escape trajectory. This simplified experiment explains the principle, not its actual encounter geometry."
+    }
+  },
+  "pioneer11": {
+    "name": "Pioneer 11",
+    "tagline": "The first visitor to Saturn",
+    "eyebrow": "NASA · Ames Research Center · Jupiter & Saturn · 1973–1995",
+    "intro": "Pioneer 11 followed the trail to Jupiter, then bent its route toward a second giant. Its first close exploration of Saturn revealed a ring, measured the magnetic environment and helped prepare the way for Voyager.",
+    "heroAlt": "Pioneer spacecraft with dish antenna and long instrument booms",
+    "modelNote": "The 3D view uses NASA’s Pioneer 10 model to illustrate the shared basic design. Pioneer 11’s payload and some details differed.",
+    "status": {
+      "title": "Mission ended · 1995",
+      "body": "Routine operations ended on 30 September 1995. A final brief engineering-data reception followed on 24 November. The spacecraft is no longer in contact; this page presents its historical mission."
+    },
+    "stats": [
+      {
+        "label": "Launch",
+        "value": "6 Apr 1973",
+        "note": "02:11 UTC · 5 April in Florida"
+      },
+      {
+        "label": "Saturn closest approach",
+        "value": "≈20,900 km",
+        "note": "Above the cloud tops · 1 September 1979"
+      },
+      {
+        "label": "Giant-planet flybys",
+        "value": "2",
+        "note": "Jupiter in 1974 · Saturn in 1979"
+      },
+      {
+        "label": "Mission lifetime",
+        "value": "22 years",
+        "note": "Last engineering data received in November 1995"
+      }
+    ],
+    "exploration": {
+      "nav": "Explore the journey",
+      "eyebrow": "A different route for the sister spacecraft",
+      "title": "From Jupiter to the ringed planet",
+      "intro": "Choose a chapter to see how a mission initially backing up Pioneer 10 became the first to fly past Saturn.",
+      "choose": "Choose a Pioneer 11 chapter",
+      "description": "Schematic Pioneer 11 route from Earth to Jupiter, curving toward Saturn before continuing outward",
+      "note": "Illustrative route: planet positions, distances and bends are not to scale. The markers select historical topics, not current spacecraft coordinates.",
+      "detailLabel": "Journey chapter",
+      "stops": [
+        {
+          "name": "The sister spacecraft",
+          "body": "Pioneer 11 began as a follow-up to Pioneer 10. The success of the first Jupiter encounter allowed planners to extend the second mission toward Saturn.",
+          "fact": "1973",
+          "factLabel": "Launch of the second outer-planet Pioneer",
+          "question": "The two spacecraft shared a basic design, but their instrument complements and flight paths were not identical.",
+          "source": "https://www.nasa.gov/history/45-years-ago-pioneer-11-launched-to-study-jupiter-and-saturn/"
+        },
+        {
+          "name": "A turn at Jupiter",
+          "body": "The December 1974 encounter returned views of Jupiter’s polar regions. Jupiter’s gravity redirected the trajectory for the long crossing to Saturn.",
+          "fact": "1974 → 1979",
+          "factLabel": "From the Jupiter encounter to Saturn",
+          "question": "A gravity assist changes the spacecraft’s velocity relative to the Sun by exchanging orbital energy with a moving planet.",
+          "source": "https://science.nasa.gov/mission/pioneer-11/"
+        },
+        {
+          "name": "First at Saturn",
+          "body": "On 1 September 1979, Pioneer 11 flew close to Saturn and sampled its environment. It detected the narrow F ring and investigated the planet’s magnetic field.",
+          "fact": "≈20,900 km",
+          "factLabel": "Closest approach above Saturn’s cloud tops",
+          "question": "Pioneer 11 was a flyby spacecraft. Cassini would become Saturn’s first orbiter many years later.",
+          "source": "https://www.nasa.gov/solar-system/planets/saturn/40-years-ago-pioneer-11-first-to-explore-saturn/"
+        },
+        {
+          "name": "The outward journey",
+          "body": "After Saturn, the spacecraft continued outward, crossing Neptune’s orbital distance in 1990. Declining power and antenna-pointing limitations eventually ended communication.",
+          "fact": "1995",
+          "factLabel": "The final year of communication",
+          "question": "The spacecraft continues on its trajectory even though it no longer returns observations to Earth.",
+          "source": "https://science.nasa.gov/mission/pioneer-11/"
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "date": "1973-04-06",
+        "displayDate": "6 April 1973 · UTC",
+        "title": "A second Pioneer departs",
+        "body": "The Atlas-Centaur launches from Cape Canaveral late on 5 April local time, already 6 April in UTC."
+      },
+      {
+        "date": "1974-12",
+        "displayDate": "December 1974",
+        "title": "Jupiter changes the route",
+        "body": "A close flyby reveals the polar regions and redirects Pioneer 11 toward Saturn."
+      },
+      {
+        "date": "1979-09-01",
+        "displayDate": "1 September 1979",
+        "title": "The first Saturn encounter",
+        "body": "The probe studies the rings, atmosphere and magnetic environment during a passage above the cloud tops."
+      },
+      {
+        "date": "1995-11-24",
+        "displayDate": "24 November 1995",
+        "title": "A final brief data reception",
+        "body": "After routine operations end on 30 September, a few final minutes of engineering data reach Earth in November."
+      }
+    ],
+    "scienceTitle": "Opening Saturn’s neighbourhood",
+    "scienceIntro": "Pioneer 11 linked an ambitious route with the first direct measurements at the ringed planet.",
+    "science": [
+      {
+        "title": "A narrow ring beyond the A ring",
+        "body": "Pioneer 11 detected Saturn’s F ring, adding a new feature to a system that looked much simpler from Earth.",
+        "source": "https://science.nasa.gov/mission/pioneer-11/"
+      },
+      {
+        "title": "A magnetic environment around Saturn",
+        "body": "Field and particle measurements established the magnetic environment and boundaries shaped by the solar wind. The encounter added much more than photographs.",
+        "source": "https://www.nasa.gov/solar-system/planets/saturn/40-years-ago-pioneer-11-first-to-explore-saturn/"
+      },
+      {
+        "title": "A new view of Jupiter",
+        "body": "The route near Jupiter provided views of the polar regions and cloud structures, extending the picture returned by Pioneer 10 a year earlier.",
+        "source": "https://www.nasa.gov/history/45-years-ago-pioneer-11-launched-to-study-jupiter-and-saturn/"
+      }
+    ],
+    "instrumentIntro": "These four groups summarise selected science capabilities. They group several detectors rather than counting every experiment.",
+    "instruments": [
+      {
+        "name": "Imaging photopolarimeter",
+        "body": "Recorded brightness and polarisation, producing scanned views of Jupiter, Saturn and their surroundings."
+      },
+      {
+        "name": "Magnetometers",
+        "body": "Helium-vector and fluxgate measurements investigated magnetic fields and their boundaries."
+      },
+      {
+        "name": "Plasma and energetic particles",
+        "body": "Detectors sampled solar-wind plasma and charged particles in the giant planets’ environments."
+      },
+      {
+        "name": "Infrared and ultraviolet",
+        "body": "Measurements beyond visible light helped investigate atmospheric and thermal properties."
+      }
+    ],
+    "instrumentDetails": [
+      "Like its sister spacecraft, Pioneer 11 scanned scenes as it rotated. Images were assembled from measurements on Earth, rather than exposed as modern digital camera frames.",
+      "Pioneer 11 carried an additional fluxgate magnetometer as well as a helium vector magnetometer. These measurements helped investigate Saturn’s magnetic environment.",
+      "Plasma, cosmic-ray, charged-particle and radiation instruments measured populations with different energies. They revealed conditions that pictures alone could not show.",
+      "Infrared observations measured thermal radiation; ultraviolet observations supplied complementary information. Radio tracking and occultations also contributed to the mission’s science."
+    ],
+    "communication": {
+      "eyebrow": "A spacecraft that could no longer point home",
+      "title": "The final year of radio contact",
+      "body": "Routine operations ended on 30 September 1995. NASA received a final brief interval of engineering data on 24 November, but declining power and antenna geometry prevented sustained contact.",
+      "note": "The calculator starts with an illustrative 6.4-billion-kilometre Earth distance, characteristic of the mission’s final era. It is not a current measurement or an active connection.",
+      "source": "https://www.nasa.gov/solar-system/planets/saturn/40-years-ago-pioneer-11-first-to-explore-saturn/"
+    },
+    "quiz": {
+      "nav": "Test yourself",
+      "eyebrow": "Pioneer 11 challenge",
+      "title": "Ready for the ringed planet?",
+      "intro": "Three questions about the route and what a flyby can reveal.",
+      "correct": "Exactly.",
+      "incorrect": "Here is what the mission tells us.",
+      "next": "Next question",
+      "restart": "Try again",
+      "questions": [
+        {
+          "question": "Which planet did Pioneer 11 visit after Jupiter?",
+          "options": [
+            "Saturn",
+            "Mars",
+            "Neptune"
+          ],
+          "correct": 0,
+          "explanation": "Jupiter’s gravity redirected Pioneer 11 toward the first spacecraft flyby of Saturn in September 1979."
+        },
+        {
+          "question": "Did Pioneer 11 enter orbit around Saturn?",
+          "options": [
+            "Yes, for 22 years",
+            "No, it made a flyby",
+            "Yes, inside the F ring"
+          ],
+          "correct": 1,
+          "explanation": "Pioneer 11 passed Saturn and continued outward. It was not a Saturn orbiter."
+        },
+        {
+          "question": "What is a gravity assist exchanging with the planet?",
+          "options": [
+            "Fresh propellant",
+            "A continuous radio beam",
+            "Orbital energy and momentum"
+          ],
+          "correct": 2,
+          "explanation": "A moving planet can exchange orbital energy and momentum with a spacecraft. The effect on the much more massive planet is tiny."
+        }
+      ]
+    },
+    "faq": [
+      {
+        "question": "Was Pioneer 11 the first spacecraft at Saturn?",
+        "answer": "Yes. Its September 1979 flyby preceded Voyager 1, Voyager 2 and Cassini. Cassini later became the first spacecraft to orbit Saturn."
+      },
+      {
+        "question": "Why are both September and November 1995 mentioned?",
+        "answer": "Routine operations ended on 30 September. A final brief reception of engineering data took place on 24 November. These describe different milestones in the end of the mission."
+      },
+      {
+        "question": "Did passing Neptune’s orbit mean it visited Neptune?",
+        "answer": "No. Pioneer 11 crossed Neptune’s orbital distance in February 1990, without a close encounter with that planet. A heliopause crossing was not confirmed by measurements from Pioneer 11."
+      }
+    ],
+    "galleryTitle": "Two giants and one ambitious route",
+    "galleryIntro": "Two spacecraft views and a historical NASA trajectory diagram, each identified separately.",
+    "gallery": [
+      {
+        "title": "Jupiter from a new angle",
+        "alt": "Pioneer 11 view of Jupiter’s cloud bands from a high-latitude perspective",
+        "body": "The 1974 encounter brought views of Jupiter’s polar regions. The image reflects the limited resolution of the Pioneer imaging system."
+      },
+      {
+        "title": "Saturn, its rings and Titan",
+        "alt": "Saturn with its rings and Titan appearing as a small dot below the planet",
+        "body": "An archival Pioneer 11 view from the 1979 encounter. Titan is a small point below Saturn; it is not shown as a resolved landscape."
+      },
+      {
+        "title": "A route shaped by Jupiter",
+        "alt": "NASA diagram of Pioneer 11’s trajectory via Jupiter to Saturn",
+        "body": "This historical diagram explains the flight geometry. It is an illustration of a route, not a photograph or a live spacecraft tracker."
+      }
+    ],
+    "sourceNote": "Mission history and image credits follow NASA sources. The shared spacecraft model is explicitly identified; the chapter map and flyby experiment use synthetic geometry, not a reconstruction of Pioneer 11’s measured trajectory.",
+    "flyby": {
+      "nav": "Try a gravity assist",
+      "eyebrow": "Experiment with orbital mechanics",
+      "title": "A turn can change your speed",
+      "intro": "Rotate an idealised outgoing velocity vector. Compare a moving planet with a hypothetical stationary one to see why the reference frame matters.",
+      "diagram": "Incoming and outgoing velocity-vector diagrams, adding planet motion to the spacecraft velocity relative to the planet",
+      "before": "Before the flyby",
+      "after": "After the flyby",
+      "vectorRule": "Sun-relative velocity = planet velocity + planet-relative velocity",
+      "planetVector": "Planet motion relative to the Sun",
+      "relativeVector": "Spacecraft relative to the planet",
+      "sunVector": "Spacecraft relative to the Sun (dashed)",
+      "angle": "Planet-relative turn angle",
+      "scenario": "Choose the idealised planet motion",
+      "moving": "Moving planet",
+      "stationary": "Stationary planet (hypothetical)",
+      "sunBefore": "Sun-relative speed before",
+      "sunAfter": "Sun-relative speed after",
+      "planetBoth": "Planet-relative speed before AND after",
+      "kms": "km/s",
+      "movingExplanation": "The far-field speed relative to the planet stays at 10 km/s. Adding a moving planet’s velocity can change the speed relative to the Sun. Energy is exchanged with the planet; it is not created.",
+      "stationaryExplanation": "With planet motion set to zero, the incoming and outgoing speeds are both 10 km/s in this model. The direction changes, but there is no lasting speed gain.",
+      "note": "Synthetic velocity-vector experiment: planet speed 13 km/s or 0, spacecraft far-field planet-relative speed 10 km/s. Vectors share a linear scale. No encounter orbit, altitude or travel time is calculated. These are not measured Pioneer speeds. The temporary acceleration near closest approach is not shown.",
+      "reset": "Reset experiment",
+      "context": "For Pioneer 11, the Jupiter flyby redirected the journey toward Saturn. A real mission must target a future planet position; this experiment only explains vector addition."
+    }
+  }
+}

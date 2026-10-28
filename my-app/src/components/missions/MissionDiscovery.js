@@ -10,9 +10,13 @@ const MARKERS = {
   gaia: [[25, 43], [51, 35], [72, 59], [44, 72]],
   kepler: [[22, 30], [52, 33], [79, 58], [35, 76]],
   spitzer: [[21, 37], [50, 28], [78, 54], [40, 77]],
+  pioneer10: [[12, 70], [34, 53], [57, 36], [85, 19]],
+  pioneer11: [[12, 70], [47, 42], [76, 67], [85, 18]],
 };
 
 const MAP_LABELS = { perseverance: "JEZERO / 18.4° N · 77.5° E", cassini: "SATURN SYSTEM / 2004–2017", osirisrex: "BENNU / SAMPLE RETURN / 2016–2023", gaia: "GAIA / ASTROMETRY · PHOTOMETRY · SPECTROSCOPY", kepler: "KEPLER / TRANSIT PHOTOMETRY / K2", spitzer: "SPITZER / INFRARED UNIVERSE / 2003–2020" };
+MAP_LABELS.pioneer10 = "PIONEER 10 / EARTH · ASTEROID BELT · JUPITER";
+MAP_LABELS.pioneer11 = "PIONEER 11 / EARTH · JUPITER · SATURN";
 
 function DiscoveryMap({ mission, selected, onSelect, content }) {
   const mars = mission === "perseverance";
@@ -72,6 +76,17 @@ function DiscoveryMap({ mission, selected, onSelect, content }) {
           <circle cx="624" cy="270" r="28" fill="#d6a076" /><circle cx="689" cy="235" r="11" fill="#91a4bd" /><circle cx="546" cy="312" r="8" fill="#c58e75" />
           <path d="M219 407H430M235 407Q264 263 302 407M274 407Q328 319 390 407" fill="none" stroke="#dfae88" strokeWidth="3" />
           <path d="M268 286V415M335 330V415" stroke="#b4c1dd70" strokeDasharray="4 6" />
+        </g> : mission === "pioneer10" || mission === "pioneer11" ? <g>
+          <circle cx="96" cy="350" r="25" fill="#527990" /><path d="m80 332 15 8 6 21 15 7-15 5-16-14Z" fill="#9ab6a8" />
+          {Array.from({ length: 38 }, (_, index) => <circle key={index} cx={220 + (index % 6) * 19} cy={110 + index * 9 % 250} r={1.5 + index % 3} fill="#c5ae8670" />)}
+          <path d={mission === "pioneer10" ? "M96 350Q215 350 272 265T456 180Q550 145 680 95" : "M96 350Q220 330 376 210Q340 85 220 100T608 335Q685 240 680 90"} fill="none" stroke="#e0c292b0" strokeWidth="3" strokeDasharray="7 8" />
+          <g transform={mission === "pioneer10" ? "translate(456 180)" : "translate(376 210)"}>
+            <circle r="48" fill="#c4a078" /><path d="M-44-16Q0-4 44-16M-48 4Q0 18 48 4M-40 26Q0 34 40 26" fill="none" stroke="#876953" strokeWidth="8" />
+            <ellipse cx="18" cy="18" rx="12" ry="6" fill="#ad6858" />
+          </g>
+          {mission === "pioneer11" && <g transform="translate(608 335)"><ellipse rx="94" ry="31" transform="rotate(-25)" fill="none" stroke="#d8c29b90" strokeWidth="13" /><circle r="38" fill="#d2bb91" /><path d="M-80 37Q5 20 82-36" fill="none" stroke="#d8c29b" strokeWidth="10" /></g>}
+          <path d="m660 75 30 10-10 30-30-10Z" fill="#d7c4a5" /><path d="m665 80 15 5-5 15-15-5Z" fill="#756552" />
+          <path d="M618 71 641 78M616 95 637 95M637 119 648 107" stroke="#c7b59270" strokeWidth="2" />
         </g> : <g>
           <ellipse cx="360" cy="240" rx="252" ry="95" transform="rotate(-24 360 240)" fill="none" stroke="#c6ae8070" strokeWidth="39" />
           <ellipse cx="360" cy="240" rx="216" ry="78" transform="rotate(-24 360 240)" fill="none" stroke="#e3cfac50" strokeWidth="12" />

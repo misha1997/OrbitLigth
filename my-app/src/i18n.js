@@ -22,6 +22,8 @@ import missionKeplerUk from "./i18n/mission-kepler.uk.json";
 import missionKeplerEn from "./i18n/mission-kepler.en.json";
 import missionSpitzerUk from "./i18n/mission-spitzer.uk.json";
 import missionSpitzerEn from "./i18n/mission-spitzer.en.json";
+import missionPioneersUk from "./i18n/mission-pioneers.uk.json";
+import missionPioneersEn from "./i18n/mission-pioneers.en.json";
 
 const missionTranslations = (base, extra) => Object.fromEntries(Object.entries(base).map(([key, value]) => [key, { ...value, ...extra[key] }]));
 
@@ -66,8 +68,8 @@ export function initI18n(initialLang) {
   if (initialised) return i18next;
   i18next.use(initReactI18next).init({
     resources: {
-      uk: { translation: { ...uk, orbital: orbitalUk, missionDetail: missionTranslations({ ...missionDetailUk, ...missionAdditionsUk, ...missionExplorersUk, ...missionSurveysUk, ...missionKeplerUk, ...missionSpitzerUk }, missionEnrichmentUk) } },
-      en: { translation: { ...en, orbital: orbitalEn, missionDetail: missionTranslations({ ...missionDetailEn, ...missionAdditionsEn, ...missionExplorersEn, ...missionSurveysEn, ...missionKeplerEn, ...missionSpitzerEn }, missionEnrichmentEn) } },
+      uk: { translation: { ...uk, orbital: orbitalUk, missionDetail: missionTranslations({ ...missionDetailUk, ...missionAdditionsUk, ...missionExplorersUk, ...missionSurveysUk, ...missionKeplerUk, ...missionSpitzerUk, ...missionPioneersUk }, missionEnrichmentUk) } },
+      en: { translation: { ...en, orbital: orbitalEn, missionDetail: missionTranslations({ ...missionDetailEn, ...missionAdditionsEn, ...missionExplorersEn, ...missionSurveysEn, ...missionKeplerEn, ...missionSpitzerEn, ...missionPioneersEn }, missionEnrichmentEn) } },
     },
     lng: initialLang || readLang(),
     fallbackLng: DEFAULT_LANG,

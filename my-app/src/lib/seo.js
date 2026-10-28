@@ -42,6 +42,8 @@ export const SLUGS = {
   gaia:           { uk: "gaia",              en: "gaia" },
   kepler:         { uk: "kepler",            en: "kepler" },
   spitzer:        { uk: "spitzer",           en: "spitzer" },
+  pioneer10:      { uk: "pioneer-10",        en: "pioneer-10" },
+  pioneer11:      { uk: "pioneer-11",        en: "pioneer-11" },
   meteors:        { uk: "meteory",           en: "meteors" },
   asteroids:      { uk: "asteroidy",         en: "asteroids" },
   events:         { uk: "podiyi",            en: "events" },

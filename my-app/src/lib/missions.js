@@ -106,14 +106,14 @@ export const MISSIONS = [
     blurbKey: "missions.blurbs.spitzer",
   },
   {
-    key: "pioneer10", labelKey: "missions.names.pioneer10",
-    disabled: true, type: "probe", status: "ended", year: "1972–2003",
+    key: "pioneer10", labelKey: "missions.names.pioneer10", to: "pioneer10",
+    disabled: false, type: "probe", status: "ended", year: "1972–2003",
     icon: "🛰️", accent: "#9C948B", img: "/pioneer10/images/preview.jpg",
     blurbKey: "missions.blurbs.pioneer10",
   },
   {
-    key: "pioneer11", labelKey: "missions.names.pioneer11",
-    disabled: true, type: "probe", status: "ended", year: "1973–1995",
+    key: "pioneer11", labelKey: "missions.names.pioneer11", to: "pioneer11",
+    disabled: false, type: "probe", status: "ended", year: "1973–1995",
     icon: "🛰️", accent: "#9C948B", img: "/pioneer11/images/preview.jpg",
     blurbKey: "missions.blurbs.pioneer11",
   },

@@ -43,6 +43,8 @@ const OsirisRex = lazy(() => import("../pages/OsirisRex"));
 const Gaia = lazy(() => import("../pages/Gaia"));
 const Kepler = lazy(() => import("../pages/Kepler"));
 const Spitzer = lazy(() => import("../pages/Spitzer"));
+const Pioneer10 = lazy(() => import("../pages/Pioneer10"));
+const Pioneer11 = lazy(() => import("../pages/Pioneer11"));
 const Gallery = lazy(() => import("../pages/Gallery"));
 const Planetarium = lazy(() => import("../pages/Planetarium"));
 const Mars = lazy(() => import("../pages/Mars"));
@@ -94,6 +96,8 @@ const PAGES = {
   gaia: Gaia,
   kepler: Kepler,
   spitzer: Spitzer,
+  pioneer10: Pioneer10,
+  pioneer11: Pioneer11,
   gallery: Gallery,
   planetarium: Planetarium,
   mars: Mars,

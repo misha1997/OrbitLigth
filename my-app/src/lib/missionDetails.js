@@ -3,6 +3,42 @@ const photo = (mission, file, credit, source, year) => ({ image: `/${mission}/im
 const nasaImage = (id) => `https://images.nasa.gov/details/${id}`;
 
 export const MISSION_DETAILS = {
+  pioneer10: {
+    experience: "outer-planet-pathfinder",
+    model: { url: "/pioneer10/models/pioneer10.glb", direction: [1, 0.7, 1.4], credit: { author: "NASA · 3D Resources", source: "https://github.com/nasa/NASA-3D-Resources/tree/master/3D%20Models/Pioneer%2010" } },
+    accent: "#D5B681", hero: "/pioneer10/images/preview.jpg",
+    gallery: [
+      photo("pioneer10", "launch", "NASA", "https://www.nasa.gov/history/50-years-ago-pioneer-10-launches-to-explore-jupiter/", "1972"),
+      photo("pioneer10", "jupiter", "NASA", "https://www.nasa.gov/history/50-years-ago-pioneer-10-launches-to-explore-jupiter/", "1973"),
+      photo("pioneer10", "plaque", "NASA", "https://www.nasa.gov/history/50-years-ago-pioneer-10-launches-to-explore-jupiter/", "1972"),
+    ],
+    sources: [
+      { label: "NASA · Pioneer 10", url: "https://science.nasa.gov/mission/pioneer-10/" },
+      { label: "NASA · Launch & mission history", url: "https://www.nasa.gov/history/50-years-ago-pioneer-10-launches-to-explore-jupiter/" },
+      { label: "NASA · Final signal", url: "https://science.nasa.gov/missions/pioneer/pioneer-10-sends-last-signal/" },
+      { label: "NASA · Gravity assist primer", url: "https://science.nasa.gov/learn/basics-of-space-flight/primer/" },
+      { label: "JPL · Pioneer anomaly", url: "https://www.jpl.nasa.gov/news/study-finds-heat-is-source-of-pioneer-anomaly/" },
+      { label: "NASA · Pioneer archives", url: "https://nssdc.gsfc.nasa.gov/planetary/pioneer10-11.html" },
+      { label: "JPL · Launch chronology (UTC)", url: "https://ipnpr.jpl.nasa.gov/progress_report/IX/IXE.PDF" },
+    ],
+  },
+  pioneer11: {
+    experience: "saturn-pathfinder",
+    model: { url: "/pioneer11/models/pioneer11.glb", direction: [1, 0.7, 1.4], credit: { author: "NASA · Pioneer 10 model", source: "https://github.com/nasa/NASA-3D-Resources/tree/master/3D%20Models/Pioneer%2010" } },
+    accent: "#B4A3D0", hero: "/pioneer11/images/preview.jpg",
+    gallery: [
+      photo("pioneer11", "jupiter", "NASA / Ames", "https://science.nasa.gov/mission/pioneer-11/", "1974"),
+      photo("pioneer11", "saturn", "NASA / Ames", "https://www.nasa.gov/solar-system/planets/saturn/40-years-ago-pioneer-11-first-to-explore-saturn/", "1979"),
+      photo("pioneer11", "trajectory", "NASA", "https://www.nasa.gov/solar-system/planets/saturn/40-years-ago-pioneer-11-first-to-explore-saturn/", "1973–1979"),
+    ],
+    sources: [
+      { label: "NASA · Pioneer 11", url: "https://science.nasa.gov/mission/pioneer-11/" },
+      { label: "NASA · Launch & Jupiter encounter", url: "https://www.nasa.gov/history/45-years-ago-pioneer-11-launched-to-study-jupiter-and-saturn/" },
+      { label: "NASA · First at Saturn", url: "https://www.nasa.gov/solar-system/planets/saturn/40-years-ago-pioneer-11-first-to-explore-saturn/" },
+      { label: "NASA · Gravity assist primer", url: "https://science.nasa.gov/learn/basics-of-space-flight/primer/" },
+      { label: "NASA · Pioneer archives", url: "https://nssdc.gsfc.nasa.gov/planetary/pioneer10-11.html" },
+    ],
+  },
   spitzer: {
     experience: "infrared-archive",
     model: { url: "/spitzer/models/spitzer.glb", direction: [1, 0.65, 1.3], credit: { author: "NASA / VTAD", source: "https://science.nasa.gov/resource/spitzer-space-telescope-3d-model/" } },

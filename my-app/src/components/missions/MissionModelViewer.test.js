@@ -7,8 +7,9 @@ import additions from "../../i18n/mission-additions.en.json";
 import kepler from "../../i18n/mission-kepler.en.json";
 
 import spitzer from "../../i18n/mission-spitzer.en.json";
+import pioneers from "../../i18n/mission-pioneers.en.json";
 
-const content = { ...baseContent, ...additions, ...kepler, ...spitzer };
+const content = { ...baseContent, ...additions, ...kepler, ...spitzer, ...pioneers };
 
 jest.mock("@react-three/fiber", () => ({ Canvas: () => <div data-testid="model-canvas" />, useFrame: jest.fn(), useThree: jest.fn() }));
 jest.mock("@react-three/drei", () => ({ OrbitControls: () => null, Stars: () => null, Environment: () => null, Lightformer: () => null, useGLTF: jest.fn() }));
@@ -18,7 +19,7 @@ beforeEach(() => {
   HTMLDialogElement.prototype.close = jest.fn(function () { this.removeAttribute("open"); });
 });
 
-test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper", "kepler", "spitzer"])("%s opens a fullscreen model, then restores focus and page scrolling", (mission) => {
+test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper", "kepler", "spitzer", "pioneer10", "pioneer11"])("%s opens a fullscreen model, then restores focus and page scrolling", (mission) => {
   document.body.style.overflow = "auto";
   render(<MissionModelViewer model={MISSION_DETAILS[mission].model} name={content[mission].name} stats={content[mission].stats} ui={content.ui.model} />);
   const trigger = screen.getByRole("button", { name: `Explore in 3D: ${content[mission].name}` });

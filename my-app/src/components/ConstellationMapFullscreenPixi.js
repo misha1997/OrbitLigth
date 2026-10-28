@@ -5,6 +5,7 @@ import * as PIXI from "pixi.js";
 import { useLang } from "../context/LanguageContext";
 import { getConstellationDetails } from "../lib/constellation_details";
 import "../styles/constellations.css";
+import { loadSkyCatalog, indexSkyStars, querySkyStars } from "../lib/skyMapData";
 
 // Astronomical formulas (RA/Dec to Alt/Az)
 function getJulianDate(date) {
@@ -65,7 +66,7 @@ function dotRadius(mag) {
 
 // Formatting helpers
 function formatRA(raDeg) {
-  const raHours = raDeg / 15;
+  const raHours = ((raDeg % 360) + 360) % 360 / 15;
   const h = Math.floor(raHours);
   const m = Math.floor((raHours - h) * 60);
   const s = Math.floor(((raHours - h) * 60 - m) * 60);
@@ -198,6 +199,7 @@ function computeHeadingAlt(event) {
 
 export default function ConstellationMapFullscreenPixi({
   onClose,
+  constellationData,
   activeConst,
   setActiveConst,
   currentTime,
@@ -215,7 +217,7 @@ export default function ConstellationMapFullscreenPixi({
   const canvasWrapRef = useRef(null);
   const appRef = useRef(null);
   const worldRef = useRef(null);
-  const starsContainersRef = useRef([]); // 4 LOD containers
+  const starsContainersRef = useRef([]); // 5 LOD containers
   const linesGraphicsRef = useRef(null);
   const labelsContainerRef = useRef(null);
   const objectsContainerRef = useRef(null);
@@ -225,6 +227,14 @@ export default function ConstellationMapFullscreenPixi({
 
   // Cache constellations data to redraw it during zoom/pan events
   const constellationsDataRef = useRef(null);
+  const starPointsRef = useRef([]);
+  const starIndexRef = useRef(null);
+  const renderStarsRef = useRef(null);
+  const refreshViewRef = useRef(null);
+  const appearanceRef = useRef(null);
+  appearanceRef.current = { activeConst, seasonFilter, lang };
+  const [viewportVersion, setViewportVersion] = useState(0);
+  constellationsDataRef.current = constellationData?.constellations || [];
   const updateElementsScaleRef = useRef(null);
   const selectedWorldPosRef = useRef(null); // {alt,az} of the selected star/planet/galaxy (re-projected each frame)
 
@@ -438,9 +448,7 @@ export default function ConstellationMapFullscreenPixi({
     if (labelsContainer) {
       labelsContainer.children.forEach((child) => {
         if (child instanceof PIXI.Text) {
-          const text = child.text;
-          const isCardinal = ["N", "S", "E", "W"].includes(text);
-          child.style.fontSize = isCardinal ? 13 / z : 10 / z;
+          child.scale.set(1 / z);
         }
       });
     }
@@ -464,16 +472,13 @@ export default function ConstellationMapFullscreenPixi({
   const reprojectAll = (boresight) => {
     const { cx, cy, rHor } = getViewportParams();
 
-    starsContainersRef.current.forEach((container) => {
-      const children = container.children;
-      for (let i = 0; i < children.length; i++) {
-        const sprite = children[i];
-        if (sprite.userAlt == null) continue;
-        const xy = projectWithBoresight(sprite.userAlt, sprite.userAz, boresight, cx, cy, rHor);
-        sprite.visible = !!xy; // hide stars outside the gyro FOV rather than folding them onto the rim
-        if (xy) sprite.position.set(xy.x, xy.y);
-      }
-    });
+    const projected = [];
+    for (const point of starPointsRef.current) {
+      const xy = projectWithBoresight(point.alt, point.az, boresight, cx, cy, rHor);
+      if (xy) projected.push({ ...point, ...xy });
+    }
+    starIndexRef.current = indexSkyStars(projected);
+    renderStarsRef.current?.();
 
     const objectsContainer = objectsContainerRef.current;
     if (objectsContainer) {
@@ -502,52 +507,57 @@ export default function ConstellationMapFullscreenPixi({
   };
   reprojectAllRef.current = reprojectAll;
 
-  // Load Star Catalog & API data
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // 1. Load real stars database
-    fetch("/data/real_stars.json")
-      .then((res) => res.json())
-      .then((data) => setCelestialData(data))
-      .catch((err) => console.error("Failed to load real stars catalog:", err));
+    let cancelled = false;
+    loadSkyCatalog("/data/real_stars.json")
+      .then(data => { if (!cancelled) setCelestialData(data); })
+      .catch(err => console.error("Failed to load real stars catalog:", err));
+    return () => { cancelled = true; };
+  }, []);
 
-    // 2. Fetch live planets positions from API
-    fetch(`/api/planets?lat=${latLon.lat}&lon=${latLon.lon}&lang=${lang === "en" ? "en" : "uk"}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && data.items) {
-          const list = [...data.items];
-          if (data.sun) list.push(data.sun);
-          if (data.moon) list.push(data.moon);
-          setPlanetsData(list);
-        }
-      })
-      .catch((err) => console.error("Failed to load planets data:", err));
-
-    // 3. Fetch galaxies from API
-    fetch(`/api/galaxies?lang=${lang === "en" ? "en" : "uk"}`)
-      .then((res) => res.json())
-      .then((data) => setGalaxiesData(data && data.items ? data.items : []))
-      .catch((err) => console.error("Failed to load galaxies data:", err));
-  }, [latLon, lang]);
-
-  // Fetch full galaxy details dynamically when selected
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (selectedObj && selectedObj.type === "galaxy") {
-      setDetailedGalaxy(null);
-      fetch(`/api/galaxies/${selectedObj.slug}?lang=${lang === "en" ? "en" : "uk"}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.available) {
-            setDetailedGalaxy(data);
-          }
-        })
-        .catch((err) => console.error("Failed to load galaxy detail:", err));
-    } else {
-      setDetailedGalaxy(null);
+    const controller = new AbortController();
+    const read = url => fetch(url, { signal: controller.signal }).then(res => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    });
+    setPlanetsData([]);
+    setGalaxiesData([]);
+    read("/api/planets?lat=" + latLon.lat + "&lon=" + latLon.lon + "&lang=" + (lang === "en" ? "en" : "uk"))
+      .then(data => {
+        const list = [...(data.items || [])];
+        if (data.sun) list.push(data.sun);
+        if (data.moon) list.push(data.moon);
+        setPlanetsData(list);
+      }).catch(err => { if (err.name !== "AbortError") console.error("Failed to load planets:", err); });
+    read("/api/galaxies?lang=" + (lang === "en" ? "en" : "uk"))
+      .then(data => setGalaxiesData(data.items || []))
+      .catch(err => { if (err.name !== "AbortError") console.error("Failed to load galaxies:", err); });
+    return () => controller.abort();
+  }, [latLon.lat, latLon.lon, lang]);
+
+  const galaxySlug = selectedObj?.type === "galaxy" ? selectedObj.slug : null;
+  useEffect(() => {
+    setDetailedGalaxy(null);
+    if (!galaxySlug) return;
+    const controller = new AbortController();
+    fetch("/api/galaxies/" + galaxySlug + "?lang=" + (lang === "en" ? "en" : "uk"), { signal: controller.signal })
+      .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+      .then(data => { if (data.available) setDetailedGalaxy(data); })
+      .catch(err => { if (err.name !== "AbortError") console.error("Failed to load galaxy detail:", err); });
+    return () => controller.abort();
+  }, [galaxySlug, lang]);
+
+  const projectedStars = useMemo(() => {
+    const points = [];
+    for (const star of celestialData || []) {
+      // HYG entry 0 is the Sun, drawn separately using its live ephemeris.
+      if (star[0] === 0) continue;
+      const position = raDecToAltAz(star[1], star[2], latLon.lat, latLon.lon, currentTime);
+      if (position.alt > -12) points.push({ star, ...position });
     }
-  }, [selectedObj, lang]);
+    return points;
+  }, [celestialData, latLon.lat, latLon.lon, currentTime]);
 
   // Get object image if available (for planets and galaxies)
   const getObjectImageUrl = (obj, detailedGal) => {
@@ -597,9 +607,10 @@ export default function ConstellationMapFullscreenPixi({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!canvasWrapRef.current) return;
+    const pointers = pointersRef.current;
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
     const app = new PIXI.Application({
       width,
@@ -626,6 +637,7 @@ export default function ConstellationMapFullscreenPixi({
     starGraphics.endFill();
     const starTexture = app.renderer.generateTexture(starGraphics);
     starTextureRef.current = starTexture;
+    starGraphics.destroy();
 
     const domeGraphics = new PIXI.Graphics();
     world.addChild(domeGraphics);
@@ -658,9 +670,9 @@ export default function ConstellationMapFullscreenPixi({
     world.addChild(selectionRing);
     selectionRingRef.current = selectionRing;
 
-    const cx = width / 2;
-    const cy = height / 2;
-    const rHor = Math.min(width, height) * 0.43;
+    let cx = width / 2;
+    let cy = height / 2;
+    let rHor = Math.min(width, height) * 0.43;
 
     world.scale.set(zoomRef.current);
     world.pivot.set(cx, cy);
@@ -700,14 +712,23 @@ export default function ConstellationMapFullscreenPixi({
     redrawDome(zoomRef.current);
 
     // LOD updating in the render loop
-    const updateLOD = () => {
+    let previousView = "";
+    const updateLOD = (force = false) => {
       const z = zoomRef.current;
       containers[0].alpha = 1.0;
       containers[1].alpha = Math.max(0.0, Math.min(1.0, (z - 1.5) / 1.3));
       containers[2].alpha = Math.max(0.0, Math.min(1.0, (z - 2.8) / 2.2));
       containers[3].alpha = Math.max(0.0, Math.min(1.0, (z - 5.0) / 3.0));
       containers[4].alpha = Math.max(0.0, Math.min(1.0, (z - 10.0) / 8.0));
+      containers.forEach(container => { container.visible = container.alpha > 0; });
+      const view = `${z},${world.x},${world.y},${width},${height}`;
+      if (force === true || view !== previousView) {
+        previousView = view;
+        renderStarsRef.current?.();
+      }
     };
+    refreshViewRef.current = () => updateLOD(true);
+    updateLOD();
     app.ticker.add(updateLOD);
 
     // Event listener functions for window events (to keep pan/zoom extremely fast)
@@ -867,20 +888,30 @@ export default function ConstellationMapFullscreenPixi({
 
     // Handle Resize
     const handleResize = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      app.renderer.resize(w, h);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      cx = width / 2;
+      cy = height / 2;
+      rHor = Math.min(width, height) * 0.43;
+      app.renderer.resize(width, height);
+      world.pivot.set(cx, cy);
+      world.position.set(cx + panOffsetRef.current.x, cy + panOffsetRef.current.y);
+      redrawDome(zoomRef.current);
+      setViewportVersion(version => version + 1);
     };
     window.addEventListener("resize", handleResize);
 
     return () => {
+      app.view.removeEventListener("wheel", handleWindowWheel);
+      renderStarsRef.current = null;
+      refreshViewRef.current = null;
       app.ticker.remove(updateLOD);
       window.removeEventListener("pointerdown", handleWindowPointerDown);
       window.removeEventListener("pointermove", handleWindowPointerMove);
       window.removeEventListener("pointerup", handleWindowPointerUp);
       window.removeEventListener("pointercancel", handleWindowPointerUp);
       window.removeEventListener("resize", handleResize);
-      pointersRef.current.clear();
+      pointers.clear();
 
       if (appRef.current) {
         appRef.current.destroy(true, { children: true, texture: true, baseTexture: true });
@@ -906,19 +937,22 @@ export default function ConstellationMapFullscreenPixi({
     const z = zoomRef.current;
 
     // Clear previous elements
-    containers.forEach((c) => c.removeChildren());
+    containers.forEach(c => c.removeChildren().forEach(child => child.destroy()));
     linesGraphics.clear();
-    labelsContainer.removeChildren();
-    objectsContainer.removeChildren();
+    labelsContainer.removeChildren().forEach(child => child.destroy({ children: true, texture: true, baseTexture: true }));
+    objectsContainer.removeChildren().forEach(child => child.destroy({ children: true }));
     constLabelsRef.current = [];
     cardinalLabelsRef.current = [];
 
     // --- 1. Populate Star Sprites ---
-    celestialData.forEach((s) => {
-      const starLoc = raDecToAltAz(s[1], s[2], latLon.lat, latLon.lon, currentTime);
-      if (starLoc.alt <= -12) return; // Horizon cutoff
-
-      const xy = altAzToXY(starLoc.alt, starLoc.az, cx, cy, rHor);
+    starPointsRef.current = projectedStars;
+    starIndexRef.current = indexSkyStars(projectedStars.map(point => ({ ...point, ...altAzToXY(point.alt, point.az, cx, cy, rHor) })));
+    const liveSprites = new Map();
+    const createStarSprite = (point) => {
+      const { star: s } = point;
+      const starLoc = point;
+      const xy = point;
+      const { activeConst, seasonFilter, lang } = appearanceRef.current;
       const sprite = new PIXI.Sprite(starTexture);
       sprite.anchor.set(0.5);
       sprite.position.set(xy.x, xy.y);
@@ -927,6 +961,8 @@ export default function ConstellationMapFullscreenPixi({
 
       // Star size with inverse-scaling applied directly at creation
       const r = dotRadius(s[3]);
+      sprite.constellation = s[6];
+      sprite.magnitude = s[3];
       sprite.starRadius = r; // Cache base radius
       sprite.scale.set(r / (10 * z)); // Screen-space size remains strictly equal to r * 2
       
@@ -1002,117 +1038,137 @@ export default function ConstellationMapFullscreenPixi({
       } else {
         containers[4].addChild(sprite);
       }
-    });
+      return sprite;
+    };
+    renderStarsRef.current = () => {
+      const zoom = zoomRef.current;
+      const padding = 18 / zoom;
+      const left = cx - world.x / zoom;
+      const top = cy - world.y / zoom;
+      const cutoff = zoom > 10 ? 10.5 : zoom > 5 ? 8.5 : zoom > 2.8 ? 7.5 : zoom > 1.5 ? 6.5 : 5;
+      const visible = querySkyStars(starIndexRef.current, {
+        left: left - padding, top: top - padding,
+        right: left + app.screen.width / zoom + padding,
+        bottom: top + app.screen.height / zoom + padding
+      }, cutoff);
+      const keep = new Set();
+      for (const point of visible) {
+        const id = point.star[0];
+        keep.add(id);
+        let sprite = liveSprites.get(id);
+        if (!sprite) {
+          sprite = createStarSprite(point);
+          liveSprites.set(id, sprite);
+        }
+        sprite.position.set(point.x, point.y);
+        sprite.scale.set(sprite.starRadius / (10 * zoom));
+      }
+      for (const [id, sprite] of liveSprites) {
+        if (!keep.has(id)) {
+          sprite.parent.removeChild(sprite);
+          sprite.destroy();
+          liveSprites.delete(id);
+        }
+      }
+    };
+    refreshViewRef.current?.();
 
     // --- 2. Draw Constellations ---
-    fetch("/data/celestial_data.json")
-      .then((res) => res.json())
-      .then((jsonData) => {
-        if (!jsonData || !jsonData.constellations) return;
-        constellationsDataRef.current = jsonData.constellations;
+    constellationsDataRef.current.forEach((c) => {
+      const centerLoc = raDecToAltAz(c.ra, c.dec, latLon.lat, latLon.lon, currentTime);
+      if (centerLoc.alt <= -12) return;
 
-        jsonData.constellations.forEach((c) => {
-          const centerLoc = raDecToAltAz(c.ra, c.dec, latLon.lat, latLon.lon, currentTime);
-          if (centerLoc.alt <= -12) return;
+      const xyCenter = altAzToXY(centerLoc.alt, centerLoc.az, cx, cy, rHor);
+      const details = getConstellationDetails(c.id, lang);
+      const isSeason = seasonFilter ? details.seasonKey === seasonFilter : false;
+      const isActive = activeConst === c.id;
 
-          const xyCenter = altAzToXY(centerLoc.alt, centerLoc.az, cx, cy, rHor);
-          const details = getConstellationDetails(c.id, lang);
-          const isSeason = seasonFilter ? details.seasonKey === seasonFilter : false;
-          const isActive = activeConst === c.id;
+      // Draw lines matching mini-map active/season colors
+      let lColor = 0x415b77;
+      let lAlpha = 0.35;
+      let lWidth = 1.1 / z;
 
-          // Draw lines matching mini-map active/season colors
-          let lColor = 0x415b77;
-          let lAlpha = 0.35;
-          let lWidth = 1.1 / z;
+      if (isActive) {
+        lColor = 0x4fd1c5; // Teal active lines
+        lAlpha = 1.0;
+        lWidth = 1.8 / z;
+      } else if (isSeason) {
+        lColor = 0xe8b94d; // Yellow-gold in-season lines
+        lAlpha = 0.45;
+      }
 
-          if (isActive) {
-            lColor = 0x4fd1c5; // Teal active lines
-            lAlpha = 1.0;
-            lWidth = 1.8 / z;
-          } else if (isSeason) {
-            lColor = 0xe8b94d; // Yellow-gold in-season lines
-            lAlpha = 0.45;
+      linesGraphics.lineStyle({
+        width: lWidth,
+        color: lColor,
+        alpha: lAlpha
+      });
+
+      c.lines.forEach((line) => {
+        line.forEach((pt, idx) => {
+          const ptLoc = raDecToAltAz(pt[0], pt[1], latLon.lat, latLon.lon, currentTime);
+          const xyPt = altAzToXY(ptLoc.alt, ptLoc.az, cx, cy, rHor);
+          if (idx === 0) {
+            linesGraphics.moveTo(xyPt.x, xyPt.y);
+          } else {
+            linesGraphics.lineTo(xyPt.x, xyPt.y);
           }
-
-          linesGraphics.lineStyle({
-            width: lWidth,
-            color: lColor,
-            alpha: lAlpha
-          });
-          
-          c.lines.forEach((line) => {
-            line.forEach((pt, idx) => {
-              const ptLoc = raDecToAltAz(pt[0], pt[1], latLon.lat, latLon.lon, currentTime);
-              const xyPt = altAzToXY(ptLoc.alt, ptLoc.az, cx, cy, rHor);
-              if (idx === 0) {
-                linesGraphics.moveTo(xyPt.x, xyPt.y);
-              } else {
-                linesGraphics.lineTo(xyPt.x, xyPt.y);
-              }
-            });
-          });
-
-          const labelText = lang === "en" ? c.name : c.uk;
-
-          // Label text style matching mini-map active/season colors
-          let labelColor = 0x8a99ad;
-          if (isActive) {
-            labelColor = 0x4fd1c5;
-          } else if (isSeason) {
-            labelColor = 0xffc873;
-          }
-
-          const style = new PIXI.TextStyle({
-            fontFamily: "var(--font-body)",
-            fontSize: 10 / z,
-            fill: labelColor,
-            fontWeight: isActive ? "600" : "normal",
-            align: "center"
-          });
-          const textNode = new PIXI.Text(labelText, style);
-          textNode.anchor.set(0.5);
-          textNode.position.set(xyCenter.x, xyCenter.y);
-          
-          // Make label clickable to select constellation
-          textNode.eventMode = "static";
-          textNode.cursor = "pointer";
-          textNode.on("pointertap", (e) => {
-            if (movedRef.current) return; // pan/drag gesture, not a real tap
-            e.stopPropagation();
-            spriteTapRef.current = true; // selection tap — suppress double-tap zoom
-            setActiveConst(c.id);
-            setSelectedObj({
-              type: "constellation",
-              id: c.id,
-              name: lang === "en" ? c.name : c.uk,
-              la: c.la,
-              ra: c.ra,
-              dec: c.dec,
-              alt: centerLoc.alt,
-              az: centerLoc.az,
-              star: details.star,
-              season: details.season,
-              myth: details.myth
-            });
-          });
-
-          labelsContainer.addChild(textNode);
-          constLabelsRef.current.push({ node: textNode, alt: centerLoc.alt, az: centerLoc.az });
         });
+      });
 
-        // Data arrived after the initial layout — if gyro mode is already on,
-        // re-project these freshly created labels/lines onto the current
-        // boresight immediately instead of flashing at their zenith-centered spots.
-        if (gyroActiveRef.current && reprojectAllRef.current) {
-          reprojectAllRef.current(boresightRef.current);
-        }
-      })
-      .catch((err) => console.error("Failed to load constellations metadata:", err));
+      const labelText = lang === "en" ? c.name : c.uk;
+
+      // Label text style matching mini-map active/season colors
+      let labelColor = 0x8a99ad;
+      if (isActive) {
+        labelColor = 0x4fd1c5;
+      } else if (isSeason) {
+        labelColor = 0xffc873;
+      }
+
+      const style = new PIXI.TextStyle({
+        fontFamily: "var(--font-body)",
+        fontSize: 10,
+        fill: labelColor,
+        fontWeight: isActive ? "600" : "normal",
+        align: "center"
+      });
+      const textNode = new PIXI.Text(labelText, style);
+      textNode.anchor.set(0.5);
+      textNode.constellation = c.id;
+      textNode.scale.set(1 / z);
+      textNode.position.set(xyCenter.x, xyCenter.y);
+
+      // Make label clickable to select constellation
+      textNode.eventMode = "static";
+      textNode.cursor = "pointer";
+      textNode.on("pointertap", (e) => {
+        if (movedRef.current) return; // pan/drag gesture, not a real tap
+        e.stopPropagation();
+        spriteTapRef.current = true; // selection tap — suppress double-tap zoom
+        setActiveConst(c.id);
+        setSelectedObj({
+          type: "constellation",
+          id: c.id,
+          name: lang === "en" ? c.name : c.uk,
+          la: c.la,
+          ra: c.ra,
+          dec: c.dec,
+          alt: centerLoc.alt,
+          az: centerLoc.az,
+          star: details.star,
+          season: details.season,
+          myth: details.myth
+        });
+      });
+
+      labelsContainer.addChild(textNode);
+      constLabelsRef.current.push({ node: textNode, alt: centerLoc.alt, az: centerLoc.az });
+    });
 
     // --- 3. Draw Cardinal & Coordinate grid labels (matching mini-map labels) ---
     const cardinalStyle = new PIXI.TextStyle({
       fontFamily: "var(--font-mono)",
-      fontSize: 13 / z,
+      fontSize: 13,
       fill: 0x8a99ad,
       alpha: 0.5,
       align: "center"
@@ -1132,23 +1188,23 @@ export default function ConstellationMapFullscreenPixi({
     labelsContainer.addChild(textS);
     cardinalLabelsRef.current.push({ node: textS, alt: 0, az: 180 });
 
-    // E
+    // East is at azimuth 90°, on the right of this projection.
     const textE = new PIXI.Text("E", cardinalStyle);
-    textE.anchor.set(1, 0.5);
-    textE.position.set(cx - rHor - 8, cy);
+    textE.anchor.set(0, 0.5);
+    textE.position.set(cx + rHor + 8, cy);
     labelsContainer.addChild(textE);
     cardinalLabelsRef.current.push({ node: textE, alt: 0, az: 90 });
 
     // W
     const textW = new PIXI.Text("W", cardinalStyle);
-    textW.anchor.set(0, 0.5);
-    textW.position.set(cx + rHor + 8, cy);
+    textW.anchor.set(1, 0.5);
+    textW.position.set(cx - rHor - 8, cy);
     labelsContainer.addChild(textW);
     cardinalLabelsRef.current.push({ node: textW, alt: 0, az: 270 });
 
     const ringStyle = new PIXI.TextStyle({
       fontFamily: "var(--font-mono)",
-      fontSize: 10 / z,
+      fontSize: 10,
       fill: 0x8a99ad,
       alpha: 0.5,
       align: "center"
@@ -1315,14 +1371,32 @@ export default function ConstellationMapFullscreenPixi({
       objectsContainer.addChild(galContainer);
     });
 
-    // Stars/planets/galaxies/cardinal labels above were just recreated at their
-    // zenith-centered positions — if gyro mode is already on, immediately
-    // re-project them onto the current boresight (constellation lines/labels
-    // get the same treatment once their async fetch resolves, above).
+    labelsContainer.children.forEach(child => child.scale.set(1 / z));
+    // Newly created objects must use the current boresight in gyro mode.
     if (gyroActiveRef.current && reprojectAllRef.current) {
       reprojectAllRef.current(boresightRef.current);
     }
-  }, [celestialData, planetsData, galaxiesData, currentTime, seasonFilter, latLon, activeConst, lang, setActiveConst]);
+    return () => { renderStarsRef.current = null; };
+    // Selection changes only update tint below; never rebuild the catalog.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [celestialData, projectedStars, constellationData, planetsData, galaxiesData, currentTime, latLon, lang, setActiveConst, viewportVersion]);
+
+  useEffect(() => {
+    const tint = (id, bright = false) => {
+      if (id === activeConst) return bright ? 0xffffff : 0x4fd1c5;
+      return seasonFilter && getConstellationDetails(id, lang).seasonKey === seasonFilter ? 0xffc873 : 0xffffff;
+    };
+    starsContainersRef.current.forEach(container => container.children.forEach(sprite => {
+      sprite.tint = sprite.constellation ? tint(sprite.constellation, sprite.magnitude <= 2.2) : 0xffffff;
+    }));
+    constLabelsRef.current.forEach(({ node }) => {
+      const id = node.constellation;
+      node.style.fill = id === activeConst ? 0x4fd1c5 : seasonFilter && getConstellationDetails(id, lang).seasonKey === seasonFilter ? 0xffc873 : 0x8a99ad;
+      node.style.fontWeight = id === activeConst ? "600" : "normal";
+    });
+    drawConstellationLines(zoomRef.current, gyroActiveRef.current ? boresightRef.current : null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeConst, seasonFilter, lang]);
 
   // Highlight the tapped star/planet/galaxy with a ring on the sky itself (not
   // just the detail card). Constellations already get their own highlight via
@@ -1356,7 +1430,7 @@ export default function ConstellationMapFullscreenPixi({
     world.scale.set(nextZoom);
     world.position.set(window.innerWidth / 2 + panOffsetRef.current.x, window.innerHeight / 2 + panOffsetRef.current.y);
 
-    // Apply inverse scaling to elements during UI zoom events
+    redrawDomeRef.current?.(nextZoom);
     updateElementsScale(nextZoom);
   };
 
@@ -1368,7 +1442,7 @@ export default function ConstellationMapFullscreenPixi({
     world.scale.set(3.0);
     world.position.set(window.innerWidth / 2, window.innerHeight / 2);
 
-    // Apply base scale to elements
+    redrawDomeRef.current?.(3.0);
     updateElementsScale(3.0);
   };
 

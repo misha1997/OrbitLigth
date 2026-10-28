@@ -4,6 +4,15 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 
 const assets = [
+  ['pioneer10/models/pioneer10.glb', 'https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/3D%20Models/Pioneer%2010/Pioneer%2010.glb'],
+  // Pioneer 11 shares the basic spacecraft design; the page labels this as a Pioneer 10 model.
+  ['pioneer11/models/pioneer11.glb', 'https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/3D%20Models/Pioneer%2010/Pioneer%2010.glb'],
+  ['pioneer10/images/launch.jpg', 'https://www.nasa.gov/wp-content/uploads/2022/03/pioneer_10_launch_2.jpg'],
+  ['pioneer10/images/jupiter.jpg', 'https://www.nasa.gov/wp-content/uploads/2022/03/pioneer_10_launch_7_jupiter_europa_ganymede_composite.jpg'],
+  ['pioneer10/images/plaque.jpg', 'https://www.nasa.gov/wp-content/uploads/2022/03/pioneer_10_launch_9_plaque.jpg'],
+  ['pioneer11/images/saturn.jpg', 'https://www.nasa.gov/wp-content/uploads/2019/08/saturn_from_pioneer_11.jpg'],
+  ['pioneer11/images/jupiter.jpg', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/internal_resources/2551/Fuzzy_color_image_of_Jupiter.jpeg'],
+  ['pioneer11/images/trajectory.jpg', 'https://www.nasa.gov/wp-content/uploads/2019/08/pioneer_11_trajectory.jpg'],
   ['spitzer/models/spitzer.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/s/SPITZER.glb'],
   ['spitzer/images/helix.jpg', 'https://images-assets.nasa.gov/image/PIA09178/PIA09178~medium.jpg'],
   ['spitzer/images/orion.jpg', 'https://images-assets.nasa.gov/image/PIA13959/PIA13959~medium.jpg'],

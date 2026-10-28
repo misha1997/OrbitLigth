@@ -241,7 +241,9 @@
     "osirisrex": "OSIRIS-REx — Samples of Asteroid Bennu | OrbitLight",
     "gaia": "Gaia — Mapping the Milky Way in 3D | OrbitLight",
     "kepler": "Kepler / K2 — Worlds Hidden in Starlight | OrbitLight",
-    "spitzer": "Spitzer — The Infrared Universe | OrbitLight"
+    "spitzer": "Spitzer — The Infrared Universe | OrbitLight",
+    "pioneer10": "Pioneer 10 — The First Path to Jupiter | OrbitLight",
+    "pioneer11": "Pioneer 11 — First at Saturn | OrbitLight"
   },
   "seo": {
     "desc": {
@@ -294,7 +296,9 @@
       "osirisrex": "Explore OSIRIS-REx with a 3D spacecraft, interactive sample journey, Bennu science, capsule return, NASA imagery and the OSIRIS-APEX extension.",
       "gaia": "Explore Gaia with an interactive parallax experiment, star-map layers, a schematic 3D spacecraft, instruments, ESA images and a mission quiz.",
       "kepler": "Explore Kepler and K2 with a 3D telescope, interactive transits and light curves, exoplanet discoveries, instruments, NASA images and a mission quiz.",
-      "spitzer": "Explore Spitzer with a 3D telescope, interactive thermal spectra, cold and warm mission phases, TRAPPIST-1, NASA nebula images and a quiz."
+      "spitzer": "Explore Spitzer with a 3D telescope, interactive thermal spectra, cold and warm mission phases, TRAPPIST-1, NASA nebula images and a quiz.",
+      "pioneer10": "Explore Pioneer 10: NASA 3D model, asteroid-belt crossing, Jupiter flyby, gravity-assist experiment, archival images and a quiz.",
+      "pioneer11": "Follow Pioneer 11 from Jupiter to Saturn: interactive route, gravity-assist experiment, historical images, instruments and mission milestones."
     }
   },
   "lang": {

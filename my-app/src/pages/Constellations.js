@@ -18,7 +18,9 @@ export default function Constellations() {
       {/* Hero section */}
       <section className="hero">
         <div className="wrap">
-          <div className="eyebrow">{t("constellations.hero.eyebrow") || "Інтерактивно · клікни на будь-яке сузір'я"}</div>
+          <div className="eyebrow">{t("constellations.hero.eyebrow", {
+            defaultValue: lang === "en" ? "Interactive · click on any constellation" : "Інтерактивно · клікни на будь-яке сузір'я"
+          })}</div>
           <h1 className="hero-title">
             {lang === "en" ? (
               <>Find <span className="accent">constellations</span><br />in the night sky</>

@@ -1,21 +1,15 @@
 // Interactive constellation / sky map.
 //
-// Self-contained: holds its own state (location, season, zoom, pan, hover) and
-// renders the geolocation panel + polar sky SVG + constellation picker pills.
-// Used twice from the Constellations page:
-//   1. inline (default) — the map card on the page,
-//   2. fullscreen=true — the same map in a fixed immersive overlay with a
-//      close button, opened from a ⛶ button on the page (mirrors the Jupiter
-//      moon-system fullscreen pattern).
-//
-// When fullscreen, an extra effect locks body scroll and closes on Escape.
-import { useEffect, useState, useMemo, useRef } from "react";
+// The inline SVG shares observer/season/selection state with a lazily loaded
+// Pixi fullscreen map. Keep hover updates separate from the memoized sky tree.
+import { useEffect, useState, useMemo, useRef, useCallback, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useLoc } from "../context/LocationContext";
 import { useLang } from "../context/LanguageContext";
 import { getConstellationDetails } from "../lib/constellation_details";
-import ConstellationMapFullscreenPixi from "./ConstellationMapFullscreenPixi";
+import { loadSkyCatalog } from "../lib/skyMapData";
 import "../styles/constellations.css";
+const ConstellationMapFullscreenPixi = lazy(() => import("./ConstellationMapFullscreenPixi"));
 
 const CX = 750;
 const CY = 280;
@@ -77,7 +71,7 @@ function dotRadius(mag) {
 
 // Coordinate formatters (Stellarium style)
 function formatRA(raDeg) {
-  const raHours = raDeg / 15;
+  const raHours = ((raDeg % 360) + 360) % 360 / 15;
   const h = Math.floor(raHours);
   const m = Math.floor((raHours - h) * 60);
   const s = Math.floor(((raHours - h) * 60 - m) * 60);
@@ -133,9 +127,11 @@ export default function ConstellationMap() {
   const { loc } = useLoc();
   const { lang } = useLang();
 
+  const [observer, setObserver] = useState(null);
   const latLon = useMemo(() => {
+    if (observer) return observer;
     return loc ? { lat: loc.lat, lon: loc.lon } : { lat: 50.45, lon: 30.52 };
-  }, [loc]);
+  }, [loc, observer]);
 
   // States
   const [data, setData] = useState(null);
@@ -153,7 +149,17 @@ export default function ConstellationMap() {
   // Pan & Zoom States (Zoom default 3.0, allow deep zoom up to 60.0)
   const [zoom, setZoom] = useState(3.0);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
+  const isDragging = useRef(false);
+  const viewRef = useRef({ zoom: 3, pan: { x: 0, y: 0 } });
+  const panFrameRef = useRef(null);
+  const movedRef = useRef(false);
+  const downRef = useRef(null);
+  const updateView = useCallback((nextZoom, pan) => {
+    viewRef.current = { zoom: nextZoom, pan };
+    setZoom(nextZoom);
+    setPanOffset(pan);
+  }, []);
+  useEffect(() => () => cancelAnimationFrame(panFrameRef.current), []);
 
   const svgRef = useRef(null);
   const dragStart = useRef({ x: 0, y: 0 });
@@ -175,16 +181,18 @@ export default function ConstellationMap() {
   // Load celestial data once
   useEffect(() => {
     setLoading(true);
-    fetch("/data/celestial_data.json")
-      .then((res) => res.json())
+    let cancelled = false;
+    loadSkyCatalog("/data/celestial_data.json")
       .then((jsonData) => {
+        if (cancelled) return;
         setData(jsonData);
         setLoading(false);
       })
       .catch((err) => {
         console.error("Failed to load celestial data:", err);
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       });
+    return () => { cancelled = true; };
   }, []);
 
   // Set up wheel event listener with passive: false to prevent browser default page scrolling
@@ -199,14 +207,12 @@ export default function ConstellationMap() {
       const Ay = (e.clientY - rect.top) * (560 / rect.height);
       const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
 
-      setZoom((prevZoom) => {
-        const nextZoom = Math.max(1.0, Math.min(60.0, prevZoom * zoomFactor));
-        const ratio = 1 - nextZoom / prevZoom;
-        setPanOffset((prevPan) => ({
-          x: prevPan.x + (Ax - CX - prevPan.x) * ratio,
-          y: prevPan.y + (Ay - CY - prevPan.y) * ratio
-        }));
-        return nextZoom;
+      const { zoom: prevZoom, pan } = viewRef.current;
+      const nextZoom = Math.max(1, Math.min(60, prevZoom * zoomFactor));
+      const ratio = 1 - nextZoom / prevZoom;
+      updateView(nextZoom, {
+        x: pan.x + (Ax - CX - pan.x) * ratio,
+        y: pan.y + (Ay - CY - pan.y) * ratio
       });
     };
 
@@ -214,7 +220,7 @@ export default function ConstellationMap() {
     return () => {
       svg.removeEventListener("wheel", handleWheel);
     };
-  }, [loading, showFs]);
+  }, [loading, showFs, updateView]);
 
   // Update live clock every minute when no season override is selected
   useEffect(() => {
@@ -315,8 +321,21 @@ export default function ConstellationMap() {
 
   // Filter stars/constellations around the horizon to avoid space clutter
   const visibleStars = useMemo(() => {
-    return projectedSky.stars.filter((s) => s.alt > -12 && s.mag <= magCutoff);
-  }, [projectedSky.stars, magCutoff]);
+    return projectedSky.stars.filter((s) => {
+      const x = CX + (s.x - CX) * zoom + panOffset.x;
+      const y = CY + (s.y - CY) * zoom + panOffset.y;
+      return s.alt > -12 && s.mag <= magCutoff && x >= -15 && x <= 1515 && y >= -15 && y <= 575;
+    });
+  }, [projectedSky.stars, magCutoff, zoom, panOffset]);
+
+  const starsByConstellation = useMemo(() => {
+    const groups = new Map();
+    for (const star of visibleStars) {
+      if (!groups.has(star.const)) groups.set(star.const, []);
+      groups.get(star.const).push(star);
+    }
+    return groups;
+  }, [visibleStars]);
 
   const visibleConstellations = useMemo(() => {
     return projectedSky.constellations.filter((c) => c.alt > -12);
@@ -336,15 +355,8 @@ export default function ConstellationMap() {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        // Automatically determine season based on location hemisphere and current month
-        const month = new Date().getMonth();
-        const seasonsNorth = ["winter", "winter", "spring", "spring", "spring", "summer", "summer", "summer", "autumn", "autumn", "autumn", "winter"];
-        let sk = seasonsNorth[month];
-        if (lat < 0) {
-          const flip = { winter: "summer", summer: "winter", spring: "autumn", autumn: "spring" };
-          sk = flip[sk];
-        }
-        setSeasonFilter(sk);
+        setObserver({ lat, lon });
+        setSeasonFilter(null); // Geolocation shows the actual sky at the current time.
 
         const hemi = lat >= 0 ? (lang === "en" ? "Northern" : "північній") : (lang === "en" ? "Southern" : "південній");
         setGeoInfo({
@@ -370,75 +382,52 @@ export default function ConstellationMap() {
     setSeasonFilter(seasonFilter === s ? null : s);
   };
 
-  // Drag-to-pan pointer handlers (supports touch + mouse)
-  const handlePointerDown = (e) => {
-    setIsDragging(true);
-    try {
-      e.target.setPointerCapture(e.pointerId);
-    } catch (err) {}
-    dragStart.current = {
-      x: e.clientX - panOffset.x,
-      y: e.clientY - panOffset.y
-    };
-  };
-
-  const handlePointerMoveMap = (e) => {
-    if (!isDragging) return;
-    setPanOffset({
-      x: e.clientX - dragStart.current.x,
-      y: e.clientY - dragStart.current.y
-    });
-  };
-
-  const handlePointerUp = (e) => {
-    if (isDragging) {
-      try {
-        e.target.releasePointerCapture(e.pointerId);
-      } catch (err) {}
-      setIsDragging(false);
-    }
-  };
-
-  const handleResetView = () => {
-    setZoom(3.0);
-    setPanOffset({ x: 0, y: 0 });
-  };
-
-  const handleZoomIn = () => {
-    setZoom((prev) => {
-      const next = Math.min(60.0, prev * 1.3);
-      setPanOffset((prevPan) => ({
-        x: prevPan.x * (next / prev),
-        y: prevPan.y * (next / prev)
-      }));
-      return next;
-    });
-  };
-
-  const handleZoomOut = () => {
-    setZoom((prev) => {
-      const next = Math.max(1.0, prev * 0.75);
-      setPanOffset((prevPan) => ({
-        x: prevPan.x * (next / prev),
-        y: prevPan.y * (next / prev)
-      }));
-      return next;
-    });
-  };
-
-  // Handle mouse movements for tooltip positioning
-  const handleMouseMoveTooltip = (e, type, obj) => {
-    setHoveredObj({
-      type,
-      data: obj,
-      x: e.clientX + 15,
-      y: e.clientY + 15
-    });
-  };
-
-  const handleMouseLeaveTooltip = () => {
+  // Pointer coordinates must be converted from CSS pixels to the SVG viewBox.
+  const handlePointerDown = useCallback((e) => {
+    if (e.button != null && e.button !== 0) return;
+    isDragging.current = true;
+    movedRef.current = false;
+    downRef.current = { x: e.clientX, y: e.clientY };
     setHoveredObj(null);
+    const rect = e.currentTarget.getBoundingClientRect();
+    dragStart.current = { x: e.clientX, y: e.clientY, pan: viewRef.current.pan, sx: 1500 / rect.width, sy: 560 / rect.height };
+  }, []);
+
+  const handlePointerMoveMap = useCallback((e) => {
+    if (!isDragging.current) return;
+    const start = dragStart.current;
+    movedRef.current ||= Math.hypot(e.clientX - downRef.current.x, e.clientY - downRef.current.y) > 6;
+    if (movedRef.current && !e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+    }
+    viewRef.current.pan = { x: start.pan.x + (e.clientX - start.x) * start.sx, y: start.pan.y + (e.clientY - start.y) * start.sy };
+    if (panFrameRef.current == null) {
+      panFrameRef.current = requestAnimationFrame(() => {
+        panFrameRef.current = null;
+        setPanOffset(viewRef.current.pan);
+      });
+    }
+  }, []);
+
+  const handlePointerUp = useCallback((e) => {
+    isDragging.current = false;
+    if (e.currentTarget.hasPointerCapture?.(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+  }, []);
+
+  const handleResetView = () => updateView(3, { x: 0, y: 0 });
+  const changeZoom = factor => {
+    const { zoom: previous, pan } = viewRef.current;
+    const next = Math.max(1, Math.min(60, previous * factor));
+    updateView(next, { x: pan.x * next / previous, y: pan.y * next / previous });
   };
+  const handleZoomIn = () => changeZoom(1.3);
+  const handleZoomOut = () => changeZoom(0.75);
+
+  const handleMouseMoveTooltip = useCallback((e, type, obj) => {
+    if (isDragging.current) return;
+    setHoveredObj({ type, data: obj, x: e.clientX + 15, y: e.clientY + 15 });
+  }, []);
+  const handleMouseLeaveTooltip = useCallback(() => setHoveredObj(null), []);
 
   // Constellation pills list
   const popularConstList = [
@@ -497,7 +486,7 @@ export default function ConstellationMap() {
       {hoveredObj.type === "const" ? (
         <>
           <div className="tt-name" style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.15)", paddingBottom: 6, marginBottom: 6 }}>
-            {hoveredObj.data.uk} ({hoveredObj.data.la})
+            {lang === "en" ? hoveredObj.data.name : hoveredObj.data.uk} ({hoveredObj.data.la})
           </div>
           <div className="tt-sub" style={{ marginBottom: 4 }}>
             {lang === "en" ? "Brightest: " : "Найяскравіша: "} <strong>{hoveredObj.data.details.star}</strong> · {hoveredObj.data.details.season}
@@ -590,7 +579,7 @@ export default function ConstellationMap() {
   );
 
   // The polar sky SVG (or the loading placeholder).
-  const mapSvgBlock = loading ? (
+  const mapSvgBlock = useMemo(() => loading ? (
     <div className="const-map-loading">
       <div className="k">{t("common.loading") || "Завантаження зоряного каталогу..."}</div>
     </div>
@@ -623,19 +612,19 @@ export default function ConstellationMap() {
         {/* Cardinal Direction Labels */}
         <text className="sky-axis" x={CX} y={CY - R_HOR - 8} textAnchor="middle" style={{ fontSize: (13 / zoom).toFixed(2) }}>N</text>
         <text className="sky-axis" x={CX} y={CY + R_HOR + 16} textAnchor="middle" style={{ fontSize: (13 / zoom).toFixed(2) }}>S</text>
-        <text className="sky-axis" x={CX - R_HOR - 8} y={CY + 4} textAnchor="end" style={{ fontSize: (13 / zoom).toFixed(2) }}>E</text>
-        <text className="sky-axis" x={CX + R_HOR + 8} y={CY + 4} textAnchor="start" style={{ fontSize: (13 / zoom).toFixed(2) }}>W</text>
+        <text className="sky-axis" x={CX - R_HOR - 8} y={CY + 4} textAnchor="end" style={{ fontSize: (13 / zoom).toFixed(2) }}>W</text>
+        <text className="sky-axis" x={CX + R_HOR + 8} y={CY + 4} textAnchor="start" style={{ fontSize: (13 / zoom).toFixed(2) }}>E</text>
         <text className="sky-axis" x={CX} y={CY - 174} textAnchor="middle" style={{ fontSize: (10 / zoom).toFixed(2) }}>30°</text>
         <text className="sky-axis" x={CX} y={CY - 94} textAnchor="middle" style={{ fontSize: (10 / zoom).toFixed(2) }}>60°</text>
         <text className="sky-axis" x={CX} y={CY - 14} textAnchor="middle" style={{ fontSize: (10 / zoom).toFixed(2) }}>{lang === "en" ? "Zenith" : "Зеніт"}</text>
 
         {/* Background Stars with hit area to easily hover every single star */}
         {visibleStars
-          .filter((s) => !s.const || s.mag > 4.0)
+          .filter((s) => !visibleConstellations.some(c => c.id === s.const))
           .map((s) => (
             <g key={`star-${s.id}`}>
               <circle
-                className="bg-star twinkle"
+                className="bg-star"
                 cx={s.x.toFixed(1)} cy={s.y.toFixed(1)} r={(dotRadius(s.mag) / zoom).toFixed(2)}
                 opacity={s.alt >= 0 ? (0.22 + (5.5 - s.mag) * 0.12).toFixed(2) : 0.08}
                 style={{ animationDelay: `${(s.id % 20) * 0.2}s` }}
@@ -657,7 +646,7 @@ export default function ConstellationMap() {
             <g
               key={`const-group-${c.id}`}
               className={`const-group ${isActive ? "active" : ""} ${isInSeason ? "in-season" : ""}`}
-              onClick={() => setActiveConst(c.id)}
+              onClick={() => { if (!movedRef.current) setActiveConst(c.id); }}
               onMouseMove={(e) => handleMouseMoveTooltip(e, "const", c)}
               onMouseLeave={handleMouseLeaveTooltip}
               opacity={c.alt >= 0 ? 1 : 0.4}
@@ -670,8 +659,7 @@ export default function ConstellationMap() {
                   d={`M ${line.map((pt) => `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`).join(" L ")}`}
                 />
               ))}
-              {visibleStars
-                .filter((s) => s.const === c.id)
+              {(starsByConstellation.get(c.id) || [])
                 .map((s) => (
                   <g key={`major-star-${s.id}`}>
                     <circle
@@ -686,7 +674,7 @@ export default function ConstellationMap() {
                     />
                   </g>
                 ))}
-              {c.x && c.y && (
+              {Number.isFinite(c.x) && Number.isFinite(c.y) && (
                 <text className="const-label" x={c.x.toFixed(1)} y={c.y.toFixed(1)} style={{ fontSize: (10.5 / zoom).toFixed(2) }}>
                   {lang === "en" ? c.name : c.uk}
                 </text>
@@ -696,7 +684,7 @@ export default function ConstellationMap() {
         })}
       </g>
     </svg>
-  );
+  ), [loading, t, panOffset, zoom, lang, visibleStars, visibleConstellations, starsByConstellation, activeConst, handlePointerDown, handlePointerMoveMap, handlePointerUp, handleMouseMoveTooltip, handleMouseLeaveTooltip]);
 
   const captionNode = (
     <p className="const-map-caption">
@@ -774,10 +762,12 @@ export default function ConstellationMap() {
   // --- fullscreen overlay (map fills screen + floating controls, like jms) ---
   if (showFs) {
     return (
+      <Suspense fallback={<div className="const-map-loading">{t("common.loading")}</div>}>
       <ConstellationMapFullscreenPixi
         onClose={() => setShowFs(false)}
         activeConst={activeConst}
         setActiveConst={setActiveConst}
+        constellationData={data}
         currentTime={currentTime}
         latLon={latLon}
         seasonFilter={seasonFilter}
@@ -786,6 +776,7 @@ export default function ConstellationMap() {
         geoControlsCompact={geoControlsCompact}
         pillsInner={pillsInner}
       />
+      </Suspense>
     );
   }
 
