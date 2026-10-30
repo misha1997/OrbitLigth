@@ -1,0 +1,245 @@
+{
+  "checked": "2026-10-28",
+  "ui": {
+    "uk": {
+      "directory": "Довідник сузір’їв",
+      "directoryIntro": "Вісім маршрутів для першого знайомства з небом: від впізнаваної фігури до зір і об’єктів для спостереження.",
+      "read": "Як знайти на небі",
+      "map": "Знайти на карті",
+      "all": "Усі сузір’я",
+      "home": "Головна",
+      "find": "Як знайти",
+      "when": "Коли й звідки спостерігати",
+      "stars": "Яскраві зорі",
+      "targets": "Що ще подивитися",
+      "story": "Історія та міфологія",
+      "sources": "Джерела й дані",
+      "related": "Досліджуй далі",
+      "name": "Зоря",
+      "mag": "Видима величина",
+      "hip": "Каталог HIP",
+      "checked": "Перевірено",
+      "north": "Північ угорі · схід ліворуч · J2000",
+      "chart": "Схема сузір’я",
+      "chartNote": "Схематичний зоряний малюнок, а не поточний вигляд над горизонтом. Лінії допомагають упізнати фігуру й не є офіційними межами сузір’я.",
+      "magNote": "Менша зоряна величина означає яскравішу зорю. Значення приблизні; блиск змінних зір може відрізнятися від каталогу.",
+      "latitudeNote": "Поради стосуються передусім України та середніх північних широт. Сезон описує зручність вечірніх спостережень, а не гарантує видимість у будь-який момент.",
+      "dark": "Знайти темне місце",
+      "meteors": "Метеорні потоки",
+      "galaxies": "Довідник галактик",
+      "editorial": "Матеріал OrbitLight за наведеними джерелами. Зоряні координати й блиск — каталог HYG; схема — OrbitLight.",
+      "hero": "Впізнай сузір’я на нічному небі",
+      "heroIntro": "Досліджуй 88 сузір’їв на інтерактивній карті зоряного неба. Обери місце спостереження й сезон або почни з восьми довідкових сторінок.",
+      "js": "Інтерактивна карта працює з JavaScript. Довідник і схеми нижче доступні без нього."
+    },
+    "en": {
+      "directory": "Constellation field guides",
+      "directoryIntro": "Eight starting points for exploring the sky: recognise the pattern, identify its stars and choose an observing target.",
+      "read": "How to find it",
+      "map": "Find on the map",
+      "all": "All constellations",
+      "home": "Home",
+      "find": "How to find it",
+      "when": "When and where to observe",
+      "stars": "Bright stars",
+      "targets": "More observing targets",
+      "story": "History and mythology",
+      "sources": "Sources and data",
+      "related": "Explore next",
+      "name": "Star",
+      "mag": "Apparent magnitude",
+      "hip": "HIP catalogue",
+      "checked": "Checked",
+      "north": "North up · east left · J2000",
+      "chart": "Constellation finder chart",
+      "chartNote": "A schematic star pattern, not the current horizon view. Connecting lines help identify the figure and do not represent official constellation boundaries.",
+      "magNote": "A smaller magnitude means a brighter star. Values are approximate; variable stars may differ from the catalogue.",
+      "latitudeNote": "Advice primarily covers Ukraine and mid-northern latitudes. The season describes convenient evening viewing, rather than guaranteed visibility at every moment.",
+      "dark": "Find darker skies",
+      "meteors": "Meteor showers",
+      "galaxies": "Galaxy guides",
+      "editorial": "An OrbitLight guide based on the sources below. Star positions and magnitudes: HYG catalogue; diagram: OrbitLight.",
+      "hero": "Find constellations in the night sky",
+      "heroIntro": "Explore 88 constellations on an interactive night sky map. Choose your observing location and season, or start with eight illustrated field guides.",
+      "js": "The interactive map needs JavaScript. The field guides and charts below remain available without it."
+    }
+  },
+  "items": [
+    {
+      "id": "UMa",
+      "slug": "ursa-major",
+      "latin": "Ursa Major",
+      "seasonKey": "spring",
+      "uk": {
+        "name": "Велика Ведмедиця",
+        "title": "Сузір’я Велика Ведмедиця — як знайти на небі | OrbitLight",
+        "description": "Як знайти Велику Ведмедицю та Полярну зорю: схема Ковша, сезон спостережень, яскраві зорі, Міцар і Алькор та галактика M81.",
+        "lead": "Сім зір Великого Ковша — зручна перша сходинка до знайомства з північним небом. Але Ківш є лише частиною значно більшого сузір’я Великої Ведмедиці.",
+        "season": "Весняні вечори; Ківш доступний і в інші пори року",
+        "image": "/constellations/ursa-major-uk.png"
+      },
+      "en": {
+        "name": "Ursa Major",
+        "title": "Ursa Major Constellation: How to Find It | OrbitLight",
+        "description": "Find Ursa Major and Polaris with a Big Dipper chart, observing tips, bright stars, Mizar and Alcor, and the galaxy M81.",
+        "lead": "The seven stars of the Big Dipper are a practical starting point for exploring the northern sky. The Dipper itself is only part of the much larger constellation Ursa Major.",
+        "season": "Spring evenings; the Dipper is also visible in other seasons",
+        "image": "/constellations/ursa-major-en.png"
+      }
+    },
+    {
+      "id": "Cas",
+      "slug": "cassiopeia",
+      "latin": "Cassiopeia",
+      "seasonKey": "autumn",
+      "uk": {
+        "name": "Кассіопея",
+        "title": "Сузір’я Кассіопея — як знайти на небі | OrbitLight",
+        "description": "Кассіопея на небі: як упізнати п’ять зір літери W, коли спостерігати сузір’я та як використати його для знайомства з північним небом.",
+        "lead": "Кассіопею легко впізнати за зигзагом із п’яти зір. Залежно від положення над горизонтом він нагадує літеру W, M або нахилену корону.",
+        "season": "Осінні та зимові вечори",
+        "image": "/constellations/cassiopeia-uk.png"
+      },
+      "en": {
+        "name": "Cassiopeia",
+        "title": "Cassiopeia Constellation: How to Find It | OrbitLight",
+        "description": "Recognise Cassiopeia’s five-star W, find the constellation in the northern sky and choose a useful season for your first observations.",
+        "lead": "Cassiopeia is recognised by a zigzag of five stars. Depending on its orientation above the horizon, the pattern looks like a W, an M or a tilted crown.",
+        "season": "Autumn and winter evenings",
+        "image": "/constellations/cassiopeia-en.png"
+      }
+    },
+    {
+      "id": "Ori",
+      "slug": "orion",
+      "latin": "Orion",
+      "seasonKey": "winter",
+      "uk": {
+        "name": "Оріон",
+        "title": "Сузір’я Оріон — як знайти на небі | OrbitLight",
+        "description": "Як знайти сузір’я Оріона: зорі Пояса, Бетельгейзе й Рігель, зимова видимість в Україні та спостереження туманності Оріона M42.",
+        "lead": "Три зорі Пояса роблять Оріон одним із найзручніших сузір’їв для першого знайомства із зимовим небом. Яскраві кутові зорі оточують Пояс, а нижче видно ділянку Меча.",
+        "season": "Зимові вечори; наприкінці осені — пізніше вночі",
+        "image": "/constellations/orion-uk.png"
+      },
+      "en": {
+        "name": "Orion",
+        "title": "Orion Constellation: How to Find It | OrbitLight",
+        "description": "Find Orion’s Belt, Betelgeuse and Rigel, choose a winter observing evening and discover the Orion Nebula, M42, below the Belt.",
+        "lead": "The three stars of the Belt make Orion an approachable introduction to winter skies. Bright corner stars surround the Belt, while the Sword lies below it in the familiar northern view.",
+        "season": "Winter evenings; late at night in late autumn",
+        "image": "/constellations/orion-en.png"
+      }
+    },
+    {
+      "id": "Cyg",
+      "slug": "cygnus",
+      "latin": "Cygnus",
+      "seasonKey": "summer",
+      "uk": {
+        "name": "Лебідь",
+        "title": "Сузір’я Лебідь — як знайти на небі | OrbitLight",
+        "description": "Сузір’я Лебедя: як знайти Денеб, Північний Хрест та Альбірео, коли спостерігати Чумацький Шлях і що видно в бінокль.",
+        "lead": "Лебідь простягається вздовж смуги Чумацького Шляху. Його яскраві зорі утворюють Північний Хрест, а Денеб позначає один із кутів великого Літнього Трикутника.",
+        "season": "Літні та ранні осінні вечори",
+        "image": "/constellations/cygnus-uk.png"
+      },
+      "en": {
+        "name": "Cygnus",
+        "title": "Cygnus Constellation: How to Find It | OrbitLight",
+        "description": "Find Cygnus, Deneb, the Northern Cross and Albireo, then explore summer Milky Way star fields with binoculars or a small telescope.",
+        "lead": "Cygnus stretches along the Milky Way. Its bright stars form the Northern Cross, while Deneb marks one corner of the larger Summer Triangle.",
+        "season": "Summer and early autumn evenings",
+        "image": "/constellations/cygnus-en.png"
+      }
+    },
+    {
+      "id": "Leo",
+      "slug": "leo",
+      "latin": "Leo",
+      "seasonKey": "spring",
+      "uk": {
+        "name": "Лев",
+        "title": "Сузір’я Лев — як знайти на небі | OrbitLight",
+        "description": "Як знайти сузір’я Лева навесні: Регул, Серп і Денебола, зорі на схемі, подвійна Альджеба та галактики Левового Триплета.",
+        "lead": "Лева впізнають за Серпом — фігурою, схожою на перевернутий знак питання. Регул стоїть біля його основи, а трикутник з Денеболою окреслює задню частину небесного лева.",
+        "season": "Весняні вечори, особливо березень — травень",
+        "image": "/constellations/leo-uk.png"
+      },
+      "en": {
+        "name": "Leo",
+        "title": "Leo Constellation: How to Find It | OrbitLight",
+        "description": "Find Leo in spring with Regulus, the Sickle and Denebola, then explore the double star Algieba and the galaxies of the Leo Triplet.",
+        "lead": "Leo is recognised by the Sickle, a pattern resembling a reversed question mark. Regulus marks its base, while a triangle ending at Denebola outlines the lion’s hindquarters.",
+        "season": "Spring evenings, especially March to May",
+        "image": "/constellations/leo-en.png"
+      }
+    },
+    {
+      "id": "Sco",
+      "slug": "scorpius",
+      "latin": "Scorpius",
+      "seasonKey": "summer",
+      "uk": {
+        "name": "Скорпіон",
+        "title": "Сузір’я Скорпіон — як знайти на небі | OrbitLight",
+        "description": "Як побачити Скорпіона й Антарес з України: літня видимість, обмеження південного горизонту, схема та кульове скупчення M4.",
+        "lead": "Антарес і вигнута зоряна фігура роблять Скорпіона виразним сузір’ям південного неба. Для спостерігача в Україні головна складність — низьке положення, а не пошук великої кількості слабких зір.",
+        "season": "Короткі літні ночі; потрібен відкритий південний горизонт",
+        "image": "/constellations/scorpius-uk.png"
+      },
+      "en": {
+        "name": "Scorpius",
+        "title": "Scorpius Constellation: How to Find It | OrbitLight",
+        "description": "Observe Scorpius and Antares from Ukraine: summer timing, southern-horizon limits, a finder chart and the globular cluster M4.",
+        "lead": "Antares and a curved star pattern make Scorpius a distinctive southern constellation. For an observer in Ukraine, its low altitude is the main challenge, rather than the need to find many faint stars.",
+        "season": "Short summer nights; an open southern horizon is essential",
+        "image": "/constellations/scorpius-en.png"
+      }
+    },
+    {
+      "id": "Lyr",
+      "slug": "lyra",
+      "latin": "Lyra",
+      "seasonKey": "summer",
+      "uk": {
+        "name": "Ліра",
+        "title": "Сузір’я Ліра — як знайти на небі | OrbitLight",
+        "description": "Знайди Ліру за яскравою Вегою: схема сузір’я, літня видимість, Подвійна подвійна зоря та Кільцева туманність M57.",
+        "lead": "Ліра невелика, але її головний орієнтир — Вега — добре помітний навіть у місті. Поруч розташований компактний чотирикутник слабших зір, який допомагає знайти цікаві телескопічні об’єкти.",
+        "season": "Літні та ранні осінні вечори",
+        "image": "/constellations/lyra-uk.png"
+      },
+      "en": {
+        "name": "Lyra",
+        "title": "Lyra Constellation: How to Find It | OrbitLight",
+        "description": "Find Lyra using bright Vega, identify its summer star pattern and explore the Double Double and the Ring Nebula, M57.",
+        "lead": "Lyra is small, but its main landmark, Vega, is prominent even in urban skies. A compact quadrilateral of fainter stars nearby provides a framework for finding rewarding telescopic objects.",
+        "season": "Summer and early autumn evenings",
+        "image": "/constellations/lyra-en.png"
+      }
+    },
+    {
+      "id": "And",
+      "slug": "andromeda",
+      "latin": "Andromeda",
+      "seasonKey": "autumn",
+      "uk": {
+        "name": "Андромеда",
+        "title": "Сузір’я Андромеда — як знайти на небі | OrbitLight",
+        "description": "Як знайти сузір’я Андромеди та галактику M31: Альферац, Мірах, осіннє небо України, схема й поради для бінокля.",
+        "lead": "Андромеда веде від Великого Квадрата Пегаса до однієї з найвідоміших галактик неба. Саме сузір’я та галактика M31 — різні об’єкти: перше є областю неба, друга лежить у цьому напрямку далеко за межами Чумацького Шляху.",
+        "season": "Осінні вечори та початок зими",
+        "image": "/constellations/andromeda-uk.png"
+      },
+      "en": {
+        "name": "Andromeda",
+        "title": "Andromeda Constellation: How to Find It | OrbitLight",
+        "description": "Find the constellation Andromeda and galaxy M31 using Alpheratz and Mirach, an autumn finder chart and practical binocular observing tips.",
+        "lead": "Andromeda leads from the Great Square of Pegasus toward one of the best-known galaxies in the sky. The constellation and M31 are different things: the former is a sky region, while the galaxy lies in that direction far beyond the Milky Way.",
+        "season": "Autumn evenings and early winter",
+        "image": "/constellations/andromeda-en.png"
+      }
+    }
+  ]
+}

@@ -118,15 +118,15 @@ export const MISSIONS = [
     blurbKey: "missions.blurbs.pioneer11",
   },
   {
-    key: "galileo", labelKey: "missions.names.galileo",
-    disabled: true, type: "probe", status: "ended", year: "1989–2003",
+    key: "galileo", labelKey: "missions.names.galileo", to: "galileo",
+    disabled: false, type: "probe", status: "ended", year: "1989–2003",
     icon: "🛰️", accent: "#E8A374", img: "/galileo/images/preview.jpg",
     blurbKey: "missions.blurbs.galileo",
   },
   {
-    key: "curiosity", labelKey: "missions.names.curiosity",
-    disabled: true, type: "rover", status: "active", year: "2012",
-    icon: "🚙", accent: "#E25C5C", img: "/curiosity/images/preview.jpg",
+    key: "curiosity", labelKey: "missions.names.curiosity", to: "curiosity",
+    disabled: false, type: "rover", status: "active", year: "2012",
+    icon: "🚙", accent: "#E25C5C", img: "/curiosity/images/selfie.jpg",
     blurbKey: "missions.blurbs.curiosity",
   },
   {

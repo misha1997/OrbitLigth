@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { readNewsQuery, newsQueryString } from "../lib/news";
 import { nameFromPath, locFor, SITE_URL, pathFor } from "../lib/seo";
+import { getConstellationGuide, guideChecked } from "../lib/constellationGuides";
 
 function upsertMeta(selector, attrKey, attrVal, content) {
   let el = document.head.querySelector(selector);
@@ -51,6 +52,7 @@ export function useSeo(article = null, noindex = false) {
   const { t } = useTranslation();
   const resolved = nameFromPath(pathname);
   const { name, lang } = resolved;
+  const guide = getConstellationGuide(resolved.constellationSlug);
 
   useEffect(() => {
     // Preserve the server's article metadata while its API request is pending.
@@ -58,14 +60,14 @@ export function useSeo(article = null, noindex = false) {
     const filters = readNewsQuery(new URLSearchParams(search));
     const isNewsList = name === "news" && !resolved.articleSlug;
     const page = isNewsList ? filters.page : 0;
-    const suffix = resolved.articleSlug ? `/${resolved.articleSlug}` : isNewsList ? newsQueryString(filters) : "";
-    const title = article?.title || (t(`title.${name}`) + (page ? ` — ${lang === "uk" ? "Сторінка" : "Page"} ${page + 1}` : ""));
-    const desc = article?.excerpt?.slice(0, 160) || t(`seo.desc.${name}`);
+    const suffix = resolved.constellationSlug ? `/${resolved.constellationSlug}` : resolved.articleSlug ? `/${resolved.articleSlug}` : isNewsList ? newsQueryString(filters) : "";
+    const title = article?.title || guide?.[lang]?.title || (t(`title.${name}`) + (page ? ` — ${lang === "uk" ? "Сторінка" : "Page"} ${page + 1}` : ""));
+    const desc = article?.excerpt?.slice(0, 160) || guide?.[lang]?.description || t(`seo.desc.${name}`);
     const canonical = locFor(name, lang) + suffix;
     const ukAlt = locFor(name, "uk") + suffix;
     const enAlt = locFor(name, "en") + suffix;
 
-    const image = article?.image ? new URL(article.image, SITE_URL).href : `${SITE_URL}/og-image.png`;
+    const image = article?.image || guide?.[lang]?.image ? new URL(article?.image || guide[lang].image, SITE_URL).href : `${SITE_URL}/og-image.png`;
     upsertMeta('meta[property="og:type"]', "property", "og:type", resolved.articleSlug ? "article" : "website");
     upsertMeta('meta[property="og:image"]', "property", "og:image", image);
     upsertMeta('meta[name="twitter:image"]', "name", "twitter:image", image);
@@ -103,10 +105,12 @@ export function useSeo(article = null, noindex = false) {
       el.textContent = JSON.stringify({
         "@context": "https://schema.org", "@type": "WebPage",
         name: title, description: desc, url: canonical, inLanguage: lang,
+        ...(guide ? { image, dateModified: guideChecked } : {}),
         isPartOf: { "@type": "WebSite", url: locFor("home", lang), name: "OrbitLight" },
         breadcrumb: { "@type": "BreadcrumbList", itemListElement: [
           { "@type": "ListItem", position: 1, name: "OrbitLight", item: locFor("home", lang) },
-          { "@type": "ListItem", position: 2, name: t("nav.constellations"), item: canonical },
+          { "@type": "ListItem", position: 2, name: t("nav.constellations"), item: locFor("constellations", lang) },
+          ...(guide ? [{ "@type": "ListItem", position: 3, name: guide[lang].name, item: canonical }] : []),
         ] },
       });
       el.dataset.routeSeo = "true";
@@ -125,5 +129,5 @@ export function useSeo(article = null, noindex = false) {
     upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", desc || "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => document.head.querySelectorAll('script[data-news-seo], script[data-route-seo]').forEach(el => el.remove());
-  }, [pathname, search, name, lang, t, article, resolved.articleSlug, noindex]);
+  }, [pathname, search, name, lang, t, article, resolved.articleSlug, resolved.constellationSlug, guide, noindex]);
 }

@@ -1,0 +1,184 @@
+{
+  "checked": "2026-10-28",
+  "items": [
+    {
+      "id": "UMa", "slug": "ursa-major", "latin": "Ursa Major", "seasonKey": "spring", "related": ["cassiopeia", "leo"],
+      "sources": [
+        {"name": "NASA · Finding Polaris", "url": "https://science.nasa.gov/solar-system/skywatching/what-is-the-north-star-and-how-do-you-find-it/"},
+        {"name": "NASA · Messier 81", "url": "https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-81/"}
+      ],
+      "uk": {
+        "name": "Велика Ведмедиця", "description": "Як знайти Велику Ведмедицю та Полярну зорю: схема Ковша, сезон спостережень, яскраві зорі, Міцар і Алькор та галактика M81.",
+        "lead": "Сім зір Великого Ковша — зручна перша сходинка до знайомства з північним небом. Але Ківш є лише частиною значно більшого сузір’я Великої Ведмедиці.",
+        "season": "Весняні вечори; Ківш доступний і в інші пори року",
+        "visibility": "У середніх північних широтах, зокрема в Україні, Ківш обертається навколо північного полюса неба. Навесні він піднімається високо ввечері; восени його варто шукати нижче над північним горизонтом. Не всі слабкі зорі великого сузір’я однаково легко помітити з міста.",
+        "find": ["Знайди чотири зорі чаші й три зорі вигнутої ручки. Не орієнтуйся лише на звичне зображення: протягом ночі Ківш повертається і може стояти боком або догори дном.", "Уявно проведи лінію від Мерака через Дубхе — дві крайні зорі чаші з боку, протилежного ручці. Продовж її приблизно на п’ять таких відрізків: там розташована Полярна зоря в Малій Ведмедиці.", "Середню зорю ручки, Міцар, розглянь уважніше. Поруч із нею міститься Алькор: спочатку спробуй побачити пару без оптики, потім перевір у бінокль."],
+        "targets": [{"name": "Міцар і Алькор", "equipment": "Око або бінокль", "text": "Зручна пара для порівняння видимості з міста та з темного місця. У телескоп сам Міцар має додатковий близький компонент."}, {"name": "M81 — галактика Боде", "equipment": "Бінокль у темному небі або телескоп", "text": "Галактика лежить у напрямку Великої Ведмедиці, але набагато далі від зір Ковша. Починай з малого збільшення: шукай слабке розмите світло, а не кольорову спіраль із фотографій."}],
+        "story": "У грецькій традиції сузір’я пов’язували з Каллісто, перетвореною на ведмедицю. Це культурне тлумачення фігури, а не пояснення походження зір. Великий Ківш — астеризм: впізнаваний візерунок усередині офіційного сузір’я."
+      },
+      "en": {
+        "name": "Ursa Major", "description": "Find Ursa Major and Polaris with a Big Dipper chart, observing tips, bright stars, Mizar and Alcor, and the galaxy M81.",
+        "lead": "The seven stars of the Big Dipper are a practical starting point for exploring the northern sky. The Dipper itself is only part of the much larger constellation Ursa Major.",
+        "season": "Spring evenings; the Dipper is also visible in other seasons",
+        "visibility": "At mid-northern latitudes, including Ukraine, the Dipper circles the north celestial pole. It is high on spring evenings and lower toward the northern horizon in autumn. The faint stars of the wider constellation are harder to trace from a city.",
+        "find": ["Look for four stars making a bowl and three forming a curved handle. Do not rely on its familiar upright shape: the Dipper turns during the night and can look sideways or upside down.", "Draw an imaginary line from Merak through Dubhe, the two outer bowl stars opposite the handle. Extend it roughly five times their separation to reach Polaris in Ursa Minor.", "Inspect Mizar, the middle star of the handle. Its nearby companion Alcor makes a useful challenge: try unaided eyes first, then check the pair with binoculars."],
+        "targets": [{"name": "Mizar and Alcor", "equipment": "Unaided eyes or binoculars", "text": "Compare the visibility of this pair under urban and dark skies. A telescope reveals a further close companion to Mizar itself."}, {"name": "M81 — Bode’s Galaxy", "equipment": "Dark-sky binoculars or a telescope", "text": "This galaxy lies in the direction of Ursa Major but far beyond the Dipper’s stars. Begin at low magnification and look for a faint patch, rather than the colourful spiral in photographs."}],
+        "story": "Greek tradition associates the Great Bear with Callisto, transformed into a bear. This is a cultural interpretation of the pattern, not an account of how its stars formed. The Big Dipper is an asterism: a familiar pattern within an official constellation."
+      }
+    },
+    {
+      "id": "Cas", "slug": "cassiopeia", "latin": "Cassiopeia", "seasonKey": "autumn", "related": ["ursa-major", "andromeda"],
+      "sources": [{"name": "NASA · Constellations of Alaska", "url": "https://science.nasa.gov/learn/heat/resource/constellations-of-alaska-booklet/"}],
+      "uk": {
+        "name": "Кассіопея", "description": "Кассіопея на небі: як упізнати п’ять зір літери W, коли спостерігати сузір’я та як використати його для знайомства з північним небом.",
+        "lead": "Кассіопею легко впізнати за зигзагом із п’яти зір. Залежно від положення над горизонтом він нагадує літеру W, M або нахилену корону.",
+        "season": "Осінні та зимові вечори",
+        "visibility": "У широтах України основна фігура Кассіопеї не заходить за горизонт. Найзручніше починати восени, коли вона піднімається високо ввечері. В інші сезони фігура може бути низько, і тоді будинки або дерева заважають більше, ніж слабка яскравість зір.",
+        "find": ["Повернися до північної частини неба та знайди п’ять приблизно однаково помітних зір зигзагу. Їхні відстані й кути нерівні — шукай характерну ламану лінію, а не геометрично правильну літеру.", "Якщо вже знаєш Полярну зорю, оглянь небо з іншого боку від неї відносно Великого Ковша. Коли Ківш опускається низько, Кассіопея часто стає зручнішим орієнтиром.", "Порівняй положення W через годину. Видимий поворот фігури допоможе зрозуміти добове обертання неба; самі відстані між її зорями за цей час для ока не зміняться."],
+        "targets": [{"name": "П’ять зір W", "equipment": "Неозброєне око", "text": "Почни з Кафа, Шедара та γ Кассіопеї. Видима яскравість γ Кассіопеї змінюється, тому каталог не є точним прогнозом її блиску на конкретну ніч."}, {"name": "Зоряні поля Чумацького Шляху", "equipment": "Бінокль", "text": "У темному небі повільно проведи біноклем уздовж фігури й порівняй кількість слабких зір з ділянкою далі від смуги Чумацького Шляху. Це вправа на зоряні поля, а не пошук окремої яскравої туманності."}],
+        "story": "Кассіопея — міфологічна цариця, дружина Цефея й мати Андромеди. На небі ці назви утворюють культурну групу персонажів. Форма W не є офіційною межею сузір’я: його область значно ширша за п’ять основних зір."
+      },
+      "en": {
+        "name": "Cassiopeia", "description": "Recognise Cassiopeia’s five-star W, find the constellation in the northern sky and choose a useful season for your first observations.",
+        "lead": "Cassiopeia is recognised by a zigzag of five stars. Depending on its orientation above the horizon, the pattern looks like a W, an M or a tilted crown.",
+        "season": "Autumn and winter evenings",
+        "visibility": "At Ukrainian latitudes the main pattern of Cassiopeia is circumpolar. Autumn is a convenient starting point because it climbs high in the evening. In other seasons it may be low, when trees or buildings become more troublesome than the stars’ brightness.",
+        "find": ["Face the northern sky and look for five reasonably prominent stars forming a zigzag. Their angles and spacing are uneven: seek the recognisable broken line rather than a perfectly drawn letter.", "If you know Polaris, inspect the sky on its opposite side from the Big Dipper. When the Dipper is low, Cassiopeia often makes a more convenient landmark.", "Compare the W’s orientation an hour later. Its apparent turn illustrates the sky’s daily rotation; the spacing between the stars remains unchanged to the eye over that time."],
+        "targets": [{"name": "The five-star W", "equipment": "Unaided eyes", "text": "Start with Caph, Schedar and Gamma Cassiopeiae. Gamma Cassiopeiae varies in brightness, so a catalogue magnitude is not an exact prediction for a particular night."}, {"name": "Milky Way star fields", "equipment": "Binoculars", "text": "Under dark skies, sweep slowly along the pattern and compare the number of faint stars with a region farther from the Milky Way. This is an exercise in star fields, rather than a hunt for a bright nebula."}],
+        "story": "Cassiopeia is the mythical queen, wife of Cepheus and mother of Andromeda. These names form a cultural group of characters in the sky. The W is not the constellation’s official boundary: its recognised region extends well beyond the five principal stars."
+      }
+    },
+    {
+      "id": "Ori", "slug": "orion", "latin": "Orion", "seasonKey": "winter", "related": ["leo", "andromeda"],
+      "sources": [{"name": "NASA · Messier 42", "url": "https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-42/"}],
+      "uk": {
+        "name": "Оріон", "description": "Як знайти сузір’я Оріона: зорі Пояса, Бетельгейзе й Рігель, зимова видимість в Україні та спостереження туманності Оріона M42.",
+        "lead": "Три зорі Пояса роблять Оріон одним із найзручніших сузір’їв для першого знайомства із зимовим небом. Яскраві кутові зорі оточують Пояс, а нижче видно ділянку Меча.",
+        "season": "Зимові вечори; наприкінці осені — пізніше вночі",
+        "visibility": "З України Оріон найзручніше спостерігати взимку, коли його основна фігура проходить над південним горизонтом увечері. Навесні він зміщується до вечірнього заходу. У південній півкулі ті самі зорі виглядають інакше повернутими, тому не прив’язуй пошук лише до слова «ліворуч».",
+        "find": ["Шукай три зорі майже в один ряд: Альнітак, Альнілам і Мінтака. Вони утворюють Пояс Оріона — компактний астеризм усередині сузір’я.", "Знайди Бетельгейзе з боку плечей і Рігель з боку ніг. За добрих умов можна порівняти тепліший відтінок Бетельгейзе з білуватим світлом Рігеля, але міські ліхтарі та низьке положення спотворюють враження.", "Від Пояса перейди до короткої групи зір Меча. Середня розмита ділянка відповідає туманності M42; спочатку перевір її без оптики, потім у бінокль."],
+        "targets": [{"name": "Пояс Оріона", "equipment": "Неозброєне око", "text": "Три зорі допомагають упізнати всю фігуру навіть у місті. Видима близькість на небі сама собою не означає однакову відстань від Землі."}, {"name": "M42 — туманність Оріона", "equipment": "Темне небо, бінокль або телескоп", "text": "Область народження зір у Мечі Оріона. Без оптики шукай невелику світлу пляму; бінокль і телескоп відкривають більше структури. Фотографічних кольорів оком зазвичай не видно."}],
+        "story": "У грецькій традиції Оріон — мисливець. Існують різні версії оповіді про нього та Скорпіона, тож міф не варто сприймати як єдину історію всіх культур. Астрономічно сузір’я є ділянкою неба з офіційними межами, а Пояс — лише частиною його малюнка."
+      },
+      "en": {
+        "name": "Orion", "description": "Find Orion’s Belt, Betelgeuse and Rigel, choose a winter observing evening and discover the Orion Nebula, M42, below the Belt.",
+        "lead": "The three stars of the Belt make Orion an approachable introduction to winter skies. Bright corner stars surround the Belt, while the Sword lies below it in the familiar northern view.",
+        "season": "Winter evenings; late at night in late autumn",
+        "visibility": "From Ukraine, winter evenings are the most convenient time to see Orion crossing the southern sky. In spring it shifts toward the evening western horizon. From the southern hemisphere the same stars appear differently oriented, so avoid relying on a fixed left-or-right description.",
+        "find": ["Look for three stars in an almost straight row: Alnitak, Alnilam and Mintaka. They form Orion’s Belt, a compact asterism inside the constellation.", "Identify Betelgeuse toward the shoulders and Rigel toward the feet. Good conditions may reveal Betelgeuse’s warmer tint against Rigel’s whiter light, although street lighting and low altitude can affect the impression.", "Move from the Belt toward the short group forming the Sword. Its central fuzzy patch is M42; try finding it unaided before looking through binoculars."],
+        "targets": [{"name": "Orion’s Belt", "equipment": "Unaided eyes", "text": "The three stars can anchor the whole pattern even from a city. Apparent closeness on the sky alone does not mean equal distance from Earth."}, {"name": "M42 — the Orion Nebula", "equipment": "Dark skies, binoculars or a telescope", "text": "A star-forming region in Orion’s Sword. Look for a small luminous patch unaided; binoculars and telescopes reveal more structure. The colours familiar from photographs are generally not visible to the eye."}],
+        "story": "In Greek tradition Orion is a hunter. Several versions connect his story with Scorpius, rather than there being one universal account shared by all cultures. Astronomically, the constellation is a region with defined boundaries; the Belt is only part of its familiar drawing."
+      }
+    },
+    {
+      "id": "Cyg", "slug": "cygnus", "latin": "Cygnus", "seasonKey": "summer", "related": ["lyra", "cassiopeia"],
+      "sources": [{"name": "NASA · Summer Triangle: Deneb", "url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/summer-triangle-corner-deneb/"}],
+      "uk": {
+        "name": "Лебідь", "description": "Сузір’я Лебедя: як знайти Денеб, Північний Хрест та Альбірео, коли спостерігати Чумацький Шлях і що видно в бінокль.",
+        "lead": "Лебідь простягається вздовж смуги Чумацького Шляху. Його яскраві зорі утворюють Північний Хрест, а Денеб позначає один із кутів великого Літнього Трикутника.",
+        "season": "Літні та ранні осінні вечори",
+        "visibility": "У середніх північних широтах Лебідь високо піднімається влітку й залишається зручним на початку осені. Для загальної фігури достатньо відносно ясного міського неба, але зоряні хмари Чумацького Шляху потребують темного місця та слабкого місячного світла.",
+        "find": ["Почни з Літнього Трикутника: його кути — Вега в Лірі, Денеб у Лебеді та Альтаїр в Орлі. Це астеризм, який об’єднує зорі трьох різних сузір’їв.", "Від Денеба простеж довгу вісь хреста через Садр до Альбірео. Зорі по обидва боки Садра формують коротшу поперечину — у фігурі птаха це крила.", "У темному місці оглянь смугу неба вздовж довгої осі. Бінокль із широким полем покаже більше слабких зір, ніж спроба одразу перейти до великого телескопічного збільшення."],
+        "targets": [{"name": "Альбірео", "equipment": "Невеликий телескоп", "text": "Відома візуальна подвійна зоря біля «дзьоба» Лебедя. Телескоп дозволяє порівняти відтінки двох компонентів; оком вони здаються однією точкою."}, {"name": "M29 і зоряні поля", "equipment": "Бінокль або телескоп", "text": "Поблизу Садра міститься розсіяне скупчення M29. Спочатку знайди потрібне поле на карті: у щільному Чумацькому Шляху випадкова група зір легко нагадує скупчення."}],
+        "story": "Назва Cygnus означає лебедя; з нею пов’язують кілька грецьких сюжетів. Північний Хрест — інша назва знайомої зоряної фігури, а не окреме офіційне сузір’я. Видима смуга Чумацького Шляху тут належить нашій Галактиці, а не окремому об’єкту «Лебідь»."
+      },
+      "en": {
+        "name": "Cygnus", "description": "Find Cygnus, Deneb, the Northern Cross and Albireo, then explore summer Milky Way star fields with binoculars or a small telescope.",
+        "lead": "Cygnus stretches along the Milky Way. Its bright stars form the Northern Cross, while Deneb marks one corner of the larger Summer Triangle.",
+        "season": "Summer and early autumn evenings",
+        "visibility": "At mid-northern latitudes Cygnus climbs high in summer and remains convenient in early autumn. The main pattern is accessible from reasonably clear urban skies, but the Milky Way’s star clouds need a dark location with little moonlight.",
+        "find": ["Begin with the Summer Triangle: Vega in Lyra, Deneb in Cygnus and Altair in Aquila. It is an asterism joining stars from three different constellations.", "Follow the long axis of the cross from Deneb through Sadr toward Albireo. Stars on either side of Sadr make the shorter crossbar, interpreted as the swan’s wings.", "From a dark site, inspect the band of sky along the long axis. Wide-field binoculars are a useful first step before moving straight to high telescopic magnification."],
+        "targets": [{"name": "Albireo", "equipment": "Small telescope", "text": "A celebrated visual double near the swan’s beak. A telescope allows you to compare the components’ contrasting tints; they appear as one point to unaided eyes."}, {"name": "M29 and star fields", "equipment": "Binoculars or a telescope", "text": "The open cluster M29 lies near Sadr. Identify the correct field on a chart first: in the crowded Milky Way, a chance grouping can easily resemble a cluster."}],
+        "story": "Cygnus means swan and is associated with several Greek stories. The Northern Cross names the familiar star pattern, rather than a separate official constellation. The Milky Way band here belongs to our own Galaxy, not to a separate object called Cygnus."
+      }
+    },
+    {
+      "id": "Leo", "slug": "leo", "latin": "Leo", "seasonKey": "spring", "related": ["ursa-major", "orion"],
+      "sources": [{"name": "NASA · Celestial Wonders in Leo", "url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/celestial-wonders-in-leo/"}],
+      "uk": {
+        "name": "Лев", "description": "Як знайти сузір’я Лева навесні: Регул, Серп і Денебола, зорі на схемі, подвійна Альджеба та галактики Левового Триплета.",
+        "lead": "Лева впізнають за Серпом — фігурою, схожою на перевернутий знак питання. Регул стоїть біля його основи, а трикутник з Денеболою окреслює задню частину небесного лева.",
+        "season": "Весняні вечори, особливо березень — травень",
+        "visibility": "З України Лев добре піднімається над південним горизонтом навесні. На початку весни після сутінків шукай його зі сходу, а пізніше ввечері — ближче до півдня. Улітку він переходить до західного вечірнього неба, тому час спостереження стає коротшим.",
+        "find": ["Спочатку знайди Регул, а над ним простеж дугу Серпа. На відміну від правильного півкола, зоряна дуга має нерівні проміжки та виразний вигин.", "Від Серпа проведи погляд до трикутника, край якого позначає Денебола. З’єднай дві частини в одну витягнуту фігуру, а не шукай усі зорі сузір’я одночасно.", "Якщо небо міське, зафіксуй положення яскравих зір на карті, а слабкі галактики залиш для поїздки за місто. Розпізнавання фігури та спостереження далекого космосу потребують різних умов."],
+        "targets": [{"name": "Альджеба (γ Лева)", "equipment": "Телескоп", "text": "Яскрава подвійна зоря в області Серпа. За спокійної атмосфери можна розділити пару й порівняти її компоненти."}, {"name": "Левовий Триплет", "equipment": "Телескоп і темне небо", "text": "Галактики M65, M66 та NGC 3628 містяться в одному невеликому районі неба. Для першого пошуку використовуй мале збільшення та точну карту поля: оком вони не відтворюють яскравих деталей фотографій."}],
+        "story": "У грецькому міфі Лева пов’язують із Немейським левом і подвигом Геракла. Сучасна астрономія користується назвою для позначення області неба; зорі Серпа й галактики Триплета лише проєктуються в її напрямку."
+      },
+      "en": {
+        "name": "Leo", "description": "Find Leo in spring with Regulus, the Sickle and Denebola, then explore the double star Algieba and the galaxies of the Leo Triplet.",
+        "lead": "Leo is recognised by the Sickle, a pattern resembling a reversed question mark. Regulus marks its base, while a triangle ending at Denebola outlines the lion’s hindquarters.",
+        "season": "Spring evenings, especially March to May",
+        "visibility": "From Ukraine, Leo rises well above the southern horizon during spring. Look east after dusk early in the season and farther south later in the evening. By summer it shifts to the western evening sky, shortening the observing window.",
+        "find": ["Find Regulus first, then trace the curve of the Sickle above it. The stars are irregularly spaced, so look for the distinctive bend rather than a perfect semicircle.", "Move from the Sickle toward the triangle ending at Denebola. Join these two parts into one extended figure instead of trying to identify every constellation star at once.", "Under urban skies, learn the bright-star framework on the chart and leave the faint galaxies for a darker trip. Recognising the pattern and observing deep-sky objects require different conditions."],
+        "targets": [{"name": "Algieba (Gamma Leonis)", "equipment": "Telescope", "text": "A bright double star in the Sickle. Steady air helps separate the pair and compare its components."}, {"name": "The Leo Triplet", "equipment": "Telescope and dark skies", "text": "The galaxies M65, M66 and NGC 3628 occupy a small region of sky. Start at low magnification with an accurate field chart: the visual view does not reproduce the bright detail of photographs."}],
+        "story": "Greek mythology associates Leo with the Nemean lion and a labour of Heracles. Modern astronomy uses the name for a defined sky region; the Sickle’s stars and the Triplet’s galaxies are seen projected in that direction."
+      }
+    },
+    {
+      "id": "Sco", "slug": "scorpius", "latin": "Scorpius", "seasonKey": "summer", "related": ["lyra", "cygnus"],
+      "sources": [{"name": "NASA · Messier 4", "url": "https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-4/"}],
+      "uk": {
+        "name": "Скорпіон", "description": "Як побачити Скорпіона й Антарес з України: літня видимість, обмеження південного горизонту, схема та кульове скупчення M4.",
+        "lead": "Антарес і вигнута зоряна фігура роблять Скорпіона виразним сузір’ям південного неба. Для спостерігача в Україні головна складність — низьке положення, а не пошук великої кількості слабких зір.",
+        "season": "Короткі літні ночі; потрібен відкритий південний горизонт",
+        "visibility": "Зі значної частини України видно передусім північну частину Скорпіона та Антарес. Хвіст із найпівденнішими зорями може не підніматися над горизонтом або бути надто низьким. Що південніше місце спостереження, то повніша фігура; не сприймай повну схему як обіцянку побачити все зі своєї широти.",
+        "find": ["Обери місце без будинків, пагорбів і дерев у південному напрямку. На низькому горизонті навіть тонкий серпанок може приховати сузір’я.", "У літню ніч знайди Антарес — яскраву зорю з теплим відтінком. За картою простеж коротку групу зір перед ним, потім перевір, чи доступне продовження фігури до хвоста.", "Спостерігай поблизу найвищого проходження над півднем, а не одразу після сходу. Точний час залежить від дати й місця; для нього перейди до інтерактивної карти."],
+        "targets": [{"name": "Антарес", "equipment": "Неозброєне око", "text": "Зручний орієнтир у верхній частині сузір’я. Низько над горизонтом мерехтіння та поглинання в атмосфері сильніші, ніж високо в небі."}, {"name": "M4", "equipment": "Бінокль або телескоп, прозорий горизонт", "text": "Кульове скупчення біля Антареса. Його низьке положення з України ускладнює пошук; неуспіх у міському серпанку не означає, що координати на карті неправильні."}],
+        "story": "У деяких грецьких переказах Скорпіона пов’язують із загибеллю мисливця Оріона. Різні історії пояснювали їхню рознесеність на небі. Сезонна зміна видимості насправді виникає через рух Землі навколо Сонця та напрямок нічного боку нашої планети."
+      },
+      "en": {
+        "name": "Scorpius", "description": "Observe Scorpius and Antares from Ukraine: summer timing, southern-horizon limits, a finder chart and the globular cluster M4.",
+        "lead": "Antares and a curved star pattern make Scorpius a distinctive southern constellation. For an observer in Ukraine, its low altitude is the main challenge, rather than the need to find many faint stars.",
+        "season": "Short summer nights; an open southern horizon is essential",
+        "visibility": "From much of Ukraine the northern part of Scorpius and Antares are the main accessible features. The southernmost tail stars may remain below the horizon or too low for a useful view. A more southerly observing site reveals more of the figure; the complete chart is not a promise of visibility from every latitude.",
+        "find": ["Choose a site without buildings, hills or trees blocking the south. Even thin haze can conceal the constellation close to the horizon.", "On a summer night identify warm-tinted Antares. Use the chart to trace the short group ahead of it, then check whether the pattern can be followed toward the tail.", "Observe near its highest passage across the southern sky rather than immediately after rising. The precise time depends on date and location; use the interactive map to check your view."],
+        "targets": [{"name": "Antares", "equipment": "Unaided eyes", "text": "A useful landmark in the upper constellation. Close to the horizon, atmospheric absorption and twinkling are stronger than high in the sky."}, {"name": "M4", "equipment": "Binoculars or a telescope; a clear horizon", "text": "A globular cluster near Antares. Its low altitude makes it challenging from Ukraine; failing to see it through urban haze does not mean the chart coordinates are wrong."}],
+        "story": "Some Greek stories link the scorpion with the death of Orion the hunter and interpret their separation in the sky. The actual seasonal change in visibility follows Earth’s orbit around the Sun and the changing direction of our planet’s night side."
+      }
+    },
+    {
+      "id": "Lyr", "slug": "lyra", "latin": "Lyra", "seasonKey": "summer", "related": ["cygnus", "scorpius"],
+      "sources": [{"name": "NASA · Messier 57", "url": "https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-57/"}, {"name": "NASA · Constellations of Alaska", "url": "https://science.nasa.gov/learn/heat/resource/constellations-of-alaska-booklet/"}],
+      "uk": {
+        "name": "Ліра", "description": "Знайди Ліру за яскравою Вегою: схема сузір’я, літня видимість, Подвійна подвійна зоря та Кільцева туманність M57.",
+        "lead": "Ліра невелика, але її головний орієнтир — Вега — добре помітний навіть у місті. Поруч розташований компактний чотирикутник слабших зір, який допомагає знайти цікаві телескопічні об’єкти.",
+        "season": "Літні та ранні осінні вечори",
+        "visibility": "У широтах України Ліра піднімається високо в літньому небі. Для пошуку чотирикутника корисно відійти від прямого світла ліхтарів і дати очам звикнути до темряви. Коли зоря поблизу зеніту, положення «ліворуч» і «праворуч» на карті може бути незручним: порівнюй взаємні відстані.",
+        "find": ["Знайди Літній Трикутник і його яскраву Вегу. Не плутай Ліру з усім Трикутником: Денеб належить Лебедю, а Альтаїр — Орлу.", "Поблизу Веги відшукай невеликий паралелограм. Дві його зорі, Шеліак і Сулафат, утворюють корисну пару орієнтирів для пошуку M57.", "Починай огляд у бінокль або з найменшого збільшення телескопа. Кільцева туманність мала за видимим розміром: спершу потрібно впевнено встановити поле, а вже потім збільшувати зображення."],
+        "targets": [{"name": "ε Ліри — Подвійна подвійна", "equipment": "Бінокль, потім телескоп", "text": "Спочатку знайди ширшу пару поблизу Веги. За достатнього збільшення та спокійного повітря телескоп показує, що кожен із двох основних компонентів теж подвійний."}, {"name": "M57 — Кільцева туманність", "equipment": "Телескоп", "text": "Планетарна туманність між Шеліаком і Сулафатом. Назва класу не означає, що це планета: йдеться про газ, скинутий зорею на пізньому етапі еволюції."}],
+        "story": "Грецькі перекази пов’язують Ліру з музичним інструментом Орфея. Це образ для зоряної фігури; її зорі не складають реального інструмента або спільного маленького скупчення лише через близькість на схемі."
+      },
+      "en": {
+        "name": "Lyra", "description": "Find Lyra using bright Vega, identify its summer star pattern and explore the Double Double and the Ring Nebula, M57.",
+        "lead": "Lyra is small, but its main landmark, Vega, is prominent even in urban skies. A compact quadrilateral of fainter stars nearby provides a framework for finding rewarding telescopic objects.",
+        "season": "Summer and early autumn evenings",
+        "visibility": "At Ukrainian latitudes Lyra climbs high in summer. Move away from direct street lighting and allow your eyes to adapt before looking for the quadrilateral. Near the zenith, left and right on a chart can become awkward: compare the spacing between stars instead.",
+        "find": ["Find the Summer Triangle and its bright star Vega. Lyra is not the whole Triangle: Deneb belongs to Cygnus and Altair to Aquila.", "Look near Vega for the small parallelogram. Two of its stars, Sheliak and Sulafat, provide useful landmarks for locating M57.", "Begin with binoculars or your telescope’s lowest magnification. The Ring Nebula is small in apparent size: establish the correct field before increasing magnification."],
+        "targets": [{"name": "Epsilon Lyrae — the Double Double", "equipment": "Binoculars, then a telescope", "text": "First identify the wider pair near Vega. With sufficient magnification and steady air, a telescope reveals that each principal component is itself double."}, {"name": "M57 — the Ring Nebula", "equipment": "Telescope", "text": "A planetary nebula between Sheliak and Sulafat. The name does not describe a planet: the gas was shed by a star at a late evolutionary stage."}],
+        "story": "Greek stories associate Lyra with the musical instrument of Orpheus. This is an interpretation of the pattern; apparent closeness on a chart does not turn its stars into a physical instrument or a single small cluster."
+      }
+    },
+    {
+      "id": "And", "slug": "andromeda", "latin": "Andromeda", "seasonKey": "autumn", "related": ["cassiopeia", "orion"],
+      "sources": [{"name": "NASA · Catch Andromeda Rising", "url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/catch-andromeda-rising/"}, {"name": "NASA · Messier 31", "url": "https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-31/"}],
+      "uk": {
+        "name": "Андромеда", "description": "Як знайти сузір’я Андромеди та галактику M31: Альферац, Мірах, осіннє небо України, схема й поради для бінокля.",
+        "lead": "Андромеда веде від Великого Квадрата Пегаса до однієї з найвідоміших галактик неба. Саме сузір’я та галактика M31 — різні об’єкти: перше є областю неба, друга лежить у цьому напрямку далеко за межами Чумацького Шляху.",
+        "season": "Осінні вечори та початок зими",
+        "visibility": "З України Андромеду зручно вивчати восени, коли її основні зорі високо піднімаються у вечірні години. Яскраву фігуру можна знаходити з міста, але для слабкого світіння M31 значно важливіші темне небо, прозорість і відсутність яскравого Місяця.",
+        "find": ["Знайди Великий Квадрат Пегаса. Його кутова зоря Альферац офіційно належить Андромеді — це зручна точка переходу від одного зоряного малюнка до іншого.", "Від Альфераца простеж ланцюжок до Міраха й Альмаха. Не очікуй правильної прямої: користуйся схемою та порівнюй проміжки між яскравими зорями.", "Щоб знайти M31, використай Мірах і слабші зорі, що ведуть від нього в бік галактики. У бінокль почни з широкого поля; шукай туманне світіння, а не окрему різку зорю."],
+        "targets": [{"name": "M31 — галактика Андромеди", "equipment": "Темне небо або бінокль", "text": "Галактику можна побачити без оптики за добрих умов. Бінокль виразніше показує світле ядро й частину витягнутого світіння; велике збільшення не завжди допомагає охопити весь об’єкт."}, {"name": "Альмах (γ Андромеди)", "equipment": "Телескоп", "text": "Яскрава подвійна зоря на продовженні ланцюжка від Міраха. Вона дає інший тип спостереження, ніж галактика: тут важливі розділення близьких компонентів і спокійна атмосфера."}],
+        "story": "У грецькому переказі Андромеда — царівна, дочка Кассіопеї та Цефея, врятована Персеєм. Її сусідство з цими назвами відображає історію небесних карт, а не фізичний родинний зв’язок між зорями чи галактикою M31."
+      },
+      "en": {
+        "name": "Andromeda", "description": "Find the constellation Andromeda and galaxy M31 using Alpheratz and Mirach, an autumn finder chart and practical binocular observing tips.",
+        "lead": "Andromeda leads from the Great Square of Pegasus toward one of the best-known galaxies in the sky. The constellation and M31 are different things: the former is a sky region, while the galaxy lies in that direction far beyond the Milky Way.",
+        "season": "Autumn evenings and early winter",
+        "visibility": "From Ukraine, autumn evenings are convenient because the principal stars climb high. The bright pattern can be recognised from a city, but M31’s faint glow depends much more on dark skies, transparency and the absence of bright moonlight.",
+        "find": ["Locate the Great Square of Pegasus. Its corner star Alpheratz officially belongs to Andromeda, making a useful bridge between the two familiar patterns.", "Follow the chain from Alpheratz toward Mirach and Almach. Do not expect a perfectly straight line: compare the gaps between bright stars with the chart.", "For M31, use Mirach and the fainter stars leading away from it toward the galaxy. Begin with a wide binocular field and look for a hazy glow rather than a sharp individual star."],
+        "targets": [{"name": "M31 — the Andromeda Galaxy", "equipment": "Dark skies or binoculars", "text": "Good conditions allow an unaided-eye view. Binoculars show the bright core and some elongated glow more clearly; high magnification does not necessarily help fit the whole object into view."}, {"name": "Almach (Gamma Andromedae)", "equipment": "Telescope", "text": "A bright double star along the chain beyond Mirach. It offers a different challenge from the galaxy: separating close components and finding steady air become more important."}],
+        "story": "In Greek tradition Andromeda is the princess, daughter of Cassiopeia and Cepheus, rescued by Perseus. These neighbouring names reflect the history of sky maps, rather than a physical family relationship between the stars or M31."
+      }
+    }
+  ]
+}

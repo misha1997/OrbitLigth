@@ -14,7 +14,7 @@ beforeEach(() => {
   i18next.changeLanguage("en");
 });
 
-test.each(["perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11"].flatMap(mission => ["uk", "en"].map(lang => [mission, lang])))
+test.each(["perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity"].flatMap(mission => ["uk", "en"].map(lang => [mission, lang])))
 ("%s supports exploration, quizzes and a signal scenario in %s without live API requests", async (mission, lang) => {
   i18next.changeLanguage(lang);
   const content = i18next.t(`missionDetail.${mission}`, { returnObjects: true });
@@ -44,7 +44,7 @@ test.each(["perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", 
   const expected = mission === "gaia" ? "3.34" : mission === "kepler" ? "5.6" : "16.6";
   expect(calculator).toHaveTextContent(lang === "en" ? expected : expected.replace(".", ","));
   fireEvent.click(within(calculator).getByRole("button", { name: signal.reset }));
-  expect(slider.value).toBe({ perseverance: "225000000", cassini: "1400000000", osirisrex: "300000000", gaia: "1500000", kepler: "150000000", spitzer: "200000000", pioneer10: "12230000000", pioneer11: "6400000000" }[mission]);
+  expect(slider.value).toBe({ perseverance: "225000000", cassini: "1400000000", osirisrex: "300000000", gaia: "1500000", kepler: "150000000", spitzer: "200000000", pioneer10: "12230000000", pioneer11: "6400000000", galileo: "628000000", curiosity: "225000000" }[mission]);
 
   const quiz = container.querySelector("#quiz");
   content.quiz.questions.forEach((question, index) => {

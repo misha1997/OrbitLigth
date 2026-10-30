@@ -56,3 +56,10 @@ test("geolocation applies actual coordinates and current time to fullscreen", as
     else delete navigator.geolocation;
   }
 });
+
+test("a field-guide link centres the chosen constellation without manual pan", async () => {
+  const { container } = render(<ConstellationMap focusConst="UMa" initialSeason="spring" />);
+  await waitFor(() => expect(container.querySelectorAll(".const-star")).toHaveLength(1));
+  expect(container.querySelector(".const-group.active")).not.toBeNull();
+  expect(container.querySelector('svg > g').getAttribute("transform")).not.toContain("translate(0, 0)");
+});

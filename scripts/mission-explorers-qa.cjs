@@ -8,7 +8,7 @@ const http = require('node:http');
 const { spawn } = require('node:child_process');
 const root = process.env.MISSION_QA_BUILD_ROOT ? path.resolve(process.env.MISSION_QA_BUILD_ROOT) : path.resolve(__dirname, '../my-app/build');
 const shots = process.argv[2];
-const missions = (process.env.MISSION_QA_MISSIONS || 'perseverance,cassini,osirisrex,gaia,kepler,spitzer,pioneer10,pioneer11').split(',');
+const missions = (process.env.MISSION_QA_MISSIONS || 'perseverance,cassini,osirisrex,gaia,kepler,spitzer,pioneer10,pioneer11,galileo,curiosity').split(',');
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml', '.glb': 'model/gltf-binary', '.wasm': 'application/wasm', '.json': 'application/json' };
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
@@ -80,6 +80,23 @@ async function main() {
         await until('document.querySelectorAll(".kepler-transit-results strong")[1].textContent === "100%"');
         await capture(`${mission}-${lang}-${width}-transit`);
       }
+      if (mission === 'galileo' || mission === 'curiosity') {
+        await evaluate('document.querySelector("#evidence").scrollIntoView({block:"start",behavior:"instant"})');
+        for (let example = 0; example < 3; example++) {
+          await evaluate(`document.querySelectorAll('#evidence > .wrap > .mission-destination-buttons button')[${example}].click()`);
+          for (let step = 0; step < 3; step++) {
+            await evaluate(`document.querySelectorAll('.mission-evidence-steps button')[${step}].click()`);
+            assert(await evaluate(`document.querySelectorAll('.mission-evidence-steps button')[${step}].getAttribute('aria-pressed') === 'true'`));
+            assert(await evaluate('document.querySelector(".mission-evidence-reading p").textContent.length > 40'));
+          }
+          await until('document.querySelector(".mission-evidence-figure img").complete && document.querySelector(".mission-evidence-figure img").naturalWidth > 0');
+        }
+        await capture(`${mission}-${lang}-${width}-evidence`);
+        await evaluate('document.querySelector(".mission-evidence-panel").scrollIntoView({block:"start",behavior:"instant"})');
+        await capture(`${mission}-${lang}-${width}-reasoning`);
+        await evaluate('document.querySelectorAll("#evidence > .wrap > .mission-destination-buttons button")[0].click()');
+        await until('document.querySelector(".mission-evidence-steps button").getAttribute("aria-pressed") === "true"');
+      }
       if (mission.startsWith('pioneer')) {
         await evaluate('document.querySelector("#flyby").scrollIntoView({block:"start",behavior:"instant"})');
         const initial = await evaluate('document.querySelectorAll(".pioneer-flyby-results strong")[1].textContent');
@@ -136,7 +153,7 @@ async function main() {
     }
   }
   assert.equal(errors.length, 0, JSON.stringify(errors));
-  assert.equal(requests.filter(url => /\/api\/missions\/(cassini|perseverance|osirisrex|gaia|kepler|spitzer|pioneer10|pioneer11)|\/api\/dsn/.test(url)).length, 0, 'No unsupported mission data requests');
+  assert.equal(requests.filter(url => /\/api\/missions\/(cassini|perseverance|osirisrex|gaia|kepler|spitzer|pioneer10|pioneer11|galileo|curiosity)|\/api\/dsn/.test(url)).length, 0, 'No unsupported mission data requests');
   console.log(JSON.stringify({ passed: results.length, runtimeErrors: errors.length }));
   await cdp('Browser.close'); ws.close(); server.close();
 }

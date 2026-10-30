@@ -4,7 +4,7 @@ import { useApi } from "../../hooks/useApi";
 import SectionHead from "../primitives/SectionHead";
 
 const DSN_CODES = { newhorizons: "NHPC", juno: "JNO", chandra: "CHDR", tess: "TESS", europaclipper: "EURC" };
-const DEFAULT_RANGE = { newhorizons: 9.8e9, juno: 8e8, chandra: 100000, tess: 250000, europaclipper: 1e8, perseverance: 225e6, cassini: 1.4e9, osirisrex: 300e6, gaia: 1.5e6, kepler: 150e6, spitzer: 200e6, pioneer10: 12.23e9, pioneer11: 6.4e9 };
+const DEFAULT_RANGE = { newhorizons: 9.8e9, juno: 8e8, chandra: 100000, tess: 250000, europaclipper: 1e8, perseverance: 225e6, cassini: 1.4e9, osirisrex: 300e6, gaia: 1.5e6, kepler: 150e6, spitzer: 200e6, pioneer10: 12.23e9, pioneer11: 6.4e9, galileo: 628e6, curiosity: 225e6 };
 
 export function MissionTelemetry({ mission, data, loading, error, refetch }) {
   const { t, i18n } = useTranslation();

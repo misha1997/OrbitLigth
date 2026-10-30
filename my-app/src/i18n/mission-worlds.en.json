@@ -1,0 +1,595 @@
+{
+  "galileo": {
+    "name": "Galileo",
+    "tagline": "One planet. A system of worlds.",
+    "eyebrow": "NASA · JPL · Jupiter orbiter & atmospheric probe · 1989–2003",
+    "intro": "Galileo became the first spacecraft to orbit Jupiter. Its atmospheric probe sampled the giant planet directly, while repeated moon encounters revealed volcanic landscapes, magnetic surprises and evidence for water hidden beneath ice.",
+    "heroAlt": "Artist’s illustration of the Galileo spacecraft near Jupiter",
+    "modelNote": "The model illustrates the spacecraft’s design. In flight, its large high-gain antenna did not fully deploy.",
+    "status": {
+      "title": "Mission completed · 21 September 2003",
+      "body": "Galileo was deliberately sent into Jupiter’s atmosphere at the end of its mission, preventing a future uncontrolled impact on Europa. This page presents archival observations, not a live spacecraft connection."
+    },
+    "stats": [
+      {
+        "label": "Launch",
+        "value": "18 Oct 1989",
+        "note": "Space Shuttle Atlantis · STS-34"
+      },
+      {
+        "label": "Jupiter orbit",
+        "value": "December 1995",
+        "note": "First spacecraft to orbit Jupiter"
+      },
+      {
+        "label": "Probe data return",
+        "value": "58 minutes",
+        "note": "Measurements during atmospheric descent"
+      },
+      {
+        "label": "End of mission",
+        "value": "2003",
+        "note": "A controlled final entry into Jupiter"
+      }
+    ],
+    "exploration": {
+      "nav": "Explore the mission",
+      "eyebrow": "A journey with more than one destination",
+      "title": "From a long cruise to a system of moons",
+      "intro": "Choose a chapter to follow Galileo’s journey, atmospheric probe, moon exploration and final planetary-protection decision.",
+      "choose": "Choose a Galileo chapter",
+      "description": "Illustrative Galileo journey from Earth to Jupiter, its atmospheric probe and several moons",
+      "note": "Conceptual chapter map: distances, planet positions and trajectories are not to scale. Markers select topics rather than measured spacecraft coordinates.",
+      "detailLabel": "Mission chapter",
+      "stops": [
+        {
+          "name": "The long way to Jupiter",
+          "body": "Venus and Earth gravity assists shaped the cruise. Galileo also flew past Gaspra and Ida, finding the small moon Dactyl beside Ida.",
+          "fact": "1989 → 1995",
+          "factLabel": "The cruise to Jupiter",
+          "question": "A mission can gather important science before it reaches its main destination.",
+          "source": "https://science.nasa.gov/mission/galileo/galileo-science/"
+        },
+        {
+          "name": "Into the atmosphere",
+          "body": "The released entry probe descended into Jupiter on 7 December 1995, relaying measurements through the orbiter for about 58 minutes.",
+          "fact": "58 minutes",
+          "factLabel": "Direct atmospheric measurements",
+          "question": "The entry probe and the long-lived orbiter were separate vehicles with different jobs.",
+          "source": "https://science.nasa.gov/mission/galileo-jupiter-atmospheric-probe/"
+        },
+        {
+          "name": "A family of worlds",
+          "body": "Repeated encounters connected images, spectra and magnetic measurements. Europa, Ganymede, Io and Callisto each told a different story.",
+          "fact": "4 large moons",
+          "factLabel": "Io · Europa · Ganymede · Callisto",
+          "question": "A magnetic signature can reveal something an ordinary photograph cannot: material beneath a surface.",
+          "source": "https://science.nasa.gov/mission/galileo/galileo-science/"
+        },
+        {
+          "name": "Protecting Europa",
+          "body": "With the mission nearing its end, controllers sent Galileo into Jupiter rather than risk an uncontrolled collision with a potentially habitable moon.",
+          "fact": "21 September 2003",
+          "factLabel": "The controlled end of the mission",
+          "question": "Protecting future science can be part of planning a spacecraft’s final trajectory.",
+          "source": "https://www.nasa.gov/history/30-years-ago-galileo-off-to-orbit-jupiter/"
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "date": "1989-10-18",
+        "displayDate": "18 October 1989",
+        "title": "Atlantis carries Galileo to space",
+        "body": "The mission launches aboard STS-34, beginning its gravity-assist route to Jupiter."
+      },
+      {
+        "date": "1991-10-29",
+        "displayDate": "29 October 1991",
+        "title": "A close look at Gaspra",
+        "body": "Galileo makes the first spacecraft flyby of an asteroid. Its later Ida encounter reveals Dactyl."
+      },
+      {
+        "date": "1995-12",
+        "displayDate": "December 1995",
+        "title": "Two ways to explore Jupiter",
+        "body": "The probe samples the atmosphere while the orbiter begins the first long-term orbital investigation of the Jovian system."
+      },
+      {
+        "date": "2003-09-21",
+        "displayDate": "21 September 2003",
+        "title": "A deliberate final plunge",
+        "body": "Galileo ends its mission in Jupiter’s atmosphere, protecting the moons from a future uncontrolled impact."
+      }
+    ],
+    "scienceTitle": "Three moons, three scientific surprises",
+    "scienceIntro": "Different instruments turned distant points of light into worlds with distinct interiors and histories.",
+    "science": [
+      {
+        "title": "Europa: evidence beneath ice",
+        "body": "Surface geology and magnetic measurements strengthened the case for a conducting, salty ocean beneath Europa’s ice.",
+        "source": "https://science.nasa.gov/mission/galileo/galileo-science/"
+      },
+      {
+        "title": "Ganymede’s own magnetic field",
+        "body": "Galileo discovered an intrinsic magnetic field at Ganymede, distinguishing it from a simple passive response to Jupiter’s field.",
+        "source": "https://science.nasa.gov/jupiter/jupiter-moons/ganymede/"
+      },
+      {
+        "title": "Io: a changing volcanic world",
+        "body": "Images and infrared measurements tracked volcanic activity and hot regions, extending the story first revealed by Voyager.",
+        "source": "https://science.nasa.gov/mission/galileo/galileo-science/"
+      }
+    ],
+    "instrumentIntro": "Three selected orbiter instruments and the separate atmospheric probe illustrate complementary ways to investigate Jupiter. This is not a complete payload list.",
+    "instruments": [
+      {
+        "name": "SSI camera",
+        "body": "Solid-State Imaging recorded cloud patterns, moon surfaces and changes across repeated encounters."
+      },
+      {
+        "name": "NIMS",
+        "body": "The Near-Infrared Mapping Spectrometer connected spectral information with surface materials and thermal features."
+      },
+      {
+        "name": "Magnetometer",
+        "body": "Measured the field around Jupiter and its moons, helping investigate invisible structures and interiors."
+      },
+      {
+        "name": "Atmospheric entry probe",
+        "body": "A separate vehicle carried instruments into Jupiter to measure atmospheric conditions directly."
+      }
+    ],
+    "instrumentDetails": [
+      "Images were often built from several filtered exposures. Colour processing can approximate visible appearance or emphasise differences between surface materials.",
+      "A spectrum separates light by wavelength. NIMS added information about composition and heat that a single broad-band photograph cannot provide.",
+      "Magnetic evidence must be interpreted with the surrounding plasma and Jupiter’s changing field. A magnetic measurement is not a direct photograph of an ocean.",
+      "The probe measured atmospheric structure and composition, clouds and radiative conditions. Its data were relayed to the orbiter before being sent to Earth."
+    ],
+    "communication": {
+      "eyebrow": "Science through an antenna problem",
+      "title": "A mission rescued by ingenuity",
+      "body": "The high-gain antenna did not fully deploy. Engineers combined low-gain communication, new software, data compression and Deep Space Network improvements to recover much of the planned science.",
+      "note": "The calculator uses an illustrative 628-million-kilometre Earth–spacecraft distance. Galileo no longer exists as an operating spacecraft; this is not a live measurement.",
+      "source": "https://science.nasa.gov/mission/galileo/galileo-science/"
+    },
+    "quiz": {
+      "nav": "Test yourself",
+      "eyebrow": "Galileo science challenge",
+      "title": "What can the evidence tell us?",
+      "intro": "Three questions about the probe, hidden water and the mission’s ending.",
+      "correct": "Exactly.",
+      "incorrect": "Here is the science behind it.",
+      "next": "Next question",
+      "restart": "Try again",
+      "questions": [
+        {
+          "question": "Which part of Galileo measured Jupiter’s atmosphere from inside?",
+          "options": [
+            "The released atmospheric probe",
+            "A lander on Europa",
+            "The orbiter’s solar panels"
+          ],
+          "correct": 0,
+          "explanation": "A separate entry probe descended into Jupiter and relayed data through the orbiter for about 58 minutes."
+        },
+        {
+          "question": "Did Galileo photograph Europa’s buried ocean directly?",
+          "options": [
+            "Yes, through transparent ice",
+            "No, several kinds of evidence support the ocean interpretation",
+            "Yes, after landing on the seafloor"
+          ],
+          "correct": 1,
+          "explanation": "Magnetic measurements and surface geology support the ocean interpretation; Galileo never travelled beneath Europa’s ice."
+        },
+        {
+          "question": "Why was the orbiter deliberately sent into Jupiter?",
+          "options": [
+            "To land safely on a solid surface",
+            "To recharge its batteries",
+            "To avoid a future uncontrolled impact on a moon such as Europa"
+          ],
+          "correct": 2,
+          "explanation": "The controlled ending reduced the risk of contaminating a potentially habitable moon after control of the spacecraft was lost."
+        }
+      ]
+    },
+    "faq": [
+      {
+        "question": "Was Galileo the first spacecraft to reach Jupiter?",
+        "answer": "No. Pioneer and Voyager spacecraft made earlier flybys. Galileo was the first to orbit Jupiter and conduct a sustained orbital investigation."
+      },
+      {
+        "question": "Was the atmospheric probe a Jupiter lander?",
+        "answer": "No. It descended under a parachute and stopped transmitting as conditions became extreme. It did not land on a solid surface."
+      },
+      {
+        "question": "Did Galileo discover life on Europa?",
+        "answer": "No. Evidence of an ocean and possible habitability does not establish the presence of life."
+      }
+    ],
+    "galleryTitle": "The Galilean moons through Galileo’s eyes",
+    "galleryIntro": "Archival imaging products with their original credits and processing context.",
+    "gallery": [
+      {
+        "title": "Europa in two colour treatments",
+        "alt": "Two Galileo views of Europa, one approximately natural colour and one with enhanced colour differences",
+        "body": "Both views use observations from September 1996. The enhanced version highlights material differences; neither view looks through the ice."
+      },
+      {
+        "title": "Ganymede’s contrasting terrains",
+        "alt": "Galileo global colour image of Ganymede with dark terrain, bright grooves and impact craters",
+        "body": "This image combines observations from June 1996. Older dark regions contrast with younger deformed terrain; the magnetic field itself is invisible here."
+      },
+      {
+        "title": "Io’s volcanic colours",
+        "alt": "Galileo colour mosaic of Io showing pale plains and darker volcanic regions",
+        "body": "The July 1999 mosaic uses filtered images to approximate visible appearance. Infrared observations supplied additional evidence about hot regions."
+      }
+    ],
+    "sourceNote": "Mission history, science and imagery follow NASA/JPL sources. The chapter map is illustrative. The evidence explorer separates observations, scientific interpretation and limits; its images provide context rather than displaying magnetic data directly.",
+    "evidence": {
+      "nav": "Read the evidence",
+      "eyebrow": "From a measurement to a scientific claim",
+      "title": "What did the instruments actually establish?",
+      "intro": "Choose a case, then move between the observation, its interpretation and the limits of the conclusion.",
+      "choose": "Choose a science evidence case",
+      "chooseStep": "Choose an evidence stage",
+      "steps": [
+        "Observation",
+        "Interpretation",
+        "Limits"
+      ],
+      "next": "Continue the reasoning",
+      "restart": "Return to the observation",
+      "imageNote": "This archival image supplies context. The readings summarise instrument results; a photograph does not directly display magnetic fields or a chemical analysis.",
+      "cases": [
+        {
+          "name": "Europa: a hidden ocean",
+          "photo": 0,
+          "headings": [
+            "A changing magnetic response",
+            "A conducting layer below the ice",
+            "An ocean is not a biosignature"
+          ],
+          "readings": [
+            "Galileo measured magnetic perturbations near Europa as the surrounding Jovian field changed. Surface images supplied a different kind of evidence about the icy crust.",
+            "A conducting salty-water layer can produce an induced magnetic response. Combined observations support the interpretation of a buried ocean.",
+            "Galileo did not enter the ocean, measure its complete structure or discover life. The visible surface image is not a direct view through the ice."
+          ],
+          "question": "Which part of the ocean argument comes from magnetic measurements, and which comes from images?",
+          "source": "https://europa.nasa.gov/resources/174/induced-magnetic-field-from-europas-subsurface-ocean/"
+        },
+        {
+          "name": "Ganymede: a magnetic moon",
+          "photo": 1,
+          "headings": [
+            "A field measured during flybys",
+            "A moon with its own magnetic field",
+            "A photograph cannot show the field"
+          ],
+          "readings": [
+            "Magnetometer measurements around Ganymede revealed a magnetic structure distinguishable from Jupiter’s surrounding field.",
+            "The observations established an intrinsic magnetic field, making Ganymede a remarkable moon with its own magnetic environment.",
+            "The image shows surface terrain, not field lines. Reconstructing the interior requires models and several kinds of observations, rather than this picture alone."
+          ],
+          "question": "Why is distinguishing an intrinsic field from an induced response scientifically useful?",
+          "source": "https://science.nasa.gov/jupiter/jupiter-moons/ganymede/"
+        },
+        {
+          "name": "Io: a volcanic world",
+          "photo": 2,
+          "headings": [
+            "Hot regions and a changing surface",
+            "Active volcanism",
+            "Colour is not a thermometer"
+          ],
+          "readings": [
+            "Galileo’s infrared observations detected hot regions, while repeated imaging revealed changes associated with volcanic activity.",
+            "Together, heat measurements and changing surface features support ongoing eruptions and resurfacing on Io.",
+            "A visible-colour mosaic does not directly give a temperature map. Voyager had already revealed Io’s volcanism; Galileo extended and refined that knowledge."
+          ],
+          "question": "What extra evidence does an infrared instrument add to a colour photograph?",
+          "source": "https://science.nasa.gov/mission/galileo/galileo-science/"
+        }
+      ]
+    }
+  },
+  "curiosity": {
+    "name": "Curiosity",
+    "tagline": "Reading Mars, one rock at a time",
+    "eyebrow": "NASA · JPL · Mars Science Laboratory · Gale Crater",
+    "intro": "Curiosity carries a laboratory across Mars. By drilling rocks, identifying minerals and studying layered landscapes, it asks whether ancient Mars offered environments where microbes could have lived.",
+    "heroAlt": "Curiosity rover in a self-portrait at the Buckskin drilling site",
+    "status": {
+      "title": "Active mission · exploring ancient environments",
+      "body": "NASA lists Curiosity as a current Mars mission. This page uses dated science examples and archival images; its diagrams and distance calculator do not track the rover’s live position or current instrument readings."
+    },
+    "stats": [
+      {
+        "label": "Launch",
+        "value": "26 Nov 2011",
+        "note": "Atlas V · Mars Science Laboratory"
+      },
+      {
+        "label": "Mars landing",
+        "value": "6 Aug 2012",
+        "note": "UTC · Gale Crater · sky crane descent"
+      },
+      {
+        "label": "Rover mass",
+        "value": "≈900 kg",
+        "note": "A laboratory about the size of a small car"
+      },
+      {
+        "label": "Science packages",
+        "value": "10",
+        "note": "Images, chemistry, minerals, weather and radiation"
+      }
+    ],
+    "exploration": {
+      "nav": "Explore Gale Crater",
+      "eyebrow": "A field geologist on six wheels",
+      "title": "A landscape that preserves time",
+      "intro": "Choose a chapter to connect the landing, ancient lake deposits, Mount Sharp and the rover’s onboard laboratory.",
+      "choose": "Choose a Curiosity science chapter",
+      "description": "Conceptual Gale Crater landscape with a landing area, veined rocks, Mount Sharp and a rover",
+      "note": "Educational landscape, not a geographic map. Marker positions, landforms, route and rover drawing are synthetic; none indicate Curiosity’s current location.",
+      "detailLabel": "Field chapter",
+      "stops": [
+        {
+          "name": "Bradbury Landing",
+          "body": "Curiosity arrived inside Gale Crater using a rocket-powered sky crane. The landing placed a mobile laboratory near layered rocks that could preserve environmental history.",
+          "fact": "6 August 2012",
+          "factLabel": "Landing date in UTC",
+          "question": "The date is often written as 5 August in Pacific-time accounts of the landing.",
+          "source": "https://www.jpl.nasa.gov/missions/mars-science-laboratory-curiosity-rover-msl/"
+        },
+        {
+          "name": "Yellowknife Bay",
+          "body": "Fine-grained mudstones and their chemistry revealed an ancient lake environment with conditions that could have supported microbes.",
+          "fact": "Ancient habitability",
+          "factLabel": "A conclusion from rocks and laboratory measurements",
+          "question": "A habitable environment means suitable conditions, not a discovery of organisms.",
+          "source": "https://www.nasa.gov/news-release/nasas-mars-curiosity-rover-marks-first-martian-year-with-mission-successes/"
+        },
+        {
+          "name": "Mount Sharp",
+          "body": "Layered rocks preserve changes in sediment deposition and later alteration. Different strata help reconstruct changing water and wind environments.",
+          "fact": "Layers as an archive",
+          "factLabel": "A history written in rock",
+          "question": "Not every layered rock formed in a lake. Some sandstones preserve evidence of ancient dunes.",
+          "source": "https://science.nasa.gov/mission/msl-curiosity/"
+        },
+        {
+          "name": "The rolling laboratory",
+          "body": "Drilling supplies powdered samples to onboard instruments. Other tools examine rocks remotely, photograph tiny textures or monitor the surrounding environment.",
+          "fact": "SAM + CheMin",
+          "factLabel": "Chemistry and mineralogy inside the rover",
+          "question": "A camera image, an elemental measurement and a mineral identification are different kinds of evidence.",
+          "source": "https://science.nasa.gov/mission/msl-curiosity/science-instruments/"
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "date": "2011-11-26",
+        "displayDate": "26 November 2011",
+        "title": "A laboratory launches",
+        "body": "Mars Science Laboratory departs Earth aboard an Atlas V rocket."
+      },
+      {
+        "date": "2012-08-06",
+        "displayDate": "6 August 2012 · UTC",
+        "title": "Sky crane arrival",
+        "body": "The descent stage lowers Curiosity onto the floor of Gale Crater."
+      },
+      {
+        "date": "2013-03-12",
+        "displayDate": "12 March 2013",
+        "title": "Evidence of a habitable past",
+        "body": "Results from drilled mudstone support an ancient environment favourable for microbial life."
+      },
+      {
+        "date": "2018-06-07",
+        "displayDate": "7 June 2018",
+        "title": "Ancient organics reported",
+        "body": "Scientists report organic compounds preserved in ancient sedimentary rocks. Their presence does not by itself establish a biological origin."
+      }
+    ],
+    "scienceTitle": "From rock textures to ancient environments",
+    "scienceIntro": "Curiosity combines field context with measurements that reach beyond what a landscape photograph can show.",
+    "science": [
+      {
+        "title": "A lake that could have supported microbes",
+        "body": "Yellowknife Bay samples indicated water, chemical ingredients and potential energy sources compatible with an ancient habitable environment.",
+        "source": "https://www.nasa.gov/news-release/nasas-mars-curiosity-rover-marks-first-martian-year-with-mission-successes/"
+      },
+      {
+        "title": "Organic matter preserved in rock",
+        "body": "SAM measurements found organic compounds in ancient mudstones. Non-biological processes can also produce organics, so origin remains a separate question.",
+        "source": "https://science.gsfc.nasa.gov/600/nuggets/files/OrganicCompounds-nugget20180625.pdf"
+      },
+      {
+        "title": "Minerals as environmental clues",
+        "body": "CheMin’s X-ray diffraction identifies minerals, allowing scientists to connect rock composition with formation and alteration histories.",
+        "source": "https://www.nasa.gov/missions/mars-science-laboratory/curiosity-rover/what-is-the-chemistry-and-mineralogy-instrument/"
+      }
+    ],
+    "instrumentIntro": "Four selected capabilities introduce the rover’s ten science packages. Cameras and chemical instruments work together rather than answering every question alone.",
+    "instruments": [
+      {
+        "name": "SAM",
+        "body": "Sample Analysis at Mars examines gases from samples and the atmosphere, including organic chemistry and isotopes."
+      },
+      {
+        "name": "CheMin",
+        "body": "Uses X-ray diffraction to identify minerals in powdered rock and soil samples."
+      },
+      {
+        "name": "ChemCam",
+        "body": "A laser produces a small plasma; spectrometers analyse its light to investigate elemental composition."
+      },
+      {
+        "name": "Mastcam + MAHLI",
+        "body": "Provide landscape context and close-up views of rock textures, grains and structures."
+      }
+    ],
+    "instrumentDetails": [
+      "SAM combines a gas chromatograph, mass spectrometer and tunable laser spectrometer. Heating samples releases gases that can be separated and analysed.",
+      "Mineral structure produces a characteristic diffraction pattern. Identifying a clay mineral is different from detecting its constituent elements alone.",
+      "ChemCam can examine selected targets without moving the rover’s arm into contact. Its remote micro-imager helps connect chemistry with the target’s texture.",
+      "Mastcam surveys the surrounding terrain; MAHLI sits on the robotic arm for close inspection. REMS and RAD add environmental and radiation measurements to the wider payload."
+    ],
+    "communication": {
+      "eyebrow": "Science with a light-time delay",
+      "title": "A rover does not drive by instant joystick",
+      "body": "Commands and observations travel by radio, with much of the science data relayed through Mars orbiters. Changing Earth–Mars distance adds a substantial signal delay.",
+      "note": "The calculator uses an illustrative 225-million-kilometre Earth–Mars distance. It is not today’s separation or a rover contact schedule.",
+      "source": "https://science.nasa.gov/mission/msl-curiosity/"
+    },
+    "quiz": {
+      "nav": "Test yourself",
+      "eyebrow": "Curiosity field challenge",
+      "title": "What does a rock really reveal?",
+      "intro": "Three questions about habitability, chemistry and the rover’s tools.",
+      "correct": "Exactly.",
+      "incorrect": "Here is the science behind it.",
+      "next": "Next question",
+      "restart": "Try again",
+      "questions": [
+        {
+          "question": "What does an ancient habitable environment establish?",
+          "options": [
+            "Conditions could have supported life",
+            "Living microbes were photographed",
+            "Mars once had forests"
+          ],
+          "correct": 0,
+          "explanation": "Habitability describes environmental conditions. Demonstrating that life existed requires different evidence."
+        },
+        {
+          "question": "Do organic compounds alone prove a biological origin?",
+          "options": [
+            "Yes, always",
+            "No, non-biological processes can also make them",
+            "Yes, if the rock is old"
+          ],
+          "correct": 1,
+          "explanation": "Organic chemistry can arise through biological or non-biological processes. Detecting compounds and establishing their origin are separate tasks."
+        },
+        {
+          "question": "Which instrument identifies minerals using X-ray diffraction?",
+          "options": [
+            "A wheel motor",
+            "The radio antenna",
+            "CheMin"
+          ],
+          "correct": 2,
+          "explanation": "CheMin identifies minerals in powdered samples using X-ray diffraction. Other instruments provide complementary chemical and visual information."
+        }
+      ]
+    },
+    "faq": [
+      {
+        "question": "Are Curiosity and Perseverance the same rover?",
+        "answer": "No. Curiosity landed in Gale Crater in 2012; Perseverance landed in Jezero Crater in 2021. They have different payloads and mission objectives."
+      },
+      {
+        "question": "Has Curiosity proved there was life on Mars?",
+        "answer": "No. It has found evidence of ancient habitable environments and organic compounds, which do not establish that life existed."
+      },
+      {
+        "question": "Does Curiosity rely on solar panels?",
+        "answer": "Its main electrical source is an MMRTG, which converts heat from radioactive decay into electricity. It does not depend on large solar panels for its main power supply."
+      }
+    ],
+    "galleryTitle": "A working geologist on Mars",
+    "galleryIntro": "A rover self-portrait, a drilling target and a landscape shaped by ancient wind, with archival dates.",
+    "gallery": [
+      {
+        "title": "Self-portrait at Buckskin",
+        "alt": "Low-angle mosaic self-portrait of Curiosity at the Buckskin drilling site",
+        "body": "MAHLI images from August 2015 were combined into this self-portrait. The arm moved between exposures, allowing a mosaic without most of the arm in view."
+      },
+      {
+        "title": "John Klein: a first drilling target",
+        "alt": "Veined, flat-lying rock at the John Klein target in Yellowknife Bay",
+        "body": "This January 2013 view shows the area selected for Curiosity’s first drilling. The photograph supplies context; laboratory analyses of samples supplied additional mineral and chemical evidence."
+      },
+      {
+        "title": "Wind-written layers at Murray Buttes",
+        "alt": "Layered sandstone outcrops and sloping buttes photographed by Curiosity",
+        "body": "Mastcam captured this view in September 2016. Cross-bedded sandstone preserves evidence of ancient migrating dunes, showing that layers need not have formed in a lake."
+      }
+    ],
+    "sourceNote": "Science examples and images follow NASA/JPL materials with dates and credits. The landscape diagram is synthetic. The evidence explorer distinguishes measured observations, interpretation and limits; photographs do not substitute for chemical measurements.",
+    "evidence": {
+      "nav": "Read the evidence",
+      "eyebrow": "From a measurement to a scientific claim",
+      "title": "What did the instruments actually establish?",
+      "intro": "Choose a case, then move between the observation, its interpretation and the limits of the conclusion.",
+      "choose": "Choose a science evidence case",
+      "chooseStep": "Choose an evidence stage",
+      "steps": [
+        "Observation",
+        "Interpretation",
+        "Limits"
+      ],
+      "next": "Continue the reasoning",
+      "restart": "Return to the observation",
+      "imageNote": "This archival image supplies context. The readings summarise instrument results; a photograph does not directly display magnetic fields or a chemical analysis.",
+      "cases": [
+        {
+          "name": "A lake: conditions for life",
+          "photo": 1,
+          "headings": [
+            "Fine grains, minerals and chemistry",
+            "An ancient habitable environment",
+            "Habitable does not mean inhabited"
+          ],
+          "readings": [
+            "At Yellowknife Bay, fine-grained mudstones and laboratory measurements revealed minerals and chemistry associated with an ancient water-rich environment.",
+            "Several lines of evidence indicate a former lake with conditions and potential chemical energy sources compatible with microbial life.",
+            "Suitable conditions do not demonstrate organisms. The outcrop photograph supplies field context; the habitability conclusion also relies on sample analyses."
+          ],
+          "question": "Which additional evidence would be needed to argue that organisms actually existed?",
+          "source": "https://www.nasa.gov/news-release/nasas-mars-curiosity-rover-marks-first-martian-year-with-mission-successes/"
+        },
+        {
+          "name": "Organics: a question of origin",
+          "photo": 0,
+          "headings": [
+            "Organic compounds in mudstone",
+            "Chemistry preserved over time",
+            "Several origins remain possible"
+          ],
+          "readings": [
+            "SAM analyses found organic compounds in ancient Martian mudstones. The self-portrait illustrates the rover’s sampling work, not the molecular measurements themselves.",
+            "The results show that some organic material can be preserved in the Martian rock record despite a harsh surface environment.",
+            "Organic molecules can have biological or non-biological origins. Detecting them does not, on its own, establish ancient life."
+          ],
+          "question": "Why is identifying a molecule different from identifying the process that made it?",
+          "source": "https://science.gsfc.nasa.gov/600/nuggets/files/OrganicCompounds-nugget20180625.pdf"
+        },
+        {
+          "name": "Sandstone: ancient dunes",
+          "photo": 2,
+          "headings": [
+            "Inclined layers in sandstone",
+            "Wind moving sand dunes",
+            "Layers alone do not prove a lake"
+          ],
+          "readings": [
+            "Mastcam views at Murray Buttes show cross-bedding in sandstone: sets of inclined layers visible within the rock.",
+            "The structures indicate sand deposited by migrating wind-driven dunes, later turned into rock and exposed by erosion.",
+            "Layering occurs in several environments. The geometry, grain properties and regional context matter when distinguishing wind deposits from lake sediments."
+          ],
+          "question": "What would be lost if every layered outcrop were simply labelled an ancient lake?",
+          "source": "https://science.nasa.gov/photojournal/farewell-to-murray-buttes-image-2/"
+        }
+      ]
+    }
+  }
+}

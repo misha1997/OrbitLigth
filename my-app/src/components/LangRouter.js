@@ -12,6 +12,7 @@ import { nameFromPath } from "../lib/seo";
 import NotFound from "../pages/NotFound";
 import { getNewsBootstrap } from "../lib/news";
 import NewsSkeleton from "./NewsSkeleton";
+import { getConstellationBootstrap } from "../lib/constellationGuides";
 
 const Home = lazy(() => import("../pages/Home"));
 const Weather = lazy(() => import("../pages/Weather"));
@@ -26,6 +27,7 @@ const Voyager = lazy(() => import("../pages/Voyager"));
 const Comets = lazy(() => import("../pages/Comets"));
 const Exoplanets = lazy(() => import("../pages/Exoplanets"));
 const Constellations = lazy(() => import("../pages/Constellations"));
+const ConstellationGuide = lazy(() => import("../pages/ConstellationGuide"));
 const Mast = lazy(() => import("../pages/Mast"));
 const Missions = lazy(() => import("../pages/Missions"));
 const Hubble = lazy(() => import("../pages/Hubble"));
@@ -45,6 +47,8 @@ const Kepler = lazy(() => import("../pages/Kepler"));
 const Spitzer = lazy(() => import("../pages/Spitzer"));
 const Pioneer10 = lazy(() => import("../pages/Pioneer10"));
 const Pioneer11 = lazy(() => import("../pages/Pioneer11"));
+const Galileo = lazy(() => import("../pages/Galileo"));
+const Curiosity = lazy(() => import("../pages/Curiosity"));
 const Gallery = lazy(() => import("../pages/Gallery"));
 const Planetarium = lazy(() => import("../pages/Planetarium"));
 const Mars = lazy(() => import("../pages/Mars"));
@@ -98,6 +102,8 @@ const PAGES = {
   spitzer: Spitzer,
   pioneer10: Pioneer10,
   pioneer11: Pioneer11,
+  galileo: Galileo,
+  curiosity: Curiosity,
   gallery: Gallery,
   planetarium: Planetarium,
   mars: Mars,
@@ -126,12 +132,22 @@ function Loading() {
   return <div style={{ height: "60vh" }} />;
 }
 
+function ConstellationFallback() {
+  const initial = getConstellationBootstrap();
+  return initial?.html ? <div dangerouslySetInnerHTML={{ __html: initial.html }} /> : <Loading />;
+}
+
 export default function LangRouter() {
   const { lang, "*": rest } = useParams();
   const resolved = nameFromPath(`/${lang || ""}/${rest || ""}`);
 
   if (resolved.name === "404") {
     return <NotFound />;
+  }
+  if (resolved.constellationSlug) {
+    return <Suspense fallback={<ConstellationFallback />}>
+      <ConstellationGuide key={resolved.constellationSlug} slug={resolved.constellationSlug} />
+    </Suspense>;
   }
   if (resolved.name === "news" && resolved.articleSlug) {
     return (
@@ -150,7 +166,7 @@ export default function LangRouter() {
   const Page = PAGES[resolved.name];
   if (!Page) return <NotFound />;
   return (
-    <Suspense fallback={resolved.name === "news" ? <NewsFallback /> : <Loading />}>
+    <Suspense fallback={resolved.name === "news" ? <NewsFallback /> : resolved.name === "constellations" ? <ConstellationFallback /> : <Loading />}>
       <Page />
     </Suspense>
   );

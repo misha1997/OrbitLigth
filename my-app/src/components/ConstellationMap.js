@@ -122,7 +122,7 @@ function getSeasonDate(season) {
   }
 }
 
-export default function ConstellationMap() {
+export default function ConstellationMap({ focusConst = null, initialSeason = null }) {
   const { t } = useTranslation();
   const { loc } = useLoc();
   const { lang } = useLang();
@@ -136,7 +136,7 @@ export default function ConstellationMap() {
   // States
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeConst, setActiveConst] = useState("UMa");
+  const [activeConst, setActiveConst] = useState(focusConst || "UMa");
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const [hoveredObj, setHoveredObj] = useState(null);
   const [statusMsg, setStatusMsg] = useState("");
@@ -163,9 +163,11 @@ export default function ConstellationMap() {
 
   const svgRef = useRef(null);
   const dragStart = useRef({ x: 0, y: 0 });
+  const focusedRef = useRef(null);
 
   // Automatically determine season on load based on current month
   const [seasonFilter, setSeasonFilter] = useState(() => {
+    if (["winter", "spring", "summer", "autumn"].includes(initialSeason)) return initialSeason;
     const month = new Date().getMonth();
     const seasonsNorth = ["winter", "winter", "spring", "spring", "spring", "summer", "summer", "summer", "autumn", "autumn", "autumn", "winter"];
     return seasonsNorth[month];
@@ -318,6 +320,14 @@ export default function ConstellationMap() {
 
     return { stars, constellations };
   }, [data, latLon, currentTime, seasonFilter, lang]);
+
+  useEffect(() => {
+    if (!focusConst || focusedRef.current === focusConst) return;
+    const target = projectedSky.constellations.find(c => c.id === focusConst);
+    if (!target) return;
+    updateView(3, { x: (CX - target.x) * 3, y: (CY - target.y) * 3 });
+    focusedRef.current = focusConst;
+  }, [focusConst, projectedSky.constellations, updateView]);
 
   // Filter stars/constellations around the horizon to avoid space clutter
   const visibleStars = useMemo(() => {

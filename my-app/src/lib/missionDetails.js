@@ -3,6 +3,41 @@ const photo = (mission, file, credit, source, year) => ({ image: `/${mission}/im
 const nasaImage = (id) => `https://images.nasa.gov/details/${id}`;
 
 export const MISSION_DETAILS = {
+  galileo: {
+    experience: "jupiter-system-archive",
+    model: { url: "/galileo/models/galileo.glb", direction: [1, 0.6, 1.4], credit: { author: "NASA · 3D Resources", source: "https://github.com/nasa/NASA-3D-Resources/tree/master/3D%20Models/Galileo" } },
+    accent: "#DFAC78", hero: "/galileo/images/preview.jpg",
+    gallery: [
+      photo("galileo", "europa", "NASA / JPL / DLR", "https://science.nasa.gov/photojournal/pj-natural-and-false-color-views-of-europa/", "1996"),
+      photo("galileo", "ganymede", "NASA / JPL / DLR", "https://science.nasa.gov/resource/ganymede-galileo/", "1996"),
+      photo("galileo", "io", "NASA / JPL / University of Arizona", "https://science.nasa.gov/photojournal/global-image-of-io-true-color/", "1999"),
+    ],
+    sources: [
+      { label: "NASA · Galileo", url: "https://science.nasa.gov/mission/galileo/" },
+      { label: "NASA · Galileo science", url: "https://science.nasa.gov/mission/galileo/galileo-science/" },
+      { label: "NASA · Atmospheric probe", url: "https://science.nasa.gov/mission/galileo-jupiter-atmospheric-probe/" },
+      { label: "NASA · Mission history", url: "https://www.nasa.gov/history/30-years-ago-galileo-off-to-orbit-jupiter/" },
+      { label: "NASA · Europa & magnetic induction", url: "https://europa.nasa.gov/resources/174/induced-magnetic-field-from-europas-subsurface-ocean/" },
+    ],
+  },
+  curiosity: {
+    experience: "mars-field-geology",
+    model: { url: "/curiosity/models/curiosity.glb", direction: [1, 0.7, 1.3], credit: { author: "NASA / JPL-Caltech", source: "https://science.nasa.gov/resource/curiosity-3d-model/" } },
+    accent: "#D78C68", hero: "/curiosity/images/selfie.jpg",
+    gallery: [
+      photo("curiosity", "selfie", "NASA / JPL-Caltech / MSSS", nasaImage("PIA19807"), "2015"),
+      photo("curiosity", "john-klein", "NASA / JPL-Caltech / MSSS", nasaImage("PIA16567"), "2013"),
+      photo("curiosity", "buttes", "NASA / JPL-Caltech / MSSS", nasaImage("PIA21042"), "2016"),
+    ],
+    sources: [
+      { label: "NASA · Curiosity", url: "https://science.nasa.gov/mission/msl-curiosity/" },
+      { label: "JPL · Mission overview & status", url: "https://www.jpl.nasa.gov/missions/mars-science-laboratory-curiosity-rover-msl/" },
+      { label: "NASA · Science instruments", url: "https://science.nasa.gov/mission/msl-curiosity/science-instruments/" },
+      { label: "NASA · Ancient habitable environment", url: "https://www.nasa.gov/news-release/nasas-mars-curiosity-rover-marks-first-martian-year-with-mission-successes/" },
+      { label: "NASA · Organic compounds in mudstone", url: "https://science.gsfc.nasa.gov/600/nuggets/files/OrganicCompounds-nugget20180625.pdf" },
+      { label: "NASA · CheMin discoveries", url: "https://www.nasa.gov/missions/mars-science-laboratory/curiosity-rover/what-is-the-chemistry-and-mineralogy-instrument/" },
+    ],
+  },
   pioneer10: {
     experience: "outer-planet-pathfinder",
     model: { url: "/pioneer10/models/pioneer10.glb", direction: [1, 0.7, 1.4], credit: { author: "NASA · 3D Resources", source: "https://github.com/nasa/NASA-3D-Resources/tree/master/3D%20Models/Pioneer%2010" } },

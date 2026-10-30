@@ -4,6 +4,15 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 
 const assets = [
+  ['galileo/models/galileo.glb', 'https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/3D%20Models/Galileo/Galileo.glb'],
+  ['galileo/images/preview.jpg', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/bosf/images/galileo-400w.jpg'],
+  ['galileo/images/europa.jpg', 'https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia00/pia00502/PIA00502.jpg'],
+  ['galileo/images/ganymede.jpg', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/g/gal_gn1_961007-1.jpg'],
+  ['galileo/images/io.jpg', 'https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia02/pia02308/PIA02308.jpg'],
+  ['curiosity/models/curiosity.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/c/Curiosity_static.glb'],
+  ['curiosity/images/selfie.jpg', 'https://images-assets.nasa.gov/image/PIA19807/PIA19807~medium.jpg'],
+  ['curiosity/images/john-klein.jpg', 'https://images-assets.nasa.gov/image/PIA16567/PIA16567~medium.jpg'],
+  ['curiosity/images/buttes.jpg', 'https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia21/pia21042/PIA21042.jpg'],
   ['pioneer10/models/pioneer10.glb', 'https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/3D%20Models/Pioneer%2010/Pioneer%2010.glb'],
   // Pioneer 11 shares the basic spacecraft design; the page labels this as a Pioneer 10 model.
   ['pioneer11/models/pioneer11.glb', 'https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/3D%20Models/Pioneer%2010/Pioneer%2010.glb'],

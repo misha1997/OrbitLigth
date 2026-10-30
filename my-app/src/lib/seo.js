@@ -9,6 +9,8 @@
 // Internal lang codes are ISO 639-1 ("uk","en"); the URL prefix for Ukrainian
 // is "ua" (not "uk"). hreflang values stay "uk".
 
+import constellationIndex from "../data/constellationGuideIndex.json";
+
 export const SITE_URL = "https://orbitlight.space";
 
 // lang code -> URL prefix
@@ -44,6 +46,8 @@ export const SLUGS = {
   spitzer:        { uk: "spitzer",           en: "spitzer" },
   pioneer10:      { uk: "pioneer-10",        en: "pioneer-10" },
   pioneer11:      { uk: "pioneer-11",        en: "pioneer-11" },
+  galileo:        { uk: "galileo",           en: "galileo" },
+  curiosity:      { uk: "curiosity",         en: "curiosity" },
   meteors:        { uk: "meteory",           en: "meteors" },
   asteroids:      { uk: "asteroidy",         en: "asteroids" },
   events:         { uk: "podiyi",            en: "events" },
@@ -121,6 +125,14 @@ export function nameFromPath(pathname) {
   const lang = PREFIX_TO_LANG[m[1]];
   const rest = (m[2] || "").replace(/\/+$/, ""); // strip trailing slashes
   if (rest === "") return { name: "home", lang };
+  const constellationsSlug = slugForName("constellations", lang);
+  if (rest.startsWith(constellationsSlug + "/")) {
+    const tail = rest.slice(constellationsSlug.length + 1);
+    if (constellationIndex.items.some(item => item.slug === tail)) {
+      return { name: "constellations", lang, constellationSlug: tail };
+    }
+    return { name: "404", lang };
+  }
   // news article: <newsSlug>/<articleSlug>
   const newsSlug = slugForName("news", lang);
   if (rest === newsSlug) return { name: "news", lang };
@@ -143,10 +155,11 @@ export function nameFromPath(pathname) {
 
 // Path for the same content in the other language (for the language switcher).
 export function switchLangPath(pathname, targetLang) {
-  const { name, articleSlug, galaxySlug } = nameFromPath(pathname);
+  const { name, articleSlug, galaxySlug, constellationSlug } = nameFromPath(pathname);
   const base = pathFor(name, targetLang);
   if (name === "news" && articleSlug) return `${base}/${articleSlug}`;
   if (name === "galaxies" && galaxySlug) return `${base}/${galaxySlug}`;
+  if (name === "constellations" && constellationSlug) return `${base}/${constellationSlug}`;
   return base;
 }
 

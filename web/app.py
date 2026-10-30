@@ -528,6 +528,11 @@ async def _spa_lang(lang: str, rest: str, request: Request):
             request.url.path + ("?" + request.url.query if request.url.query else ""),
             request.query_params,
         )
+    constellations_slug = slug_for_name("constellations", lang)
+    if rest == constellations_slug or rest.startswith(constellations_slug + "/"):
+        from web.constellation_guides import constellation_response
+        tail = None if rest == constellations_slug else rest[len(constellations_slug) + 1:]
+        return constellation_response(_SPA_INDEX.read_text(encoding="utf-8"), lang, tail)
     galaxies_slug = slug_for_name("galaxies", lang)
     name = "home"
     status = 200

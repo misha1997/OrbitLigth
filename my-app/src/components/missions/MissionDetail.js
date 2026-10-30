@@ -13,6 +13,7 @@ import GaiaParallaxLab from "./GaiaParallaxLab";
 import KeplerTransitLab from "./KeplerTransitLab";
 import SpitzerInfraredLab from "./SpitzerInfraredLab";
 import PioneerFlybyLab from "./PioneerFlybyLab";
+import MissionEvidenceExplorer from "./MissionEvidenceExplorer";
 import "../../styles/mission-detail.css";
 import "../../styles/telescope3d.css";
 
@@ -87,6 +88,7 @@ function MissionDetailContent({ mission, ephemeris }) {
           ...(content.transit ? [["transit", content.transit.nav]] : []),
           ...(content.infrared ? [["infrared", content.infrared.nav]] : []),
           ...(content.flyby ? [["flyby", content.flyby.nav]] : []),
+          ...(content.evidence ? [["evidence", content.evidence.nav]] : []),
           ["timeline", ui.timeline], ["science", content.scienceTitle || ui.science],
           ["instruments", ui.instruments], ["communication", ui.communication],
           ...(content.quiz ? [["quiz", content.quiz.nav]] : [["news", ui.news.title]]),
@@ -121,6 +123,7 @@ function MissionDetailContent({ mission, ephemeris }) {
       {content.transit && <KeplerTransitLab content={content.transit} />}
       {content.infrared && <SpitzerInfraredLab content={content.infrared} />}
       {content.flyby && <PioneerFlybyLab mission={mission} content={content.flyby} />}
+      {content.evidence && <MissionEvidenceExplorer mission={mission} content={content.evidence} photos={data.gallery} captions={content.gallery} />}
 
       <section className="section" id="timeline">
         <div className="wrap">

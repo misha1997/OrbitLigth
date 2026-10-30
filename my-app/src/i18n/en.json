@@ -243,7 +243,9 @@
     "kepler": "Kepler / K2 — Worlds Hidden in Starlight | OrbitLight",
     "spitzer": "Spitzer — The Infrared Universe | OrbitLight",
     "pioneer10": "Pioneer 10 — The First Path to Jupiter | OrbitLight",
-    "pioneer11": "Pioneer 11 — First at Saturn | OrbitLight"
+    "pioneer11": "Pioneer 11 — First at Saturn | OrbitLight",
+    "galileo": "Galileo — Jupiter and Its Moons | OrbitLight",
+    "curiosity": "Curiosity — Reading the Rocks of Mars | OrbitLight"
   },
   "seo": {
     "desc": {
@@ -298,7 +300,9 @@
       "kepler": "Explore Kepler and K2 with a 3D telescope, interactive transits and light curves, exoplanet discoveries, instruments, NASA images and a mission quiz.",
       "spitzer": "Explore Spitzer with a 3D telescope, interactive thermal spectra, cold and warm mission phases, TRAPPIST-1, NASA nebula images and a quiz.",
       "pioneer10": "Explore Pioneer 10: NASA 3D model, asteroid-belt crossing, Jupiter flyby, gravity-assist experiment, archival images and a quiz.",
-      "pioneer11": "Follow Pioneer 11 from Jupiter to Saturn: interactive route, gravity-assist experiment, historical images, instruments and mission milestones."
+      "pioneer11": "Follow Pioneer 11 from Jupiter to Saturn: interactive route, gravity-assist experiment, historical images, instruments and mission milestones.",
+      "galileo": "Explore Galileo with NASA 3D, an interactive evidence explorer, Jupiter’s atmospheric probe, Europa, Ganymede, Io, archival images and a quiz.",
+      "curiosity": "Discover Curiosity: a NASA 3D rover, Gale Crater, ancient habitability, organic chemistry, an interactive evidence explorer and Mars imagery."
     }
   },
   "lang": {

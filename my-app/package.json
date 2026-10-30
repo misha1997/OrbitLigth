@@ -26,6 +26,7 @@
   },
   "proxy": "http://localhost:8000",
   "scripts": {
+    "prebuild": "node ../scripts/build-constellation-guides.cjs",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

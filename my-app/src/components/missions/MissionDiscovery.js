@@ -12,11 +12,15 @@ const MARKERS = {
   spitzer: [[21, 37], [50, 28], [78, 54], [40, 77]],
   pioneer10: [[12, 70], [34, 53], [57, 36], [85, 19]],
   pioneer11: [[12, 70], [47, 42], [76, 67], [85, 18]],
+  galileo: [[17, 69], [48, 64], [77, 30], [76, 78]],
+  curiosity: [[18, 75], [36, 60], [64, 32], [80, 69]],
 };
 
 const MAP_LABELS = { perseverance: "JEZERO / 18.4° N · 77.5° E", cassini: "SATURN SYSTEM / 2004–2017", osirisrex: "BENNU / SAMPLE RETURN / 2016–2023", gaia: "GAIA / ASTROMETRY · PHOTOMETRY · SPECTROSCOPY", kepler: "KEPLER / TRANSIT PHOTOMETRY / K2", spitzer: "SPITZER / INFRARED UNIVERSE / 2003–2020" };
 MAP_LABELS.pioneer10 = "PIONEER 10 / EARTH · ASTEROID BELT · JUPITER";
 MAP_LABELS.pioneer11 = "PIONEER 11 / EARTH · JUPITER · SATURN";
+MAP_LABELS.galileo = "GALILEO / JUPITER SYSTEM / 1989–2003";
+MAP_LABELS.curiosity = "CURIOSITY / GALE CRATER · MOUNT SHARP";
 
 function DiscoveryMap({ mission, selected, onSelect, content }) {
   const mars = mission === "perseverance";
@@ -76,6 +80,23 @@ function DiscoveryMap({ mission, selected, onSelect, content }) {
           <circle cx="624" cy="270" r="28" fill="#d6a076" /><circle cx="689" cy="235" r="11" fill="#91a4bd" /><circle cx="546" cy="312" r="8" fill="#c58e75" />
           <path d="M219 407H430M235 407Q264 263 302 407M274 407Q328 319 390 407" fill="none" stroke="#dfae88" strokeWidth="3" />
           <path d="M268 286V415M335 330V415" stroke="#b4c1dd70" strokeDasharray="4 6" />
+        </g> : mission === "galileo" ? <g>
+          <path d="M136 345Q120 125 350 185T410 270Q340 440 608 390" fill="none" stroke="#dfac7870" strokeWidth="2" strokeDasharray="6 8" />
+          <circle cx="136" cy="345" r="25" fill="#527990" /><path d="m118 330 20 7 5 20-19 6-8-17Z" fill="#a2baaa" />
+          <ellipse cx="410" cy="270" rx="205" ry="130" transform="rotate(-23 410 270)" fill="none" stroke="#b3a4d540" />
+          <circle cx="410" cy="270" r="79" fill="#cfad84" /><path d="M338 242Q410 262 482 242M332 272Q410 292 488 272M344 307Q410 319 476 307" fill="none" stroke="#8f6d5c" strokeWidth="10" /><ellipse cx="446" cy="301" rx="21" ry="10" fill="#ad6b54" />
+          <circle cx="616" cy="150" r="32" fill="#d5c9b4" /><path d="m595 133 28 23-15 16m-3-50 10 25 19 7" fill="none" stroke="#a38478" strokeWidth="2" />
+          <circle cx="713" cy="217" r="23" fill="#98938a" /><circle cx="656" cy="337" r="20" fill="#d6ac66" /><path d="m647 329 9 4 3 9" fill="none" stroke="#a25742" strokeWidth="4" />
+          <path d="m270 167 24 4-5 35-24-4Z" fill="#c4a074" /><path d="m281 185-35-11m35 11 30-18m-31 33 7 28" stroke="#d5c9b4" strokeWidth="3" />
+          <path d="m374 315 15-8 15 8-7 10h-16Z" fill="#e4d2b1" /><path d="m389 298v10" stroke="#e4d2b1" />
+        </g> : mission === "curiosity" ? <g>
+          <path d="M0 295 104 239 184 270 302 185 388 241 512 104 670 248 800 201V500H0Z" fill="#6c4b3c" />
+          <path d="m302 185 45 65 41-9 124-137 67 111 45 3 46 30" fill="none" stroke="#c6987155" strokeWidth="5" />
+          <path d="M0 343Q203 286 358 342T800 328V500H0Z" fill="#9b7051" />
+          <path d="M0 390Q202 333 383 392T800 380M0 432Q230 375 462 429T800 425" stroke="#d2a37b50" strokeWidth="3" fill="none" />
+          <path d="m210 307 109-35 51 35-114 45Z" fill="#ba9474" stroke="#6c4b3c" strokeWidth="2" /><path d="m238 302 51 20 48-33m-63-10 15 43-20 20" fill="none" stroke="#ead3a6" strokeWidth="2" />
+          <path d="M144 375Q195 383 288 300T512 160Q576 219 640 345" fill="none" stroke="#f0cca680" strokeWidth="2" strokeDasharray="6 8" />
+          <g transform="translate(627 320)"><path d="m-38-8 56-4 14 29-61 2Z" fill="#ddd0b6" /><path d="M0-10v-35h19v11H0M-32 9l-25 20 5 21" fill="none" stroke="#dfcba9" strokeWidth="5" /><g fill="#343034" stroke="#c3b096" strokeWidth="3"><circle cx="-28" cy="28" r="12" /><circle cx="0" cy="29" r="12" /><circle cx="29" cy="25" r="12" /></g></g>
         </g> : mission === "pioneer10" || mission === "pioneer11" ? <g>
           <circle cx="96" cy="350" r="25" fill="#527990" /><path d="m80 332 15 8 6 21 15 7-15 5-16-14Z" fill="#9ab6a8" />
           {Array.from({ length: 38 }, (_, index) => <circle key={index} cx={220 + (index % 6) * 19} cy={110 + index * 9 % 250} r={1.5 + index % 3} fill="#c5ae8670" />)}

@@ -125,6 +125,8 @@ SLUGS: dict[str, dict[str, str]] = {
     "spitzer":       {"uk": "spitzer",           "en": "spitzer"},
     "pioneer10":     {"uk": "pioneer-10",        "en": "pioneer-10"},
     "pioneer11":     {"uk": "pioneer-11",        "en": "pioneer-11"},
+    "galileo":       {"uk": "galileo",           "en": "galileo"},
+    "curiosity":     {"uk": "curiosity",         "en": "curiosity"},
     "meteors":      {"uk": "meteory",           "en": "meteors"},
     "asteroids":    {"uk": "asteroidy",         "en": "asteroids"},
     "events":       {"uk": "podiyi",            "en": "events"},
@@ -389,10 +391,14 @@ def render_head(name: str, lang: str, extra_jsonld: str = "",
     if jsonld and ov:
         page = json.loads(jsonld)
         page.update(name=title, description=desc, url=canonical)
-        if ov.get("og_type") == "article":
+        if ov.get("og_type") == "article" or ov.get("breadcrumb_name"):
             page["breadcrumb"]["itemListElement"].append({
-                "@type": "ListItem", "position": 3, "name": title, "item": canonical,
+                "@type": "ListItem", "position": 3, "name": ov.get("breadcrumb_name") or title, "item": canonical,
             })
+        if ov.get("modified"):
+            page["dateModified"] = ov["modified"]
+        if ov.get("image"):
+            page["image"] = image
         jsonld = json.dumps(page, ensure_ascii=False)
     robots = (
         '    <meta name="robots" content="noindex,nofollow" />\n'
@@ -427,6 +433,13 @@ def render_head(name: str, lang: str, extra_jsonld: str = "",
             f'    <meta property="og:image:width" content="1200" />\n'
             f'    <meta property="og:image:height" content="630" />\n'
             f'    <meta property="og:image:alt" content="{e(_OG_IMAGE_ALT.get(lang, _OG_IMAGE_ALT["en"]))}" />\n'
+        )
+    if image != _OG_IMAGE and ov.get("image_width") and ov.get("image_height"):
+        head += (
+            f'    <meta property="og:image:type" content="image/png" />\n'
+            f'    <meta property="og:image:width" content="{e(str(ov["image_width"]))}" />\n'
+            f'    <meta property="og:image:height" content="{e(str(ov["image_height"]))}" />\n'
+            f'    <meta property="og:image:alt" content="{e(title)}" />\n'
         )
     head += (
         f'    <meta name="twitter:card" content="summary_large_image" />\n'
@@ -569,6 +582,12 @@ def build_sitemap_pages_xml() -> str:
                 en_alt = _loc(name, "en")
                 pri, freq = _priority_changefreq(name)
                 urls.append(_sitemap_url(loc, today, freq, pri, uk_alt, en_alt))
+    from web.constellation_guides import guide_index, guide_url
+    for item in guide_index()["items"]:
+        for lang in LANGS:
+            urls.append(_sitemap_url(guide_url(lang, item["slug"]), guide_index()["checked"],
+                                     "monthly", "0.6", guide_url("uk", item["slug"]),
+                                     guide_url("en", item["slug"])))
     return _wrap_urlset(urls)
 
 

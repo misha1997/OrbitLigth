@@ -24,7 +24,7 @@ const mount = (mission) => render(
   </MemoryRouter>
 );
 
-test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper", "perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11"].flatMap((mission) => ["uk", "en"].map((lang) => [mission, lang])))
+test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper", "perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity"].flatMap((mission) => ["uk", "en"].map((lang) => [mission, lang])))
 ("%s renders translated content and SEO in %s, with working catalogue routes", async (mission, lang) => {
   mockLang = lang;
   i18next.changeLanguage(lang);
