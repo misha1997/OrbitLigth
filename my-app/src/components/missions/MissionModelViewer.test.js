@@ -10,7 +10,9 @@ import spitzer from "../../i18n/mission-spitzer.en.json";
 import pioneers from "../../i18n/mission-pioneers.en.json";
 import worlds from "../../i18n/mission-worlds.en.json";
 
-const content = { ...baseContent, ...additions, ...kepler, ...spitzer, ...pioneers, ...worlds };
+import smallWorlds from "../../i18n/mission-small-worlds.en.json";
+
+const content = { ...smallWorlds, ...baseContent, ...additions, ...kepler, ...spitzer, ...pioneers, ...worlds };
 
 jest.mock("@react-three/fiber", () => ({ Canvas: () => <div data-testid="model-canvas" />, useFrame: jest.fn(), useThree: jest.fn() }));
 jest.mock("@react-three/drei", () => ({ OrbitControls: () => null, Stars: () => null, Environment: () => null, Lightformer: () => null, useGLTF: jest.fn() }));
@@ -20,7 +22,7 @@ beforeEach(() => {
   HTMLDialogElement.prototype.close = jest.fn(function () { this.removeAttribute("open"); });
 });
 
-test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity"])("%s opens a fullscreen model, then restores focus and page scrolling", (mission) => {
+test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity", "rosetta", "dawn"])("%s opens a fullscreen model, then restores focus and page scrolling", (mission) => {
   document.body.style.overflow = "auto";
   render(<MissionModelViewer model={MISSION_DETAILS[mission].model} name={content[mission].name} stats={content[mission].stats} ui={content.ui.model} />);
   const trigger = screen.getByRole("button", { name: `Explore in 3D: ${content[mission].name}` });

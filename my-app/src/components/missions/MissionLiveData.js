@@ -4,7 +4,7 @@ import { useApi } from "../../hooks/useApi";
 import SectionHead from "../primitives/SectionHead";
 
 const DSN_CODES = { newhorizons: "NHPC", juno: "JNO", chandra: "CHDR", tess: "TESS", europaclipper: "EURC" };
-const DEFAULT_RANGE = { newhorizons: 9.8e9, juno: 8e8, chandra: 100000, tess: 250000, europaclipper: 1e8, perseverance: 225e6, cassini: 1.4e9, osirisrex: 300e6, gaia: 1.5e6, kepler: 150e6, spitzer: 200e6, pioneer10: 12.23e9, pioneer11: 6.4e9, galileo: 628e6, curiosity: 225e6 };
+const DEFAULT_RANGE = { newhorizons: 9.8e9, juno: 8e8, chandra: 100000, tess: 250000, europaclipper: 1e8, perseverance: 225e6, cassini: 1.4e9, osirisrex: 300e6, gaia: 1.5e6, kepler: 150e6, spitzer: 200e6, pioneer10: 12.23e9, pioneer11: 6.4e9, galileo: 628e6, curiosity: 225e6, rosetta: 500e6, dawn: 400e6 };
 
 export function MissionTelemetry({ mission, data, loading, error, refetch }) {
   const { t, i18n } = useTranslation();
@@ -16,21 +16,22 @@ export function MissionTelemetry({ mission, data, loading, error, refetch }) {
   const distance = value => format(Number.isFinite(value) ? value / (unit === "au" ? 149597870.7 : 1) : null, unit === "au" ? 4 : 0);
   return <section className="section" id="live"><div className="wrap">
     <SectionHead eyebrow="NASA JPL Horizons" title={ui.title} sub={ui.note} />
+    {!valid && !loading && <p className="mission-data-feedback">{ui.unavailable}</p>}
     <div className="mission-live-header">
       <span className={`mission-data-state ${valid && !data.stale && !error ? "available" : ""}`} role="status">{loading ? ui.loading : valid ? data.stale || error ? ui.stale : ui.ready : ui.unavailable}</span>
       <div className="mission-segmented" role="group" aria-label={ui.units}>{["km", "au"].map(value => <button key={value} type="button" aria-pressed={unit === value} onClick={() => setUnit(value)}>{ui[value]}</button>)}</div>
       <button className="btn ghost" type="button" onClick={refetch} disabled={loading}>{ui.refresh}</button>
     </div>
-    <div className="grid cols-4 mission-live-stats" aria-busy={loading}>
+    {(valid || loading) && <div className="grid cols-4 mission-live-stats" aria-busy={loading}>
       {[
         [ui.earth, valid ? distance(data.distance_earth_km) : "—", ui[unit]],
         [ui.center[mission], valid ? distance(data.distance_center_km) : "—", ui[unit]],
         [ui.speed[mission], valid ? format(data.speed_center_kms) : "—", ui.kms],
         [ui.delay, valid ? format(data.light_time_seconds) : "—", ui.seconds],
       ].map(([label, value, suffix]) => <div className="card" key={label}><div className="k">{label}</div><div className="v mission-stat">{value}</div><div className="foot">{suffix}</div></div>)}
-    </div>
+    </div>}
     {valid && <p className="mission-orbit-note">{ui.updated}: <time dateTime={data.updated_at}>{new Date(data.updated_at).toLocaleString(locale, { timeZone: "UTC" })} UTC</time> · {ui.cache}</p>}
-    {error && <p role="alert">{ui.unavailable}</p>}
+    {error && valid && <p className="mission-orbit-note">{ui.stale}</p>}
     <a href="https://ssd.jpl.nasa.gov/horizons/" className="section-link" target="_blank" rel="noopener noreferrer">NASA JPL Horizons ↗</a>
   </div></section>;
 }

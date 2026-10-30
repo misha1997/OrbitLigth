@@ -15,23 +15,11 @@
 .mission-destination-buttons button[aria-pressed="true"] { border-color: var(--mission-accent); color: var(--text); background: color-mix(in srgb, var(--mission-accent) 10%, var(--panel)); }
 .mission-destination { display: flex; flex-direction: column; min-width: 0; }
 .mission-destination h3 { font-size: clamp(22px, 2.5vw, 30px); margin: 20px 0 0; }
-.mission-destination p, .mission-quiz p { color: var(--text-dim); line-height: 1.8; font-size: 14px; }
+.mission-destination p { color: var(--text-dim); line-height: 1.8; font-size: 14px; }
 .mission-destination-fact { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 0; margin: 12px 0; }
 .mission-destination-fact strong { display: block; color: var(--mission-accent); font-size: 28px; font-weight: 500; }
 .mission-destination-fact span { display: block; color: var(--text-dim); font-size: 12px; margin-top: 6px; }
 .mission-destination .section-link { margin-top: auto; padding-top: 16px; }
-.mission-quiz { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 40px; border-top: 2px solid var(--mission-accent); }
-.mission-quiz h2 { font-size: 26px; margin: 16px 0; }
-.mission-quiz fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
-.mission-quiz legend { font-size: 18px; line-height: 1.5; margin-bottom: 18px; }
-.mission-quiz-options { display: grid; gap: 10px; }
-.mission-quiz-options button { text-align: left; width: 100%; padding: 14px 18px; border: 1px solid var(--border); border-radius: 10px; font: inherit; font-size: 14px; line-height: 1.6; background: #ffffff03; color: var(--text); cursor: pointer; }
-.mission-quiz-options button:hover:enabled { border-color: var(--mission-accent); }
-.mission-quiz-options button:disabled { cursor: default; opacity: .65; }
-.mission-quiz-options button.is-correct { border-color: #7dd3a8; background: #7dd3a810; opacity: 1; }
-.mission-quiz-options button.is-incorrect { border-color: #ed9696; background: #ed969610; opacity: 1; }
-.mission-quiz-answer { margin-top: 20px; }
-.mission-quiz-answer strong { color: var(--mission-accent); }
 .mission-discovery-map.is-osirisrex { background: radial-gradient(ellipse at center, #2b2520, #0b0e18 80%); }
 .mission-discovery-map.is-gaia { background: radial-gradient(ellipse at center, #252039, #0b0c18 80%); }
 .mission-parallax-figure { margin: 0; background: #100e20; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; align-self: start; }
@@ -42,5 +30,5 @@
 .mission-parallax-results { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 22px 0; border-block: 1px solid var(--border); }
 .mission-parallax-results span { display: block; font-size: 12px; color: var(--text-dim); }
 .mission-parallax-results strong { display: block; margin-top: 10px; color: var(--mission-accent); font-size: clamp(22px, 2vw, 28px); }
-@media (max-width: 900px) { .mission-discovery-grid, .mission-quiz { grid-template-columns: 1fr; } .mission-quiz { gap: 22px; } }
+@media (max-width: 900px) { .mission-discovery-grid { grid-template-columns: 1fr; } }
 @media (max-width: 600px) { .mission-destination-buttons { display: grid; grid-template-columns: 1fr 1fr; } .mission-destination-buttons button { padding: 12px 10px; text-align: left; } .mission-destination-buttons span { margin-right: 7px; } .mission-map-marker { width: 44px; height: 44px; } .mission-map-coordinate { font-size: 8px; left: 12px; bottom: 0; letter-spacing: 0; } }

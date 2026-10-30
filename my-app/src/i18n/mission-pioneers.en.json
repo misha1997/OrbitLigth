@@ -152,48 +152,7 @@
       "note": "The calculator starts with that historical example distance. It does not show Pioneer 10’s current position or an active radio link.",
       "source": "https://science.nasa.gov/missions/pioneer/pioneer-10-sends-last-signal/"
     },
-    "quiz": {
-      "nav": "Test yourself",
-      "eyebrow": "Pioneer 10 challenge",
-      "title": "Could you follow the first pathfinder?",
-      "intro": "Three questions about the route, the spacecraft and its last message.",
-      "correct": "Exactly.",
-      "incorrect": "Here is what the mission tells us.",
-      "next": "Next question",
-      "restart": "Try again",
-      "questions": [
-        {
-          "question": "Which planet did Pioneer 10 fly past?",
-          "options": [
-            "Jupiter",
-            "Saturn",
-            "Neptune"
-          ],
-          "correct": 0,
-          "explanation": "Pioneer 10 made the first Jupiter flyby. Passing Neptune’s orbital distance later did not mean it visited Neptune."
-        },
-        {
-          "question": "What supplied electricity far from the Sun?",
-          "options": [
-            "Solar panels alone",
-            "Radioisotope thermoelectric generators",
-            "Jupiter’s magnetic field"
-          ],
-          "correct": 1,
-          "explanation": "RTGs converted heat from radioactive decay into electricity. They were not solar panels or a fission reactor."
-        },
-        {
-          "question": "Did the final detected signal in 2003 contain usable telemetry?",
-          "options": [
-            "Yes, including fresh Jupiter images",
-            "Yes, a complete instrument data set",
-            "No, it was a very faint radio signal"
-          ],
-          "correct": 2,
-          "explanation": "The final carrier signal was detected in January 2003; the last telemetry had been received in April 2002."
-        }
-      ]
-    },
+    
     "faq": [
       {
         "question": "Did Pioneer 10 confirm that it crossed the heliopause?",
@@ -409,48 +368,7 @@
       "note": "The calculator starts with an illustrative 6.4-billion-kilometre Earth distance, characteristic of the mission’s final era. It is not a current measurement or an active connection.",
       "source": "https://www.nasa.gov/solar-system/planets/saturn/40-years-ago-pioneer-11-first-to-explore-saturn/"
     },
-    "quiz": {
-      "nav": "Test yourself",
-      "eyebrow": "Pioneer 11 challenge",
-      "title": "Ready for the ringed planet?",
-      "intro": "Three questions about the route and what a flyby can reveal.",
-      "correct": "Exactly.",
-      "incorrect": "Here is what the mission tells us.",
-      "next": "Next question",
-      "restart": "Try again",
-      "questions": [
-        {
-          "question": "Which planet did Pioneer 11 visit after Jupiter?",
-          "options": [
-            "Saturn",
-            "Mars",
-            "Neptune"
-          ],
-          "correct": 0,
-          "explanation": "Jupiter’s gravity redirected Pioneer 11 toward the first spacecraft flyby of Saturn in September 1979."
-        },
-        {
-          "question": "Did Pioneer 11 enter orbit around Saturn?",
-          "options": [
-            "Yes, for 22 years",
-            "No, it made a flyby",
-            "Yes, inside the F ring"
-          ],
-          "correct": 1,
-          "explanation": "Pioneer 11 passed Saturn and continued outward. It was not a Saturn orbiter."
-        },
-        {
-          "question": "What is a gravity assist exchanging with the planet?",
-          "options": [
-            "Fresh propellant",
-            "A continuous radio beam",
-            "Orbital energy and momentum"
-          ],
-          "correct": 2,
-          "explanation": "A moving planet can exchange orbital energy and momentum with a spacecraft. The effect on the much more massive planet is tiny."
-        }
-      ]
-    },
+    
     "faq": [
       {
         "question": "Was Pioneer 11 the first spacecraft at Saturn?",

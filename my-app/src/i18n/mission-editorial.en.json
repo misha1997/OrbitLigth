@@ -1,0 +1,205 @@
+{
+  "roman": {
+    "hero": {
+      "eyebrow": "In space · Science commissioning",
+      "sub": "Launched on 30 August 2026, Roman is testing image quality and calibrating its instruments before wide-field science surveys begin."
+    },
+    "status": {
+      "title": "Final commissioning phase",
+      "sub": "NASA reports successful observatory and primary-instrument checkout. The current work characterises performance through test observations before routine science.",
+      "updated": "Checked 30 October 2026 · latest NASA status report: 22 October",
+      "commissioning": {
+        "date": "22 October 2026",
+        "title": "Science commissioning begins",
+        "body": "The observatory can point, take exposures and transmit data. Teams are now refining image quality and measuring instrument response through planned test observations."
+      },
+      "focus": {
+        "date": "14 October 2026",
+        "title": "WFI checkout and optical alignment",
+        "body": "Engineers tested the detectors, filters, internal calibration lights and thermal controls, then refined the telescope’s optical alignment. These checks prepare WFI for consistent survey measurements."
+      }
+    },
+    "s1": {
+      "title": "The observatory at a glance"
+    },
+    "card": {
+      "fovFoot": "About 100 times the image area of Hubble’s ACS/WFC; not 100 times its resolution",
+      "lifespanFoot": "Five-year primary mission. A fuel-lifetime estimate does not guarantee an equally long operating mission."
+    },
+    "surveys": {
+      "cta": "Science programme",
+      "title": "Three surveys, three ways to study the Universe",
+      "intro": "WFI’s core surveys connect wide sky coverage with repeated measurements.",
+      "items": [
+        {
+          "title": "High-Latitude Wide-Area Survey",
+          "method": "Galaxy shapes and positions",
+          "body": "Weak gravitational lensing and galaxy clustering will probe matter distribution and the history of cosmic expansion."
+        },
+        {
+          "title": "High-Latitude Time-Domain Survey",
+          "method": "Return to the same fields",
+          "body": "Repeated visits will track supernovae and other changing sources, providing another route to study expansion."
+        },
+        {
+          "title": "Galactic Bulge Time-Domain Survey",
+          "method": "Microlensing light curves",
+          "body": "Monitoring dense star fields will reveal temporary magnifications caused by intervening objects, including planetary systems."
+        }
+      ],
+      "note": "These are planned observing programmes. Their goals are not already completed discoveries."
+    },
+    "instruments": {
+      "wfi_body": "WFI combines 18 infrared detectors into an approximately 300-megapixel focal plane for imaging and spectroscopy. October checkout covered the instrument and optical alignment; calibration continues during science commissioning.",
+      "cgi_body": "The Coronagraph Instrument suppresses starlight to test direct imaging of giant planets and dust disks. It is a technology demonstration for future observatories, not an Earth-like-planet imaging survey."
+    },
+    "l2": {
+      "description": "Illustration of the Sun, Earth and Roman’s target halo orbit around Sun–Earth L2",
+      "diagram_dist": "about 1.5 million km",
+      "diagram_halo": "Target halo orbit",
+      "note": "Schematic, not to scale; no current spacecraft position is shown. A halo orbit needs periodic corrections. Near L2, the observatory moves around the Sun with Earth while keeping sunlight away from its optics."
+    },
+    "reading": {
+      "title": "What to expect from Roman",
+      "sourceLabel": "NASA · Roman mission",
+      "source": "https://science.nasa.gov/mission/roman-space-telescope/",
+      "items": [
+        {
+          "question": "Are test images already the science survey?",
+          "answer": "No. Test exposures establish instrument performance. NASA’s 25 September update anticipated science operations by early 2027; that is a published expectation, not a guaranteed image-release date."
+        },
+        {
+          "question": "Does 100 times the view mean 100 times sharper?",
+          "answer": "It refers to the area covered in an image compared with a Hubble camera. Wider coverage and finer resolution describe different capabilities; surveys also depend on filters, exposure and observing strategy."
+        },
+        {
+          "question": "Will Roman photograph another Earth?",
+          "answer": "Its microlensing survey detects planets through changes in background starlight. The separate coronagraph demonstrates direct-imaging technology for giant planets and disks. Neither goal promises an image of an Earth twin."
+        }
+      ]
+    },
+    "iconic": {
+      "note": "These are ground preparation photographs, not Roman’s astronomical observations."
+    },
+    "orbit": {
+      "sub": "Roman is travelling toward Sun–Earth L2, around 1.5 million km from Earth. NASA’s 14 September trajectory update targets orbital insertion in early December 2026."
+    },
+    "news": {
+      "error": "Mission news is temporarily unavailable. The dated NASA status reports above remain available."
+    }
+  },
+  "hubble": {
+    "reading": {
+      "title": "Understanding Hubble observations",
+      "sourceLabel": "NASA · Hubble questions and answers",
+      "source": "https://science.nasa.gov/mission/hubble/overview/faqs/",
+      "items": [
+        {
+          "question": "Are the colours what an eye would see?",
+          "answer": "Images combine exposures through selected filters. Colour can represent visible light, other wavelengths or chemical features; the caption explains the mapping."
+        },
+        {
+          "question": "Does Hubble magnify a single photograph?",
+          "answer": "An observation has a chosen field, filter and exposure. Detailed release images may combine many observations, rather than being a single camera snapshot."
+        },
+        {
+          "question": "Did Webb replace Hubble?",
+          "answer": "No. Hubble’s ultraviolet and visible observations complement Webb’s infrared work. Comparing wavelengths can reveal different physical components of the same object."
+        }
+      ]
+    },
+    "science": {
+      "sci1_title": "The cosmic distance scale",
+      "sci1_value": "Cepheids and supernovae",
+      "sci1_body": "Hubble improved distances to galaxies and estimates of the expansion rate. The Universe’s age is inferred using these and other measurements within cosmological models.",
+      "sci3_value": "stellar and gas motions",
+      "sci3_body": "Spectra and images help infer compact central masses from surrounding stars and gas, providing evidence for supermassive black holes."
+    },
+    "future": {
+      "title": "Operations and orbital lifetime",
+      "decayBody": "Atmospheric drag lowers the orbit. NASA’s 30 October 2026 analysis places likely re-entry in 2033–2034 without intervention; the timing depends on the evolving orbit and atmosphere.",
+      "proposalTitle": "NASA is seeking servicing concepts",
+      "proposalBody": "On 30 October 2026 NASA issued a request for information on commercial servicing and an orbit boost. It is a study of options, not an approved servicing flight.",
+      "source": "NASA · 30 October 2026 update"
+    },
+    "card": {
+      "orbitFoot": "Low Earth orbit; altitude changes with drag and time"
+    },
+    "orbit": {
+      "sub": "Hubble orbits Earth above most of the atmosphere. This diagram explains the orbital geometry; its scale and marker do not provide a live position or altitude."
+    },
+    "station3d": {
+      "orbitValue": "Low Earth orbit · altitude varies"
+    },
+    "vsJwst": {
+      "location_hubble": "Low Earth orbit"
+    }
+  },
+  "jwst": {
+    "reading": {
+      "title": "Understanding Webb observations",
+      "sourceLabel": "NASA · Webb questions and answers",
+      "source": "https://science.nasa.gov/mission/webb/faqs-full/",
+      "items": [
+        {
+          "question": "Why do infrared images have visible colours?",
+          "answer": "Webb measures infrared light, which our eyes cannot see. Image processors assign visible colours to filters to show structures and wavelength differences."
+        },
+        {
+          "question": "Does an atmospheric molecule prove life?",
+          "answer": "No. A spectral feature needs careful identification and a physical explanation. Atmospheric composition alone does not establish biology."
+        },
+        {
+          "question": "Why use a halo orbit near L2?",
+          "answer": "It helps keep the Sun, Earth and Moon on the shielded side. The observatory orbits the Sun with Earth and needs corrections to remain near L2."
+        }
+      ]
+    },
+    "l2": {
+      "intro": "Webb follows a halo orbit near Sun–Earth L2, moving around the Sun with Earth. The sunshield keeps the Sun, Earth and Moon on its warm side; periodic manoeuvres maintain the orbit.",
+      "servicing_title": "Servicing",
+      "servicing_value": "not designed for it",
+      "servicing_body": "No Hubble-style astronaut servicing capability was built into Webb."
+    },
+    "science": {
+      "sci1_value": "spectroscopic redshifts",
+      "sci1_body": "Spectra help confirm distances to early galaxies. A candidate identified from image colours needs further checks before receiving a secure distance.",
+      "sci3_value": "testing formation models",
+      "sci3_body": "Measurements of early galaxies’ abundance, brightness and composition constrain how galaxies formed. Interpretation evolves as samples and models improve."
+    }
+  },
+  "parker": {
+    "reading": {
+      "title": "What Parker measures",
+      "sourceLabel": "NASA · Parker Solar Probe",
+      "source": "https://science.nasa.gov/mission/parker-solar-probe/",
+      "items": [
+        {
+          "question": "What does touching the Sun mean?",
+          "answer": "Parker crosses regions of the corona, the Sun’s outer atmosphere. It does not land on the visible surface."
+        },
+        {
+          "question": "Why approach so closely?",
+          "answer": "Local measurements of particles and fields connect solar-wind behaviour with the environment where it originates, complementing remote images."
+        },
+        {
+          "question": "Does the heat shield protect every instrument?",
+          "answer": "The shield protects most systems, while selected instrument components face the solar environment. Thermal design and spacecraft pointing are both essential."
+        }
+      ]
+    }
+  },
+  "voyager": {
+    "s1": {
+      "eyebrow": "Calculated distances · latest available API data"
+    },
+    "dataUnavailable": "Current estimates are unavailable. Historical reference distances are not substituted for live data.",
+    "dataLoading": "Loading the latest available estimates…",
+    "rtg": {
+      "v1Body": "RTGs convert heat from radioactive decay into electricity. Available electrical output falls by about 4 watts each year; the team prioritises instruments and heaters.",
+      "v2Body": "The spacecraft has the same long-term power constraint. Instrument shutdown decisions extend useful operation; a fixed battery percentage cannot describe this process."
+    },
+    "powerNote": "Science lifetime depends on power and equipment health, not a guaranteed retirement date.",
+    "powerSource": "NASA · Voyager power management"
+  }
+}

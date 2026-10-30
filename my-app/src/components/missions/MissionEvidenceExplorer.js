@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import SectionHead from "../primitives/SectionHead";
 import "../../styles/mission-evidence.css";
 
-export default function MissionEvidenceExplorer({ mission, content, photos, captions }) {
+export default function MissionEvidenceExplorer({ mission, content, photos, captions, additional = [] }) {
   const [caseIndex, setCaseIndex] = useState(0);
   const [step, setStep] = useState(0);
   const { t } = useTranslation();
@@ -37,5 +37,6 @@ export default function MissionEvidenceExplorer({ mission, content, photos, capt
         </div>
       </article>
     </div>
+    {additional.map(item => <article className="card mission-evidence-additional" key={item.title}><h3>{item.title}</h3><p>{item.body}</p><a className="section-link" href={item.source} target="_blank" rel="noopener noreferrer">{t("missionDetail.ui.readResearch")} ↗</a></article>)}
   </div></section>;
 }

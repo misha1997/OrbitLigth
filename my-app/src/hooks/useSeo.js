@@ -105,7 +105,7 @@ export function useSeo(article = null, noindex = false) {
       el.textContent = JSON.stringify({
         "@context": "https://schema.org", "@type": "WebPage",
         name: title, description: desc, url: canonical, inLanguage: lang,
-        ...(guide ? { image, dateModified: guideChecked } : {}),
+        ...(guide ? { image, dateModified: guide.checked || guideChecked } : {}),
         isPartOf: { "@type": "WebSite", url: locFor("home", lang), name: "OrbitLight" },
         breadcrumb: { "@type": "BreadcrumbList", itemListElement: [
           { "@type": "ListItem", position: 1, name: "OrbitLight", item: locFor("home", lang) },

@@ -22,3 +22,5 @@
   .mission-evidence-steps button { display: flex; align-items: center; gap: 12px; min-height: 44px; overflow-wrap: normal; }
   .mission-evidence-steps button span { margin-bottom: 0; }
 }
+.mission-evidence-additional { margin-top:24px; }
+.mission-evidence-additional p { color:var(--text-dim); line-height:1.8; }

@@ -61,14 +61,7 @@
       "The telescope operated near 5.5 K in its cold phase and around 28.6 K in the warm mission. Even the warm phase remained extremely cold by everyday standards."
     ],
     "communication": { "eyebrow": "An observatory moving away from Earth", "title": "Infrared measurements, radio messages", "body": "Spitzer orbited the Sun in an Earth-trailing orbit. It returned observations through NASA’s Deep Space Network; distance and spacecraft orientation increasingly constrained operations near the mission’s end.", "note": "The calculator uses an example Earth–spacecraft distance. Spitzer is decommissioned; this is not a live location, contact or infrared observing measurement.", "source": "https://www.nasa.gov/news-release/nasas-spitzer-space-telescope-ends-mission-of-astronomical-discovery/" },
-    "quiz": {
-      "nav": "Test yourself", "eyebrow": "Infrared explorer challenge", "title": "What would Spitzer see?", "intro": "Three questions about thermal light, cold instruments and interpreting an image.", "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
-      "questions": [
-        { "question": "What happens to a blackbody’s peak as it cools?", "options": ["It shifts to longer wavelengths", "It always moves into visible light", "Its wavelength stays fixed"], "correct": 0, "explanation": "Wien’s law relates peak wavelength inversely to temperature. The peak moves to longer wavelengths when the object cools." },
-        { "question": "Which imaging channels survived into Spitzer’s warm mission?", "options": ["All three MIPS bands", "IRAC at 3.6 and 4.5 µm", "Only visible-light cameras"], "correct": 1, "explanation": "Passive cooling kept two IRAC channels useful after liquid helium ran out. The other cold-phase capabilities could not continue in the same way." },
-        { "question": "Are the colours in an infrared nebula image what human eyes would see?", "options": ["Yes, infrared is ordinary red light", "Yes, a camera records only visible colours", "No, infrared bands are assigned visible colours"], "correct": 2, "explanation": "Our eyes do not detect infrared wavelengths. Visible colours in a processed image communicate measured bands and structure." }
-      ]
-    },
+    
     "faq": [
       { "question": "Is Spitzer still observing?", "answer": "No. The mission ended on 30 January 2020. Later publications and images can use its stored measurements, so a new release date does not imply new spacecraft observations." },
       { "question": "Was the warm mission at room temperature?", "answer": "No. Warm refers to a change from the colder helium-cooled phase. The telescope was still around 28.6 K, approximately −245 °C, kept cold through passive cooling." },

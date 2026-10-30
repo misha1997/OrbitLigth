@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/no-node-access, testing-library/no-container -- Check SEO head metadata, section anchors and native dialog state. */
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import i18next from "../../i18n";
@@ -24,7 +25,7 @@ const mount = (mission) => render(
   </MemoryRouter>
 );
 
-test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper", "perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity"].flatMap((mission) => ["uk", "en"].map((lang) => [mission, lang])))
+test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper", "perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity", "rosetta", "dawn"].flatMap((mission) => ["uk", "en"].map((lang) => [mission, lang])))
 ("%s renders translated content and SEO in %s, with working catalogue routes", async (mission, lang) => {
   mockLang = lang;
   i18next.changeLanguage(lang);
@@ -33,6 +34,10 @@ test.each(["newhorizons", "juno", "chandra", "tess", "europaclipper", "persevera
   expect(await screen.findByRole("button", { name: `${i18next.t("missionDetail.ui.model.open")}: ${content.name}` })).toBeInTheDocument();
   expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(content.name);
   expect(container).not.toHaveTextContent("missionDetail.");
+  expect(container.querySelector("#quiz")).not.toBeInTheDocument();
+  for (const link of container.querySelectorAll(".mission-section-nav a")) {
+    expect(container.querySelector(link.getAttribute("href"))).toBeInTheDocument();
+  }
   expect(screen.getAllByRole("button", { name: new RegExp(i18next.t("missionDetail.ui.enlarge")) })).toHaveLength(3);
   expect(container.querySelectorAll("#timeline li")).toHaveLength(4);
   expect(container.querySelectorAll("#instruments article")).toHaveLength(4);
@@ -65,4 +70,14 @@ test("gallery navigates without closing, wraps with arrow keys, and restores scr
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   expect(document.body.style.overflow).toBe("auto");
   document.body.style.overflow = "";
+});
+
+test.each([["rosetta", 1], ["dawn", 2]].flatMap(([mission, index]) => ["uk", "en"].map(lang => [mission, index, lang])))
+("%s retains distinct science result %s in %s", async (mission, index, lang) => {
+  mockLang = lang;
+  i18next.changeLanguage(lang);
+  mount(mission);
+  const item = i18next.t(`missionDetail.${mission}.science`, { returnObjects: true })[index];
+  expect(await screen.findByRole("heading", { name: item.title })).toBeInTheDocument();
+  expect(screen.getByText(item.body)).toBeInTheDocument();
 });

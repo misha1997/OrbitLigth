@@ -129,6 +129,25 @@
     "soon": "soon",
     "news": "Space news"
   },
+  "navigation": {
+    "primary": "Main navigation",
+    "footer": "Explore the site",
+    "language": "Site language",
+    "closeMenu": "Close menu",
+    "observe": "Observe",
+    "solar": "Solar system",
+    "missions": "Missions & orbit",
+    "universe": "Universe",
+    "events": "Sky events calendar",
+    "planets": "Solar system",
+    "iss": "International Space Station",
+    "launches": "Rocket launches",
+    "mast": "MAST telescope archive",
+    "gallery": "NASA picture of the day",
+    "news": "News",
+    "telegram": "Telegram bot",
+    "intro": "Explore space and plan your observations, from the sky above you to distant galaxies."
+  },
   "header": {
     "tagline": "LIGHT FROM ORBIT",
     "openBot": "Open bot ↗",
@@ -192,12 +211,12 @@
     "fbClose": "Close"
   },
   "title": {
+    "404": "Not found — OrbitLight",
     "newhorizons": "New Horizons — Pluto & the Kuiper Belt | OrbitLight",
     "juno": "Juno — Exploring Jupiter | OrbitLight",
     "chandra": "Chandra — The X-ray Universe | OrbitLight",
     "tess": "TESS — Finding Exoplanets | OrbitLight",
     "europaclipper": "Europa Clipper — Journey to an Ocean World | OrbitLight",
-    "404": "Not found — OrbitLight",
     "home": "OrbitLight — space live: ISS, asteroids, meteors, launches",
     "iss": "ISS live — OrbitLight",
     "satellites": "Satellites on map — OrbitLight",
@@ -245,16 +264,18 @@
     "pioneer10": "Pioneer 10 — The First Path to Jupiter | OrbitLight",
     "pioneer11": "Pioneer 11 — First at Saturn | OrbitLight",
     "galileo": "Galileo — Jupiter and Its Moons | OrbitLight",
-    "curiosity": "Curiosity — Reading the Rocks of Mars | OrbitLight"
+    "curiosity": "Curiosity — Reading the Rocks of Mars | OrbitLight",
+    "rosetta": "Rosetta — Comet 67P and Philae | OrbitLight",
+    "dawn": "Dawn — Vesta and Ceres | OrbitLight"
   },
   "seo": {
     "desc": {
+      "404": "Page not found — return to the OrbitLight home to track the ISS, asteroids, meteors, space weather and launches live.",
       "newhorizons": "Explore New Horizons: the journey to Pluto and Arrokoth, scientific instruments, mission milestones and NASA images.",
       "juno": "Discover NASA's Juno mission: Jupiter's polar orbit, scientific instruments, mission milestones and JunoCam images.",
       "chandra": "Explore the Chandra X-ray Observatory: its orbit, instruments, mission history and images of supernovas and galaxy clusters.",
       "tess": "Explore NASA's TESS: transit discoveries, cameras, Earth orbit, mission milestones, images and calculated spacecraft positions.",
       "europaclipper": "Explore Europa Clipper: the journey to Jupiter, Europa flybys, science instruments, mission objectives and spacecraft tracking.",
-      "404": "Page not found — return to the OrbitLight home to track the ISS, asteroids, meteors, space weather and launches live.",
       "home": "Space live on OrbitLight: track the ISS in real time, near-Earth asteroids, meteor showers, space weather, satellites and rocket launches.",
       "iss": "ISS live on OrbitLight: real-time ground-track map, next visible passes over your city, current crew, expedition and orbital parameters.",
       "satellites": "Satellites on a real-time map: track Starlink, ISS, weather and amateur satellites — position, altitude and velocity updated live by SGP4.",
@@ -265,7 +286,7 @@
       "missions": "Every major space probe and telescope, one gallery: Voyager, Hubble, JWST, Roman and more, past and present.",
       "hubble": "The Hubble Space Telescope: 3D model, latest images from the MAST archive, orbit, instruments and mission facts since 1990.",
       "jwst": "The James Webb Space Telescope: 3D model, latest infrared images from the MAST archive, 18-segment mirror, sunshield, and the Sun-Earth L2 point.",
-      "roman": "Nancy Grace Roman Space Telescope: mission status after its August 30, 2026 launch, cruise to L2, instrument commissioning, launch replay and 3D model.",
+      "roman": "Nancy Grace Roman Space Telescope: science commissioning status checked 30 October 2026, WFI surveys, coronagraph, target L2 orbit and launch archive.",
       "meteors": "Meteor showers: full calendar, peak dates, ZHR, radiants and best viewing times all year round — alerts the day before each peak on OrbitLight.",
       "asteroids": "Asteroids: upcoming Earth close approaches, LD distances, hazardous objects and a live NASA NEO catalogue of near-Earth objects updated daily.",
       "events": "Astronomy events: solar and lunar eclipses, planetary conjunctions, Moon phases, retrograde stations and a weekly event calendar on OrbitLight.",
@@ -302,7 +323,9 @@
       "pioneer10": "Explore Pioneer 10: NASA 3D model, asteroid-belt crossing, Jupiter flyby, gravity-assist experiment, archival images and a quiz.",
       "pioneer11": "Follow Pioneer 11 from Jupiter to Saturn: interactive route, gravity-assist experiment, historical images, instruments and mission milestones.",
       "galileo": "Explore Galileo with NASA 3D, an interactive evidence explorer, Jupiter’s atmospheric probe, Europa, Ganymede, Io, archival images and a quiz.",
-      "curiosity": "Discover Curiosity: a NASA 3D rover, Gale Crater, ancient habitability, organic chemistry, an interactive evidence explorer and Mars imagery."
+      "curiosity": "Discover Curiosity: a NASA 3D rover, Gale Crater, ancient habitability, organic chemistry, an interactive evidence explorer and Mars imagery.",
+      "rosetta": "Explore Rosetta and Philae: a NASA 3D model, interactive comet diagram, scientific evidence, ESA images, instruments and a mission quiz.",
+      "dawn": "Explore Dawn with a 3D spacecraft, interactive Vesta and Ceres diagrams, ion propulsion, evidence about bright deposits, NASA images and a quiz."
     }
   },
   "lang": {

@@ -16,7 +16,7 @@ TEMPLATE = '<html lang="en"><head><meta name="seo-head" content="start" /><meta 
 class ConstellationGuideTests(unittest.TestCase):
     def test_all_guides_have_html_metadata_and_matching_client_bootstrap(self):
         pages = json.loads((ROOT / 'my-app/src/data/constellationGuidePages.json').read_text(encoding='utf-8'))
-        self.assertEqual(len(guide_index()['items']), 8)
+        self.assertEqual(len(guide_index()['items']), 20)
         for item in guide_index()['items']:
             for lang in ('uk', 'en'):
                 with self.subTest(slug=item['slug'], lang=lang):
@@ -31,7 +31,7 @@ class ConstellationGuideTests(unittest.TestCase):
                     schema = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', html).group(1))
                     self.assertEqual(schema['url'], guide_url(lang, item['slug']))
                     self.assertEqual(schema['breadcrumb']['itemListElement'][2]['name'], item[lang]['name'])
-                    self.assertEqual(schema['dateModified'], guide_index()['checked'])
+                    self.assertEqual(schema['dateModified'], item['checked'])
                     self.assertTrue(schema['image'].endswith(item[lang]['image']))
                     bootstrap = json.loads(re.search(r'<script id="constellation-bootstrap" type="application/json">(.*?)</script>', html).group(1))
                     self.assertEqual(bootstrap['html'], pages[lang][item['slug']])
@@ -45,10 +45,11 @@ class ConstellationGuideTests(unittest.TestCase):
         for lang in ('uk', 'en'):
             html = constellation_response(TEMPLATE, lang).body.decode()
             self.assertIn('id="field-guides"', html)
-            self.assertEqual(html.count('class="cg-directory-card"'), 8)
+            self.assertEqual(html.count('class="cg-directory-card"'), 20)
             for item in guide_index()['items']:
                 url = guide_url(lang, item['slug'])
                 self.assertIn(url, urls)
+                self.assertEqual(urls[url].find('{http://www.sitemaps.org/schemas/sitemap/0.9}lastmod').text, item['checked'])
                 self.assertIn(url.split('/', 3)[3], html)
                 alternates = urls[url].findall('{http://www.w3.org/1999/xhtml}link')
                 self.assertEqual({node.attrib['hreflang'] for node in alternates}, {'uk', 'en', 'x-default'})
@@ -63,8 +64,14 @@ class ConstellationGuideTests(unittest.TestCase):
 
     def test_charts_social_previews_and_localized_content_are_complete(self):
         raw = json.loads((ROOT / 'my-app/src/data/constellationGuides.json').read_text(encoding='utf-8'))
+        all_slugs = {item['slug'] for item in raw['items']}
+        self.assertEqual(len(all_slugs), 20)
+        self.assertEqual(len({item['id'] for item in raw['items']}), 20)
         for item in raw['items']:
+            self.assertTrue(set(item['related']) <= all_slugs)
+            self.assertIn(item['seasonKey'], item['seasons'])
             self.assertEqual(set(item['uk']), set(item['en']))
+            chunk = json.loads((ROOT / 'my-app/src/data/constellationPages' / (item['slug'] + '.json')).read_text(encoding='utf-8'))
             for lang in ('uk', 'en'):
                 with self.subTest(slug=item['slug'], lang=lang):
                     base = ROOT / 'my-app/public/constellations' / (item['slug'] + '-' + lang)
@@ -76,6 +83,7 @@ class ConstellationGuideTests(unittest.TestCase):
                     self.assertEqual(struct.unpack('>II', png[16:24]), (1200, 630))
                     self.assertGreaterEqual(len(item[lang]['find']), 3)
                     self.assertGreaterEqual(len(item[lang]['targets']), 2)
+                    self.assertIn('<h1>' + item[lang]['name'] + '</h1>', chunk[lang])
 
 
 if __name__ == '__main__':

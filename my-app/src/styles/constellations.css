@@ -405,6 +405,10 @@
   align-items: center;
   justify-content: center;
 }
+.constellation-map-wrap .const-map-loading {
+  height: auto;
+  aspect-ratio: 1500 / 560;
+}
 .const-map-caption {
   font-family: var(--font-mono);
   font-size: 11px;

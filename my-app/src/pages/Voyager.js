@@ -1,8 +1,8 @@
 // Voyager page (voyager.html): trajectory diagram, live distance cards,
 // mission timeline, comparison table, RTG power bars, Golden Record.
 // Port of app.js loadVoyager / setVoyager.
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "../hooks/useSeo";
 import { useApi } from "../hooks/useApi";
 import { getVoyager } from "../lib/api";
 import SectionHead from "../components/primitives/SectionHead";
@@ -10,16 +10,15 @@ import FeatureRow from "../components/primitives/FeatureRow";
 import OrbitMap from "../components/voyager/OrbitMap";
 import DsnNow from "../components/voyager/DsnNow";
 
-function VoyagerCards({ t }) {
-  const { data } = useApi(getVoyager);
+function VoyagerCards({ t, data }) {
   const d = data || {};
   const v1 = d["1"] || {};
   const v2 = d["2"] || {};
   const cards = [
-    { k: t("voyager.cards.v1"), dot: "live", val: v1.au != null ? v1.au : "166", unit: t("common.units.ao"), foot: v1.light_hours != null ? t("voyager.cards.lightHours", { n: v1.light_hours }) : t("voyager.cards.lightHours", { n: "24.8" }) },
-    { k: t("voyager.cards.v2"), dot: "live", val: v2.au != null ? v2.au : "139", unit: t("common.units.ao"), foot: v2.light_hours != null ? t("voyager.cards.lightHours", { n: v2.light_hours }) : t("voyager.cards.lightHours", { n: "20.8" }) },
-    { k: t("voyager.cards.speedV1"), val: v1.speed_kms != null ? v1.speed_kms.toFixed(1) : "17.0", unit: t("common.units.km_s"), foot: v1.au_per_year != null ? t("voyager.cards.auPerYear", { n: v1.au_per_year }) : t("voyager.cards.auPerYear", { n: "3.6" }) },
-    { k: t("voyager.cards.speedV2"), val: v2.speed_kms != null ? v2.speed_kms.toFixed(1) : "15.4", unit: t("common.units.km_s"), foot: v2.au_per_year != null ? t("voyager.cards.auPerYear", { n: v2.au_per_year }) : t("voyager.cards.auPerYear", { n: "3.3" }) },
+    { k: t("voyager.cards.v1"), val: v1.au ?? "—", unit: t("common.units.ao"), foot: v1.light_hours != null ? t("voyager.cards.lightHours", { n: v1.light_hours }) : "—" },
+    { k: t("voyager.cards.v2"), val: v2.au ?? "—", unit: t("common.units.ao"), foot: v2.light_hours != null ? t("voyager.cards.lightHours", { n: v2.light_hours }) : "—" },
+    { k: t("voyager.cards.speedV1"), val: Number.isFinite(v1.speed_kms) ? v1.speed_kms.toFixed(1) : "—", unit: t("common.units.km_s"), foot: v1.au_per_year != null ? t("voyager.cards.auPerYear", { n: v1.au_per_year }) : "—" },
+    { k: t("voyager.cards.speedV2"), val: Number.isFinite(v2.speed_kms) ? v2.speed_kms.toFixed(1) : "—", unit: t("common.units.km_s"), foot: v2.au_per_year != null ? t("voyager.cards.auPerYear", { n: v2.au_per_year }) : "—" },
   ];
   return (
     <div className="grid cols-4" id="voyager-cards">
@@ -34,15 +33,12 @@ function VoyagerCards({ t }) {
   );
 }
 
-function CompareTable({ v1, v2, t }) {
+function CompareTable({ t }) {
   const rows = [
     { p: t("voyager.row.launch"), a: t("voyager.row.launchV1"), b: t("voyager.row.launchV2") },
-    { p: t("voyager.row.distance"), a: (v1.au != null ? v1.au + " " + t("common.units.ao") : "166 " + t("common.units.ao")), b: (v2.au != null ? v2.au + " " + t("common.units.ao") : "139 " + t("common.units.ao")) },
     { p: t("voyager.row.helio"), a: "25.08.2012", b: "05.11.2018" },
     { p: t("voyager.row.planets"), a: t("voyager.row.planetsV1"), b: t("voyager.row.planetsV2") },
     { p: t("voyager.row.dir"), a: t("voyager.row.north"), b: t("voyager.row.south") },
-    { p: t("voyager.row.signal"), a: v1.light_hours != null ? t("voyager.row.signalV", { n: v1.light_hours }) : t("voyager.row.signalV", { n: "24.8" }), b: v2.light_hours != null ? t("voyager.row.signalV", { n: v2.light_hours }) : t("voyager.row.signalV", { n: "20.8" }) },
-    { p: t("voyager.row.instruments"), a: t("voyager.row.instrumentsV"), b: t("voyager.row.instrumentsV") },
   ];
   return (
     <table className="data">
@@ -64,11 +60,9 @@ function CompareTable({ v1, v2, t }) {
 
 export default function Voyager() {
   const { t } = useTranslation();
-  useEffect(() => { document.title = t("title.voyager"); }, [t]);
-  const { data } = useApi(getVoyager);
-  const d = data || {};
-  const v1 = d["1"] || {};
-  const v2 = d["2"] || {};
+  useSeo();
+  const { data, loading, error } = useApi(getVoyager);
+  const available = Number.isFinite(data?.["1"]?.au) && Number.isFinite(data?.["2"]?.au);
   return (
     <>
       <section className="hero">
@@ -98,7 +92,8 @@ export default function Voyager() {
       <section className="section">
         <div className="wrap">
           <SectionHead eyebrow={t("voyager.s1.eyebrow")} title={t("voyager.s1.title")} />
-          <VoyagerCards t={t} />
+          {available ? <VoyagerCards t={t} data={data} /> : <p role="status">{t(loading ? "voyager.dataLoading" : "voyager.dataUnavailable")}</p>}
+          {error && available && <p className="mission-editorial-note">{t("missionDetail.ui.live.stale")}</p>}
         </div>
       </section>
 
@@ -119,7 +114,7 @@ export default function Voyager() {
       <section className="section" id="compare">
         <div className="wrap">
           <SectionHead eyebrow={t("voyager.s3.eyebrow")} title={t("voyager.s3.title")} />
-          <CompareTable v1={v1} v2={v2} t={t} />
+          <CompareTable t={t} />
         </div>
       </section>
 
@@ -129,15 +124,14 @@ export default function Voyager() {
           <div className="grid cols-2">
             <div className="card">
               <div className="k">{t("voyager.rtg.v1")}</div>
-              <div className="pbar"><div style={{ width: "34%", background: "var(--gold)" }} /></div>
               <div className="foot" style={{ marginTop: 12 }}>{t("voyager.rtg.v1Body")}</div>
             </div>
             <div className="card">
               <div className="k">{t("voyager.rtg.v2")}</div>
-              <div className="pbar"><div style={{ width: "31%", background: "var(--teal)" }} /></div>
               <div className="foot" style={{ marginTop: 12 }}>{t("voyager.rtg.v2Body")}</div>
             </div>
           </div>
+          <p className="mission-editorial-note">{t("voyager.powerNote")} <a className="section-link" href="https://science.nasa.gov/blogs/voyager/2025/03/05/nasa-turns-off-2-voyager-science-instruments-to-extend-mission/" target="_blank" rel="noopener noreferrer">{t("voyager.powerSource")} ↗</a></p>
         </div>
       </section>
 

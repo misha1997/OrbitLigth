@@ -1,8 +1,8 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSeo } from "../hooks/useSeo";
 import SectionHead from "../components/primitives/SectionHead";
-import FeatureRow from "../components/primitives/FeatureRow";
+import MissionReadingGuide from "../components/missions/MissionReadingGuide";
 import MissionTimeline from "../components/parker/MissionTimeline";
 import "../styles/telescope3d.css";
 
@@ -34,11 +34,7 @@ export default function Parker() {
   const [show3D, setShow3D] = useState(false);
   useSeo("parker");
 
-  useEffect(() => {
-    document.title = t("title.parker");
-  }, [t]);
-
-  return (
+return (
     <>
       <section className="hero">
         <div className="wrap hero-grid">
@@ -138,6 +134,7 @@ export default function Parker() {
           <p className="section-sub" style={{ marginTop: 14, marginBottom: 0 }}>{t("parker.gallery.credit")}</p>
         </div>
       </section>
+      <MissionReadingGuide mission="parker" />
     </>
   );
 }

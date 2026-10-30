@@ -42,7 +42,7 @@ def constellation_response(index_html, lang, slug=None):
             "image": localized["image"], "image_width": 1200, "image_height": 630,
             "canonical": guide_url(lang, slug),
             "uk_alt": guide_url("uk", slug), "en_alt": guide_url("en", slug),
-            "breadcrumb_name": localized["name"], "modified": guide_index()["checked"],
+            "breadcrumb_name": localized["name"], "modified": item.get("checked", guide_index()["checked"]),
         }
     else:
         content = _read("constellationLanding")[lang]

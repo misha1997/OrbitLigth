@@ -6,15 +6,16 @@
 // as Galaxy.js/RoverPhotos.js).
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "../hooks/useSeo";
 import "../styles/gallery.css"; // For .photo-modal
 import "../styles/telescope3d.css"; // For .tele3d-hero-* (hero 3D preview + loading placeholder)
 import SectionHead from "../components/primitives/SectionHead";
+import MissionReadingGuide from "../components/missions/MissionReadingGuide";
 import FeatureRow from "../components/primitives/FeatureRow";
 import LocalizedLink from "../components/primitives/LocalizedLink";
 import { useApi } from "../hooks/useApi";
 import { getMastHubbleJwst } from "../lib/api";
 import RecentlyObserved from "../components/hubble/RecentlyObserved";
-import AltitudeDecayChart from "../components/hubble/AltitudeDecayChart";
 import HubbleOrbitDiagram from "./HubbleOrbitDiagram";
 
 // three.js/@react-three/fiber/drei are heavy — lazy-load so the base page
@@ -23,11 +24,8 @@ const HubbleHeroPreview = lazy(() => import("./HubbleHeroPreview"));
 const HubbleFullscreen = lazy(() => import("./HubbleFullscreen"));
 
 const INSTR_BODY_STYLE = { fontSize: "1rem", lineHeight: 1.4, color: "var(--text)", marginTop: 8, fontWeight: 400 };
-const FACT_TITLE_STYLE = { fontSize: "1.2rem", marginBottom: 8, color: "var(--accent)" };
-const FACT_BODY_STYLE = { fontSize: "1rem", lineHeight: 1.4, color: "var(--text)", fontWeight: 400, textTransform: "none" };
 const SCI_VALUE_STYLE = { fontSize: 20 };
 const INSTRUMENTS = ["i1", "i2", "i3", "i4", "i5"];
-const FACTS = ["f1", "f2", "f3", "f4", "f5", "f6"];
 const VS_ROWS = ["launch", "mirror", "location", "band", "cooling", "servicing"];
 const SERVICING = ["sm1", "sm2", "sm3", "sm4"];
 const SCIENCE = ["sci1", "sci2", "sci3"];
@@ -55,11 +53,11 @@ const ICONIC = [
 
 export default function Hubble() {
   const { t } = useTranslation();
-  useEffect(() => { document.title = t("title.hubble"); }, [t]);
+  useSeo();
   const [show3D, setShow3D] = useState(false);
   const [modalIdx, setModalIdx] = useState(null);
 
-  const { data: mastData } = useApi(getMastHubbleJwst);
+  const { data: mastData, loading: mastLoading, error: mastError, refetch: retryPhotos } = useApi(getMastHubbleJwst);
   const photos = ((mastData || []).filter((p) => p.collection === "HST")).slice(0, 12);
 
   useEffect(() => {
@@ -98,7 +96,7 @@ export default function Hubble() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 24 }}>
+      <section className="section" id="facts" style={{ paddingTop: 24 }}>
         <div className="wrap">
           <SectionHead eyebrow={t("hubble.s1.eyebrow")} title={t("hubble.s1.title")} />
           <div className="grid cols-4">
@@ -109,7 +107,7 @@ export default function Hubble() {
             </div>
             <div className="card">
               <div className="k">{t("hubble.card.orbit")}</div>
-              <div className="v">535<span className="unit">{t("common.units.km")}</span></div>
+              <div className="v">LEO</div>
               <div className="foot">{t("hubble.card.orbitFoot")}</div>
             </div>
             <div className="card">
@@ -194,8 +192,9 @@ export default function Hubble() {
         <div className="wrap">
           <SectionHead eyebrow={t("hubble.gallery.eyebrow")} title={t("hubble.gallery.title")} />
           <p className="section-sub">{t("hubble.gallery.sub")}</p>
-          {!mastData && <p className="section-sub">{t("hubble.gallery.loading")}</p>}
-          {mastData && photos.length === 0 && <p className="section-sub">{t("hubble.gallery.empty")}</p>}
+          {mastLoading && !mastData && <p className="section-sub">{t("hubble.gallery.loading")}</p>}
+          {!mastLoading && photos.length === 0 && <p className="section-sub">{t("hubble.gallery.empty")}</p>}
+          {mastError && <button type="button" className="btn ghost" onClick={retryPhotos}>{t("news.retry")}</button>}
           {photos.length > 0 && (
             <div className="grid cols-3">
               {photos.map((p, i) => (
@@ -285,28 +284,11 @@ export default function Hubble() {
             </div>
           </div>
 
-          <div style={{ marginTop: 20 }}>
-            <SectionHead eyebrow={t("hubble.future.decayChart.eyebrow")} title={t("hubble.future.decayChart.title")} />
-            <p className="section-sub">{t("hubble.future.decayChart.sub")}</p>
-            <AltitudeDecayChart />
-          </div>
+          <p className="mission-editorial-note"><a className="section-link" href="https://science.nasa.gov/missions/hubble/nasa-explores-potential-commercial-servicing-for-hubble-telescope/" target="_blank" rel="noopener noreferrer">{t("hubble.future.source")} ↗</a></p>
         </div>
       </section>
 
-      <section className="section" id="facts" style={{ paddingTop: 0 }}>
-        <div className="wrap">
-          <SectionHead eyebrow={t("hubble.facts.eyebrow")} title={t("hubble.facts.title")} />
-          <p className="section-sub">{t("hubble.facts.sub")}</p>
-          <div className="grid cols-3">
-            {FACTS.map((f) => (
-              <div className="card" key={f}>
-                <div className="v" style={FACT_TITLE_STYLE}>{t(`hubble.facts.${f}_title`)}</div>
-                <div style={FACT_BODY_STYLE}>{t(`hubble.facts.${f}_body`)}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <MissionReadingGuide mission="hubble" />
 
       {show3D && (
         <Suspense fallback={null}>

@@ -3,7 +3,7 @@ import i18next from "../../i18n";
 import { MISSION_DETAILS } from "../../lib/missionDetails";
 import MissionEvidenceExplorer from "./MissionEvidenceExplorer";
 
-test.each(["galileo", "curiosity"].flatMap(mission => ["uk", "en"].map(lang => [mission, lang])))
+test.each(["galileo", "curiosity", "rosetta", "dawn"].flatMap(mission => ["uk", "en"].map(lang => [mission, lang])))
 ("%s distinguishes observations, interpretations and limits in %s", (mission, lang) => {
   i18next.changeLanguage(lang);
   const details = i18next.t(`missionDetail.${mission}`, { returnObjects: true });

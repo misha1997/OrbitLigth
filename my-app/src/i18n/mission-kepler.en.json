@@ -57,14 +57,7 @@
       "Ground processing corrected systematic effects and searched for repeatable patterns. Follow-up work was needed to distinguish planets from eclipsing stars and other sources of dimming."
     ],
     "communication": { "eyebrow": "A telescope beyond Earth orbit", "title": "Light curves travelled home in batches", "body": "Kepler followed the Earth around the Sun rather than orbiting our planet. It stored observations onboard and transmitted data through NASA’s Deep Space Network during scheduled contacts.", "note": "The calculator uses an illustrative Earth–spacecraft distance. Kepler is retired; the example is not a current position, a live contact or the time taken by light from an exoplanet to reach us.", "source": "https://science.nasa.gov/resource/kepler-spacecraft/" },
-    "quiz": {
-      "nav": "Test yourself", "eyebrow": "Planet-hunter challenge", "title": "Would you recognise the signal?", "intro": "Three questions about what a transit can tell us and what it cannot.", "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
-      "questions": [
-        { "question": "For the same star, what happens when a planet’s radius doubles?", "options": ["The ideal transit depth becomes four times larger", "The orbital period must double", "The star disappears completely"], "correct": 0, "explanation": "The blocked area scales with radius squared. For a full transit of a uniformly bright star, doubling radius multiplies the depth by four." },
-        { "question": "What does the spacing between repeated transits measure?", "options": ["The planet’s surface temperature directly", "The orbital period", "The number of living organisms"], "correct": 1, "explanation": "The interval gives the time between successive passages in front of the star. Temperature and habitability need additional information." },
-        { "question": "Does one dip prove that a planet exists?", "options": ["Yes, no other process dims a star", "Yes, if the dip looks symmetrical", "No, alternative explanations need to be checked"], "correct": 2, "explanation": "Eclipsing stars, blended sources, stellar variability and instrument effects can mimic parts of a planet signal. Candidates require careful validation or confirmation." }
-      ]
-    },
+    
     "faq": [
       { "question": "Is Kepler still finding planets?", "answer": "The spacecraft stopped observing in 2018. Researchers can still identify and validate planets using its archived measurements, so new scientific results can appear after retirement." },
       { "question": "Was K2 a different spacecraft?", "answer": "No. K2 used the same Kepler telescope with a new observing strategy after reaction-wheel failures. It observed a succession of fields rather than maintaining the original long stare." },

@@ -153,48 +153,7 @@
       "note": "The calculator uses an illustrative 628-million-kilometre Earth–spacecraft distance. Galileo no longer exists as an operating spacecraft; this is not a live measurement.",
       "source": "https://science.nasa.gov/mission/galileo/galileo-science/"
     },
-    "quiz": {
-      "nav": "Test yourself",
-      "eyebrow": "Galileo science challenge",
-      "title": "What can the evidence tell us?",
-      "intro": "Three questions about the probe, hidden water and the mission’s ending.",
-      "correct": "Exactly.",
-      "incorrect": "Here is the science behind it.",
-      "next": "Next question",
-      "restart": "Try again",
-      "questions": [
-        {
-          "question": "Which part of Galileo measured Jupiter’s atmosphere from inside?",
-          "options": [
-            "The released atmospheric probe",
-            "A lander on Europa",
-            "The orbiter’s solar panels"
-          ],
-          "correct": 0,
-          "explanation": "A separate entry probe descended into Jupiter and relayed data through the orbiter for about 58 minutes."
-        },
-        {
-          "question": "Did Galileo photograph Europa’s buried ocean directly?",
-          "options": [
-            "Yes, through transparent ice",
-            "No, several kinds of evidence support the ocean interpretation",
-            "Yes, after landing on the seafloor"
-          ],
-          "correct": 1,
-          "explanation": "Magnetic measurements and surface geology support the ocean interpretation; Galileo never travelled beneath Europa’s ice."
-        },
-        {
-          "question": "Why was the orbiter deliberately sent into Jupiter?",
-          "options": [
-            "To land safely on a solid surface",
-            "To recharge its batteries",
-            "To avoid a future uncontrolled impact on a moon such as Europa"
-          ],
-          "correct": 2,
-          "explanation": "The controlled ending reduced the risk of contaminating a potentially habitable moon after control of the spacecraft was lost."
-        }
-      ]
-    },
+    
     "faq": [
       {
         "question": "Was Galileo the first spacecraft to reach Jupiter?",
@@ -449,48 +408,7 @@
       "note": "The calculator uses an illustrative 225-million-kilometre Earth–Mars distance. It is not today’s separation or a rover contact schedule.",
       "source": "https://science.nasa.gov/mission/msl-curiosity/"
     },
-    "quiz": {
-      "nav": "Test yourself",
-      "eyebrow": "Curiosity field challenge",
-      "title": "What does a rock really reveal?",
-      "intro": "Three questions about habitability, chemistry and the rover’s tools.",
-      "correct": "Exactly.",
-      "incorrect": "Here is the science behind it.",
-      "next": "Next question",
-      "restart": "Try again",
-      "questions": [
-        {
-          "question": "What does an ancient habitable environment establish?",
-          "options": [
-            "Conditions could have supported life",
-            "Living microbes were photographed",
-            "Mars once had forests"
-          ],
-          "correct": 0,
-          "explanation": "Habitability describes environmental conditions. Demonstrating that life existed requires different evidence."
-        },
-        {
-          "question": "Do organic compounds alone prove a biological origin?",
-          "options": [
-            "Yes, always",
-            "No, non-biological processes can also make them",
-            "Yes, if the rock is old"
-          ],
-          "correct": 1,
-          "explanation": "Organic chemistry can arise through biological or non-biological processes. Detecting compounds and establishing their origin are separate tasks."
-        },
-        {
-          "question": "Which instrument identifies minerals using X-ray diffraction?",
-          "options": [
-            "A wheel motor",
-            "The radio antenna",
-            "CheMin"
-          ],
-          "correct": 2,
-          "explanation": "CheMin identifies minerals in powdered samples using X-ray diffraction. Other instruments provide complementary chemical and visual information."
-        }
-      ]
-    },
+    
     "faq": [
       {
         "question": "Are Curiosity and Perseverance the same rover?",

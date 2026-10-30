@@ -1,0 +1,408 @@
+{
+  "uk": {
+    "heading": "<div class=\"cg-section-heading\"><p class=\"cg-eyebrow\">ORBITLIGHT · Довідник сузір’їв</p><h2 id=\"cg-directory-title\">Довідник сузір’їв</h2><p>20 маршрутів для знайомства з небом: від впізнаваної фігури до зір і об’єктів для спостереження.</p></div>",
+    "cards": [
+      {
+        "id": "UMa",
+        "slug": "ursa-major",
+        "seasons": [
+          "spring",
+          "summer"
+        ],
+        "search": "UMa ursa-major Ursa Major Велика Ведмедиця Міцар і Алькор M81 — галактика Боде Ursa Major Mizar and Alcor M81 — Bode’s Galaxy Muscida Muscida ο A Muscida Muscida π1 Museida Museida π2 b Talitha Talitha ι ρ Alkaphrah Alkaphrah κ σ1 Alhaud Alhaud f σ2 τ c e h θ d υ φ Tania Borealis Tania Borealis λ Tania Australis Tania Australis μ ω Chalawan Chalawan Мерак Merak β Дубхе Dubhe α ψ Alula Australis Alula Australis ξ Alula Borealis Alula Borealis ν Taiyangshou Taiyangshou χ Фекда Phecda γ Мегрец Megrez δ Аліот Alioth ε Міцар Mizar ζ Алькор Alcor g Алькаїд Alkaid η",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/ursa-major\"><img src=\"/constellations/ursa-major-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Велика Ведмедиця\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">UMa · Ursa Major</p><h3>Велика Ведмедиця</h3><p>Весняні вечори; Ківш доступний і в інші пори року</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Cas",
+        "slug": "cassiopeia",
+        "seasons": [
+          "autumn",
+          "winter"
+        ],
+        "search": "Cas cassiopeia Cassiopeia Кассіопея П’ять зір W Зоряні поля Чумацького Шляху Cassiopeia The five-star W Milky Way star fields Каф Caph β Pearce's Star Pearce's Star λ κ Fulu Fulu ζ Shedar Shedar α ξ π ο ν Achird Achird η υ1 Castula Castula υ2 Navi Navi γ Marfak Marfak μ Marfak Marfak θ φ Рухбах Ruchbah δ ψ χ Сегін Segin ε ω A ι τ ρ σ",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/cassiopeia\"><img src=\"/constellations/cassiopeia-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Кассіопея\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Cas · Cassiopeia</p><h3>Кассіопея</h3><p>Осінні та зимові вечори</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Ori",
+        "slug": "orion",
+        "seasons": [
+          "winter"
+        ],
+        "search": "Ori orion Orion Оріон Пояс Оріона M42 — туманність Оріона Orion Orion’s Belt M42 — the Orion Nebula Tabit Tabit π3 Al Taj Al Taj π2 π4 Al Kumm Al Kumm ο1 π5 Manica Manica g π1 ο2 π6 i h ρ Рігель Rigel β τ o m e Saif al Jabbar Saif al Jabbar η p Беллатрікс Bellatrix γ ψ n1 Thabit Thabit υ Mintaka Mintaka δ n2 Heka Heka φ1 Meissa Meissa λ Trapezium Trapezium θ1 Becklin's Star Becklin's Star θ1 θ2 Mizan Batil Mizan Batil c Hatysa Hatysa ι Альнілам Alnilam ε φ2 σ d ω Alnitak Alnitak ζ b Saiph Saiph κ χ1 Бетельгейзе Betelgeuse α μ χ2 ν ξ f1 f2 k l",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/orion\"><img src=\"/constellations/orion-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Оріон\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Ori · Orion</p><h3>Оріон</h3><p>Зимові вечори; наприкінці осені — пізніше вночі</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Cyg",
+        "slug": "cygnus",
+        "seasons": [
+          "summer",
+          "autumn"
+        ],
+        "search": "Cyg cygnus Cygnus Лебідь Альбірео M29 і зоряні поля Cygnus Albireo M29 and star fields Fawaris Fawaris κ ι Albireo Albireo β1 β2 θ φ c c Fawaris Fawaris δ d ψ η e b1 b2 ο1 b3 ο2 Revenant of the Swan Revenant of the Swan P Sadr Sadr γ Ruchba Ruchba ω1 Ruchba Ruchba ω2 Денеб Deneb α Aljanah Aljanah ε λ ν f1 ξ f2 Bessel's Star Bessel's Star ζ τ σ υ A g ρ Azelfafage Azelfafage π1 μ1 π2",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/cygnus\"><img src=\"/constellations/cygnus-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Лебідь\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Cyg · Cygnus</p><h3>Лебідь</h3><p>Літні та ранні осінні вечори</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Leo",
+        "slug": "leo",
+        "seasons": [
+          "spring"
+        ],
+        "search": "Leo leo Leo Лев Альджеба (γ Лева) Левовий Триплет Leo Algieba (Gamma Leonis) The Leo Triplet Al Minlear al Asad Al Minlear al Asad κ ω Alterf Alterf λ ξ h Subra Subra ο f ψ Algenubi Algenubi ε g Rasalas Rasalas μ ν π Al Jabhah Al Jabhah η A Регул Regulus α Adhafera Adhafera ζ Альджеба Algieba γ1 ρ m k l p1 d c p2 b p3 χ p4 p5 Zosma Zosma δ Chertan Chertan θ Zubrah Zubrah n φ σ ι τ e υ Денебола Denebola β o",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/leo\"><img src=\"/constellations/leo-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Лев\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Leo · Leo</p><h3>Лев</h3><p>Весняні вечори, особливо березень — травень</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Sco",
+        "slug": "scorpius",
+        "seasons": [
+          "summer"
+        ],
+        "search": "Sco scorpius Scorpius Скорпіон Антарес M4 Scorpius Antares M4 b A Iklil Iklil ρ Fang Fang π Dschubba Dschubba δ Acrab Acrab β1 β2 Jabhat Acrabi Jabhat Acrabi ω1 ω2 Jabbah Jabbah ν ψ c1 c2 χ d ο Alniyat Alniyat σ Антарес Antares α i N Paikauhale Paikauhale τ H Larawag Larawag ε Xamidimura Xamidimura μ1 Pipirima Pipirima μ2 ζ1 Grafias Grafias ζ2 k η Lesath Lesath υ Шаула Shaula λ Q Саргас Sargas θ Mula Mula κ Girtab Girtab ι1 Fuyue Fuyue G Vanant Vanant ι2",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/scorpius\"><img src=\"/constellations/scorpius-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Скорпіон\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Sco · Scorpius</p><h3>Скорпіон</h3><p>Короткі літні ночі; потрібен відкритий південний горизонт</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Lyr",
+        "slug": "lyra",
+        "seasons": [
+          "summer",
+          "autumn"
+        ],
+        "search": "Lyr lyra Lyra Ліра ε Ліри — Подвійна подвійна M57 — Кільцева туманність Lyra Epsilon Lyrae — the Double Double M57 — the Ring Nebula κ Al Athfar Al Athfar μ Вега Vega α Double Double Double Double ε1 ε2 Nasr Alwaki Nasr Alwaki ζ1 ζ2 ν1 ν Шеліак Sheliak β δ1 δ2 Сулафат Sulafat γ λ ι Aladfar Aladfar η θ",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/lyra\"><img src=\"/constellations/lyra-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Ліра\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Lyr · Lyra</p><h3>Ліра</h3><p>Літні та ранні осінні вечори</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "And",
+        "slug": "andromeda",
+        "seasons": [
+          "autumn",
+          "winter"
+        ],
+        "search": "And andromeda Andromeda Андромеда M31 — галактика Андромеди Альмах (γ Андромеди) Andromeda M31 — the Andromeda Galaxy Almach (Gamma Andromedae) Альферац Alpheratz α θ σ ρ π ε δ ζ ν μ η φ Мірах Mirach β Adhil Adhil ξ ω Thail Thail A Titawin Titawin υ Nembus Nembus χ τ Almach Almach γ1 b c ο Veritate Veritate λ ι κ ψ",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/andromeda\"><img src=\"/constellations/andromeda-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Андромеда\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">And · Andromeda</p><h3>Андромеда</h3><p>Осінні вечори та початок зими</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "UMi",
+        "slug": "ursa-minor",
+        "seasons": [
+          "spring",
+          "summer",
+          "autumn",
+          "winter"
+        ],
+        "search": "UMi ursa-minor Ursa Minor Мала Ведмедиця Полярна зоря Кохаб і Феркад Ursa Minor Polaris Kochab and Pherkad Полярна зоря Polaris α Кохаб Kochab β Pherkad Minor Pherkad Minor Феркад Pherkad γ θ Akfa Farkadain Akfa Farkadain ζ Anwa Farkadain Anwa Farkadain η Circitores Circitores ε λ Yildun Yildun δ",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/ursa-minor\"><img src=\"/constellations/ursa-minor-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Мала Ведмедиця\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">UMi · Ursa Minor</p><h3>Мала Ведмедиця</h3><p>Увесь рік; довгі темні ночі полегшують пошук слабких зір</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Dra",
+        "slug": "draco",
+        "seasons": [
+          "spring",
+          "summer",
+          "autumn"
+        ],
+        "search": "Dra draco Draco Дракон Тубан (Alpha Draconis) NGC 6543 — Котяче Око Draco Thuban (Alpha Draconis) NGC 6543 — the Cat’s Eye Nebula Giausar Giausar λ κ Tianyi Tianyi Taiyi Taiyi i Thuban Thuban α Edasich Edasich ι θ Athebyne Athebyne η A g h Alrakis Alrakis μ Aldhibah Aldhibah ζ Rastaban Rastaban β Adfar Aldib Adfar Aldib f Kuma Kuma ν1 Kuma Kuma ν2 Al Dhih Al Dhih ω Dziban Dziban ψ Dsiban Dsiban ψ Grumium Grumium ξ Eltanin Eltanin γ Aldhiba Aldhiba φ Alahakan Alahakan χ b Fafnir Fafnir d c ο Athafi Athafi υ Altais Altais δ τ Tais Tais π Alsafi Alsafi σ Tyl Tyl ε e ρ",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/draco\"><img src=\"/constellations/draco-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Дракон\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Dra · Draco</p><h3>Дракон</h3><p>Найзручніше пізньої весни, влітку та на початку осені</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Cep",
+        "slug": "cepheus",
+        "seasons": [
+          "summer",
+          "autumn"
+        ],
+        "search": "Cep cepheus Cepheus Цефей Дельта Цефея Мю Цефея — Гранатова зоря Cepheus Delta Cephei Mu Cephei — Herschel’s Garnet Star Al Aghnam Al Aghnam κ Al Kidr Al Kidr θ Kabalfird Kabalfird η υ1 Alderamin Alderamin α Alfirk Alfirk β The Garnet Star The Garnet Star μ Castula Castula ν Kurhah Kurhah ξ ζ λ ε δ δ Al Kalb al Rai Al Kalb al Rai ρ ι π ο Errai Errai γ",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/cepheus\"><img src=\"/constellations/cepheus-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Цефей\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Cep · Cepheus</p><h3>Цефей</h3><p>Літні й осінні вечори; основна фігура доступна протягом року</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Per",
+        "slug": "perseus",
+        "seasons": [
+          "autumn",
+          "winter"
+        ],
+        "search": "Per perseus Perseus Персей NGC 869 і NGC 884 — Подвійне скупчення Зоряне поле Мірфака Perseus NGC 869 and NGC 884 — the Double Cluster Mirfak’s star field φ g Misam al Thurayya Misam al Thurayya χ i θ Miram Miram η τ Gorgonea Secunda Gorgonea Secunda π γ Gorgonea Tertia Gorgonea Tertia ρ k Algol Algol β ι Misam Misam κ Gorgonea Quarta Gorgonea Quarta ω l Мірфак Mirfak α σ ψ o δ Atik Atik ο ν n Atik Atik ζ A ε Menkib Menkib ξ λ Nembus Nembus c f μ b b2 d m e",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/perseus\"><img src=\"/constellations/perseus-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Персей\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Per · Perseus</p><h3>Персей</h3><p>Осінні й зимові вечори</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Tau",
+        "slug": "taurus",
+        "seasons": [
+          "autumn",
+          "winter"
+        ],
+        "search": "Tau taurus Taurus Телець M45 — Плеяди Гіади та Альдебаран Taurus M45 — the Pleiades The Hyades and Aldebaran ο ξ s f t Celaeno Celaeno Electra Electra Taygeta Taygeta q u Maia Maia Asterope Asterope Sterope Sterope Merope Merope Alcyone Alcyone η e Atlas Atlas Pleione Pleione λ ν A1 A2 ψ p μ ω Prima Hyadum Prima Hyadum γ h Alkalbain Alkalbain φ χ Secunda Hyadum Secunda Hyadum δ r κ υ π θ1 Ain Ain ε Chamukuy Chamukuy θ2 b ρ d Альдебаран Aldebaran α c1 σ1 σ2 τ i k ι m l n Елнат Elnath β o The Ruby Star The Ruby Star Tianguan Tianguan ζ",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/taurus\"><img src=\"/constellations/taurus-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Телець\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Tau · Taurus</p><h3>Телець</h3><p>Пізня осінь і зима ввечері</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Gem",
+        "slug": "gemini",
+        "seasons": [
+          "winter",
+          "spring"
+        ],
+        "search": "Gem gemini Gemini Близнюки M35 NGC 2158 Gemini M35 NGC 2158 Propus Propus Propus Propus η Tejat Tejat μ Nucatai Nucatai ν Альхена Alhena γ Mebsuta Mebsuta ε Alzirr Alzirr ξ d θ e ω Mekbuda Mekbuda ζ τ λ Wasat Wasat δ A Propus Propus ι ρ b Кастор Castor α υ Jishui Jishui ο f σ c κ Поллукс Pollux β g π φ χ",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/gemini\"><img src=\"/constellations/gemini-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Близнюки\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Gem · Gemini</p><h3>Близнюки</h3><p>Зима й початок весни ввечері</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Aur",
+        "slug": "auriga",
+        "seasons": [
+          "autumn",
+          "winter"
+        ],
+        "search": "Aur auriga Auriga Візничий M36 і M38 M37 Auriga M36 and M38 M37 Hassaleh Hassaleh ι Almaaz Almaaz ε Saclateni Saclateni ζ Haedus Haedus η Alhiba Alhiba μ Капелла Capella α λ ρ σ φ χ ο τ υ ν ξ δ Менкалінан Menkalinan β Mahasim Mahasim θ π κ Dolones Dolones ψ1 ψ3 ψ2 ψ4 ψ5 ψ6 ψ7 ψ8 ψ9",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/auriga\"><img src=\"/constellations/auriga-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Візничий\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Aur · Auriga</p><h3>Візничий</h3><p>Пізня осінь і зима ввечері</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "CMa",
+        "slug": "canis-major",
+        "seasons": [
+          "winter"
+        ],
+        "search": "CMa canis-major Canis Major Великий Пес Сіріус M41 Canis Major Sirius M41 Furud Furud ζ Mirzam Mirzam β λ ξ1 ξ2 ν1 ν2 ν3 Сіріус Sirius α κ Udra Udra ο1 θ π Isis Isis μ ι Адара Adhara ε Unurgunite Unurgunite σ Al Zara Al Zara ο2 Muliphein Muliphein γ Везен Wezen δ ω τ Aludra Aludra η",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/canis-major\"><img src=\"/constellations/canis-major-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Великий Пес\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">CMa · Canis Major</p><h3>Великий Пес</h3><p>Зимові вечори, поблизу найвищого положення на півдні</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "CMi",
+        "slug": "canis-minor",
+        "seasons": [
+          "winter",
+          "spring"
+        ],
+        "search": "CMi canis-minor Canis Minor Малий Пес Проціон і Гомейса Зимовий трикутник Canis Minor Procyon and Gomeisa The Winter Triangle ε Gomeisa Gomeisa β η γ δ1 δ2 δ3 Проціон Procyon α ζ G",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/canis-minor\"><img src=\"/constellations/canis-minor-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Малий Пес\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">CMi · Canis Minor</p><h3>Малий Пес</h3><p>Зимові вечори й початок весни</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Aql",
+        "slug": "aquila",
+        "seasons": [
+          "summer",
+          "autumn"
+        ],
+        "search": "Aql aquila Aquila Орел Альтаїр, Таразед і Альшаїн Зоряні поля Орла Aquila Altair, Tarazed and Alshain Aquila’s star fields Deneb al Okab Borealis Deneb al Okab Borealis ε i g h Okab Okab ζ Al Thalimain Prior Al Thalimain Prior λ ω1 A ω2 f d b Almizan Almizan δ ν c e μ Al Thalimain Posterior Al Thalimain Posterior ι κ σ χ ψ υ Tarazed Tarazed γ π Альтаїр Altair α ο Tarazed Tarazed η Libertas Libertas ξ Alshain Alshain β φ τ θ ρ l",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/aquila\"><img src=\"/constellations/aquila-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Орел\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Aql · Aquila</p><h3>Орел</h3><p>Літо та початок осені ввечері</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Peg",
+        "slug": "pegasus",
+        "seasons": [
+          "autumn"
+        ],
+        "search": "Peg pegasus Pegasus Пегас M15 Великий квадрат Pegasus M15 The Great Square Algenib Algenib γ χ Еніф Enif ε κ Fum al Faras Fum al Faras ν ι π1 π Biham Biham θ Homam Homam ζ Sadalmatar Sadalmatar ο Matar Matar η Sadalnazi Sadalnazi λ Suudalnujum Suudalnujum ξ Sadalbari Sadalbari μ σ ρ Helvetios Helvetios Scheat Scheat β Markab Markab α Salm Salm τ Alkarab Alkarab υ φ ψ",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/pegasus\"><img src=\"/constellations/pegasus-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Пегас\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Peg · Pegasus</p><h3>Пегас</h3><p>Осінні вечори</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      },
+      {
+        "id": "Boo",
+        "slug": "bootes",
+        "seasons": [
+          "spring",
+          "summer"
+        ],
+        "search": "Boo bootes Boötes Волопас Арктур Ізар (Epsilon Boötis) Boötes Arcturus Izar (Epsilon Boötis) τ υ e Muphrid Muphrid η d Asellus Tertius Asellus Tertius κ2 Арктур Arcturus α Asellus Secundus Asellus Secundus ι Xuange Xuange λ A Asellus Primus Asellus Primus θ f g ρ Seginus Seginus γ σ π1 ζ Izar Izar ε ο Merga Merga h ξ Nekkar Nekkar β ω i Aulad Alnathlat Aulad Alnathlat ψ k c b χ Thiba Thiba δ Alkalurops Alkalurops μ1 ν1 ν2 Ceginus Ceginus φ",
+        "html": "<a class=\"cg-directory-card\" href=\"/ua/suzirya/bootes\"><img src=\"/constellations/bootes-uk.svg\" width=\"800\" height=\"520\" alt=\"Схема сузір’я Волопас\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Boo · Boötes</p><h3>Волопас</h3><p>Весна й початок літа ввечері</p><span class=\"cg-card-link\">Як знайти на небі ↗</span></div></a>"
+      }
+    ]
+  },
+  "en": {
+    "heading": "<div class=\"cg-section-heading\"><p class=\"cg-eyebrow\">ORBITLIGHT · Constellation field guides</p><h2 id=\"cg-directory-title\">Constellation field guides</h2><p>20 starting points for exploring the sky: recognise the pattern, identify its stars and choose an observing target.</p></div>",
+    "cards": [
+      {
+        "id": "UMa",
+        "slug": "ursa-major",
+        "seasons": [
+          "spring",
+          "summer"
+        ],
+        "search": "UMa ursa-major Ursa Major Велика Ведмедиця Міцар і Алькор M81 — галактика Боде Ursa Major Mizar and Alcor M81 — Bode’s Galaxy Muscida Muscida ο A Muscida Muscida π1 Museida Museida π2 b Talitha Talitha ι ρ Alkaphrah Alkaphrah κ σ1 Alhaud Alhaud f σ2 τ c e h θ d υ φ Tania Borealis Tania Borealis λ Tania Australis Tania Australis μ ω Chalawan Chalawan Мерак Merak β Дубхе Dubhe α ψ Alula Australis Alula Australis ξ Alula Borealis Alula Borealis ν Taiyangshou Taiyangshou χ Фекда Phecda γ Мегрец Megrez δ Аліот Alioth ε Міцар Mizar ζ Алькор Alcor g Алькаїд Alkaid η",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/ursa-major\"><img src=\"/constellations/ursa-major-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Ursa Major\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">UMa · Ursa Major</p><h3>Ursa Major</h3><p>Spring evenings; the Dipper is also visible in other seasons</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Cas",
+        "slug": "cassiopeia",
+        "seasons": [
+          "autumn",
+          "winter"
+        ],
+        "search": "Cas cassiopeia Cassiopeia Кассіопея П’ять зір W Зоряні поля Чумацького Шляху Cassiopeia The five-star W Milky Way star fields Каф Caph β Pearce's Star Pearce's Star λ κ Fulu Fulu ζ Shedar Shedar α ξ π ο ν Achird Achird η υ1 Castula Castula υ2 Navi Navi γ Marfak Marfak μ Marfak Marfak θ φ Рухбах Ruchbah δ ψ χ Сегін Segin ε ω A ι τ ρ σ",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/cassiopeia\"><img src=\"/constellations/cassiopeia-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Cassiopeia\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Cas · Cassiopeia</p><h3>Cassiopeia</h3><p>Autumn and winter evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Ori",
+        "slug": "orion",
+        "seasons": [
+          "winter"
+        ],
+        "search": "Ori orion Orion Оріон Пояс Оріона M42 — туманність Оріона Orion Orion’s Belt M42 — the Orion Nebula Tabit Tabit π3 Al Taj Al Taj π2 π4 Al Kumm Al Kumm ο1 π5 Manica Manica g π1 ο2 π6 i h ρ Рігель Rigel β τ o m e Saif al Jabbar Saif al Jabbar η p Беллатрікс Bellatrix γ ψ n1 Thabit Thabit υ Mintaka Mintaka δ n2 Heka Heka φ1 Meissa Meissa λ Trapezium Trapezium θ1 Becklin's Star Becklin's Star θ1 θ2 Mizan Batil Mizan Batil c Hatysa Hatysa ι Альнілам Alnilam ε φ2 σ d ω Alnitak Alnitak ζ b Saiph Saiph κ χ1 Бетельгейзе Betelgeuse α μ χ2 ν ξ f1 f2 k l",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/orion\"><img src=\"/constellations/orion-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Orion\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Ori · Orion</p><h3>Orion</h3><p>Winter evenings; late at night in late autumn</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Cyg",
+        "slug": "cygnus",
+        "seasons": [
+          "summer",
+          "autumn"
+        ],
+        "search": "Cyg cygnus Cygnus Лебідь Альбірео M29 і зоряні поля Cygnus Albireo M29 and star fields Fawaris Fawaris κ ι Albireo Albireo β1 β2 θ φ c c Fawaris Fawaris δ d ψ η e b1 b2 ο1 b3 ο2 Revenant of the Swan Revenant of the Swan P Sadr Sadr γ Ruchba Ruchba ω1 Ruchba Ruchba ω2 Денеб Deneb α Aljanah Aljanah ε λ ν f1 ξ f2 Bessel's Star Bessel's Star ζ τ σ υ A g ρ Azelfafage Azelfafage π1 μ1 π2",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/cygnus\"><img src=\"/constellations/cygnus-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Cygnus\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Cyg · Cygnus</p><h3>Cygnus</h3><p>Summer and early autumn evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Leo",
+        "slug": "leo",
+        "seasons": [
+          "spring"
+        ],
+        "search": "Leo leo Leo Лев Альджеба (γ Лева) Левовий Триплет Leo Algieba (Gamma Leonis) The Leo Triplet Al Minlear al Asad Al Minlear al Asad κ ω Alterf Alterf λ ξ h Subra Subra ο f ψ Algenubi Algenubi ε g Rasalas Rasalas μ ν π Al Jabhah Al Jabhah η A Регул Regulus α Adhafera Adhafera ζ Альджеба Algieba γ1 ρ m k l p1 d c p2 b p3 χ p4 p5 Zosma Zosma δ Chertan Chertan θ Zubrah Zubrah n φ σ ι τ e υ Денебола Denebola β o",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/leo\"><img src=\"/constellations/leo-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Leo\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Leo · Leo</p><h3>Leo</h3><p>Spring evenings, especially March to May</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Sco",
+        "slug": "scorpius",
+        "seasons": [
+          "summer"
+        ],
+        "search": "Sco scorpius Scorpius Скорпіон Антарес M4 Scorpius Antares M4 b A Iklil Iklil ρ Fang Fang π Dschubba Dschubba δ Acrab Acrab β1 β2 Jabhat Acrabi Jabhat Acrabi ω1 ω2 Jabbah Jabbah ν ψ c1 c2 χ d ο Alniyat Alniyat σ Антарес Antares α i N Paikauhale Paikauhale τ H Larawag Larawag ε Xamidimura Xamidimura μ1 Pipirima Pipirima μ2 ζ1 Grafias Grafias ζ2 k η Lesath Lesath υ Шаула Shaula λ Q Саргас Sargas θ Mula Mula κ Girtab Girtab ι1 Fuyue Fuyue G Vanant Vanant ι2",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/scorpius\"><img src=\"/constellations/scorpius-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Scorpius\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Sco · Scorpius</p><h3>Scorpius</h3><p>Short summer nights; an open southern horizon is essential</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Lyr",
+        "slug": "lyra",
+        "seasons": [
+          "summer",
+          "autumn"
+        ],
+        "search": "Lyr lyra Lyra Ліра ε Ліри — Подвійна подвійна M57 — Кільцева туманність Lyra Epsilon Lyrae — the Double Double M57 — the Ring Nebula κ Al Athfar Al Athfar μ Вега Vega α Double Double Double Double ε1 ε2 Nasr Alwaki Nasr Alwaki ζ1 ζ2 ν1 ν Шеліак Sheliak β δ1 δ2 Сулафат Sulafat γ λ ι Aladfar Aladfar η θ",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/lyra\"><img src=\"/constellations/lyra-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Lyra\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Lyr · Lyra</p><h3>Lyra</h3><p>Summer and early autumn evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "And",
+        "slug": "andromeda",
+        "seasons": [
+          "autumn",
+          "winter"
+        ],
+        "search": "And andromeda Andromeda Андромеда M31 — галактика Андромеди Альмах (γ Андромеди) Andromeda M31 — the Andromeda Galaxy Almach (Gamma Andromedae) Альферац Alpheratz α θ σ ρ π ε δ ζ ν μ η φ Мірах Mirach β Adhil Adhil ξ ω Thail Thail A Titawin Titawin υ Nembus Nembus χ τ Almach Almach γ1 b c ο Veritate Veritate λ ι κ ψ",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/andromeda\"><img src=\"/constellations/andromeda-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Andromeda\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">And · Andromeda</p><h3>Andromeda</h3><p>Autumn evenings and early winter</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "UMi",
+        "slug": "ursa-minor",
+        "seasons": [
+          "spring",
+          "summer",
+          "autumn",
+          "winter"
+        ],
+        "search": "UMi ursa-minor Ursa Minor Мала Ведмедиця Полярна зоря Кохаб і Феркад Ursa Minor Polaris Kochab and Pherkad Полярна зоря Polaris α Кохаб Kochab β Pherkad Minor Pherkad Minor Феркад Pherkad γ θ Akfa Farkadain Akfa Farkadain ζ Anwa Farkadain Anwa Farkadain η Circitores Circitores ε λ Yildun Yildun δ",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/ursa-minor\"><img src=\"/constellations/ursa-minor-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Ursa Minor\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">UMi · Ursa Minor</p><h3>Ursa Minor</h3><p>Year-round; long dark nights help reveal the fainter stars</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Dra",
+        "slug": "draco",
+        "seasons": [
+          "spring",
+          "summer",
+          "autumn"
+        ],
+        "search": "Dra draco Draco Дракон Тубан (Alpha Draconis) NGC 6543 — Котяче Око Draco Thuban (Alpha Draconis) NGC 6543 — the Cat’s Eye Nebula Giausar Giausar λ κ Tianyi Tianyi Taiyi Taiyi i Thuban Thuban α Edasich Edasich ι θ Athebyne Athebyne η A g h Alrakis Alrakis μ Aldhibah Aldhibah ζ Rastaban Rastaban β Adfar Aldib Adfar Aldib f Kuma Kuma ν1 Kuma Kuma ν2 Al Dhih Al Dhih ω Dziban Dziban ψ Dsiban Dsiban ψ Grumium Grumium ξ Eltanin Eltanin γ Aldhiba Aldhiba φ Alahakan Alahakan χ b Fafnir Fafnir d c ο Athafi Athafi υ Altais Altais δ τ Tais Tais π Alsafi Alsafi σ Tyl Tyl ε e ρ",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/draco\"><img src=\"/constellations/draco-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Draco\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Dra · Draco</p><h3>Draco</h3><p>Late spring, summer and early autumn evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Cep",
+        "slug": "cepheus",
+        "seasons": [
+          "summer",
+          "autumn"
+        ],
+        "search": "Cep cepheus Cepheus Цефей Дельта Цефея Мю Цефея — Гранатова зоря Cepheus Delta Cephei Mu Cephei — Herschel’s Garnet Star Al Aghnam Al Aghnam κ Al Kidr Al Kidr θ Kabalfird Kabalfird η υ1 Alderamin Alderamin α Alfirk Alfirk β The Garnet Star The Garnet Star μ Castula Castula ν Kurhah Kurhah ξ ζ λ ε δ δ Al Kalb al Rai Al Kalb al Rai ρ ι π ο Errai Errai γ",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/cepheus\"><img src=\"/constellations/cepheus-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Cepheus\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Cep · Cepheus</p><h3>Cepheus</h3><p>Summer and autumn evenings; the main pattern is visible year-round</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Per",
+        "slug": "perseus",
+        "seasons": [
+          "autumn",
+          "winter"
+        ],
+        "search": "Per perseus Perseus Персей NGC 869 і NGC 884 — Подвійне скупчення Зоряне поле Мірфака Perseus NGC 869 and NGC 884 — the Double Cluster Mirfak’s star field φ g Misam al Thurayya Misam al Thurayya χ i θ Miram Miram η τ Gorgonea Secunda Gorgonea Secunda π γ Gorgonea Tertia Gorgonea Tertia ρ k Algol Algol β ι Misam Misam κ Gorgonea Quarta Gorgonea Quarta ω l Мірфак Mirfak α σ ψ o δ Atik Atik ο ν n Atik Atik ζ A ε Menkib Menkib ξ λ Nembus Nembus c f μ b b2 d m e",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/perseus\"><img src=\"/constellations/perseus-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Perseus\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Per · Perseus</p><h3>Perseus</h3><p>Autumn and winter evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Tau",
+        "slug": "taurus",
+        "seasons": [
+          "autumn",
+          "winter"
+        ],
+        "search": "Tau taurus Taurus Телець M45 — Плеяди Гіади та Альдебаран Taurus M45 — the Pleiades The Hyades and Aldebaran ο ξ s f t Celaeno Celaeno Electra Electra Taygeta Taygeta q u Maia Maia Asterope Asterope Sterope Sterope Merope Merope Alcyone Alcyone η e Atlas Atlas Pleione Pleione λ ν A1 A2 ψ p μ ω Prima Hyadum Prima Hyadum γ h Alkalbain Alkalbain φ χ Secunda Hyadum Secunda Hyadum δ r κ υ π θ1 Ain Ain ε Chamukuy Chamukuy θ2 b ρ d Альдебаран Aldebaran α c1 σ1 σ2 τ i k ι m l n Елнат Elnath β o The Ruby Star The Ruby Star Tianguan Tianguan ζ",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/taurus\"><img src=\"/constellations/taurus-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Taurus\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Tau · Taurus</p><h3>Taurus</h3><p>Late autumn and winter evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Gem",
+        "slug": "gemini",
+        "seasons": [
+          "winter",
+          "spring"
+        ],
+        "search": "Gem gemini Gemini Близнюки M35 NGC 2158 Gemini M35 NGC 2158 Propus Propus Propus Propus η Tejat Tejat μ Nucatai Nucatai ν Альхена Alhena γ Mebsuta Mebsuta ε Alzirr Alzirr ξ d θ e ω Mekbuda Mekbuda ζ τ λ Wasat Wasat δ A Propus Propus ι ρ b Кастор Castor α υ Jishui Jishui ο f σ c κ Поллукс Pollux β g π φ χ",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/gemini\"><img src=\"/constellations/gemini-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Gemini\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Gem · Gemini</p><h3>Gemini</h3><p>Winter and early spring evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Aur",
+        "slug": "auriga",
+        "seasons": [
+          "autumn",
+          "winter"
+        ],
+        "search": "Aur auriga Auriga Візничий M36 і M38 M37 Auriga M36 and M38 M37 Hassaleh Hassaleh ι Almaaz Almaaz ε Saclateni Saclateni ζ Haedus Haedus η Alhiba Alhiba μ Капелла Capella α λ ρ σ φ χ ο τ υ ν ξ δ Менкалінан Menkalinan β Mahasim Mahasim θ π κ Dolones Dolones ψ1 ψ3 ψ2 ψ4 ψ5 ψ6 ψ7 ψ8 ψ9",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/auriga\"><img src=\"/constellations/auriga-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Auriga\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Aur · Auriga</p><h3>Auriga</h3><p>Late autumn and winter evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "CMa",
+        "slug": "canis-major",
+        "seasons": [
+          "winter"
+        ],
+        "search": "CMa canis-major Canis Major Великий Пес Сіріус M41 Canis Major Sirius M41 Furud Furud ζ Mirzam Mirzam β λ ξ1 ξ2 ν1 ν2 ν3 Сіріус Sirius α κ Udra Udra ο1 θ π Isis Isis μ ι Адара Adhara ε Unurgunite Unurgunite σ Al Zara Al Zara ο2 Muliphein Muliphein γ Везен Wezen δ ω τ Aludra Aludra η",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/canis-major\"><img src=\"/constellations/canis-major-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Canis Major\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">CMa · Canis Major</p><h3>Canis Major</h3><p>Winter evenings, near its highest position in the south</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "CMi",
+        "slug": "canis-minor",
+        "seasons": [
+          "winter",
+          "spring"
+        ],
+        "search": "CMi canis-minor Canis Minor Малий Пес Проціон і Гомейса Зимовий трикутник Canis Minor Procyon and Gomeisa The Winter Triangle ε Gomeisa Gomeisa β η γ δ1 δ2 δ3 Проціон Procyon α ζ G",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/canis-minor\"><img src=\"/constellations/canis-minor-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Canis Minor\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">CMi · Canis Minor</p><h3>Canis Minor</h3><p>Winter and early spring evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Aql",
+        "slug": "aquila",
+        "seasons": [
+          "summer",
+          "autumn"
+        ],
+        "search": "Aql aquila Aquila Орел Альтаїр, Таразед і Альшаїн Зоряні поля Орла Aquila Altair, Tarazed and Alshain Aquila’s star fields Deneb al Okab Borealis Deneb al Okab Borealis ε i g h Okab Okab ζ Al Thalimain Prior Al Thalimain Prior λ ω1 A ω2 f d b Almizan Almizan δ ν c e μ Al Thalimain Posterior Al Thalimain Posterior ι κ σ χ ψ υ Tarazed Tarazed γ π Альтаїр Altair α ο Tarazed Tarazed η Libertas Libertas ξ Alshain Alshain β φ τ θ ρ l",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/aquila\"><img src=\"/constellations/aquila-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Aquila\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Aql · Aquila</p><h3>Aquila</h3><p>Summer and early autumn evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Peg",
+        "slug": "pegasus",
+        "seasons": [
+          "autumn"
+        ],
+        "search": "Peg pegasus Pegasus Пегас M15 Великий квадрат Pegasus M15 The Great Square Algenib Algenib γ χ Еніф Enif ε κ Fum al Faras Fum al Faras ν ι π1 π Biham Biham θ Homam Homam ζ Sadalmatar Sadalmatar ο Matar Matar η Sadalnazi Sadalnazi λ Suudalnujum Suudalnujum ξ Sadalbari Sadalbari μ σ ρ Helvetios Helvetios Scheat Scheat β Markab Markab α Salm Salm τ Alkarab Alkarab υ φ ψ",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/pegasus\"><img src=\"/constellations/pegasus-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Pegasus\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Peg · Pegasus</p><h3>Pegasus</h3><p>Autumn evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      },
+      {
+        "id": "Boo",
+        "slug": "bootes",
+        "seasons": [
+          "spring",
+          "summer"
+        ],
+        "search": "Boo bootes Boötes Волопас Арктур Ізар (Epsilon Boötis) Boötes Arcturus Izar (Epsilon Boötis) τ υ e Muphrid Muphrid η d Asellus Tertius Asellus Tertius κ2 Арктур Arcturus α Asellus Secundus Asellus Secundus ι Xuange Xuange λ A Asellus Primus Asellus Primus θ f g ρ Seginus Seginus γ σ π1 ζ Izar Izar ε ο Merga Merga h ξ Nekkar Nekkar β ω i Aulad Alnathlat Aulad Alnathlat ψ k c b χ Thiba Thiba δ Alkalurops Alkalurops μ1 ν1 ν2 Ceginus Ceginus φ",
+        "html": "<a class=\"cg-directory-card\" href=\"/en/constellations/bootes\"><img src=\"/constellations/bootes-en.svg\" width=\"800\" height=\"520\" alt=\"Constellation finder chart Boötes\" loading=\"lazy\"><div><p class=\"cg-eyebrow\">Boo · Boötes</p><h3>Boötes</h3><p>Spring and early summer evenings</p><span class=\"cg-card-link\">How to find it ↗</span></div></a>"
+      }
+    ]
+  }
+}

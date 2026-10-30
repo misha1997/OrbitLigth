@@ -127,6 +127,8 @@ SLUGS: dict[str, dict[str, str]] = {
     "pioneer11":     {"uk": "pioneer-11",        "en": "pioneer-11"},
     "galileo":       {"uk": "galileo",           "en": "galileo"},
     "curiosity":     {"uk": "curiosity",         "en": "curiosity"},
+    "rosetta":       {"uk": "rosetta",           "en": "rosetta"},
+    "dawn":          {"uk": "dawn",              "en": "dawn"},
     "meteors":      {"uk": "meteory",           "en": "meteors"},
     "asteroids":    {"uk": "asteroidy",         "en": "asteroids"},
     "events":       {"uk": "podiyi",            "en": "events"},
@@ -585,7 +587,7 @@ def build_sitemap_pages_xml() -> str:
     from web.constellation_guides import guide_index, guide_url
     for item in guide_index()["items"]:
         for lang in LANGS:
-            urls.append(_sitemap_url(guide_url(lang, item["slug"]), guide_index()["checked"],
+            urls.append(_sitemap_url(guide_url(lang, item["slug"]), item.get("checked", guide_index()["checked"]),
                                      "monthly", "0.6", guide_url("uk", item["slug"]),
                                      guide_url("en", item["slug"])))
     return _wrap_urlset(urls)

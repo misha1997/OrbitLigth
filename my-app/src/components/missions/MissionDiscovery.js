@@ -14,6 +14,8 @@ const MARKERS = {
   pioneer11: [[12, 70], [47, 42], [76, 67], [85, 18]],
   galileo: [[17, 69], [48, 64], [77, 30], [76, 78]],
   curiosity: [[18, 75], [36, 60], [64, 32], [80, 69]],
+  rosetta: [[14, 27], [47, 53], [63, 76], [79, 27]],
+  dawn: [[14, 71], [42, 35], [76, 59], [79, 83]],
 };
 
 const MAP_LABELS = { perseverance: "JEZERO / 18.4° N · 77.5° E", cassini: "SATURN SYSTEM / 2004–2017", osirisrex: "BENNU / SAMPLE RETURN / 2016–2023", gaia: "GAIA / ASTROMETRY · PHOTOMETRY · SPECTROSCOPY", kepler: "KEPLER / TRANSIT PHOTOMETRY / K2", spitzer: "SPITZER / INFRARED UNIVERSE / 2003–2020" };
@@ -21,6 +23,8 @@ MAP_LABELS.pioneer10 = "PIONEER 10 / EARTH · ASTEROID BELT · JUPITER";
 MAP_LABELS.pioneer11 = "PIONEER 11 / EARTH · JUPITER · SATURN";
 MAP_LABELS.galileo = "GALILEO / JUPITER SYSTEM / 1989–2003";
 MAP_LABELS.curiosity = "CURIOSITY / GALE CRATER · MOUNT SHARP";
+MAP_LABELS.rosetta = "ROSETTA / 67P · PHILAE / 2004–2016";
+MAP_LABELS.dawn = "DAWN / VESTA · CERES / 2007–2018";
 
 function DiscoveryMap({ mission, selected, onSelect, content }) {
   const mars = mission === "perseverance";
@@ -32,7 +36,30 @@ function DiscoveryMap({ mission, selected, onSelect, content }) {
           <pattern id={`${mission}-stars`} width="89" height="71" patternUnits="userSpaceOnUse"><circle cx="15" cy="22" r="1" fill="#ffffff60" /><circle cx="63" cy="49" r="0.7" fill="#ffffff30" /></pattern>
         </defs>
         <rect width="800" height="500" fill={`url(#${mission}-stars)`} />
-        {mars ? <g>
+        {mission === "rosetta" ? <g>
+          <path d="M112 135Q190 80 270 181T480 300" fill="none" stroke="#9ccfd275" strokeWidth="2" strokeDasharray="6 9" />
+          <path d="m64 124 35-12 3 31-32 10Zm83-17 41-12 3 31-39 12Z" fill="#426878" stroke="#9ccfd280" />
+          <path d="m103 112 35-5 14 34-39 10Z" fill="#d8d0b5" /><ellipse cx="128" cy="112" rx="13" ry="8" fill="#e4e2d0" />
+          <path d="M230 272 251 216 297 188 345 199 382 229 413 210 444 217 464 258 453 302 415 325 389 302 346 337 286 330 250 309Z" fill="#777f7c" stroke="#cbd3c080" strokeWidth="3" />
+          <path d="m251 216 46 39-67 17 116 65-13-68 49-40 7 73 64-44M297 188l36 81 80-59M286 330l47-61 82 56" fill="none" stroke="#cbd3c035" strokeWidth="2" />
+          <g fill="#353e3c"><ellipse cx="290" cy="279" rx="19" ry="11" /><ellipse cx="332" cy="222" rx="13" ry="8" /><ellipse cx="427" cy="266" rx="12" ry="17" /></g>
+          <path d="M447 292Q480 337 504 376" fill="none" stroke="#d8d3a780" strokeWidth="2" strokeDasharray="4 6" />
+          <g transform="translate(510 380)"><path d="m-13-13 22-2 7 21-25 5Z" fill="#ddcf9e" /><path d="m-8 8-17 15m34-17 19 12M0 10l-2 20" stroke="#d8cfb0" strokeWidth="3" /><path d="m-31 24 10 0m44-4 10 0m-39 12 10 0" stroke="#9ccfd2" strokeWidth="2" /></g>
+          <path d="M443 218Q499 140 587 86M450 230Q557 181 677 156M421 210Q453 112 496 62" fill="none" stroke="#c7e7e640" strokeWidth="15" />
+          <path d="M443 218Q499 140 587 86M450 230Q557 181 677 156M421 210Q453 112 496 62" fill="none" stroke="#c7e7e680" strokeWidth="3" />
+          <circle cx="690" cy="74" r="21" fill="#f0cd83" /><path d="m650 74-20 0m47 42-8 17m-5-85-12-13" stroke="#f0cd8360" strokeWidth="2" />
+        </g> : mission === "dawn" ? <g>
+          <path d="M112 355Q170 125 336 175T608 295" fill="none" stroke="#b8a5e390" strokeWidth="2" strokeDasharray="6 9" />
+          <g transform="translate(112 355)"><path d="m-56-12 38-6 2 26-39 6m67-32 40-5 2 26-39 6" fill="#526d9a" stroke="#c0b5dc90" /><path d="m-16-15 28-4 5 32-30 4Z" fill="#c8b690" /><ellipse cx="0" cy="-19" rx="14" ry="8" fill="#e4dbc8" /><path d="M-5 18 0 58 5 18" fill="#9ccfe980" /></g>
+          <path d="m266 143 26-31 49-11 48 23 23 37-13 43-41 30-47-4-36-37Z" fill="#8d8582" stroke="#c6b9a580" strokeWidth="2" />
+          <path d="M278 174Q335 155 399 179M281 188Q334 174 396 190M292 203Q338 189 385 204" fill="none" stroke="#c4b5a455" strokeWidth="5" />
+          <path d="m313 213 28-24 32 23" fill="#beb09b" /><circle cx="307" cy="145" r="12" fill="#625d59" />
+          <circle cx="608" cy="295" r="83" fill="#85888b" stroke="#c6c9ca60" strokeWidth="2" />
+          <g fill="#62676d" stroke="#c4c8c733"><circle cx="573" cy="270" r="19" /><circle cx="636" cy="326" r="23" /><circle cx="631" cy="266" r="14" /><circle cx="570" cy="326" r="11" /></g>
+          <circle cx="621" cy="273" r="6" fill="#e7e5d8" /><circle cx="630" cy="278" r="3" fill="#e7e5d8" />
+          <ellipse cx="608" cy="295" rx="123" ry="98" transform="rotate(-30 608 295)" fill="none" stroke="#b8a5e360" strokeWidth="2" strokeDasharray="5 8" />
+          <path d="m685 359 15-3 4 14-15 4Z" fill="#d7c8a0" /><path d="m667 361 18-3m19-3 19-3" stroke="#7d90b6" strokeWidth="9" />
+        </g> : mars ? <g>
           <ellipse cx="425" cy="255" rx="295" ry="210" fill={`url(#${mission}-world)`} stroke="#d6a07c55" strokeWidth="22" />
           <ellipse cx="425" cy="255" rx="265" ry="185" fill="none" stroke="#e3b79630" strokeWidth="2" />
           <path d="M180 25 205 78 242 118 312 195 274 221 252 203 236 174 209 160 192 122 166 82" fill="#735346" stroke="#d5ac8b60" strokeWidth="2" />
@@ -149,29 +176,6 @@ export default function MissionDiscovery({ mission, content }) {
         <div className="mission-destination-fact"><strong>{stop.fact}</strong><span>{stop.factLabel}</span></div>
         <p>{stop.question}</p><a className="section-link" href={stop.source} target="_blank" rel="noopener noreferrer">{t("missionDetail.ui.readResearch")} ↗</a>
       </article>
-    </div>
-  </div></section>;
-}
-
-export function MissionQuiz({ mission, content }) {
-  const [index, setIndex] = useState(0);
-  const [answer, setAnswer] = useState(null);
-  const question = content.questions[index];
-  const answered = answer !== null;
-  return <section className="section" id="quiz"><div className="wrap">
-    <div className="mission-quiz card">
-      <div><div className="eyebrow">{content.eyebrow} · {index + 1} / {content.questions.length}</div><h2>{content.title}</h2><p>{content.intro}</p></div>
-      <div>
-        <fieldset><legend>{question.question}</legend>
-          <div className="mission-quiz-options">{question.options.map((option, optionIndex) => <button type="button" key={option}
-            disabled={answered} aria-pressed={answer === optionIndex}
-            className={answered && optionIndex === question.correct ? "is-correct" : answered && optionIndex === answer ? "is-incorrect" : ""}
-            onClick={() => setAnswer(optionIndex)}>{option}</button>)}</div>
-        </fieldset>
-        {answered && <div className="mission-quiz-answer" role="status"><strong>{answer === question.correct ? content.correct : content.incorrect}</strong><p>{question.explanation}</p>
-          <button type="button" className="btn ghost" onClick={() => { setAnswer(null); setIndex((index + 1) % content.questions.length); }}>{index === content.questions.length - 1 ? content.restart : content.next} →</button>
-        </div>}
-      </div>
     </div>
   </div></section>;
 }

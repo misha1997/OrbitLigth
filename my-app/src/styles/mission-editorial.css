@@ -1,0 +1,16 @@
+.mission-editorial-nav { display:flex; flex-wrap:wrap; gap:10px 20px; padding-block:18px; border-block:1px solid var(--border); }
+.mission-editorial-nav a { color:var(--text-dim); font-size:13px; text-decoration:none; }
+.mission-editorial-note { font-size:13px; line-height:1.8; color:var(--text-dim); }
+.mission-editorial-highlight { color:var(--gold); font-size:13px; }
+.mission-editorial-photo { display:block; width:100%; height:220px; object-fit:cover; }
+figure.iconic-img-card { margin:0; }
+.mission-editorial-disclosure summary,.mission-reading-questions summary { cursor:pointer; color:var(--text); font-size:17px; line-height:1.6; }
+.mission-editorial-disclosure[open] summary { margin-bottom:24px; }
+.mission-reading-questions { display:grid; gap:12px; }
+.mission-reading-questions details { padding:18px 22px; border:1px solid var(--border); border-radius:12px; }
+.mission-reading-questions p,.mission-editorial-disclosure p { color:var(--text-dim); line-height:1.8; }
+.mission-editorial-sources { display:flex; flex-wrap:wrap; gap:14px 30px; padding:0; list-style:none; margin-bottom:28px; }
+.roman-orbit-diagram { margin:20px 0 0; border:1px solid var(--border); border-radius:16px; background:#090e1b; }
+.roman-orbit-diagram svg { display:block; width:100%; height:auto; }
+.roman-orbit-diagram figcaption { padding:16px 22px; color:var(--text-dim); font-size:12px; line-height:1.8; }
+.mission-reading-questions summary:focus-visible,.mission-editorial-disclosure summary:focus-visible,.mission-editorial-nav a:focus-visible { outline:2px solid var(--gold); outline-offset:5px; }

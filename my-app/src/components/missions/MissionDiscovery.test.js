@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/no-node-access, testing-library/no-container, jest/no-conditional-expect -- The mission matrix covers alternative explorers and checks their section IDs. */
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import i18next from "../../i18n";
@@ -14,8 +15,8 @@ beforeEach(() => {
   i18next.changeLanguage("en");
 });
 
-test.each(["perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity"].flatMap(mission => ["uk", "en"].map(lang => [mission, lang])))
-("%s supports exploration, quizzes and a signal scenario in %s without live API requests", async (mission, lang) => {
+test.each(["perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity", "rosetta", "dawn"].flatMap(mission => ["uk", "en"].map(lang => [mission, lang])))
+("%s supports exploration and an optional signal scenario in %s without live API requests", async (mission, lang) => {
   i18next.changeLanguage(lang);
   const content = i18next.t(`missionDetail.${mission}`, { returnObjects: true });
   const signal = i18next.t("missionDetail.ui.signal", { returnObjects: true });
@@ -25,6 +26,7 @@ test.each(["perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", 
   expect(container.querySelector("#live")).not.toBeInTheDocument();
   expect(screen.getByText(content.status.title)).toBeInTheDocument();
 
+  if (["perseverance", "cassini", "osirisrex"].includes(mission)) {
   const destinations = screen.getByRole("group", { name: content.exploration.choose });
   content.exploration.stops.forEach((stop, index) => {
     const button = within(destinations).getAllByRole("button")[index];
@@ -37,6 +39,10 @@ test.each(["perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", 
   fireEvent.click(screen.getByRole("button", { name: `1. ${content.exploration.stops[0].name}` }));
   expect(container.querySelector(`#${mission}-destination`)).toHaveTextContent(content.exploration.stops[0].body);
 
+  } else {
+    expect(container.querySelector("#trajectory")).not.toBeInTheDocument();
+  }
+
   const calculator = container.querySelector(".mission-signal");
   const slider = within(calculator).getByRole("slider");
   fireEvent.change(slider, { target: { value: mission === "gaia" ? "1000000" : mission === "kepler" ? "100000000" : "299000000" } });
@@ -44,21 +50,10 @@ test.each(["perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", 
   const expected = mission === "gaia" ? "3.34" : mission === "kepler" ? "5.6" : "16.6";
   expect(calculator).toHaveTextContent(lang === "en" ? expected : expected.replace(".", ","));
   fireEvent.click(within(calculator).getByRole("button", { name: signal.reset }));
-  expect(slider.value).toBe({ perseverance: "225000000", cassini: "1400000000", osirisrex: "300000000", gaia: "1500000", kepler: "150000000", spitzer: "200000000", pioneer10: "12230000000", pioneer11: "6400000000", galileo: "628000000", curiosity: "225000000" }[mission]);
+  expect(slider.value).toBe({ perseverance: "225000000", cassini: "1400000000", osirisrex: "300000000", gaia: "1500000", kepler: "150000000", spitzer: "200000000", pioneer10: "12230000000", pioneer11: "6400000000", galileo: "628000000", curiosity: "225000000", rosetta: "500000000", dawn: "400000000" }[mission]);
 
-  const quiz = container.querySelector("#quiz");
-  content.quiz.questions.forEach((question, index) => {
-    expect(within(quiz).getByRole("group")).toHaveAccessibleName(question.question);
-    // Include both incorrect and correct answers; feedback must always explain the science.
-    const chosen = index === 0 ? (question.correct + 1) % question.options.length : question.correct;
-    fireEvent.click(within(quiz).getByRole("button", { name: question.options[chosen] }));
-    expect(within(quiz).getByRole("status")).toHaveTextContent(question.explanation);
-    expect(within(quiz).getByRole("status")).toHaveTextContent(chosen === question.correct ? content.quiz.correct : content.quiz.incorrect);
-    question.options.forEach(option => expect(within(quiz).getByRole("button", { name: option })).toBeDisabled());
-    fireEvent.click(within(quiz).getByRole("button", { name: new RegExp(index === 2 ? content.quiz.restart : content.quiz.next) }));
-  });
-  expect(within(quiz).getByRole("group")).toHaveAccessibleName(content.quiz.questions[0].question);
-  expect(within(quiz).queryByRole("status")).not.toBeInTheDocument();
+  expect(container.querySelector("#quiz")).not.toBeInTheDocument();
+  expect(container.querySelector('a[href="#quiz"]')).not.toBeInTheDocument();
 });
 
 test.each(["uk", "en"])("Gaia parallax decreases with distance and the viewpoint changes in %s", lang => {

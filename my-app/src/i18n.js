@@ -26,6 +26,19 @@ import missionPioneersUk from "./i18n/mission-pioneers.uk.json";
 import missionPioneersEn from "./i18n/mission-pioneers.en.json";
 import missionWorldsUk from "./i18n/mission-worlds.uk.json";
 import missionWorldsEn from "./i18n/mission-worlds.en.json";
+import missionSmallWorldsUk from "./i18n/mission-small-worlds.uk.json";
+import missionSmallWorldsEn from "./i18n/mission-small-worlds.en.json";
+import editorialUk from "./i18n/mission-editorial.uk.json";
+import editorialEn from "./i18n/mission-editorial.en.json";
+
+function withEditorial(base, changes) {
+  const result = { ...base };
+  for (const [key, value] of Object.entries(changes)) {
+    result[key] = value && typeof value === "object" && !Array.isArray(value)
+      ? withEditorial(base?.[key] || {}, value) : value;
+  }
+  return result;
+}
 
 const missionTranslations = (base, extra) => Object.fromEntries(Object.entries(base).map(([key, value]) => [key, { ...value, ...extra[key] }]));
 
@@ -70,8 +83,8 @@ export function initI18n(initialLang) {
   if (initialised) return i18next;
   i18next.use(initReactI18next).init({
     resources: {
-      uk: { translation: { ...uk, orbital: orbitalUk, missionDetail: missionTranslations({ ...missionDetailUk, ...missionAdditionsUk, ...missionExplorersUk, ...missionSurveysUk, ...missionKeplerUk, ...missionSpitzerUk, ...missionPioneersUk, ...missionWorldsUk }, missionEnrichmentUk) } },
-      en: { translation: { ...en, orbital: orbitalEn, missionDetail: missionTranslations({ ...missionDetailEn, ...missionAdditionsEn, ...missionExplorersEn, ...missionSurveysEn, ...missionKeplerEn, ...missionSpitzerEn, ...missionPioneersEn, ...missionWorldsEn }, missionEnrichmentEn) } },
+      uk: { translation: { ...withEditorial(uk, editorialUk), orbital: orbitalUk, missionDetail: missionTranslations({ ...missionDetailUk, ...missionAdditionsUk, ...missionExplorersUk, ...missionSurveysUk, ...missionKeplerUk, ...missionSpitzerUk, ...missionPioneersUk, ...missionWorldsUk, ...missionSmallWorldsUk }, missionEnrichmentUk) } },
+      en: { translation: { ...withEditorial(en, editorialEn), orbital: orbitalEn, missionDetail: missionTranslations({ ...missionDetailEn, ...missionAdditionsEn, ...missionExplorersEn, ...missionSurveysEn, ...missionKeplerEn, ...missionSpitzerEn, ...missionPioneersEn, ...missionWorldsEn, ...missionSmallWorldsEn }, missionEnrichmentEn) } },
     },
     lng: initialLang || readLang(),
     fallbackLng: DEFAULT_LANG,

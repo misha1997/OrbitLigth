@@ -31,7 +31,7 @@ export default function RomanNews() {
         {loading ? <NewsSkeleton /> : error ? (
           <div className="news-feedback" role="alert">
             <h3>{t("news.loadError")}</h3>
-            <p>{t("news.loadErrorSub")}</p>
+            <p>{t("roman.news.error")}</p>
             <button className="filter-pill" type="button" onClick={refetch}>{t("news.retry")}</button>
           </div>
         ) : items.length === 0 ? (

@@ -1,143 +1,125 @@
-// Sticky site header: logo, grouped nav (single links + dropdown groups),
-// language switcher, CTA button, and a mobile burger that toggles the dropdown
-// panel. (index.html header.site, reworked into compact grouped submenus.)
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { NAV_GROUPS } from "../../lib/constants";
 import { useLang } from "../../context/LanguageContext";
 import { useAuth } from "../../context/AuthContext";
 import Avatar from "../Avatar";
-import { pathFor, switchLangPath } from "../../lib/seo";
+import { nameFromPath, pathFor, switchLangPath } from "../../lib/seo";
+import "../../styles/navigation.css";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState(null);
-  const { pathname, search } = useLocation();
+  const headerRef = useRef(null);
+  const burgerRef = useRef(null);
+  const { pathname, search, hash } = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { lang } = useLang();
   const { user } = useAuth();
-
-  // Path for a nav entry by i18n name, in the active language.
+  const currentPage = nameFromPath(pathname).name;
   const to = (name) => pathFor(name, lang);
-
-  // A dropdown group is "active" (gold trigger) when any of its items matches.
-  const groupActive = (items) => items.some((l) => {
-    if (l.disabled) return false;
-    const p = to(l.name);
-    return pathname === p || pathname.startsWith(p + "/");
+  const close = () => { setOpen(false); setOpenGroup(null); };
+  const groupActive = (group) => group.activeNames?.includes(currentPage) || group.items.some((item) => {
+    const path = to(item.name);
+    return pathname === path || pathname.startsWith(path + "/");
   });
 
-  const closeMobile = () => { setOpen(false); setOpenGroup(null); };
+  useEffect(() => { setOpen(false); setOpenGroup(null); }, [pathname, search, hash]);
 
-  // Close the mobile menu on route change.
-  useEffect(() => { closeMobile(); }, [pathname]);
-
-  // Close on Escape and on any click outside the header while the burger
-  // panel is open. The burger button stops propagation on its own click, and
-  // link taps inside the panel close via the nav onClick below.
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e) => { if (e.key === "Escape") closeMobile(); };
-    const onDocClick = (e) => { if (!e.target.closest("header.site")) closeMobile(); };
-    document.addEventListener("keydown", onKey);
-    document.addEventListener("click", onDocClick);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.removeEventListener("click", onDocClick);
+    if (!open && !openGroup) return;
+    const onPointer = (event) => {
+      if (!headerRef.current?.contains(event.target)) close();
     };
-  }, [open]);
+    const onKey = (event) => {
+      if (event.key !== "Escape") return;
+      if (openGroup) {
+        headerRef.current?.querySelector(`[aria-controls="nav-${openGroup}"]`)?.focus();
+        setOpenGroup(null);
+      } else {
+        close();
+        burgerRef.current?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open, openGroup]);
 
-  // Language switcher: navigate to the same content in the other language.
-  // The URL is the source of truth; Layout's effect then syncs localStorage +
-  // i18next to the new prefix. (setLang alone doesn't change the URL.)
-  const switchLang = (code) => navigate(switchLangPath(pathname, code) + search);
-
-  const LangBtn = ({ code }) => (
-    <button
-      type="button"
-      className={"lang-btn " + code + (lang === code ? " active" : "")}
-      onClick={() => switchLang(code)}
-      aria-pressed={lang === code}
-      title={code === "uk" ? "Українська" : "English"}
-    >
-      {code === "uk" ? "UK" : "EN"}
-    </button>
-  );
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1201px)");
+    const onResize = () => { setOpen(false); setOpenGroup(null); };
+    desktop.addEventListener("change", onResize);
+    return () => desktop.removeEventListener("change", onResize);
+  }, []);
 
   return (
-    <header className="site">
-      <div className="wrap nav">
-        <Link to={to("home")} className="logo" onClick={closeMobile}>
+    <header className="site site-header" ref={headerRef} onBlur={(event) => {
+      if (!event.currentTarget.contains(event.relatedTarget)) close();
+    }}>
+      <div className="wrap site-header-inner">
+        <Link to={to("home")} className="logo" onClick={close}>
           <img className="logo-img" src="/web-app-manifest-192x192.png" alt="" aria-hidden="true" />
           <span>OrbitLight<small>{t("header.tagline")}</small></span>
         </Link>
-        <nav className={"links" + (open ? " open" : "")} onClick={(e) => {
-          // Close the mobile panel when a leaf link is tapped.
-          if (e.target.tagName === "A") closeMobile();
-        }}>
-          {NAV_GROUPS.map((g) => g.items ? (
-            <div
-              key={g.labelKey}
-              className={"nav-group" + (openGroup === g.labelKey ? " open" : "") + (groupActive(g.items) ? " active" : "")}
-              onClick={(e) => {
-                // Toggle this group on trigger click; ignore clicks on the
-                // open dropdown itself (links handle their own close above).
-                if (e.target.closest(".nav-trigger")) {
-                  e.stopPropagation();
-                  setOpenGroup((cur) => (cur === g.labelKey ? null : g.labelKey));
-                }
-              }}
-            >
-              <button type="button" className="nav-trigger" aria-expanded={openGroup === g.labelKey}>
-                {t(g.labelKey)}<span className="caret">▾</span>
-              </button>
-              <div className="nav-dropdown">
-                {g.items.map((l) => (
-                  l.disabled ? (
-                    <span key={l.name} className="nav-link disabled" aria-disabled="true">
-                      {t(l.labelKey)} <small className="soon">{t("nav.soon")}</small>
-                    </span>
-                  ) : (
-                    <NavLink key={l.name} to={to(l.name)} end={l.end}
-                      className={({ isActive }) => isActive ? "active" : ""}>
-                      {t(l.labelKey)}
-                    </NavLink>
-                  )
-                ))}
+        <button ref={burgerRef} type="button" className="site-menu-toggle" aria-controls="site-navigation"
+          aria-expanded={open} aria-label={open ? t("navigation.closeMenu") : t("header.menu")}
+          onClick={() => { setOpen((current) => !current); setOpenGroup(null); }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d={open ? "m6 6 12 12M6 18 18 6" : "M4 6h16M4 12h16M4 18h16"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg><span>{t("header.menu")}</span>
+        </button>
+        <div id="site-navigation" className={"site-navigation" + (open ? " is-open" : "")}>
+          <nav className="primary-nav" aria-label={t("navigation.primary")}>
+            {NAV_GROUPS.map((group) => group.items ? (
+              <div key={group.id} className={"site-nav-group" + (groupActive(group) ? " is-active" : "")}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget)) {
+                    setOpenGroup((current) => current === group.id ? null : current);
+                  }
+                }}>
+                <button type="button" className="site-nav-trigger" aria-expanded={openGroup === group.id}
+                  aria-controls={`nav-${group.id}`} onClick={() => setOpenGroup((current) => current === group.id ? null : group.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowDown") {
+                      event.preventDefault();
+                      setOpenGroup(group.id);
+                      requestAnimationFrame(() => document.getElementById(`nav-${group.id}`)?.querySelector("a")?.focus());
+                    }
+                  }}>
+                  {t(group.labelKey)}<svg className="site-nav-chevron" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" /></svg>
+                </button>
+                <div id={`nav-${group.id}`} className="site-nav-panel" hidden={openGroup !== group.id}>
+                  {group.items.map((item) => <NavLink key={item.name} to={to(item.name)} end={item.end} onClick={close}>
+                    {t(item.labelKey)}
+                  </NavLink>)}
+                </div>
               </div>
-            </div>
-          ) : (
-            <NavLink key={g.name} to={to(g.name)} end={g.end}
-              className={({ isActive }) => isActive ? "active" : ""}>
-              {t(g.labelKey)}
-            </NavLink>
-          ))}
-          <span className="lang-switch" role="group" aria-label="Language">
-            <LangBtn code="uk" />
-            <LangBtn code="en" />
-          </span>
-          {user ? (
-            <NavLink to={to("account")} className={({ isActive }) => "header-avatar-link"}
+            ) : <NavLink key={group.name} to={to(group.name)} end={group.end} onClick={close}>{t(group.labelKey)}</NavLink>)}
+          </nav>
+          <div className="site-nav-tools">
+            <span className="lang-switch" role="group" aria-label={t("navigation.language")}>
+              {["uk", "en"].map((code) => <button key={code} type="button"
+                className={"lang-btn " + code + (lang === code ? " active" : "")}
+                onClick={() => navigate(switchLangPath(pathname, code) + search + hash)} aria-pressed={lang === code}
+                aria-label={code === "uk" ? "Українська" : "English"} lang={code}>
+                {code === "uk" ? "UA" : "EN"}
+              </button>)}
+            </span>
+            {user ? <NavLink to={to("account")} className="site-account-link" onClick={close}
               title={user.username || t("header.myAccount")} aria-label={t("header.myAccount")}>
               <Avatar user={user} size={32} />
-            </NavLink>
-          ) : (
-            <>
-              <NavLink to={to("login")} className={({ isActive }) => isActive ? "active" : ""}>
-                {t("header.login")}
-              </NavLink>
-              <NavLink to={to("register")} className="cta-btn">
-                {t("header.register")}
-              </NavLink>
-            </>
-          )}
-        </nav>
-        <button className={"burger" + (open ? " open" : "")} aria-label={t("header.menu")} aria-expanded={open}
-          onClick={(e) => { e.stopPropagation(); setOpen((o) => !o); setOpenGroup(null); }}>
-          <span></span><span></span><span></span>
-        </button>
+            </NavLink> : <div className="site-auth-links">
+              <NavLink to={to("login")} onClick={close}>{t("header.login")}</NavLink>
+              <NavLink to={to("register")} className="site-signup" onClick={close}>{t("header.register")}</NavLink>
+            </div>}
+          </div>
+        </div>
       </div>
     </header>
   );

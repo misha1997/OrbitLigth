@@ -3,53 +3,38 @@
 // through i18next so they follow the active UI language.
 import i18next from "../i18n";
 
-// Header nav: a flat list of top-level entries. Each entry is either a
-// single link ({name,label,end}) or a dropdown group ({label, items:[…]}).
-// `name` is the i18n route name (key into lib/seo.js SLUGS); the actual URL is
-// built per-language via pathFor(name, lang) in Header, so the same nav data
-// serves both /ua/ and /en/. Grouped thematically so all pages fit compactly
-// behind 4 dropdowns. `disabled` entries are display-only (no route yet).
+// Shared by the header and footer. Detail pages stay discoverable through
+// their hubs; activeNames also highlights the group on standalone mission URLs.
 export const NAV_GROUPS = [
   { name: "home", labelKey: "nav.home", end: true },
-  { labelKey: "nav.sky_group", items: [
+  { id: "observe", labelKey: "navigation.observe", items: [
+    { name: "events", labelKey: "navigation.events" },
     { name: "constellations", labelKey: "nav.constellations" },
     { name: "meteors", labelKey: "nav.meteors" },
-    { name: "events", labelKey: "nav.events" },
     { name: "darksky", labelKey: "nav.darksky" },
+    { name: "weather", labelKey: "nav.weather" },
   ]},
-  { labelKey: "nav.orbit_group", items: [
-    { name: "iss", labelKey: "nav.iss" },
-    { name: "satellites", labelKey: "nav.satellites" },
-    { name: "launches", labelKey: "nav.launches" },
-    { name: "news", labelKey: "nav.news" },
-    { name: "missions", labelKey: "nav.missionsHub", end: true },
-  ]},
-  { labelKey: "nav.planetarium", items: [
-    { name: "planetarium", labelKey: "nav.planetariumHub", end: true },
-    { name: "mercury", labelKey: "nav.mercury" },
-    { name: "venus", labelKey: "nav.venus" },
-    { name: "earth", labelKey: "nav.earth" },
-    { name: "mars", labelKey: "nav.mars" },
-    { name: "jupiter", labelKey: "nav.jupiter" },
-    { name: "saturn", labelKey: "nav.saturn" },
-    { name: "uranus", labelKey: "nav.uranus" },
-    { name: "neptune", labelKey: "nav.neptune" },
-  ]},
-  { labelKey: "nav.bodies_group", items: [
+  { id: "solar", labelKey: "navigation.solar", activeNames: ["solarsystem3d"], items: [
+    { name: "planetarium", labelKey: "navigation.planets" },
     { name: "asteroids", labelKey: "nav.asteroids" },
     { name: "comets", labelKey: "nav.comets" },
-    { name: "exoplanets", labelKey: "nav.exoplanets" },
-    { name: "mast", labelKey: "nav.mast" },
-    { name: "voyager", labelKey: "nav.voyager" },
-    { name: "galaxies", labelKey: "nav.galaxies" },
-    { name: "gallery", labelKey: "nav.gallery" },
   ]},
-  // { labelKey: "nav.sunradio_group", items: [
-  //   { name: "weather", labelKey: "nav.weather" },
-  //   { name: "rtl", labelKey: "nav.rtl" },
-  // ]},
-  { name: "weather", labelKey: "nav.weather" },
-  // { name: "community", labelKey: "nav.community" },
+  { id: "missions", labelKey: "navigation.missions",
+    activeNames: ["hubble", "jwst", "roman", "parker", "newhorizons", "juno", "chandra", "tess", "europaclipper", "perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity", "rosetta", "dawn"], items: [
+    { name: "missions", labelKey: "nav.missionsHub" },
+    { name: "iss", labelKey: "navigation.iss" },
+    { name: "satellites", labelKey: "nav.satellites" },
+    { name: "launches", labelKey: "navigation.launches" },
+    { name: "voyager", labelKey: "nav.voyager" },
+  ]},
+  { id: "universe", labelKey: "navigation.universe", items: [
+    { name: "galaxies", labelKey: "nav.galaxies" },
+    { name: "exoplanets", labelKey: "nav.exoplanets" },
+    { name: "deep", labelKey: "nav.deep" },
+    { name: "mast", labelKey: "navigation.mast" },
+    { name: "gallery", labelKey: "navigation.gallery" },
+  ]},
+  { name: "news", labelKey: "navigation.news" },
 ];
 
 export const BOT_URL = "https://t.me/neo_watch_bot";

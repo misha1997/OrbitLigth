@@ -49,6 +49,8 @@ const Pioneer10 = lazy(() => import("../pages/Pioneer10"));
 const Pioneer11 = lazy(() => import("../pages/Pioneer11"));
 const Galileo = lazy(() => import("../pages/Galileo"));
 const Curiosity = lazy(() => import("../pages/Curiosity"));
+const Rosetta = lazy(() => import("../pages/Rosetta"));
+const Dawn = lazy(() => import("../pages/Dawn"));
 const Gallery = lazy(() => import("../pages/Gallery"));
 const Planetarium = lazy(() => import("../pages/Planetarium"));
 const Mars = lazy(() => import("../pages/Mars"));
@@ -104,6 +106,8 @@ const PAGES = {
   pioneer11: Pioneer11,
   galileo: Galileo,
   curiosity: Curiosity,
+  rosetta: Rosetta,
+  dawn: Dawn,
   gallery: Gallery,
   planetarium: Planetarium,
   mars: Mars,

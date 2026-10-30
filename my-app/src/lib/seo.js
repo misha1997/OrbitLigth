@@ -48,6 +48,8 @@ export const SLUGS = {
   pioneer11:      { uk: "pioneer-11",        en: "pioneer-11" },
   galileo:        { uk: "galileo",           en: "galileo" },
   curiosity:      { uk: "curiosity",         en: "curiosity" },
+  rosetta:        { uk: "rosetta",           en: "rosetta" },
+  dawn:           { uk: "dawn",              en: "dawn" },
   meteors:        { uk: "meteory",           en: "meteors" },
   asteroids:      { uk: "asteroidy",         en: "asteroids" },
   events:         { uk: "podiyi",            en: "events" },

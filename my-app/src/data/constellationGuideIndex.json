@@ -3,7 +3,20 @@
   "ui": {
     "uk": {
       "directory": "Довідник сузір’їв",
-      "directoryIntro": "Вісім маршрутів для першого знайомства з небом: від впізнаваної фігури до зір і об’єктів для спостереження.",
+      "directoryIntro": "20 маршрутів для знайомства з небом: від впізнаваної фігури до зір і об’єктів для спостереження.",
+      "search": "Пошук за назвою, зорею або об’єктом",
+      "searchPlaceholder": "Наприклад: Телець, Polaris, M45",
+      "filterSeason": "Зручний сезон",
+      "reset": "Скинути фільтри",
+      "results": "Знайдено",
+      "empty": "Нічого не знайдено. Спробуй іншу назву або скинь фільтри.",
+      "seasons": {
+        "all": "Усі сезони",
+        "spring": "Весна",
+        "summer": "Літо",
+        "autumn": "Осінь",
+        "winter": "Зима"
+      },
       "read": "Як знайти на небі",
       "map": "Знайти на карті",
       "all": "Усі сузір’я",
@@ -29,12 +42,25 @@
       "galaxies": "Довідник галактик",
       "editorial": "Матеріал OrbitLight за наведеними джерелами. Зоряні координати й блиск — каталог HYG; схема — OrbitLight.",
       "hero": "Впізнай сузір’я на нічному небі",
-      "heroIntro": "Досліджуй 88 сузір’їв на інтерактивній карті зоряного неба. Обери місце спостереження й сезон або почни з восьми довідкових сторінок.",
+      "heroIntro": "Досліджуй 88 сузір’їв на інтерактивній карті зоряного неба. Обери місце спостереження й сезон або почни з довідника: 20 сузір’їв зі схемами та порадами.",
       "js": "Інтерактивна карта працює з JavaScript. Довідник і схеми нижче доступні без нього."
     },
     "en": {
       "directory": "Constellation field guides",
-      "directoryIntro": "Eight starting points for exploring the sky: recognise the pattern, identify its stars and choose an observing target.",
+      "directoryIntro": "20 starting points for exploring the sky: recognise the pattern, identify its stars and choose an observing target.",
+      "search": "Search by name, star or object",
+      "searchPlaceholder": "For example: Taurus, Polaris, M45",
+      "filterSeason": "Convenient season",
+      "reset": "Reset filters",
+      "results": "Found",
+      "empty": "No guides found. Try another name or reset the filters.",
+      "seasons": {
+        "all": "All seasons",
+        "spring": "Spring",
+        "summer": "Summer",
+        "autumn": "Autumn",
+        "winter": "Winter"
+      },
       "read": "How to find it",
       "map": "Find on the map",
       "all": "All constellations",
@@ -60,7 +86,7 @@
       "galaxies": "Galaxy guides",
       "editorial": "An OrbitLight guide based on the sources below. Star positions and magnitudes: HYG catalogue; diagram: OrbitLight.",
       "hero": "Find constellations in the night sky",
-      "heroIntro": "Explore 88 constellations on an interactive night sky map. Choose your observing location and season, or start with eight illustrated field guides.",
+      "heroIntro": "Explore 88 constellations on an interactive night sky map. Choose your observing location and season, or start with 20 illustrated field guides.",
       "js": "The interactive map needs JavaScript. The field guides and charts below remain available without it."
     }
   },
@@ -69,6 +95,7 @@
       "id": "UMa",
       "slug": "ursa-major",
       "latin": "Ursa Major",
+      "checked": "2026-10-28",
       "seasonKey": "spring",
       "uk": {
         "name": "Велика Ведмедиця",
@@ -91,6 +118,7 @@
       "id": "Cas",
       "slug": "cassiopeia",
       "latin": "Cassiopeia",
+      "checked": "2026-10-28",
       "seasonKey": "autumn",
       "uk": {
         "name": "Кассіопея",
@@ -113,6 +141,7 @@
       "id": "Ori",
       "slug": "orion",
       "latin": "Orion",
+      "checked": "2026-10-28",
       "seasonKey": "winter",
       "uk": {
         "name": "Оріон",
@@ -135,6 +164,7 @@
       "id": "Cyg",
       "slug": "cygnus",
       "latin": "Cygnus",
+      "checked": "2026-10-28",
       "seasonKey": "summer",
       "uk": {
         "name": "Лебідь",
@@ -157,6 +187,7 @@
       "id": "Leo",
       "slug": "leo",
       "latin": "Leo",
+      "checked": "2026-10-28",
       "seasonKey": "spring",
       "uk": {
         "name": "Лев",
@@ -179,6 +210,7 @@
       "id": "Sco",
       "slug": "scorpius",
       "latin": "Scorpius",
+      "checked": "2026-10-28",
       "seasonKey": "summer",
       "uk": {
         "name": "Скорпіон",
@@ -201,6 +233,7 @@
       "id": "Lyr",
       "slug": "lyra",
       "latin": "Lyra",
+      "checked": "2026-10-28",
       "seasonKey": "summer",
       "uk": {
         "name": "Ліра",
@@ -223,6 +256,7 @@
       "id": "And",
       "slug": "andromeda",
       "latin": "Andromeda",
+      "checked": "2026-10-28",
       "seasonKey": "autumn",
       "uk": {
         "name": "Андромеда",
@@ -239,6 +273,282 @@
         "lead": "Andromeda leads from the Great Square of Pegasus toward one of the best-known galaxies in the sky. The constellation and M31 are different things: the former is a sky region, while the galaxy lies in that direction far beyond the Milky Way.",
         "season": "Autumn evenings and early winter",
         "image": "/constellations/andromeda-en.png"
+      }
+    },
+    {
+      "id": "UMi",
+      "slug": "ursa-minor",
+      "latin": "Ursa Minor",
+      "checked": "2026-10-30",
+      "seasonKey": "summer",
+      "uk": {
+        "name": "Мала Ведмедиця",
+        "title": "Сузір’я Мала Ведмедиця — як знайти на небі | OrbitLight",
+        "description": "Як знайти Малу Ведмедицю: Полярна зоря, Кохаб і Феркад, схема Малого Ковша та поради для спостережень з України протягом року.",
+        "lead": "Малий Ківш значно тьмяніший за Великий. Його найвідоміша зоря, Полярна, допомагає знайти північ, але не є найяскравішою зорею нічного неба.",
+        "season": "Увесь рік; довгі темні ночі полегшують пошук слабких зір",
+        "image": "/constellations/ursa-minor-uk.png"
+      },
+      "en": {
+        "name": "Ursa Minor",
+        "title": "Ursa Minor Constellation: How to Find It | OrbitLight",
+        "description": "Find Ursa Minor and the Little Dipper using Polaris, Kochab and Pherkad, with a finder chart and year-round advice for northern observers.",
+        "lead": "The Little Dipper is much fainter than the Big Dipper. Its best-known star, Polaris, indicates north, but is not the brightest star in the night sky.",
+        "season": "Year-round; long dark nights help reveal the fainter stars",
+        "image": "/constellations/ursa-minor-en.png"
+      }
+    },
+    {
+      "id": "Dra",
+      "slug": "draco",
+      "latin": "Draco",
+      "checked": "2026-10-30",
+      "seasonKey": "summer",
+      "uk": {
+        "name": "Дракон",
+        "title": "Сузір’я Дракон — як знайти на небі | OrbitLight",
+        "description": "Знайди Дракона між Великою та Малою Ведмедицями: схема голови, Ельтанін і Растабан, Тубан та туманність Котяче Око NGC 6543.",
+        "lead": "Дракон звивається між двома Ведмедицями та простягається головою до Ліри. Його довгий ланцюжок легше вивчати частинами, ніж одразу шукати весь силует.",
+        "season": "Найзручніше пізньої весни, влітку та на початку осені",
+        "image": "/constellations/draco-uk.png"
+      },
+      "en": {
+        "name": "Draco",
+        "title": "Draco Constellation: How to Find It | OrbitLight",
+        "description": "Trace Draco between the Bears: its head, Eltanin and Rastaban, former pole star Thuban and the telescopic Cat’s Eye Nebula NGC 6543.",
+        "lead": "Draco winds between the two Bears, with its head reaching toward Lyra. Learn the long chain in sections rather than trying to recognise the entire dragon at once.",
+        "season": "Late spring, summer and early autumn evenings",
+        "image": "/constellations/draco-en.png"
+      }
+    },
+    {
+      "id": "Cep",
+      "slug": "cepheus",
+      "latin": "Cepheus",
+      "checked": "2026-10-30",
+      "seasonKey": "autumn",
+      "uk": {
+        "name": "Цефей",
+        "title": "Сузір’я Цефей — як знайти на небі | OrbitLight",
+        "description": "Як знайти сузір’я Цефея біля Кассіопеї: Альдерамін, фігура будиночка, змінні зорі Дельта Цефея та Гранатова зоря Гершеля.",
+        "lead": "Цефея часто малюють як будиночок із гострим дахом. Неподалік його непоказної фігури лежать зорі, за якими цікаво стежити в різні ночі.",
+        "season": "Літні й осінні вечори; основна фігура доступна протягом року",
+        "image": "/constellations/cepheus-uk.png"
+      },
+      "en": {
+        "name": "Cepheus",
+        "title": "Cepheus Constellation: How to Find It | OrbitLight",
+        "description": "Find house-shaped Cepheus beside Cassiopeia, identify Alderamin and explore the variable stars Delta Cephei and Herschel’s Garnet Star.",
+        "lead": "Cepheus is often drawn as a house with a pointed roof. Near this modest pattern are stars worth revisiting on different nights.",
+        "season": "Summer and autumn evenings; the main pattern is visible year-round",
+        "image": "/constellations/cepheus-en.png"
+      }
+    },
+    {
+      "id": "Per",
+      "slug": "perseus",
+      "latin": "Perseus",
+      "checked": "2026-10-30",
+      "seasonKey": "autumn",
+      "uk": {
+        "name": "Персей",
+        "title": "Сузір’я Персей — як знайти на небі | OrbitLight",
+        "description": "Сузір’я Персея: як знайти Мірфак і Алголь, побачити Подвійне скупчення NGC 869 та NGC 884 і зоряне оточення Мірфака в бінокль.",
+        "lead": "Персей лежить між Кассіопеєю, Андромедою та Візничим. Тут широке поле бінокля часто корисніше за велике збільшення: біля Мірфака та в Подвійному скупченні багато зір.",
+        "season": "Осінні й зимові вечори",
+        "image": "/constellations/perseus-uk.png"
+      },
+      "en": {
+        "name": "Perseus",
+        "title": "Perseus Constellation: How to Find It | OrbitLight",
+        "description": "Find Perseus, Mirfak and Algol, then explore the Double Cluster NGC 869 and NGC 884 and Mirfak’s surrounding binocular star field.",
+        "lead": "Perseus lies between Cassiopeia, Andromeda and Auriga. A broad binocular field often helps more than high magnification around Mirfak and the Double Cluster.",
+        "season": "Autumn and winter evenings",
+        "image": "/constellations/perseus-en.png"
+      }
+    },
+    {
+      "id": "Tau",
+      "slug": "taurus",
+      "latin": "Taurus",
+      "checked": "2026-10-30",
+      "seasonKey": "winter",
+      "uk": {
+        "name": "Телець",
+        "title": "Сузір’я Телець — як знайти на небі | OrbitLight",
+        "description": "Як знайти Тельця, Альдебаран, Гіади й Плеяди M45: зоряна схема, осінньо-зимовий сезон та поради для огляду скупчень у бінокль.",
+        "lead": "Тельця впізнають за V-подібною головою з помаранчевим Альдебараном. Поруч лежать Плеяди — компактна група, яку часто помилково називають маленьким ковшем.",
+        "season": "Пізня осінь і зима ввечері",
+        "image": "/constellations/taurus-uk.png"
+      },
+      "en": {
+        "name": "Taurus",
+        "title": "Taurus Constellation: How to Find It | OrbitLight",
+        "description": "Find Taurus, Aldebaran, the Hyades and Pleiades M45 with a chart, autumn and winter viewing advice and practical binocular tips.",
+        "lead": "Taurus is recognised by a V-shaped head and orange Aldebaran. Nearby, the compact Pleiades grouping is sometimes mistaken for a tiny dipper.",
+        "season": "Late autumn and winter evenings",
+        "image": "/constellations/taurus-en.png"
+      }
+    },
+    {
+      "id": "Gem",
+      "slug": "gemini",
+      "latin": "Gemini",
+      "checked": "2026-10-30",
+      "seasonKey": "winter",
+      "uk": {
+        "name": "Близнюки",
+        "title": "Сузір’я Близнюки — як знайти на небі | OrbitLight",
+        "description": "Знайди Близнюків за Кастором і Поллуксом: схема двох зоряних ланцюжків, зимові спостереження та скупчення M35 і NGC 2158.",
+        "lead": "Кастор і Поллукс утворюють помітну пару голів небесних близнюків. Від них два ланцюжки спускаються до ніг, де в бінокль можна знайти скупчення M35.",
+        "season": "Зима й початок весни ввечері",
+        "image": "/constellations/gemini-uk.png"
+      },
+      "en": {
+        "name": "Gemini",
+        "title": "Gemini Constellation: How to Find It | OrbitLight",
+        "description": "Identify Gemini using Castor and Pollux, trace the twins’ star chains and find open clusters M35 and NGC 2158 on winter evenings.",
+        "lead": "Castor and Pollux mark the celestial twins’ conspicuous heads. Two chains lead down toward their feet, where binoculars can reveal the open cluster M35.",
+        "season": "Winter and early spring evenings",
+        "image": "/constellations/gemini-en.png"
+      }
+    },
+    {
+      "id": "Aur",
+      "slug": "auriga",
+      "latin": "Auriga",
+      "checked": "2026-10-30",
+      "seasonKey": "winter",
+      "uk": {
+        "name": "Візничий",
+        "title": "Сузір’я Візничий — як знайти на небі | OrbitLight",
+        "description": "Сузір’я Візничого: як знайти Капеллу й зоряний п’ятикутник, відрізнити його від Близнюків та спостерігати скупчення M36, M37 і M38.",
+        "lead": "Яскрава Капелла привертає увагу над Тельцем. Решта знайомого п’ятикутника Візничого відкриває шлях до трьох розсіяних скупчень у зимовому Чумацькому Шляху.",
+        "season": "Пізня осінь і зима ввечері",
+        "image": "/constellations/auriga-uk.png"
+      },
+      "en": {
+        "name": "Auriga",
+        "title": "Auriga Constellation: How to Find It | OrbitLight",
+        "description": "Find Capella and Auriga’s pentagon, distinguish it from Gemini and explore the winter Milky Way open clusters M36, M37 and M38.",
+        "lead": "Bright Capella draws attention above Taurus. Auriga’s familiar pentagon leads to three open clusters in the winter Milky Way.",
+        "season": "Late autumn and winter evenings",
+        "image": "/constellations/auriga-en.png"
+      }
+    },
+    {
+      "id": "CMa",
+      "slug": "canis-major",
+      "latin": "Canis Major",
+      "checked": "2026-10-30",
+      "seasonKey": "winter",
+      "uk": {
+        "name": "Великий Пес",
+        "title": "Сузір’я Великий Пес — як знайти на небі | OrbitLight",
+        "description": "Як знайти Великого Пса й Сіріус за Поясом Оріона, побачити скупчення M41 та спостерігати низькі південні зорі з України.",
+        "lead": "Великого Пса легко почати із Сіріуса — найяскравішої зорі нічного неба. Проте решта фігури лежить південніше й з України потребує відкритого горизонту.",
+        "season": "Зимові вечори, поблизу найвищого положення на півдні",
+        "image": "/constellations/canis-major-uk.png"
+      },
+      "en": {
+        "name": "Canis Major",
+        "title": "Canis Major Constellation: How to Find It | OrbitLight",
+        "description": "Find Canis Major and Sirius from Orion’s Belt, locate open cluster M41 and plan observations of this low southern constellation from Ukraine.",
+        "lead": "Start Canis Major with Sirius, the brightest star in the night sky. Much of the remaining pattern lies farther south and needs an open horizon from Ukraine.",
+        "season": "Winter evenings, near its highest position in the south",
+        "image": "/constellations/canis-major-en.png"
+      }
+    },
+    {
+      "id": "CMi",
+      "slug": "canis-minor",
+      "latin": "Canis Minor",
+      "checked": "2026-10-30",
+      "seasonKey": "winter",
+      "uk": {
+        "name": "Малий Пес",
+        "title": "Сузір’я Малий Пес — як знайти на небі | OrbitLight",
+        "description": "Як упізнати Малого Пса: Проціон, Гомейса й Зимовий трикутник, проста схема та маршрут спостережень між Оріоном і Близнюками.",
+        "lead": "Малий Пес — невелике сузір’я з дуже простим малюнком: яскравий Проціон і слабша Гомейса. Тут краще почати з широких небесних орієнтирів, а не шукати складний силует тварини.",
+        "season": "Зимові вечори й початок весни",
+        "image": "/constellations/canis-minor-uk.png"
+      },
+      "en": {
+        "name": "Canis Minor",
+        "title": "Canis Minor Constellation: How to Find It | OrbitLight",
+        "description": "Recognise Canis Minor using Procyon, Gomeisa and the Winter Triangle, with a simple finder chart and a route from Orion and Gemini.",
+        "lead": "Canis Minor has a simple outline: bright Procyon and fainter Gomeisa. Begin with broad sky landmarks rather than searching for a detailed dog-shaped silhouette.",
+        "season": "Winter and early spring evenings",
+        "image": "/constellations/canis-minor-en.png"
+      }
+    },
+    {
+      "id": "Aql",
+      "slug": "aquila",
+      "latin": "Aquila",
+      "checked": "2026-10-30",
+      "seasonKey": "summer",
+      "uk": {
+        "name": "Орел",
+        "title": "Сузір’я Орел — як знайти на небі | OrbitLight",
+        "description": "Знайди Орла й Альтаїр у Літньому трикутнику: Таразед, Альшаїн, схема сузір’я та огляд зоряних полів Чумацького Шляху в бінокль.",
+        "lead": "Альтаїр — південна вершина Літнього трикутника. Дві зорі обабіч нього допомагають одразу відрізнити Орла від Ліри й Лебедя.",
+        "season": "Літо та початок осені ввечері",
+        "image": "/constellations/aquila-uk.png"
+      },
+      "en": {
+        "name": "Aquila",
+        "title": "Aquila Constellation: How to Find It | OrbitLight",
+        "description": "Find Aquila and Altair in the Summer Triangle, identify Tarazed and Alshain and explore nearby Milky Way star fields with binoculars.",
+        "lead": "Altair marks the southern corner of the Summer Triangle. A star on either side helps distinguish Aquila immediately from Lyra and Cygnus.",
+        "season": "Summer and early autumn evenings",
+        "image": "/constellations/aquila-en.png"
+      }
+    },
+    {
+      "id": "Peg",
+      "slug": "pegasus",
+      "latin": "Pegasus",
+      "checked": "2026-10-30",
+      "seasonKey": "autumn",
+      "uk": {
+        "name": "Пегас",
+        "title": "Сузір’я Пегас — як знайти на небі | OrbitLight",
+        "description": "Як знайти Пегаса й Великий квадрат восени: Маркаб, Шеат, Альгеніб, Альферац в Андромеді та кулясте скупчення M15 біля Еніфа.",
+        "lead": "Великий квадрат Пегаса — зручний осінній орієнтир. Його четверта вершина, Альферац, офіційно належить Андромеді: знайомий малюнок перетинає межу сузір’їв.",
+        "season": "Осінні вечори",
+        "image": "/constellations/pegasus-uk.png"
+      },
+      "en": {
+        "name": "Pegasus",
+        "title": "Pegasus Constellation: How to Find It | OrbitLight",
+        "description": "Find Pegasus and its Great Square in autumn: Markab, Scheat, Algenib, Andromeda’s Alpheratz and globular cluster M15 near Enif.",
+        "lead": "The Great Square of Pegasus is a useful autumn landmark. Its fourth corner, Alpheratz, officially belongs to Andromeda: the familiar outline crosses a constellation boundary.",
+        "season": "Autumn evenings",
+        "image": "/constellations/pegasus-en.png"
+      }
+    },
+    {
+      "id": "Boo",
+      "slug": "bootes",
+      "latin": "Boötes",
+      "checked": "2026-10-30",
+      "seasonKey": "spring",
+      "uk": {
+        "name": "Волопас",
+        "title": "Сузір’я Волопас — як знайти на небі | OrbitLight",
+        "description": "Як знайти Волопаса за дугою ручки Великого Ковша: Арктур, фігура повітряного змія й подвійна зоря Ізар для спостережень навесні.",
+        "lead": "Помаранчевий Арктур — найзручніший початок знайомства з Волопасом. До нього веде плавне продовження вигину ручки Великого Ковша.",
+        "season": "Весна й початок літа ввечері",
+        "image": "/constellations/bootes-uk.png"
+      },
+      "en": {
+        "name": "Boötes",
+        "title": "Boötes Constellation: How to Find It | OrbitLight",
+        "description": "Follow the Big Dipper’s handle to Boötes and Arcturus, trace its kite-shaped outline and try the telescopic double star Izar in spring.",
+        "lead": "Orange Arcturus is the easiest starting point for Boötes. A smooth extension of the Big Dipper’s curved handle leads toward it.",
+        "season": "Spring and early summer evenings",
+        "image": "/constellations/bootes-en.png"
       }
     }
   ]

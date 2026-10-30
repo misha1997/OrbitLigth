@@ -11,7 +11,8 @@ const sky = JSON.parse(fs.readFileSync(path.join(root, 'my-app/public/data/celes
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const text = {
   uk: {
-    directory: 'Довідник сузір’їв', directoryIntro: 'Вісім маршрутів для першого знайомства з небом: від впізнаваної фігури до зір і об’єктів для спостереження.',
+    directory: 'Довідник сузір’їв', directoryIntro: `${input.items.length} маршрутів для знайомства з небом: від впізнаваної фігури до зір і об’єктів для спостереження.`,
+    search: 'Пошук за назвою, зорею або об’єктом', searchPlaceholder: 'Наприклад: Телець, Polaris, M45', filterSeason: 'Зручний сезон', reset: 'Скинути фільтри', results: 'Знайдено', empty: 'Нічого не знайдено. Спробуй іншу назву або скинь фільтри.', seasons: { all: 'Усі сезони', spring: 'Весна', summer: 'Літо', autumn: 'Осінь', winter: 'Зима' },
     read: 'Як знайти на небі', map: 'Знайти на карті', all: 'Усі сузір’я', home: 'Головна',
     find: 'Як знайти', when: 'Коли й звідки спостерігати', stars: 'Яскраві зорі', targets: 'Що ще подивитися', story: 'Історія та міфологія', sources: 'Джерела й дані', related: 'Досліджуй далі',
     name: 'Зоря', mag: 'Видима величина', hip: 'Каталог HIP', checked: 'Перевірено', north: 'Північ угорі · схід ліворуч · J2000',
@@ -19,11 +20,12 @@ const text = {
     magNote: 'Менша зоряна величина означає яскравішу зорю. Значення приблизні; блиск змінних зір може відрізнятися від каталогу.',
     latitudeNote: 'Поради стосуються передусім України та середніх північних широт. Сезон описує зручність вечірніх спостережень, а не гарантує видимість у будь-який момент.',
     dark: 'Знайти темне місце', meteors: 'Метеорні потоки', galaxies: 'Довідник галактик', editorial: 'Матеріал OrbitLight за наведеними джерелами. Зоряні координати й блиск — каталог HYG; схема — OrbitLight.',
-    hero: 'Впізнай сузір’я на нічному небі', heroIntro: 'Досліджуй 88 сузір’їв на інтерактивній карті зоряного неба. Обери місце спостереження й сезон або почни з восьми довідкових сторінок.',
+    hero: 'Впізнай сузір’я на нічному небі', heroIntro: `Досліджуй 88 сузір’їв на інтерактивній карті зоряного неба. Обери місце спостереження й сезон або почни з довідника: ${input.items.length} сузір’їв зі схемами та порадами.`,
     js: 'Інтерактивна карта працює з JavaScript. Довідник і схеми нижче доступні без нього.'
   },
   en: {
-    directory: 'Constellation field guides', directoryIntro: 'Eight starting points for exploring the sky: recognise the pattern, identify its stars and choose an observing target.',
+    directory: 'Constellation field guides', directoryIntro: `${input.items.length} starting points for exploring the sky: recognise the pattern, identify its stars and choose an observing target.`,
+    search: 'Search by name, star or object', searchPlaceholder: 'For example: Taurus, Polaris, M45', filterSeason: 'Convenient season', reset: 'Reset filters', results: 'Found', empty: 'No guides found. Try another name or reset the filters.', seasons: { all: 'All seasons', spring: 'Spring', summer: 'Summer', autumn: 'Autumn', winter: 'Winter' },
     read: 'How to find it', map: 'Find on the map', all: 'All constellations', home: 'Home',
     find: 'How to find it', when: 'When and where to observe', stars: 'Bright stars', targets: 'More observing targets', story: 'History and mythology', sources: 'Sources and data', related: 'Explore next',
     name: 'Star', mag: 'Apparent magnitude', hip: 'HIP catalogue', checked: 'Checked', north: 'North up · east left · J2000',
@@ -31,7 +33,7 @@ const text = {
     magNote: 'A smaller magnitude means a brighter star. Values are approximate; variable stars may differ from the catalogue.',
     latitudeNote: 'Advice primarily covers Ukraine and mid-northern latitudes. The season describes convenient evening viewing, rather than guaranteed visibility at every moment.',
     dark: 'Find darker skies', meteors: 'Meteor showers', galaxies: 'Galaxy guides', editorial: 'An OrbitLight guide based on the sources below. Star positions and magnitudes: HYG catalogue; diagram: OrbitLight.',
-    hero: 'Find constellations in the night sky', heroIntro: 'Explore 88 constellations on an interactive night sky map. Choose your observing location and season, or start with eight illustrated field guides.',
+    hero: 'Find constellations in the night sky', heroIntro: `Explore 88 constellations on an interactive night sky map. Choose your observing location and season, or start with ${input.items.length} illustrated field guides.`,
     js: 'The interactive map needs JavaScript. The field guides and charts below remain available without it.'
   }
 };
@@ -41,7 +43,14 @@ const route = (lang, name) => prefix(lang) + '/' + ({dark:{uk:'temne-nebo',en:'d
 
 function chart(item, lang, social = false) {
   const c = sky.constellations.find(c => c.id === item.id);
-  const raw = (ra, dec) => ({x: -(((ra-c.ra+540)%360)-180)*Math.cos(c.dec*Math.PI/180), y:-dec});
+  // A local stereographic projection preserves polar patterns such as the Little
+  // Dipper; a flat RA/Dec plot stretches its handle near Polaris.
+  const rad=Math.PI/180,lat0=c.dec*rad;
+  const raw = (ra, dec) => {
+    const delta=(((ra-c.ra+540)%360)-180)*rad,lat=dec*rad;
+    const k=2/(1+Math.sin(lat0)*Math.sin(lat)+Math.cos(lat0)*Math.cos(lat)*Math.cos(delta));
+    return {x:-k*Math.cos(lat)*Math.sin(delta)/rad,y:-k*(Math.cos(lat0)*Math.sin(lat)-Math.sin(lat0)*Math.cos(lat)*Math.cos(delta))/rad};
+  };
   const lines = c.lines.map(line => line.map(pt => raw(...pt)));
   const stars = sky.stars.filter(s => s.const === item.id && s.mag <= 4.5).map(s => ({...s,...raw(s.ra,s.dec)}));
   const points = [...lines.flat(), ...stars];
@@ -73,20 +82,35 @@ function chart(item, lang, social = false) {
 
 function renderGuide(item, lang) {
   const v=item[lang],ui=text[lang];
+  const checked=item.checked||input.checked;
   const stars=sky.stars.filter(s=>s.const===item.id).sort((a,b)=>a.mag-b.mag).slice(0,3);
   const links = item.related.map(slug=>{const other=input.items.find(i=>i.slug===slug);return `<a class="cg-next" href="${base(lang)}/${slug}">${escape(other[lang].name)} <span aria-hidden="true">↗</span></a>`}).join('');
   const sources=[...item.sources,{name:'IAU · Constellations',url:'https://www.iau.org/IAU/Astronomy-FAQs/Constellations.aspx'},{name:'HYG star catalogue',url:'https://codeberg.org/astronexus/hyg'}];
   return `<article class="cg-page wrap"><nav class="cg-breadcrumb" aria-label="${lang==='uk'?'Навігаційний ланцюжок':'Breadcrumb'}"><a href="${prefix(lang)}/">OrbitLight</a><span aria-hidden="true">/</span><a href="${base(lang)}">${escape(ui.all)}</a><span aria-hidden="true">/</span><span aria-current="page">${escape(v.name)}</span></nav>
 <header class="cg-hero"><div><p class="cg-eyebrow">${escape(ui.directory)} · ${item.id}</p><h1>${escape(v.name)}</h1><p class="cg-latin" lang="la">${escape(item.latin)}</p><p class="cg-lead">${escape(v.lead)}</p><p class="cg-season">${escape(v.season)}</p><div class="cg-actions"><a class="btn primary" href="${base(lang)}?focus=${item.id}&amp;season=${item.seasonKey}#sky-map">${escape(ui.map)} <span aria-hidden="true">↗</span></a><a class="btn ghost" href="${base(lang)}#field-guides">${escape(ui.all)}</a></div></div><figure><img src="/constellations/${item.slug}-${lang}.svg" width="800" height="520" alt="${escape(ui.chart+' '+v.name)}" fetchpriority="high"><figcaption>${escape(ui.chartNote)}</figcaption></figure></header>
-<div class="cg-layout"><div class="cg-article"><section class="cg-section" id="find"><h2>${escape(ui.find)}</h2><ol>${v.find.map(p=>`<li>${escape(p)}</li>`).join('')}</ol></section><section class="cg-section" id="observe"><h2>${escape(ui.when)}</h2><p>${escape(v.visibility)}</p><p class="cg-note">${escape(ui.latitudeNote)}</p></section><section class="cg-section"><h2>${escape(ui.stars)}</h2><div class="cg-table-wrap"><table><caption>${escape(v.name+' · '+ui.stars)}</caption><thead><tr><th scope="col">${escape(ui.name)}</th><th scope="col">${escape(ui.mag)}</th><th scope="col">${escape(ui.hip)}</th></tr></thead><tbody>${stars.map(s=>`<tr><th scope="row">${escape((lang==='uk'?s.name:s.name_en)||s.name_en||s.bayer)}</th><td>${s.mag.toFixed(2)}</td><td>${s.id}</td></tr>`).join('')}</tbody></table></div><p class="cg-small">${escape(ui.magNote)}</p></section><section class="cg-section"><h2>${escape(ui.targets)}</h2>${v.targets.map(t=>`<div class="cg-target"><h3>${escape(t.name)}</h3><p class="cg-equipment">${escape(t.equipment)}</p><p>${escape(t.text)}</p></div>`).join('')}</section><section class="cg-section"><h2>${escape(ui.story)}</h2><p>${escape(v.story)}</p></section><section class="cg-section cg-sources"><h2>${escape(ui.sources)}</h2><p>${escape(ui.editorial)}</p><p>${escape(ui.checked)}: <time datetime="${input.checked}">${input.checked}</time></p><ul>${sources.map(s=>`<li><a href="${escape(s.url)}" rel="noopener noreferrer">${escape(s.name)}</a></li>`).join('')}</ul></section></div><aside class="cg-aside"><h2>${escape(ui.related)}</h2>${links}<div class="cg-help"><a href="${route(lang,'dark')}">${escape(ui.dark)}</a><a href="${route(lang,'meteors')}">${escape(ui.meteors)}</a><a href="${route(lang,'galaxies')}">${escape(ui.galaxies)}</a></div></aside></div></article>`;
+<div class="cg-layout"><div class="cg-article"><section class="cg-section" id="find"><h2>${escape(ui.find)}</h2><ol>${v.find.map(p=>`<li>${escape(p)}</li>`).join('')}</ol></section><section class="cg-section" id="observe"><h2>${escape(ui.when)}</h2><p>${escape(v.visibility)}</p><p class="cg-note">${escape(ui.latitudeNote)}</p></section><section class="cg-section"><h2>${escape(ui.stars)}</h2><div class="cg-table-wrap"><table><caption>${escape(v.name+' · '+ui.stars)}</caption><thead><tr><th scope="col">${escape(ui.name)}</th><th scope="col">${escape(ui.mag)}</th><th scope="col">${escape(ui.hip)}</th></tr></thead><tbody>${stars.map(s=>`<tr><th scope="row">${escape((lang==='uk'?s.name:s.name_en)||s.name_en||s.bayer)}</th><td>${s.mag.toFixed(2)}</td><td>${s.id}</td></tr>`).join('')}</tbody></table></div><p class="cg-small">${escape(ui.magNote)}</p></section><section class="cg-section"><h2>${escape(ui.targets)}</h2>${v.targets.map(t=>`<div class="cg-target"><h3>${escape(t.name)}</h3><p class="cg-equipment">${escape(t.equipment)}</p><p>${escape(t.text)}</p></div>`).join('')}</section><section class="cg-section"><h2>${escape(ui.story)}</h2><p>${escape(v.story)}</p></section><section class="cg-section cg-sources"><h2>${escape(ui.sources)}</h2><p>${escape(ui.editorial)}</p><p>${escape(ui.checked)}: <time datetime="${checked}">${checked}</time></p><ul>${sources.map(s=>`<li><a href="${escape(s.url)}" rel="noopener noreferrer">${escape(s.name)}</a></li>`).join('')}</ul></section></div><aside class="cg-aside"><h2>${escape(ui.related)}</h2>${links}<div class="cg-help"><a href="${route(lang,'dark')}">${escape(ui.dark)}</a><a href="${route(lang,'meteors')}">${escape(ui.meteors)}</a><a href="${route(lang,'galaxies')}">${escape(ui.galaxies)}</a></div></aside></div></article>`;
 }
 
 async function main() {
+  const slugs=new Set(),ids=new Set();
+  for(const item of input.items) {
+    if(slugs.has(item.slug)||ids.has(item.id)||!sky.constellations.some(c=>c.id===item.id)) throw new Error('Invalid or duplicate guide: '+item.slug);
+    slugs.add(item.slug);ids.add(item.id);
+    const seasons=item.seasons||[item.seasonKey];
+    if(!seasons.includes(item.seasonKey)||seasons.some(s=>!['spring','summer','autumn','winter'].includes(s))) throw new Error('Invalid seasons: '+item.slug);
+    for(const lang of ['uk','en']) {
+      const v=item[lang];
+      if(!v?.name||!v.description||!v.lead||!v.visibility||!v.story||!Array.isArray(v.find)||v.find.length<3||!Array.isArray(v.targets)||v.targets.length<2) throw new Error('Incomplete guide: '+item.slug+' '+lang);
+    }
+  }
+  for(const item of input.items) if(item.related.some(slug=>!slugs.has(slug))) throw new Error('Unknown related guide: '+item.slug);
   fs.mkdirSync(publicDir,{recursive:true});
+  const pageDir=path.join(dataDir,'constellationPages');
+  fs.mkdirSync(pageDir,{recursive:true});
   let sharp;
   if(process.argv.includes('--images')) sharp=require(process.env.CONSTELLATION_SHARP_MODULE||'sharp');
-  const pages={uk:{},en:{}},directory={},landing={};
-  const index={checked:input.checked,ui:text,items:input.items.map(item=>({id:item.id,slug:item.slug,latin:item.latin,seasonKey:item.seasonKey,...Object.fromEntries(['uk','en'].map(lang=>[lang,{name:item[lang].name,title:(lang==='uk'?'Сузір’я ':'')+item[lang].name+(lang==='uk'?' — як знайти на небі | OrbitLight':' Constellation: How to Find It | OrbitLight'),description:item[lang].description,lead:item[lang].lead,season:item[lang].season,image:'/constellations/'+item.slug+'-'+lang+'.png'}]))}))};
+  const pages={uk:{},en:{}},directory={},landing={},entries={};
+  const index={checked:input.checked,ui:text,items:input.items.map(item=>({id:item.id,slug:item.slug,latin:item.latin,checked:item.checked||input.checked,seasonKey:item.seasonKey,...Object.fromEntries(['uk','en'].map(lang=>[lang,{name:item[lang].name,title:(lang==='uk'?'Сузір’я ':'')+item[lang].name+(lang==='uk'?' — як знайти на небі | OrbitLight':' Constellation: How to Find It | OrbitLight'),description:item[lang].description,lead:item[lang].lead,season:item[lang].season,image:'/constellations/'+item.slug+'-'+lang+'.png'}]))}))};
   for(const lang of ['uk','en']) {
     for(const item of input.items) {
       fs.writeFileSync(path.join(publicDir,item.slug+'-'+lang+'.svg'),chart(item,lang));
@@ -94,11 +118,20 @@ async function main() {
       pages[lang][item.slug]=renderGuide(item,lang);
     }
     const ui=text[lang];
-    directory[lang]=`<section class="cg-directory" id="field-guides" aria-labelledby="cg-directory-title"><div class="cg-section-heading"><p class="cg-eyebrow">ORBITLIGHT · ${escape(ui.directory)}</p><h2 id="cg-directory-title">${escape(ui.directory)}</h2><p>${escape(ui.directoryIntro)}</p></div><div class="cg-directory-grid">${input.items.map(item=>`<a class="cg-directory-card" href="${base(lang)}/${item.slug}"><img src="/constellations/${item.slug}-${lang}.svg" width="800" height="520" alt="${escape(ui.chart+' '+item[lang].name)}" loading="lazy"><div><p class="cg-eyebrow">${item.id} · ${escape(item.latin)}</p><h3>${escape(item[lang].name)}</h3><p>${escape(item[lang].season)}</p><span class="cg-card-link">${escape(ui.read)} ↗</span></div></a>`).join('')}</div></section>`;
+    const heading=`<div class="cg-section-heading"><p class="cg-eyebrow">ORBITLIGHT · ${escape(ui.directory)}</p><h2 id="cg-directory-title">${escape(ui.directory)}</h2><p>${escape(ui.directoryIntro)}</p></div>`;
+    const cards=input.items.map(item=>({
+      id:item.id,slug:item.slug,seasons:item.seasons||[item.seasonKey],
+      search:[item.id,item.slug,item.latin,...['uk','en'].flatMap(l=>[item[l].name,...item[l].targets.map(t=>t.name)]),...sky.stars.filter(s=>s.const===item.id).flatMap(s=>[s.name,s.name_en,s.bayer])].filter(Boolean).join(' '),
+      html:`<a class="cg-directory-card" href="${base(lang)}/${item.slug}"><img src="/constellations/${item.slug}-${lang}.svg" width="800" height="520" alt="${escape(ui.chart+' '+item[lang].name)}" loading="lazy"><div><p class="cg-eyebrow">${item.id} · ${escape(item.latin)}</p><h3>${escape(item[lang].name)}</h3><p>${escape(item[lang].season)}</p><span class="cg-card-link">${escape(ui.read)} ↗</span></div></a>`
+    }));
+    entries[lang]={heading,cards};
+    directory[lang]=`<section class="cg-directory" id="field-guides" aria-labelledby="cg-directory-title">${heading}<div class="cg-directory-grid">${cards.map(c=>c.html).join('')}</div></section>`;
     landing[lang]=`<div class="wrap cg-page"><header class="cg-landing"><h1>${escape(ui.hero)}</h1><p class="cg-lead">${escape(ui.heroIntro)}</p><a class="btn primary" href="#field-guides">${escape(ui.directory)}</a></header><section id="sky-map"><p class="cg-note">${escape(ui.js)}</p></section>${directory[lang]}</div>`;
   }
-  for(const [name,value] of Object.entries({constellationGuideIndex:index,constellationGuidePages:pages,constellationDirectory:directory,constellationLanding:landing}))fs.writeFileSync(path.join(dataDir,name+'.json'),JSON.stringify(value,null,2)+'\n');
-  fs.copyFileSync(path.join(root,'my-app/src/styles/constellation-guides.css'),path.join(publicDir,'guides.css'));
-  console.log('Built 8 bilingual constellation guides, charts and directory'+(sharp?' with PNG previews':''));
+  // One small bilingual chunk per guide; reading one must not download the whole library.
+  for(const item of input.items) fs.writeFileSync(path.join(pageDir,item.slug+'.json'),JSON.stringify({uk:pages.uk[item.slug],en:pages.en[item.slug]})+'\n');
+  for(const [name,value] of Object.entries({constellationGuideIndex:index,constellationGuidePages:pages,constellationDirectory:directory,constellationDirectoryEntries:entries,constellationLanding:landing}))fs.writeFileSync(path.join(dataDir,name+'.json'),JSON.stringify(value,null,2)+'\n');
+  fs.writeFileSync(path.join(publicDir,'guides.css'),fs.readFileSync(path.join(root,'my-app/src/styles/constellation-guides.css')));
+  console.log(`Built ${input.items.length} bilingual constellation guides, charts and directory`+(sharp?' with PNG previews':''));
 }
 main().catch(error=>{console.error(error);process.exitCode=1});

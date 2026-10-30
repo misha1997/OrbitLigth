@@ -15,9 +15,9 @@ export default function Constellations() {
   const focused = constellationGuides.find(item => item.id === new URLSearchParams(search).get("focus"));
   useSeo();
   useEffect(() => {
-    if (!focused || hash !== "#sky-map") return;
+    if (hash !== "#sky-map" && hash !== "#field-guides") return;
     // Run after the layout's route scroll reset and the lazy page mount.
-    const frame = requestAnimationFrame(() => document.getElementById("sky-map")?.scrollIntoView({ block: "start" }));
+    const frame = requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" }));
     return () => cancelAnimationFrame(frame);
   }, [focused, hash]);
 

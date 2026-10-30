@@ -4,9 +4,11 @@
 // shared patterns this mirrors.
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "../hooks/useSeo";
 import "../styles/gallery.css"; // For .photo-modal
 import "../styles/telescope3d.css"; // For .tele3d-hero-* (hero 3D preview + loading placeholder)
 import SectionHead from "../components/primitives/SectionHead";
+import MissionReadingGuide from "../components/missions/MissionReadingGuide";
 import FeatureRow from "../components/primitives/FeatureRow";
 import { useApi } from "../hooks/useApi";
 import { getMastHubbleJwst } from "../lib/api";
@@ -17,21 +19,12 @@ const JwstFullscreen = lazy(() => import("./JwstFullscreen"));
 const JwstL2Orbit = lazy(() => import("./JwstL2Orbit"));
 
 const INSTR_BODY_STYLE = { fontSize: "1rem", lineHeight: 1.4, color: "var(--text)", marginTop: 8, fontWeight: 400 };
-const FACT_TITLE_STYLE = { fontSize: "1.2rem", marginBottom: 8, color: "var(--accent)" };
-const FACT_BODY_STYLE = { fontSize: "1rem", lineHeight: 1.4, color: "var(--text)", fontWeight: 400, textTransform: "none" };
 const SCI_VALUE_STYLE = { fontSize: 20 };
 const INSTRUMENTS = ["i1", "i2", "i3", "i4"];
-const FACTS = ["f1", "f2", "f3", "f4", "f5", "f6"];
 const DEPLOYMENT = ["d1", "d2", "d3", "d4"];
 const SCIENCE = ["sci1", "sci2", "sci3"];
 // All four instruments are active — unlike Hubble's mix of active/retired,
 // JWST's design distinguishes them by role/agency, not operational status.
-const INSTR_STATUS = [
-  { key: "nircam", agency: "США" },
-  { key: "nirspec", agency: "ESA" },
-  { key: "miri", agency: "ESA / NASA" },
-  { key: "fgsniriss", agency: "CSA" },
-];
 // Curated first-light milestones (July 2022) — separate from the live
 // "recent observations" gallery below. Gradient tiles, same treatment as
 // Hubble.js originally used before real photos were dropped in; swap in
@@ -47,11 +40,11 @@ const ICONIC = [
 
 export default function Jwst() {
   const { t } = useTranslation();
-  useEffect(() => { document.title = t("title.jwst"); }, [t]);
+  useSeo();
   const [show3D, setShow3D] = useState(false);
   const [modalIdx, setModalIdx] = useState(null);
 
-  const { data: mastData } = useApi(getMastHubbleJwst);
+  const { data: mastData, loading: mastLoading, error: mastError, refetch: retryPhotos } = useApi(getMastHubbleJwst);
   const photos = ((mastData || []).filter((p) => p.collection === "JWST")).slice(0, 12);
 
   useEffect(() => {
@@ -90,7 +83,7 @@ export default function Jwst() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 24 }}>
+      <section className="section" id="facts" style={{ paddingTop: 24 }}>
         <div className="wrap">
           <SectionHead eyebrow={t("jwst.s1.eyebrow")} title={t("jwst.s1.title")} />
           <div className="grid cols-4">
@@ -132,7 +125,7 @@ export default function Jwst() {
         <div className="wrap">
           <SectionHead eyebrow={t("jwst.l2.eyebrow")} title={t("jwst.l2.title")} />
           <p className="section-sub">{t("jwst.l2.intro")}</p>
-          
+
           <Suspense fallback={<div style={{ height: 450, margin: "40px 0", background: "#06070a", borderRadius: 16 }} />}>
             <JwstL2Orbit />
           </Suspense>
@@ -200,8 +193,9 @@ export default function Jwst() {
         <div className="wrap">
           <SectionHead eyebrow={t("jwst.gallery.eyebrow")} title={t("jwst.gallery.title")} />
           <p className="section-sub">{t("jwst.gallery.sub")}</p>
-          {!mastData && <p className="section-sub">{t("jwst.gallery.loading")}</p>}
-          {mastData && photos.length === 0 && <p className="section-sub">{t("jwst.gallery.empty")}</p>}
+          {mastLoading && !mastData && <p className="section-sub">{t("jwst.gallery.loading")}</p>}
+          {!mastLoading && photos.length === 0 && <p className="section-sub">{t("jwst.gallery.empty")}</p>}
+          {mastError && <button type="button" className="btn ghost" onClick={retryPhotos}>{t("news.retry")}</button>}
           {photos.length > 0 && (
             <div className="grid cols-3">
               {photos.map((p, i) => (
@@ -247,17 +241,7 @@ export default function Jwst() {
               </div>
             ))}
           </div>
-          <div className="card" style={{ padding: "8px 22px", marginTop: 16 }}>
-            {INSTR_STATUS.map((it) => (
-              <div className="mission-row" key={it.key}>
-                <span className="dot live" />
-                <span className="nm">{t(`jwst.instrStatus.${it.key}`)}</span>
-                <span className="ag">{it.agency}</span>
-                <span className="yr" />
-                <span className="st active">{t(`jwst.instrStatus.${it.key}_status`)}</span>
-              </div>
-            ))}
-          </div>
+
         </div>
       </section>
 
@@ -270,20 +254,7 @@ export default function Jwst() {
         </div>
       </section>
 
-      <section className="section" id="facts" style={{ paddingTop: 0 }}>
-        <div className="wrap">
-          <SectionHead eyebrow={t("jwst.facts.eyebrow")} title={t("jwst.facts.title")} />
-          <p className="section-sub">{t("jwst.facts.sub")}</p>
-          <div className="grid cols-3">
-            {FACTS.map((f) => (
-              <div className="card" key={f}>
-                <div className="v" style={FACT_TITLE_STYLE}>{t(`jwst.facts.${f}_title`)}</div>
-                <div style={FACT_BODY_STYLE}>{t(`jwst.facts.${f}_body`)}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <MissionReadingGuide mission="jwst" />
 
       {show3D && (
         <Suspense fallback={null}>

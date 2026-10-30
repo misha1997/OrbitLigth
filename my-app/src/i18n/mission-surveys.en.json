@@ -48,14 +48,7 @@
       "A burst of nitrogen stirred regolith into the collector. The mechanism then carried the sample to the return capsule for the journey to Earth."
     ],
     "communication": { "eyebrow": "Sampling with a time delay", "title": "A touch Earth could not control live", "body": "Signals between Earth and Bennu took many minutes. The spacecraft carried out the sampling sequence using onboard navigation rather than waiting for a human response after each manoeuvre.", "note": "The calculator uses an example interplanetary distance. It does not track OSIRIS-REx, its returned capsule or the current OSIRIS-APEX spacecraft.", "source": "https://science.nasa.gov/mission/osiris-rex/" },
-    "quiz": {
-      "nav": "Test yourself", "eyebrow": "Sample-return challenge", "title": "What came back from Bennu?", "intro": "Three questions about collecting, returning and interpreting asteroid material.", "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
-      "questions": [
-        { "question": "What landed in Utah in September 2023?", "options": ["The entire spacecraft", "A sample-return capsule", "The asteroid Bennu"], "correct": 1, "explanation": "The capsule returned the sample. The main spacecraft flew onward and became OSIRIS-APEX." },
-        { "question": "How did TAGSAM gather loose material?", "options": ["With a nitrogen gas burst", "With a deep drilling rig", "By melting the asteroid"], "correct": 0, "explanation": "The sampling head touched Bennu and released nitrogen, mobilising regolith that entered the collector." },
-        { "question": "What do amino acids in the sample establish?", "options": ["That Bennu has living organisms", "That a city once existed there", "That relevant organic chemistry occurred"], "correct": 2, "explanation": "Amino acids can form through non-biological processes. Finding molecular ingredients of life is different from detecting life." }
-      ]
-    },
+    
     "faq": [
       { "question": "Did the whole spacecraft return to Earth?", "answer": "No. It released a capsule containing the sample and diverted past Earth. The spacecraft continues as OSIRIS-APEX; the Bennu sample is studied in laboratories." },
       { "question": "Why collect a sample when we already have meteorites?", "answer": "A controlled return provides a documented source and sampling context while limiting uncontrolled exposure to Earth’s environment. Researchers can compare laboratory measurements with observations of the original site." },
@@ -126,14 +119,7 @@
       "The Doppler shift of spectral features constrains velocity along the line of sight. Not every catalogue source has an RVS measurement, so the available information differs between stars."
     ],
     "communication": { "eyebrow": "An archive built from repeated scans", "title": "From the focal plane to a catalogue", "body": "During operations, Gaia sent its observations through ESA’s ground network. Processing combined many crossings of each source with spacecraft calibration to derive reliable positions and properties.", "note": "The signal calculator uses the approximate historical Earth–L2 distance as an example. Gaia is now switched off in a heliocentric retirement orbit; this is not its current range.", "source": "https://www.esa.int/Enabling_Support/Operations/Farewell_Gaia!_Spacecraft_operations_come_to_an_end" },
-    "quiz": {
-      "nav": "Test yourself", "eyebrow": "Galactic mapmaker challenge", "title": "Read between the stars", "intro": "Three questions about distance, motion and the life of a data archive.", "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
-      "questions": [
-        { "question": "What happens to parallax as a star gets farther away?", "options": ["It grows", "It stays the same", "It becomes smaller"], "correct": 2, "explanation": "Parallax decreases with distance. For an ideal exact measurement, a 10 mas parallax corresponds to 100 parsecs." },
-        { "question": "Which measurement gives motion toward or away from us?", "options": ["Radial velocity", "Apparent brightness alone", "The star’s position in a single image"], "correct": 0, "explanation": "Spectral Doppler shifts constrain radial velocity. Proper motion measures a different component: changing direction on the sky." },
-        { "question": "Did Gaia’s retirement end all new Gaia science?", "options": ["Yes, the archive disappeared", "No, stored data continue to be processed and studied", "Yes, every star stopped moving"], "correct": 1, "explanation": "The spacecraft no longer observes, but its measurements remain. New processing, catalogues and research continue beyond operations." }
-      ]
-    },
+    
     "faq": [
       { "question": "Is Gaia still observing near L2?", "answer": "No. Science observations ended on 15 January 2025. The spacecraft left the L2 region and was switched off on 27 March 2025 in a retirement orbit around the Sun." },
       { "question": "Is Gaia’s map a photograph of our Galaxy from outside?", "answer": "No. Gaia observed from within the Milky Way. All-sky maps combine measured sources; external views of the Galaxy are reconstructions or artist impressions and should be labelled accordingly." },

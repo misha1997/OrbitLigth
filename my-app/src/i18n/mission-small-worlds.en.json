@@ -1,0 +1,508 @@
+{
+  "rosetta": {
+    "name": "Rosetta",
+    "tagline": "Life beside a comet",
+    "eyebrow": "ESA · Comet 67P · 2004–2016",
+    "intro": "Rosetta travelled with comet 67P/Churyumov–Gerasimenko as sunlight transformed its frozen surface. The orbiter and its lander Philae connected close-up landscapes, dust and molecular chemistry to the early history of our Solar System.",
+    "heroAlt": "Monochrome NAVCAM mosaic showing the two-lobed nucleus and rocky terrain of comet 67P",
+    "status": {
+      "title": "Mission completed · 30 September 2016",
+      "body": "Rosetta ended with a controlled descent onto the comet. Explore archival observations and explanatory diagrams here; the spacecraft no longer transmits."
+    },
+    "stats": [
+      {
+        "label": "Launch",
+        "value": "2 March 2004",
+        "note": "Ariane 5 G+ · Kourou"
+      },
+      {
+        "label": "Comet rendezvous",
+        "value": "6 August 2014",
+        "note": "First spacecraft to orbit a comet"
+      },
+      {
+        "label": "Philae touchdown",
+        "value": "12 November 2014",
+        "note": "First landing on a comet nucleus"
+      },
+      {
+        "label": "Science payload",
+        "value": "11 + 10",
+        "note": "11 orbiter instruments · 10 lander experiments"
+      }
+    ],
+    "exploration": {
+      "nav": "Explore the comet",
+      "eyebrow": "A companion, not a passing visitor",
+      "title": "Four chapters beside 67P",
+      "intro": "Choose a chapter: a decade-long approach, an unusual nucleus, a small lander or an increasingly active comet.",
+      "choose": "Choose a Rosetta chapter",
+      "description": "Conceptual map of a two-lobed comet, Rosetta, Philae and dust jets",
+      "note": "Illustrative chapter map. Shape, locations, paths and distances are simplified; this is not a navigation map or live tracking.",
+      "detailLabel": "Mission chapter",
+      "stops": [
+        {
+          "name": "The long approach",
+          "body": "Earth and Mars gravity assists helped Rosetta reach 67P. The spacecraft also passed asteroids Šteins and Lutetia, then spent part of its cruise in hibernation.",
+          "fact": "2004 → 2014",
+          "factLabel": "From launch to rendezvous",
+          "question": "Matching a comet’s motion requires changing velocity, not simply aiming at its current position.",
+          "source": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_factsheet"
+        },
+        {
+          "name": "A world with two lobes",
+          "body": "Close images revealed cliffs, boulders and a narrow neck between two lobes. Rosetta could watch the same regions change as seasons and illumination shifted.",
+          "fact": "67P",
+          "factLabel": "Churyumov–Gerasimenko",
+          "question": "The comet was discovered by Ukrainian astronomers Klym Churyumov and Svitlana Gerasimenko in 1969.",
+          "source": "https://blogs.esa.int/rosetta/2014/10/20/klim-churyumov-and-svetlana-gerasimenko-meet-the-discoverers-of-rosettas-comet/"
+        },
+        {
+          "name": "Philae on the surface",
+          "body": "Philae touched down, bounced and came to rest in a shaded location. It returned measurements before its initial battery ran down; OSIRIS located it in 2016.",
+          "fact": "12 November 2014",
+          "factLabel": "The first comet landing",
+          "question": "The lander and orbiter performed different experiments. Rosetta also relayed Philae’s data.",
+          "source": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Philae_found"
+        },
+        {
+          "name": "A comet wakes in sunlight",
+          "body": "As 67P approached perihelion, escaping gas carried dust away from its nucleus. Rosetta monitored jets, outbursts and the changing coma over many months.",
+          "fact": "13 August 2015",
+          "factLabel": "Perihelion passage",
+          "question": "A bright dust jet is sunlight scattered by particles, not a flame.",
+          "source": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_s_big_day_in_the_Sun"
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "date": "2004-03-02",
+        "displayDate": "2 March 2004",
+        "title": "Ariane 5 launches Rosetta",
+        "body": "The orbiter and Philae begin their journey from Kourou."
+      },
+      {
+        "date": "2014-08-06",
+        "displayDate": "6 August 2014",
+        "title": "Rendezvous with 67P",
+        "body": "After waking from hibernation in January, Rosetta reaches its comet."
+      },
+      {
+        "date": "2014-11-12",
+        "displayDate": "12 November 2014",
+        "title": "Philae lands",
+        "body": "A comet’s surface is investigated directly for the first time."
+      },
+      {
+        "date": "2016-09-30",
+        "displayDate": "30 September 2016",
+        "title": "The final descent",
+        "body": "Rosetta returns observations during its controlled descent, ending operations on the surface."
+      }
+    ],
+    "scienceIntro": "Images describe the landscape; instruments reveal the material and processes behind it.",
+    "science": [
+      {
+        "title": "A record of comet formation",
+        "body": "The nucleus’s structure and chemistry preserve clues to material assembled early in Solar System history.",
+        "source": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_factsheet"
+      },
+      {
+        "title": "Organic ingredients",
+        "body": "ROSINA detected glycine and phosphorus in material around 67P. These findings concern prebiotic chemistry; they are not evidence of living organisms.",
+        "source": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_s_comet_contains_ingredients_for_life"
+      },
+      {
+        "title": "Change through a comet year",
+        "body": "Following the comet before and after perihelion connected activity with sunlight, seasons and surface evolution.",
+        "source": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_s_big_day_in_the_Sun"
+      }
+    ],
+    "instrumentIntro": "Rosetta carried 11 orbiter instruments, while Philae carried 10 experiments. The four groups below explain complementary ways of investigating a comet.",
+    "instruments": [
+      {
+        "name": "OSIRIS · VIRTIS · ALICE",
+        "body": "Images and spectra reveal shape, surface materials and the coma."
+      },
+      {
+        "name": "ROSINA · MIRO",
+        "body": "Molecular composition, gas production and thermal properties."
+      },
+      {
+        "name": "GIADA · COSIMA · MIDAS · RPC",
+        "body": "Dust particles and the plasma surrounding the comet."
+      },
+      {
+        "name": "CONSERT · RSI · Philae",
+        "body": "Radio measurements and experiments at the surface."
+      }
+    ],
+    "instrumentDetails": [
+      "OSIRIS used narrow- and wide-angle cameras. VIRTIS mapped visible and infrared signatures; ALICE investigated ultraviolet light. Different wavelengths answer different questions.",
+      "ROSINA analysed ions and neutral gas, distinguishing molecules through mass spectrometry. MIRO used microwaves to study gas and the nucleus’s thermal behaviour.",
+      "GIADA measured dust impacts and motion; COSIMA analysed particle chemistry and MIDAS their microscopic structure. RPC examined the plasma environment and its interaction with the solar wind.",
+      "CONSERT transmitted radio waves between the orbiter and lander to probe the interior. RSI studied radio-link changes. Philae’s separate payload investigated local surface conditions and composition."
+    ],
+    "communication": {
+      "eyebrow": "An archival mission",
+      "title": "Rosetta relayed Philae’s voice",
+      "body": "The lander communicated through Rosetta; the orbiter sent data to Earth. The final descent ended that link in 2016.",
+      "note": "Use the calculator as a distance scenario. Its values are illustrative, not the spacecraft’s current range or signal status.",
+      "source": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_factsheet"
+    },
+    "faq": [
+      {
+        "question": "Was Philae the same spacecraft as Rosetta?",
+        "answer": "No. Rosetta was the orbiter and Philae its detachable lander. Each carried its own scientific payload."
+      },
+      {
+        "question": "Why did the comet become more active?",
+        "answer": "Sunlight heated volatile material. Sublimating ice supplied gas that carried dust into the coma, with activity also shaped by seasons and local terrain."
+      },
+      {
+        "question": "Did Rosetta return samples to Earth?",
+        "answer": "No. Instruments studied the comet locally and transmitted data. Rosetta and Philae remained on 67P."
+      }
+    ],
+    "galleryTitle": "A comet in close-up",
+    "galleryIntro": "Real ESA observations: the nucleus, the recovered lander location and a sequence of activity near perihelion.",
+    "gallery": [
+      {
+        "title": "67P through NAVCAM",
+        "body": "A four-frame NAVCAM mosaic from 19 September 2014, taken about 28.6 km from the comet’s centre. It reveals the nucleus’s two lobes, neck and rugged terrain.",
+        "alt": "Monochrome NAVCAM mosaic showing the two-lobed nucleus and rocky terrain of comet 67P"
+      },
+      {
+        "title": "Philae found",
+        "body": "OSIRIS images from 2 September 2016 identify the lander. Insets show the location and a closer view; this is an annotated composite.",
+        "alt": "Annotated image of the rocky surface with Philae enlarged in an inset"
+      },
+      {
+        "title": "Approaching perihelion",
+        "body": "Three OSIRIS frames from 12 August 2015 show changing dust activity, including a pronounced outburst in the middle image.",
+        "alt": "Three monochrome views of 67P with bright dust jets against black space"
+      }
+    ],
+    "sourceNote": "Scientific and image sources are linked below. Interactive diagrams simplify archival findings; they do not supply live telemetry.",
+    "evidence": {
+      "nav": "Read the evidence",
+      "eyebrow": "From observation to explanation",
+      "title": "What can a comet image tell us?",
+      "intro": "Choose a case, then separate what was observed from how it is explained and what remains uncertain.",
+      "choose": "Choose an investigation",
+      "chooseStep": "Choose a reasoning step",
+      "steps": [
+        "Observation",
+        "Interpretation",
+        "Limits"
+      ],
+      "imageNote": "Archival image for context. Some conclusions also require spectra, particle measurements or orbital data.",
+      "next": "Next step",
+      "restart": "Start again",
+      "cases": [
+        {
+          "name": "The two-lobed nucleus",
+          "photo": 0,
+          "headings": [
+            "A shape with a neck",
+            "A record of assembly",
+            "More than one photograph"
+          ],
+          "readings": [
+            "Rosetta imaged two lobes joined by a narrow neck, with different terrains and illumination across the nucleus.",
+            "Shape and structural evidence support the gentle joining of two bodies early in the comet’s history.",
+            "A silhouette alone cannot date that event. Researchers combine many images, terrain relationships and physical models."
+          ],
+          "question": "Which parts of the explanation depend on measurements beyond this image?",
+          "source": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_factsheet"
+        },
+        {
+          "name": "Where Philae stopped",
+          "photo": 1,
+          "headings": [
+            "A recognisable lander",
+            "Orientation matters",
+            "A reconstructed journey"
+          ],
+          "readings": [
+            "OSIRIS resolved the lander’s body and legs in a rocky, shaded location in September 2016.",
+            "Its orientation and surroundings explain why sunlight and radio visibility were restricted.",
+            "This is a later image, not a recording of every bounce. The landing history also uses radio and instrument data."
+          ],
+          "question": "Finding the landing site gives older measurements their missing local context.",
+          "source": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Philae_found"
+        },
+        {
+          "name": "Jets and a changing coma",
+          "photo": 2,
+          "headings": [
+            "Changing brightness",
+            "Gas carries dust",
+            "Images do not weigh the flow"
+          ],
+          "readings": [
+            "Three images taken hours apart show different jet patterns and a strong outburst in the middle frame.",
+            "Solar heating drives gas release; the gas entrains dust that scatters sunlight into the camera.",
+            "Exposure, viewing geometry and particle size affect brightness. Gas composition and production rates need additional instruments."
+          ],
+          "question": "Why is the brightest frame not automatically a direct measure of total mass loss?",
+          "source": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_s_big_day_in_the_Sun"
+        }
+      ]
+    }
+  },
+  "dawn": {
+    "name": "Dawn",
+    "tagline": "Two worlds. Two histories.",
+    "eyebrow": "NASA · JPL · Vesta & Ceres · 2007–2018",
+    "intro": "Dawn became the first spacecraft to orbit two destinations beyond Earth. Ion propulsion carried it from rocky Vesta to dwarf planet Ceres, comparing worlds that preserved very different records of planet formation.",
+    "heroAlt": "Dawn image of the cratered dwarf planet Ceres",
+    "status": {
+      "title": "Mission completed · 2018",
+      "body": "Dawn stopped communicating after exhausting its hydrazine supply. It remains in orbit around Ceres; these are archival observations, not a live spacecraft connection."
+    },
+    "stats": [
+      {
+        "label": "Launch",
+        "value": "27 September 2007",
+        "note": "Delta II · Cape Canaveral"
+      },
+      {
+        "label": "Vesta orbit",
+        "value": "July 2011",
+        "note": "A rocky protoplanet in the asteroid belt"
+      },
+      {
+        "label": "Ceres orbit",
+        "value": "6 March 2015",
+        "note": "First spacecraft to orbit a dwarf planet"
+      },
+      {
+        "label": "Main instruments",
+        "value": "3",
+        "note": "FC · VIR · GRaND, plus radio science"
+      }
+    ],
+    "exploration": {
+      "nav": "Explore two worlds",
+      "eyebrow": "The asteroid belt is diverse",
+      "title": "From gentle thrust to planetary geology",
+      "intro": "Select a chapter to compare the journey, Vesta, Ceres and Dawn’s final orbit.",
+      "choose": "Choose a Dawn chapter",
+      "description": "Conceptual Dawn route with an ion-driven spacecraft, Vesta, Ceres and a final orbit",
+      "note": "Conceptual chapter map. Sizes, distances, positions and paths are not to scale; it does not show current spacecraft coordinates.",
+      "detailLabel": "Mission chapter",
+      "stops": [
+        {
+          "name": "An engine for patience",
+          "body": "Ion thrusters electrically accelerated xenon ions. Their small thrust, sustained over long periods, enabled major velocity changes without carrying a chemical rocket’s propellant load.",
+          "fact": "Xenon ions",
+          "factLabel": "Electric propulsion",
+          "question": "High exhaust speed improves propellant efficiency; it does not mean high instantaneous acceleration.",
+          "source": "https://science.nasa.gov/mission/dawn/technology/ion-propulsion/"
+        },
+        {
+          "name": "Vesta: a rocky survivor",
+          "body": "Dawn mapped giant impact basins, equatorial troughs and a differentiated rocky body. Spectral comparisons strengthened the connection between Vesta and HED meteorites found on Earth.",
+          "fact": "2011–2012",
+          "factLabel": "Orbital exploration of Vesta",
+          "question": "Vesta is a large asteroid and protoplanet, not a dwarf planet like Ceres.",
+          "source": "https://science.nasa.gov/mission/dawn/science/vesta/"
+        },
+        {
+          "name": "Ceres: a world with salts",
+          "body": "Bright deposits, water-bearing minerals and the unusual mountain Ahuna Mons revealed a body shaped by water and internal processes.",
+          "fact": "6 March 2015",
+          "factLabel": "Arrival in Ceres orbit",
+          "question": "Bright areas reflect sunlight. Spectra, rather than brightness alone, identify their mineral composition.",
+          "source": "https://science.nasa.gov/mission/dawn/toolkit/highlights/"
+        },
+        {
+          "name": "A protected final orbit",
+          "body": "The mission ended after the hydrazine used for attitude control ran out. Dawn was left in orbit rather than deliberately impacting Ceres.",
+          "fact": "2018",
+          "factLabel": "Science operations end",
+          "question": "Electric propulsion and attitude control used different propellants. Exhausting hydrazine ended the mission.",
+          "source": "https://www.nasa.gov/news-release/nasas-dawn-mission-to-asteroid-belt-comes-to-end/"
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "date": "2007-09-27",
+        "displayDate": "27 September 2007",
+        "title": "Dawn leaves Earth",
+        "body": "A Delta II launches the mission toward the main asteroid belt."
+      },
+      {
+        "date": "2011-07",
+        "displayDate": "July 2011",
+        "title": "Orbiting Vesta",
+        "body": "Dawn begins its first destination’s orbital survey, departing in September 2012."
+      },
+      {
+        "date": "2015-03-06",
+        "displayDate": "6 March 2015",
+        "title": "A second destination",
+        "body": "Dawn enters orbit around Ceres, becoming the first to orbit two destinations beyond Earth."
+      },
+      {
+        "date": "2018-11-01",
+        "displayDate": "1 November 2018",
+        "title": "NASA announces mission completion",
+        "body": "After missed communication sessions and depletion of hydrazine, the mission ends with Dawn remaining in orbit."
+      }
+    ],
+    "scienceIntro": "The same spacecraft and instruments made it possible to compare two contrasting remnants of planet formation.",
+    "science": [
+      {
+        "title": "Vesta’s violent history",
+        "body": "Giant southern impact basins and surface mineralogy connect Vesta’s geology with fragments delivered to Earth as meteorites.",
+        "source": "https://science.nasa.gov/mission/dawn/science/vesta/"
+      },
+      {
+        "title": "Salts left by brines",
+        "body": "Carbonate-rich bright deposits on Ceres support a history of salty liquids reaching the surface. Their brightness alone is not evidence of exposed ice.",
+        "source": "https://science.nasa.gov/mission/dawn/toolkit/highlights/"
+      },
+      {
+        "title": "A mountain with an icy story",
+        "body": "Ahuna Mons is interpreted as a cryovolcanic mountain. Its form and composition point toward internal activity in a small world.",
+        "source": "https://science.nasa.gov/mission/dawn/toolkit/highlights/"
+      }
+    ],
+    "instrumentIntro": "Three main science instruments worked alongside radio tracking. The fourth card describes radio science, not an extra standalone payload instrument.",
+    "instruments": [
+      {
+        "name": "FC · Framing Camera",
+        "body": "Imaging, terrain mapping and surface colours."
+      },
+      {
+        "name": "VIR · Visible & Infrared",
+        "body": "Mineral identification from visible and infrared spectra."
+      },
+      {
+        "name": "GRaND",
+        "body": "Gamma rays and neutrons reveal elemental abundances."
+      },
+      {
+        "name": "Radio science",
+        "body": "Spacecraft motion helps constrain gravity and internal structure."
+      }
+    ],
+    "instrumentDetails": [
+      "Two redundant framing cameras observed through clear and colour filters. Repeated images from different viewpoints supported shape models and topographic maps.",
+      "VIR measured how reflected light varied with wavelength. Absorption bands provide mineral fingerprints, interpreted with laboratory spectra and geological context.",
+      "Cosmic rays interacting with the surface generate neutrons and gamma rays. GRaND used these signals to map elements, including hydrogen as a clue to water-bearing material.",
+      "Doppler shifts in the radio signal trace tiny velocity changes. Combined with the measured shape, orbital perturbations constrain mass distribution; they do not directly photograph the interior."
+    ],
+    "communication": {
+      "eyebrow": "A mission’s final signal",
+      "title": "Why hydrazine mattered",
+      "body": "Hydrazine thrusters kept Dawn oriented so its antenna could point at Earth and its arrays toward the Sun. Without attitude control, it could no longer maintain communication.",
+      "note": "The calculator is an illustrative distance scenario, not a prediction of a current signal from Dawn.",
+      "source": "https://www.nasa.gov/news-release/nasas-dawn-mission-to-asteroid-belt-comes-to-end/"
+    },
+    "faq": [
+      {
+        "question": "Are Vesta and Ceres both dwarf planets?",
+        "answer": "No. Ceres is a dwarf planet; Vesta is a large asteroid, often described as a surviving protoplanet."
+      },
+      {
+        "question": "Did the ion engine run out of xenon?",
+        "answer": "The mission ended because its hydrazine for attitude control was exhausted. Hydrazine and the xenon used by the ion engines had different roles."
+      },
+      {
+        "question": "Did Dawn land or return samples?",
+        "answer": "Neither. Dawn was an orbiter. It measured both destinations remotely and remains in orbit around Ceres."
+      }
+    ],
+    "galleryTitle": "Two worlds through one camera",
+    "galleryIntro": "Archival Dawn observations of Vesta, Ceres and bright material in Occator Crater.",
+    "gallery": [
+      {
+        "title": "Vesta’s southern terrain",
+        "body": "A 2011 framing-camera view shows grooves and southern terrain. Different illumination reveals the relief of this rocky world.",
+        "alt": "Dawn image of Vesta with grooves and a prominent southern peak"
+      },
+      {
+        "title": "Ceres comes into focus",
+        "body": "A view from 5–6 May 2015, at about 13,600 km from Ceres. The cratered surface became clearer as Dawn descended to mapping orbits.",
+        "alt": "Monochrome Dawn view of the cratered disk of Ceres"
+      },
+      {
+        "title": "Bright material in Occator",
+        "body": "Dawn photographed these deposits on 5 July 2018 from roughly 55 km altitude. Composition comes from the wider instrument record, not this image alone.",
+        "alt": "Close monochrome image of bright deposits and dark terrain in Occator Crater"
+      }
+    ],
+    "sourceNote": "Scientific and image sources are linked below. Interactive diagrams simplify archival findings; they do not supply live telemetry.",
+    "evidence": {
+      "nav": "Read the evidence",
+      "eyebrow": "From observation to explanation",
+      "title": "Read the geology, step by step",
+      "intro": "Compare three observations, their scientific interpretation and the limits of the evidence.",
+      "choose": "Choose an investigation",
+      "chooseStep": "Choose a reasoning step",
+      "steps": [
+        "Observation",
+        "Interpretation",
+        "Limits"
+      ],
+      "imageNote": "Archival image for context. Some conclusions also require spectra, particle measurements or orbital data.",
+      "next": "Next step",
+      "restart": "Start again",
+      "cases": [
+        {
+          "name": "Vesta’s impact history",
+          "photo": 0,
+          "headings": [
+            "Grooves and relief",
+            "A history of giant impacts",
+            "The image is not a clock"
+          ],
+          "readings": [
+            "Dawn’s camera recorded deep troughs and large-scale relief associated with Vesta’s southern terrain.",
+            "Global mapping links major features to enormous impact basins, while spectra connect surface rocks with HED meteorites.",
+            "A single image does not determine an exact age or identify a rock sample. Dating and mineral interpretation require additional evidence."
+          ],
+          "question": "Shape, composition and age are separate scientific questions.",
+          "source": "https://science.nasa.gov/mission/dawn/science/vesta/"
+        },
+        {
+          "name": "A water-rich dwarf planet",
+          "photo": 1,
+          "headings": [
+            "A cratered surface",
+            "Clues beneath the surface",
+            "Not an ocean photograph"
+          ],
+          "readings": [
+            "The framing camera mapped Ceres from progressively lower orbits, revealing craters and unusual landforms.",
+            "Spectra, hydrogen measurements, gravity and geology together support an important role for water and ice in Ceres’ evolution.",
+            "The visible surface image does not show a subsurface ocean directly. Interior models must fit several independent measurements."
+          ],
+          "question": "Which instruments could add information that the camera cannot?",
+          "source": "https://science.nasa.gov/mission/dawn/toolkit/highlights/"
+        },
+        {
+          "name": "Occator’s bright deposits",
+          "photo": 2,
+          "headings": [
+            "Reflective material",
+            "Salts from brines",
+            "Brightness is not a mineral name"
+          ],
+          "readings": [
+            "Close images show bright deposits sharply contrasting with darker surrounding terrain in Occator Crater.",
+            "Mineral spectra identify carbonate-rich material, interpreted as deposits left by salty liquids reaching the surface.",
+            "This photograph alone cannot identify the salts, establish ongoing flow or demonstrate life. Those claims require different evidence."
+          ],
+          "question": "A geological interpretation combines the photograph with measurements at other wavelengths.",
+          "source": "https://science.nasa.gov/mission/dawn/toolkit/highlights/"
+        }
+      ]
+    }
+  }
+}

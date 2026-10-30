@@ -116,3 +116,6 @@
   .mission-detail .iconic-img-card { transition: none; }
   .mission-detail .iconic-img-card:hover { transform: none; }
 }
+.mission-optional-tool summary { cursor:pointer; font-size:17px; line-height:1.5; color:var(--text); padding:4px 0; }
+.mission-optional-tool[open] summary { margin-bottom:20px; }
+.mission-optional-tool > .mission-signal { border:0; padding:0; background:transparent; }

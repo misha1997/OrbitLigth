@@ -11,7 +11,7 @@ class MissionSeoTests(unittest.TestCase):
     def test_new_missions_have_matching_client_routes_and_bilingual_metadata(self):
         client = (Path(__file__).resolve().parents[1] / "my-app/src/lib/seo.js").read_text(encoding="utf-8")
         sitemap = seo.build_sitemap_pages_xml()
-        for mission in ("newhorizons", "juno", "chandra", "tess", "europaclipper", "perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity"):
+        for mission in ("newhorizons", "juno", "chandra", "tess", "europaclipper", "perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity", "rosetta", "dawn"):
             match = re.search(rf'{mission}:\s*\{{ uk: "([^"]+)",\s*en: "([^"]+)"', client)
             self.assertIsNotNone(match)
             for lang, slug in zip(("uk", "en"), match.groups()):
@@ -60,8 +60,11 @@ class MissionSeoTests(unittest.TestCase):
         worlds = [json.loads((root / f"src/i18n/mission-worlds.{lang}.json").read_text(encoding="utf-8")) for lang in ("uk", "en")]
         self.assertEqual(keys(worlds[0]), keys(worlds[1]))
         explorers = [{**old, **new} for old, new in zip(explorers, worlds)]
+        small_worlds = [json.loads((root / f"src/i18n/mission-small-worlds.{lang}.json").read_text(encoding="utf-8")) for lang in ("uk", "en")]
+        self.assertEqual(keys(small_worlds[0]), keys(small_worlds[1]))
+        explorers = [{**old, **new} for old, new in zip(explorers, small_worlds)]
         for dictionary in explorers:
-            for mission in ("perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity"):
+            for mission in ("perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity", "rosetta", "dawn"):
                 content = dictionary[mission]
                 self.assertEqual(len(content["instruments"]), len(content["instrumentDetails"]))
                 self.assertEqual(len(content["exploration"]["stops"]), 4)
@@ -71,14 +74,15 @@ class MissionSeoTests(unittest.TestCase):
                         self.assertIn(case["photo"], range(len(content["gallery"])))
                         self.assertEqual(len(case["readings"]), len(content["evidence"]["steps"]))
                         self.assertEqual(len(case["headings"]), len(case["readings"]))
-                for question in content["quiz"]["questions"]:
-                    self.assertIn(question["correct"], range(len(question["options"])))
-        for mission in ("perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity"):
+                self.assertNotIn("quiz", content)
+        for mission in ("perseverance", "cassini", "osirisrex", "gaia", "kepler", "spitzer", "pioneer10", "pioneer11", "galileo", "curiosity", "rosetta", "dawn"):
             model = root / f"public/{mission}/models/{mission}.glb"
             with model.open("rb") as stream:
                 self.assertEqual(stream.read(4), b"glTF")
         enrichment = [json.loads((root / f"src/i18n/mission-enrichment.{lang}.json").read_text(encoding="utf-8")) for lang in ("uk", "en")]
         self.assertEqual(keys(enrichment[0]), keys(enrichment[1]))
+        editorial = [json.loads((root / f"src/i18n/mission-editorial.{lang}.json").read_text(encoding="utf-8")) for lang in ("uk", "en")]
+        self.assertEqual(keys(editorial[0]), keys(editorial[1]))
         for dictionary, extra in zip(enrichment, additions):
             dictionary = {**dictionary, **extra}
             for mission in ("newhorizons", "juno", "chandra", "tess", "europaclipper"):

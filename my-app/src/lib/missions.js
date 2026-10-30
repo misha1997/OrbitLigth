@@ -130,15 +130,15 @@ export const MISSIONS = [
     blurbKey: "missions.blurbs.curiosity",
   },
   {
-    key: "rosetta", labelKey: "missions.names.rosetta",
-    disabled: true, type: "probe", status: "ended", year: "2004–2016",
-    icon: "🛰️", accent: "#9CA3AF", img: "/rosetta/images/preview.jpg",
+    key: "rosetta", labelKey: "missions.names.rosetta", to: "rosetta",
+    disabled: false, type: "probe", status: "ended", year: "2004–2016",
+    icon: "🛰️", accent: "#9CCFD2", img: "/rosetta/images/comet.jpg",
     blurbKey: "missions.blurbs.rosetta",
   },
   {
-    key: "dawn", labelKey: "missions.names.dawn",
-    disabled: true, type: "probe", status: "ended", year: "2007–2018",
-    icon: "🛰️", accent: "#A78BFA", img: "/dawn/images/preview.jpg",
+    key: "dawn", labelKey: "missions.names.dawn", to: "dawn",
+    disabled: false, type: "probe", status: "ended", year: "2007–2018",
+    icon: "🛰️", accent: "#B8A5E3", img: "/dawn/images/ceres.jpg",
     blurbKey: "missions.blurbs.dawn",
   },
   {

@@ -1,60 +1,42 @@
-// Site footer (index.html footer). Links are internal routes — passed as
-// i18n route names to LocalizedLink so they resolve to /ua/ or /en/.
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BOT_URL } from "../../lib/constants";
+import { BOT_URL, NAV_GROUPS } from "../../lib/constants";
 import LocalizedLink from "../primitives/LocalizedLink";
-import { useLang } from "../../context/LanguageContext";
-import { pathFor } from "../../lib/seo";
 import FeedbackModal from "../FeedbackModal";
 import OnlineCounter from "./OnlineCounter";
+import "../../styles/navigation.css";
 
 export default function Footer() {
   const { t } = useTranslation();
-  const { lang } = useLang();
   const [fbOpen, setFbOpen] = useState(false);
-  // Home + a ?query that the Home page reads to jump to a section.
-  const homeWeather = pathFor("home", lang) + "?weather";
-  const homeLaunches = pathFor("home", lang) + "?launches";
   return (
-    <footer>
+    <footer className="site-footer">
       <div className="wrap">
-        <div className="foot-grid">
-          <div>
-            <div className="logo" style={{ marginBottom: 12 }}>
+        <div className="footer-top">
+          <div className="footer-brand">
+            <LocalizedLink to="home" className="logo">
               <img className="logo-img" src="/web-app-manifest-192x192.png" alt="" aria-hidden="true" />
               <span>OrbitLight<small>{t("footer.tagline")}</small></span>
-            </div>
-            <p style={{ color: "var(--text-dim)", fontSize: 13.5, maxWidth: 280 }}>
-              {t("footer.intro")}
-            </p>
-            <button className="btn ghost foot-feedback" onClick={() => setFbOpen(true)}>
-              {t("footer.feedback")}
-            </button>
+            </LocalizedLink>
+            <p>{t("navigation.intro")}</p>
+            <LocalizedLink to="home" className="footer-start">{t("nav.home")} <span aria-hidden="true">→</span></LocalizedLink>
           </div>
-          <div>
-            <h5>{t("footer.colSky")}</h5>
-            <LocalizedLink to="iss">{t("footer.colOrbit")}</LocalizedLink>
-            <LocalizedLink to={homeWeather}>{t("footer.colWeather")}</LocalizedLink>
-            <LocalizedLink to={homeLaunches}>{t("footer.colLaunches")}</LocalizedLink>
-            <LocalizedLink to="comets">{t("footer.colComets")}</LocalizedLink>
-            <LocalizedLink to="galaxies">{t("nav.galaxies")}</LocalizedLink>
-            <LocalizedLink to="exoplanets">{t("nav.exoplanets")}</LocalizedLink>
-            <LocalizedLink to="mast">{t("nav.mast")}</LocalizedLink>
-            <LocalizedLink to="gallery">{t("nav.gallery")}</LocalizedLink>
-          </div>
-          <div>
-            <h5>{t("footer.colProject")}</h5>
-            <a href={BOT_URL} target="_blank" rel="noopener noreferrer">{t("footer.colBot")}</a>
-            <LocalizedLink to="voyager">{t("footer.colVoyager")}</LocalizedLink>
-            <LocalizedLink to="events">{t("footer.colEvents")}</LocalizedLink>
-          </div>
-          <div>
-            <h5>{t("footer.colStatus")}</h5>
-            <OnlineCounter />
-          </div>
+          <nav className="footer-navigation" aria-label={t("navigation.footer")}>
+            {NAV_GROUPS.filter((group) => group.items).map((group) => <div className="footer-link-group" key={group.id}>
+              <h2>{t(group.labelKey)}</h2>
+              <ul>{group.items.map((item) => <li key={item.name}><LocalizedLink to={item.name}>{t(item.labelKey)}</LocalizedLink></li>)}</ul>
+            </div>)}
+          </nav>
         </div>
-        <div className="foot-bottom">
+        <div className="footer-connect">
+          <nav className="footer-project-links" aria-label={t("footer.colProject")}>
+            <LocalizedLink to="news">{t("nav.news")}</LocalizedLink>
+            <a href={BOT_URL} target="_blank" rel="noopener noreferrer">{t("navigation.telegram")} <span aria-hidden="true">↗</span></a>
+            <button type="button" onClick={() => setFbOpen(true)}>{t("footer.feedback")}</button>
+          </nav>
+          <OnlineCounter />
+        </div>
+        <div className="footer-bottom">
           <span>{t("footer.copyright")}</span>
           <span>{t("footer.made")}</span>
         </div>

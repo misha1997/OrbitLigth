@@ -53,15 +53,7 @@
       "MOXIE used high-temperature electrochemistry to separate oxygen from carbon dioxide. It completed its demonstration in 2023; it was an experiment, not an astronaut life-support system."
     ],
     "communication": { "eyebrow": "Operating across worlds", "title": "Why you cannot joystick a Mars rover", "body": "Radio signals take minutes to cross the distance between Earth and Mars. Teams send plans; the rover executes sequences and uses onboard autonomy to help navigate. Much of its science data is relayed through Mars orbiters.", "note": "Try an example distance in the calculator. The result is a light-time estimate, not a current measurement or a complete command-response schedule.", "source": "https://www.jpl.nasa.gov/news/press_kits/mars_2020/landing/quick_facts/" },
-    "quiz": {
-      "nav": "Test yourself", "eyebrow": "Think like a scientist", "title": "Your turn to investigate", "intro": "Three questions about the choices behind the exploration.",
-      "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
-      "questions": [
-        { "question": "Why explore an ancient river delta?", "options": ["To find a working river today", "Sediments may preserve traces of past environments", "To charge the rover’s solar panels"], "correct": 1, "explanation": "A delta accumulates transported sediment. Its layers can preserve environmental history and potentially protect chemical traces. Perseverance uses radioisotope power." },
-        { "question": "Does finding an organic compound prove life existed?", "options": ["Yes, all organics come from organisms", "No, organic compounds can also form without life", "Only if the rock is red"], "correct": 1, "explanation": "Organic chemistry includes non-biological processes. Scientists need context, independent measurements and tests of alternative explanations." },
-        { "question": "What did MOXIE demonstrate?", "options": ["Making liquid water from sand", "Growing plants in Martian soil", "Extracting oxygen from atmospheric carbon dioxide"], "correct": 2, "explanation": "MOXIE demonstrated oxygen production on Mars. A system supporting future explorers would need to operate at a much larger scale." }
-      ]
-    },
+    
     "faq": [
       { "question": "Has Perseverance discovered life on Mars?", "answer": "No confirmed discovery of Martian life is established by the evidence described here. The rover investigates ancient habitability and potential biosignatures; promising chemistry is a reason for further study." },
       { "question": "Will the samples definitely reach Earth?", "answer": "They are collected for possible future return. Recovery, launch from Mars and delivery to Earth require additional spacecraft and an approved mission plan; Perseverance cannot bring them back itself." },
@@ -124,14 +116,7 @@
       "MAG measured magnetic fields; CAPS and MIMI studied charged particles; RPWS measured radio and plasma waves. RSS used radio signals to investigate gravity, atmospheres and rings."
     ],
     "communication": { "eyebrow": "A signal from the past", "title": "The last data crossed the void", "body": "Cassini communicated through NASA’s Deep Space Network. Its final measurements travelled to Earth while the spacecraft was already gone: radio waves, like light, take time to cover interplanetary distances.", "note": "There is no current Cassini link. The calculator uses an illustrative Earth–Saturn distance to show the delay a signal would experience.", "source": "https://science.nasa.gov/mission/cassini/grand-finale/overview/" },
-    "quiz": {
-      "nav": "Test yourself", "eyebrow": "A Saturn field test", "title": "What would you investigate?", "intro": "Three questions to connect the sights with the science.", "correct": "Exactly.", "incorrect": "Here is the science behind it.", "next": "Next question", "restart": "Try again",
-      "questions": [
-        { "question": "What fills Titan’s surface lakes and seas?", "options": ["Liquid water", "Liquid methane and ethane", "Molten rock"], "correct": 1, "explanation": "Titan’s surface is cold enough for methane and ethane to be liquid. Water ice there behaves more like a solid building material." },
-        { "question": "How did Cassini investigate Enceladus’ ocean chemistry?", "options": ["By drilling through the ice", "By landing a submarine", "By sampling material in its plumes"], "correct": 2, "explanation": "Enceladus ejects gas and ice into space. Flying through that material gave Cassini access to clues about conditions beneath the surface." },
-        { "question": "Why end the mission inside Saturn?", "options": ["To reduce the risk of contaminating its moons", "To recharge the batteries", "To land on Saturn’s solid surface"], "correct": 0, "explanation": "A controlled atmospheric entry prevented a future uncontrolled collision with a potentially habitable moon. Saturn has no solid surface on which Cassini could land." }
-      ]
-    },
+    
     "faq": [
       { "question": "Where is Cassini now?", "answer": "The spacecraft was destroyed in Saturn’s atmosphere on 15 September 2017. It is no longer in orbit and sends no telemetry. Its archived observations remain available for research." },
       { "question": "Were Cassini and Huygens the same spacecraft?", "answer": "They travelled together but had different roles. The NASA-led Cassini orbiter explored the Saturn system; ESA’s Huygens probe separated and descended to Titan. ASI was a major mission partner." },

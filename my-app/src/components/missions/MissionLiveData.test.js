@@ -14,6 +14,14 @@ const data = { available: true, stale: false, updated_at: "2026-10-04T10:00:00Z"
 ] };
 beforeEach(() => { i18next.changeLanguage("en"); useApi.mockReturnValue({ data: null, loading: false, error: null, refetch: jest.fn() }); });
 
+test("missing telemetry offers a retry without four empty metric cards", () => {
+  const refetch = jest.fn();
+  render(<MissionTelemetry mission="juno" data={{ available: false }} loading={false} error={new Error("offline")} refetch={refetch} />);
+  expect(screen.queryByText(i18next.t("missionDetail.ui.live.earth"))).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Refresh" }));
+  expect(refetch).toHaveBeenCalledTimes(1);
+});
+
 test("distance units convert and a failed refresh labels retained data as cached", () => {
   const props = { mission: "juno", data, refetch: jest.fn() };
   const { rerender } = render(<MissionTelemetry {...props} />);

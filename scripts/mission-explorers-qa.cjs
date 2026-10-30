@@ -8,7 +8,7 @@ const http = require('node:http');
 const { spawn } = require('node:child_process');
 const root = process.env.MISSION_QA_BUILD_ROOT ? path.resolve(process.env.MISSION_QA_BUILD_ROOT) : path.resolve(__dirname, '../my-app/build');
 const shots = process.argv[2];
-const missions = (process.env.MISSION_QA_MISSIONS || 'perseverance,cassini,osirisrex,gaia,kepler,spitzer,pioneer10,pioneer11,galileo,curiosity').split(',');
+const missions = (process.env.MISSION_QA_MISSIONS || 'perseverance,cassini,osirisrex,gaia,kepler,spitzer,pioneer10,pioneer11,galileo,curiosity,rosetta,dawn').split(',');
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml', '.glb': 'model/gltf-binary', '.wasm': 'application/wasm', '.json': 'application/json' };
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
@@ -64,6 +64,7 @@ async function main() {
       assert(await evaluate('!document.body.innerText.includes("missionDetail.")'), 'Translations resolved');
       assert(await evaluate('!document.querySelector("#live")'), 'No live spacecraft telemetry');
       await capture(`${mission}-${lang}-${width}-hero`);
+      if (await evaluate('!!document.querySelector(".mission-discovery-map")')) {
       await evaluate('document.querySelector("#trajectory").scrollIntoView({block:"start",behavior:"instant"})');
       await delay(150);
       for (let i = 0; i < 4; i++) {
@@ -71,6 +72,7 @@ async function main() {
         assert(await evaluate(`document.querySelectorAll('.mission-destination-buttons button')[${i}].getAttribute('aria-pressed') === 'true'`));
       }
       await capture(`${mission}-${lang}-${width}-explore`);
+      }
       if (mission === 'kepler') {
         await evaluate('document.querySelector("#transit").scrollIntoView({block:"start",behavior:"instant"})');
         const initial = await evaluate('document.querySelector(".kepler-transit-results strong").textContent');
@@ -80,7 +82,7 @@ async function main() {
         await until('document.querySelectorAll(".kepler-transit-results strong")[1].textContent === "100%"');
         await capture(`${mission}-${lang}-${width}-transit`);
       }
-      if (mission === 'galileo' || mission === 'curiosity') {
+      if (['galileo', 'curiosity', 'rosetta', 'dawn'].includes(mission)) {
         await evaluate('document.querySelector("#evidence").scrollIntoView({block:"start",behavior:"instant"})');
         for (let example = 0; example < 3; example++) {
           await evaluate(`document.querySelectorAll('#evidence > .wrap > .mission-destination-buttons button')[${example}].click()`);
@@ -131,10 +133,7 @@ async function main() {
         assert(await evaluate('document.querySelectorAll(".mission-parallax-controls .mission-destination-buttons button")[1].getAttribute("aria-pressed") === "true"'));
         await capture(`${mission}-${lang}-${width}-parallax`);
       }
-      await evaluate('document.querySelector("#quiz").scrollIntoView({block:"start",behavior:"instant"});document.querySelector(".mission-quiz-options button").click()');
-      assert(await evaluate('!!document.querySelector(".mission-quiz-answer")'));
-      await evaluate('document.querySelector(".mission-quiz-answer button").click()');
-      assert(await evaluate('!document.querySelector(".mission-quiz-answer")'));
+      assert(await evaluate('!document.querySelector("#quiz") && !document.querySelector(\'a[href="#quiz"]\')'));
       await evaluate('document.querySelector("#gallery").scrollIntoView({block:"start",behavior:"instant"})');
       await until('Array.from(document.querySelectorAll(".mission-gallery-card img")).every(i => i.complete && i.naturalWidth > 0)');
       await evaluate('document.querySelector(".mission-photo-button").click()');
@@ -153,7 +152,7 @@ async function main() {
     }
   }
   assert.equal(errors.length, 0, JSON.stringify(errors));
-  assert.equal(requests.filter(url => /\/api\/missions\/(cassini|perseverance|osirisrex|gaia|kepler|spitzer|pioneer10|pioneer11|galileo|curiosity)|\/api\/dsn/.test(url)).length, 0, 'No unsupported mission data requests');
+  assert.equal(requests.filter(url => /\/api\/missions\/(cassini|perseverance|osirisrex|gaia|kepler|spitzer|pioneer10|pioneer11|galileo|curiosity|rosetta|dawn)|\/api\/dsn/.test(url)).length, 0, 'No unsupported mission data requests');
   console.log(JSON.stringify({ passed: results.length, runtimeErrors: errors.length }));
   await cdp('Browser.close'); ws.close(); server.close();
 }

@@ -3,6 +3,42 @@ const photo = (mission, file, credit, source, year) => ({ image: `/${mission}/im
 const nasaImage = (id) => `https://images.nasa.gov/details/${id}`;
 
 export const MISSION_DETAILS = {
+  rosetta: {
+    additionalScience: [1],
+    experience: "comet-archive",
+    model: { url: "/rosetta/models/rosetta.glb", direction: [1, 0.7, 1.3], credit: { author: "NASA · 3D Resources", source: "https://github.com/nasa/NASA-3D-Resources/tree/master/3D%20Models/Rosetta" } },
+    accent: "#9CCFD2", hero: "/rosetta/images/comet.jpg",
+    gallery: [
+      photo("rosetta", "comet", "ESA / Rosetta / NAVCAM · CC BY-SA 3.0 IGO", "https://www.esa.int/ESA_Multimedia/Images/2014/09/Comet_on_19_September_2014_NavCam", "2014"),
+      photo("rosetta", "philae", "ESA / Rosetta / MPS for OSIRIS Team MPS / UPD / LAM / IAA / SSO / INTA / UPM / DASP / IDA; context: ESA / Rosetta / NAVCAM (CC BY-SA 3.0 IGO) · ESA Standard Licence", "https://www.esa.int/ESA_Multimedia/Images/2016/09/Philae_found", "2016"),
+      photo("rosetta", "jets", "ESA / Rosetta / MPS for OSIRIS Team MPS / UPD / LAM / IAA / SSO / INTA / UPM / DASP / IDA · ESA Standard Licence", "https://www.esa.int/ESA_Multimedia/Images/2015/08/Approaching_perihelion", "2015"),
+    ],
+    sources: [
+      { label: "ESA · Rosetta factsheet", url: "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_factsheet" },
+      { label: "ESA · Rosetta instruments", url: "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_s_instruments" },
+      { label: "ESA · Philae found", url: "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Philae_found" },
+      { label: "ESA · Planetary Science Archive", url: "https://psa.esa.int/" },
+    ],
+  },
+  dawn: {
+    additionalScience: [2],
+    experience: "asteroid-belt-archive",
+    model: { url: "/dawn/models/dawn.glb", direction: [1, 0.65, 1.3], credit: { author: "NASA / Brian E. Kumanchik", source: "https://science.nasa.gov/3d-resources/dawn/" } },
+    accent: "#B8A5E3", hero: "/dawn/images/ceres.jpg",
+    gallery: [
+      photo("dawn", "vesta", "NASA / JPL-Caltech / UCLA / MPS / DLR / IDA", nasaImage("PIA14322"), "2011"),
+      photo("dawn", "ceres", "NASA / JPL-Caltech / UCLA / MPS / DLR / IDA", nasaImage("PIA19562"), "2015"),
+      photo("dawn", "occator", "NASA / JPL-Caltech / UCLA / MPS / DLR / IDA", "https://science.nasa.gov/resource/bright-material-in-occator-crater/", "2018"),
+    ],
+    sources: [
+      { label: "NASA · Dawn", url: "https://science.nasa.gov/mission/dawn/" },
+      { label: "NASA · Science highlights", url: "https://science.nasa.gov/mission/dawn/toolkit/highlights/" },
+      { label: "NASA · Science payload", url: "https://science.nasa.gov/mission/dawn/technology/science-payload/" },
+      { label: "NASA · Ion propulsion", url: "https://science.nasa.gov/mission/dawn/technology/ion-propulsion/" },
+      { label: "NASA · End of mission", url: "https://www.nasa.gov/news-release/nasas-dawn-mission-to-asteroid-belt-comes-to-end/" },
+      { label: "NASA · Planetary Data System", url: "https://pds.nasa.gov/" },
+    ],
+  },
   galileo: {
     experience: "jupiter-system-archive",
     model: { url: "/galileo/models/galileo.glb", direction: [1, 0.6, 1.4], credit: { author: "NASA · 3D Resources", source: "https://github.com/nasa/NASA-3D-Resources/tree/master/3D%20Models/Galileo" } },

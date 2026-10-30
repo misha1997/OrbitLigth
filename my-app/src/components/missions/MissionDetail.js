@@ -8,7 +8,7 @@ import { useApi } from "../../hooks/useApi";
 import MissionOrbitExplorer from "./MissionOrbitExplorer";
 import { MissionTelemetry, MissionContact, SignalCalculator } from "./MissionLiveData";
 import MissionNews from "./MissionNews";
-import MissionDiscovery, { MissionQuiz } from "./MissionDiscovery";
+import MissionDiscovery from "./MissionDiscovery";
 import GaiaParallaxLab from "./GaiaParallaxLab";
 import KeplerTransitLab from "./KeplerTransitLab";
 import SpitzerInfraredLab from "./SpitzerInfraredLab";
@@ -36,6 +36,7 @@ function MissionDetailContent({ mission, ephemeris }) {
   const data = MISSION_DETAILS[mission];
   const content = t(`missionDetail.${mission}`, { returnObjects: true });
   const ui = t("missionDetail.ui", { returnObjects: true });
+  const hasFocusedExplorer = Boolean(content.parallax || content.transit || content.infrared || content.flyby || content.evidence);
   const [photoIndex, setPhotoIndex] = useState(null);
   const dialog = useRef(null);
   const isPhotoOpen = photoIndex !== null;
@@ -83,15 +84,16 @@ function MissionDetailContent({ mission, ephemeris }) {
       <nav className="wrap mission-section-nav" aria-label={ui.sections}>
         {[
           ...(!data.experience ? [["live", ui.live.title]] : []),
-          ["trajectory", content.exploration?.nav || ui.trajectory],
+          ...(!hasFocusedExplorer ? [["trajectory", content.exploration?.nav || ui.trajectory]] : []),
           ...(content.parallax ? [["parallax", content.parallax.nav]] : []),
           ...(content.transit ? [["transit", content.transit.nav]] : []),
           ...(content.infrared ? [["infrared", content.infrared.nav]] : []),
           ...(content.flyby ? [["flyby", content.flyby.nav]] : []),
           ...(content.evidence ? [["evidence", content.evidence.nav]] : []),
-          ["timeline", ui.timeline], ["science", content.scienceTitle || ui.science],
+          ["timeline", ui.timeline], ...(!content.evidence ? [["science", content.scienceTitle || ui.science]] : []),
           ["instruments", ui.instruments], ["communication", ui.communication],
-          ...(content.quiz ? [["quiz", content.quiz.nav]] : [["news", ui.news.title]]),
+          ...(!data.experience ? [["news", ui.news.title]] : []),
+          ["questions", ui.questions], ["sources", ui.sources],
         ].map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
       </nav>
 
@@ -112,18 +114,18 @@ function MissionDetailContent({ mission, ephemeris }) {
 
       {!data.experience && <MissionTelemetry mission={mission} {...ephemeris} />}
 
-      {content.exploration ? <MissionDiscovery mission={mission} content={content.exploration} /> : <section className="section" id="trajectory">
+      {!hasFocusedExplorer && (content.exploration ? <MissionDiscovery mission={mission} content={content.exploration} /> : <section className="section" id="trajectory">
         <div className="wrap">
           <SectionHead eyebrow={ui.trajectory} title={content.orbit.title} sub={content.orbit.body} />
           <MissionOrbitExplorer mission={mission} {...ephemeris} content={content} accent={data.accent} />
         </div>
-      </section>}
+      </section>)}
 
       {content.parallax && <GaiaParallaxLab content={content.parallax} />}
       {content.transit && <KeplerTransitLab content={content.transit} />}
       {content.infrared && <SpitzerInfraredLab content={content.infrared} />}
       {content.flyby && <PioneerFlybyLab mission={mission} content={content.flyby} />}
-      {content.evidence && <MissionEvidenceExplorer mission={mission} content={content.evidence} photos={data.gallery} captions={content.gallery} />}
+      {content.evidence && <MissionEvidenceExplorer mission={mission} content={content.evidence} photos={data.gallery} captions={content.gallery} additional={(data.additionalScience || []).map(index => content.science[index])} />}
 
       <section className="section" id="timeline">
         <div className="wrap">
@@ -140,10 +142,10 @@ function MissionDetailContent({ mission, ephemeris }) {
         </div>
       </section>
 
-      <section className="section" id="science"><div className="wrap">
+      {!content.evidence && <section className="section" id="science"><div className="wrap">
         <SectionHead eyebrow={content.scienceEyebrow || ui.discoveries} title={content.scienceTitle || ui.science} sub={content.scienceIntro} />
         <div className="grid cols-3">{content.science.map((item, index) => <article className="card mission-science" key={item.title}><span className="mission-science-number">0{index + 1}</span><h3>{item.title}</h3><p>{item.body}</p><a href={item.source} target="_blank" rel="noopener noreferrer" className="section-link">{ui.readResearch} ↗</a></article>)}</div>
-      </div></section>
+      </div></section>}
 
       <section className="section" id="instruments">
         <div className="wrap">
@@ -164,11 +166,9 @@ function MissionDetailContent({ mission, ephemeris }) {
         <SectionHead eyebrow={ui.contact.eyebrow} title={ui.communication} />
         <div className="mission-two-columns">
           {content.communication ? <article className="card"><div className="eyebrow">{content.communication.eyebrow}</div><h3>{content.communication.title}</h3><p>{content.communication.body}</p><p>{content.communication.note}</p><a className="section-link" href={content.communication.source} target="_blank" rel="noopener noreferrer">{ui.readResearch} ↗</a></article> : <MissionContact mission={mission} />}
-          <SignalCalculator key={mission} mission={mission} data={ephemeris.data} />
+          <details className="card mission-optional-tool"><summary>{ui.signal.title}</summary><SignalCalculator key={mission} mission={mission} data={ephemeris.data} /></details>
         </div>
       </div></section>
-
-      {content.quiz && <MissionQuiz mission={mission} content={content.quiz} />}
 
       <section className="section" id="questions"><div className="wrap">
         <SectionHead title={ui.questions} />
