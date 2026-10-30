@@ -57,7 +57,17 @@
       "description": "Illustration of the Sun, Earth and Roman’s target halo orbit around Sun–Earth L2",
       "diagram_dist": "about 1.5 million km",
       "diagram_halo": "Target halo orbit",
-      "note": "Schematic, not to scale; no current spacecraft position is shown. A halo orbit needs periodic corrections. Near L2, the observatory moves around the Sun with Earth while keeping sunlight away from its optics."
+      "note": "Model of the planned halo orbit, not live tracking. The moving Roman marker, sizes, distances and animation speed are illustrative. The real halo orbit requires periodic corrections.",
+      "modelLabel": "Target orbit model",
+      "legend": "Diagram legend",
+      "marker": "Roman · illustrative marker",
+      "sunDirection": "Direction to the Sun",
+      "pause": "Pause animation",
+      "play": "Play animation",
+      "reset": "Reset view",
+      "hint": "Drag to rotate · Scroll or pinch to zoom",
+      "loading": "Loading the 3D orbit…",
+      "unavailable": "The 3D orbit could not be displayed. Check WebGL support and try Reset view."
     },
     "reading": {
       "title": "What to expect from Roman",

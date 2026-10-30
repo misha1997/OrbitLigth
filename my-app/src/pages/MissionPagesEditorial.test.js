@@ -14,6 +14,7 @@ jest.mock("../context/LanguageContext", () => ({ useLang: () => ({ lang: mockLan
 jest.mock("../hooks/useApi", () => ({ useApi: () => ({ data: null, loading: false, error: null, refetch: jest.fn() }) }));
 jest.mock("./RomanHeroPreview", () => () => <div>Roman preview</div>);
 jest.mock("./RomanFullscreen", () => () => <div>Roman fullscreen</div>);
+jest.mock("./RomanL2Scene", () => () => <div role="img" aria-label="Roman orbit 3D" />);
 jest.mock("./HubbleHeroPreview", () => () => <div>Hubble preview</div>);
 jest.mock("./HubbleFullscreen", () => () => <div>Hubble fullscreen</div>);
 jest.mock("./HubbleOrbitDiagram", () => () => <div>Hubble orbit</div>);
@@ -41,6 +42,7 @@ test.each(Object.keys(pages).flatMap(mission => ["uk", "en"].map(lang => [missio
 ("%s has localized content and route metadata in %s", async (mission, lang) => {
   const { container } = mount(mission, lang);
   if (mission !== "voyager") await screen.findByText({ roman: "Roman preview", hubble: "Hubble preview", jwst: "Webb preview", parker: "Parker preview" }[mission]);
+  if (mission === "roman") await screen.findByRole("img", { name: "Roman orbit 3D" });
   expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
   expect(container).not.toHaveTextContent(`${mission}.reading`);
   expect(container).not.toHaveTextContent(`${mission}.surveys`);
@@ -64,8 +66,8 @@ test("Roman presents dated commissioning evidence, three planned surveys and an 
   expect(container.querySelectorAll("#science article")).toHaveLength(3);
   expect(container.querySelector('#status time[datetime="2026-10-30"]')).toBeInTheDocument();
   expect(screen.getByRole("link", { name: "NASA · Commissioning ↗" })).toHaveAttribute("href", expect.stringContaining("/2026/10/22/"));
-  expect(container.querySelector("#orbit svg")).toHaveAccessibleName(/target halo orbit/);
-  expect(container.querySelector("#orbit canvas")).not.toBeInTheDocument();
+  expect(await screen.findByRole("img", { name: "Roman orbit 3D" })).toBeInTheDocument();
+  expect(screen.getByRole("figure", { name: /target halo orbit/ })).toBeInTheDocument();
   expect(container.querySelector("#launch iframe")).not.toBeInTheDocument();
   const history = container.querySelector("#launch details");
   history.open = true;
